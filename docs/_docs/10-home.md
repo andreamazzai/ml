@@ -1,7 +1,7 @@
 ---
 title: "BEAM computer"
 permalink: /
-excerpt: "Il mio computer a 8 bit su breadboard basato sulla realizzazione di Ben Eater e sui miglioramenti di Tom Nisbet"
+excerpt: "Il mio breadboard computer a 8 bit basato sulla realizzazione di Ben Eater e sui miglioramenti di Tom Nisbet"
 header:
 #   image: /assets/beam.jpg
   overlay_image: /assets/beam.jpg
@@ -59,7 +59,7 @@ Tra gli aspetti da citare e sui quali ho speso molto, **molto**, ***davvero molt
 
 A luglio 2023 ho cercato di ricomporre tutto ciò che avevo appreso e ho provato trascriverlo su carta: avevo compreso molto bene il funzionamento di alcuni moduli, mentre su altri avevo ancora molti dubbi. Inoltre, non mi erano ancora chiare diverse interazioni tra i moduli, soprattutto nei segnali di controllo dei flag; rileggendo il materiale che avevo studiato e gli appunti che avevo trascritto su OneNote nei mesi precedenti, ho unito i puntini e realizzato lo schema logico del computer, iniziando a intravedere non più una serie di moduli a se' stanti, bensì un costrutto logico sensato:
 
-![Schema logico luglio 2023](/assets/hand-drawn-logic.jpg)
+![Schema logico luglio 2023](/docs/assets/hand-drawn-logic.jpg)
 
 ## Realizzazione
 
@@ -67,7 +67,7 @@ La fase costruttiva è iniziata a ottobre 2023 e si è conclusa nei primi giorni
 
 In queste pagine si trova la documentazione dettagliata dei moduli, corredata da una serie di note e appunti.
 
-![beam 8-bit computer](/assets/beam.jpg)
+![beam 8-bit computer](../assets/beam.jpg)
 
 Benefici:
 
