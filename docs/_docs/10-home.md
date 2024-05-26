@@ -67,7 +67,7 @@ La fase costruttiva è iniziata a ottobre 2023 e si è conclusa nei primi giorni
 
 In queste pagine si trova la documentazione dettagliata dei moduli, corredata da una serie di note e appunti.
 
-[![BEAM Breadboard Computer](assets/beam.jpg "BEAM breadboard computer")](assets/beam.jpg)
+[![BEAM Breadboard Computer](assets/beam.jpg "BEAM breadboard computer"){:width="50%"}](assets/beam.jpg)
 
 Benefici:
 
