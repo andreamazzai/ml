@@ -5,13 +5,10 @@ excerpt: "Il mio computer BEAM a 8 bit basato sul lavoro di Ben Eater e Tom Nisb
 header:
 #   image: /assets/beam.jpg
   overlay_image: /assets/beam.jpg
+  overlay_filter: 0.5
 ---
 
-# BEAM 8-bit computer
-
-<!-- [//]: # (My 8-bit computer project inspired by the Work of Ben Eater and Tom Nisbet) -->
-
-## Il mio computer a 8 bit basato sul lavoro di Ben Eater e Tom Nisbet
+## BEAM 8-bit computer
 
 TLDR: vai subito alla [documentazione del BEAM 8-bit computer](https://andreamazzai.github.io/beam/) su GitHub Pages
 
