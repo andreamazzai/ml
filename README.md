@@ -14,7 +14,7 @@ Alcuni aspetti interessanti del progetto:
 * Flag NVZC
 * Sviluppo di bootloader e programmatore di EEPROM
 
-In questo repository si trovano:
+Questo repository contiene:
 
 * [Documentazione completa del computer BEAM](https://andreamazzai.github.io/beam/)
 * Schemi KiCad
