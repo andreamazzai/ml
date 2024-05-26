@@ -67,7 +67,7 @@ La fase costruttiva è iniziata a ottobre 2023 e si è conclusa nei primi giorni
 
 In queste pagine si trova la documentazione dettagliata dei moduli, corredata da una serie di note e appunti.
 
-![beam 8-bit computer](../assets/beam.jpg)
+![beam 8-bit computer](../../assets/beam.jpg)
 
 Benefici:
 
