@@ -3,18 +3,19 @@ title: "BEAM computer"
 permalink: /
 excerpt: "Il mio computer BEAM a 8 bit basato sul lavoro di Ben Eater e Tom Nisbet"
 header:
-  image: /assets/beam.jpg
+#   image: /assets/beam.jpg
+  overlay_image: /assets/beam.jpg
 ---
 
 # BEAM 8-bit computer
 
-[//]: # (My 8-bit computer project inspired by the Work of Ben Eater and Tom Nisbet)
+<!-- [//]: # (My 8-bit computer project inspired by the Work of Ben Eater and Tom Nisbet) -->
 
 ## Il mio computer a 8 bit basato sul lavoro di Ben Eater e Tom Nisbet
 
 TLDR: vai subito alla [documentazione del BEAM 8-bit computer](https://andreamazzai.github.io/beam/) su GitHub Pages
 
-Dopo diversi decenni dalla fine degli studi (diploma superiore conseguito nel 1989), nel 2021 ho deciso di rimettere mano all'elettronica, in particolar modo a quella digitale. Ho iniziato ad interessarmi ad Arduino e Raspberry Pi, riscontrando abbastanza rapidamente una certa difficoltà: le mie basi di programmazione e di amministrazione di sistemi erano molto scarse; non avevo nessuna conoscenza di C o di altri linguaggi compilati e la mia conoscenza di Linux era molto modesta.
+Dopo diversi decenni dalla fine degli studi (diploma di scuola superiore ad indirizzo elettronico conseguito nel 1989), nel 2021 ho deciso di rimettere mano all'elettronica, in particolar modo a quella digitale. Ho iniziato ad interessarmi ad Arduino e Raspberry Pi, riscontrando abbastanza rapidamente una certa difficoltà: le mie basi di programmazione e di amministrazione di sistemi erano molto scarse; non avevo nessuna conoscenza di C o di altri linguaggi compilati e la mia conoscenza di Linux era molto modesta.
 
 ### Il primo progetto: 6502
 
