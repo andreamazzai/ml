@@ -12,13 +12,13 @@
   #   url: /sitemap/
 
   docs:
-  - title: "Overview"
+  - title: "OVERVIEW"
     children:
-      - title: "What is NQSAP?"
+      - title: "BEAM?"
         url: /
       # - title: "Why?"
       #   url: /docs/why/
-  - title: "Build"
+  - title: "COSTRUZIONE"
     children:
   #     - title: "Getting Started"
   #       url: /docs/getting-started/

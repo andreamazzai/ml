@@ -28,7 +28,7 @@ Ho completato il SAP computer a settembre, ma già in precedenza avevo cominciat
 
 1. evoluzione del computer di Ben Eater, col quale avevo iniziato a riacquistare confidenza con l'elettronica digitale
 2. emulazione del processore del mio primo computer, completa di registri indice, modalità di indirizzamento e Stack Pointer
-3. espansione del progetto originale: il computer di Ben Eater aveva solo 16 byte di RAM - sufficienti anche per programmare una sequenza di Fibonacci minimale, ma assolutamente insufficienti per scrivere programmi minimamente più complessi
+3. espansione del progetto originale: il computer di Ben Eater aveva solo 16 byte di RAM - pur sufficienti per programmare una sequenza di Fibonacci minimale, ma assolutamente insufficienti per scrivere programmi minimamente più complessi
 4. possibilità / necessità di imparare almeno le basi del C, utilizzato per la programmazione delle EEPROM e per la creazione del bootloader
 
 ### BEAM?
@@ -59,7 +59,7 @@ Tra gli aspetti da citare e sui quali ho speso molto, **molto**, ***davvero molt
 
 A luglio 2023 ho cercato di ricomporre tutto ciò che avevo appreso e ho provato trascriverlo su carta: avevo compreso molto bene il funzionamento di alcuni moduli, mentre su altri avevo ancora molti dubbi. Inoltre, non mi erano ancora chiare diverse interazioni tra i moduli, soprattutto nei segnali di controllo dei flag; rileggendo il materiale che avevo studiato e gli appunti che avevo trascritto su OneNote nei mesi precedenti, ho unito i puntini e realizzato lo schema logico del computer, iniziando a intravedere non più una serie di moduli a se' stanti, bensì un costrutto logico sensato:
 
-![Schema logico luglio 2023](../assets/hand-drawn-logic.jpg)
+![Schema logico luglio 2023](/assets/hand-drawn-logic.jpg)
 
 ## Realizzazione
 
@@ -67,7 +67,7 @@ La fase costruttiva è iniziata a ottobre 2023 e si è conclusa nei primi giorni
 
 In queste pagine si trova la documentazione dettagliata dei moduli, corredata da una serie di note e appunti.
 
-![beam 8-bit computer](../assets/beam.jpg)
+![beam 8-bit computer](/assets/beam.jpg)
 
 Benefici:
 
