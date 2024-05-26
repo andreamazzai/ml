@@ -59,7 +59,7 @@ Tra gli aspetti da citare e sui quali ho speso molto, **molto**, ***davvero molt
 
 A luglio 2023 ho cercato di ricomporre tutto ciò che avevo appreso e ho provato trascriverlo su carta: avevo compreso molto bene il funzionamento di alcuni moduli, mentre su altri avevo ancora molti dubbi. Inoltre, non mi erano ancora chiare diverse interazioni tra i moduli, soprattutto nei segnali di controllo dei flag; rileggendo il materiale che avevo studiato e gli appunti che avevo trascritto su OneNote nei mesi precedenti, ho unito i puntini e realizzato lo schema logico del computer, iniziando a intravedere non più una serie di moduli a se' stanti, bensì un costrutto logico sensato:
 
-![Schema logico luglio 2023](/assets/hand-drawn-logic.jpg)
+![Schema logico luglio 2023](assets/hand-drawn-logic.jpg)
 
 ## Realizzazione
 
@@ -67,12 +67,7 @@ La fase costruttiva è iniziata a ottobre 2023 e si è conclusa nei primi giorni
 
 In queste pagine si trova la documentazione dettagliata dei moduli, corredata da una serie di note e appunti.
 
-![beam 8-bit computer](../../assets/beam.jpg)
-![beam 8-bit computer](/assets/beam.jpg)
 ![beam 8-bit computer](assets/beam.jpg)
-![beam 8-bit computer](docs/assets/beam.jpg)
-![beam 8-bit computer](/docs/assets/beam.jpg)
-![beam 8-bit computer](https://andreamazzai.github.io/docs/assets/beam.jpg)
 
 Benefici:
 
@@ -83,15 +78,18 @@ Benefici:
 
 Poco dopo
 
-Le fonti:
+https://www.reddit.com/r/beneater/
 
-1. Tom Nisbet
-2. Reddit - in particolar modo The 8 bit Enthusiast e Tom Nisbet - grazie!
-3. 6502.org
-4. Ken Shirrif
-5. quel professore dell'università del Montana
-6. Libro di Malvino
-7. David Courtney
+Crediti e ringraziamenti e link utili:
+
+- Ben Eater per la sua grande capacità di creazione di contenuti interessanti
+- Tom Nisbet che ha espanso e migliorato in maniera sostanziale il progetto di Ben Eater
+- il subreddit [r/beneater](https://www.reddit.com/r/beneater/) - in particolar modo [The8BitEnthusiast](https://www.reddit.com/user/The8BitEnthusiast/) e [Tom Nisbet](https://www.reddit.com/user/nib85/) - grazie!
+- 6502.org
+- Il blog di Ken Shirrif per una eccellente spiegazione dell'overflow nel 6502
+- quel professore dell'università del Montana
+- Libro di Malvino
+- David Courtney
 
 Includere appunti su acquisto dei materiali, cavi utilizzati
 problemi di alimentazione
