@@ -10,9 +10,9 @@ header:
 
 ## BEAM 8-bit computer
 
-TLDR: vai subito alla [documentazione del BEAM 8-bit computer](https://andreamazzai.github.io/beam/) su GitHub Pages
+<!-- TLDR: vai subito alla [documentazione del BEAM 8-bit computer](https://andreamazzai.github.io/beam/) su GitHub Pages -->
 
-Dopo diversi decenni dalla fine degli studi (diploma di scuola superiore ad indirizzo elettronico conseguito nel 1989), nel 2021 ho deciso di rimettere mano all'elettronica, in particolar modo a quella digitale. Ho iniziato ad interessarmi ad Arduino e Raspberry Pi, riscontrando subito una certa difficoltà: le mie basi di programmazione e di amministrazione di sistemi erano molto scarse; non avevo nessuna conoscenza di C o di altri linguaggi compilati e la mia conoscenza di Linux era molto modesta.
+Dopo diversi decenni dalla fine degli studi (diploma di scuola superiore ad indirizzo elettronico conseguito nel 1989), nel 2021 ho deciso di rimettere mano all'elettronica, in particolar modo a quella digitale. Ho iniziato ad interessarmi ad Arduino e Raspberry Pi, riscontrando subito una certa difficoltà: le mie basi di programmazione e di amministrazione di sistemi erano da una parte ben poco sviluppate, dall'altra molto arrugginite; non avevo lcuna conoscenza di C o di altri linguaggi compilati e la mia conoscenza di Linux era molto modesta.
 
 ### Il primo progetto: 6502
 
@@ -20,7 +20,7 @@ Verso la fine dell'anno ho scoperto casualmente il blog di [Ben Eater](https://e
 
 ### Computer a 8 bit in logica TTL: SAP
 
-Nei primi mesi del 2022, dopo aver completato i primi moduli base del computer 6502, ho seguito la [playlist](https://www.youtube.com/playlist?list=PLowKtXNTBypGqImE405J2565dvjafglHU) del computer SAP (Simple As Possible) in logica TTL a 8-bit, al quale mi sono appassionato ancora di più. Durante la costruzione ho appreso moltissimo - sia per l'eccellente stile di esposizione di Ben, sia per l'impegno profuso nell'approfondimento della materia su altri siti e libri.
+Nei primi mesi del 2022, dopo aver completato i primi moduli base del computer 6502, ho seguito la [playlist](https://www.youtube.com/playlist?list=PLowKtXNTBypGqImE405J2565dvjafglHU) del computer **SAP** (Simple As Possible) in logica TTL a 8-bit, al quale mi sono appassionato ancora di più. Durante la costruzione ho appreso moltissimo - sia per l'eccellente stile di esposizione di Ben, sia per l'impegno profuso nell'approfondimento della materia su altri siti e libri.
 
 ### Evoluzione del computer a 8 bit: BEAM
 
@@ -59,7 +59,7 @@ Tra gli aspetti da citare e sui quali ho speso molto, **molto**, ***davvero molt
 
 A luglio 2023 ho cercato di ricomporre tutto ciò che avevo appreso e ho provato trascriverlo su carta: avevo compreso molto bene il funzionamento di alcuni moduli, mentre su altri avevo ancora molti dubbi. Inoltre, non mi erano ancora chiare diverse interazioni tra i moduli, soprattutto nei segnali di controllo dei flag; rileggendo il materiale che avevo studiato e gli appunti che avevo trascritto su OneNote nei mesi precedenti, ho unito i puntini e realizzato lo schema logico del computer, iniziando a intravedere non più una serie di moduli a se' stanti, bensì un costrutto logico sensato:
 
-[![Schema logico luglio 2023](assets/hand-drawn-logic.jpg "Schema logico luglio 2023")](assets/hand-drawn-logic.jpg)
+[![Schema logico luglio 2023](assets/hand-drawn-logic.jpg "Schema logico luglio 2023"){:width="66%"}](assets/hand-drawn-logic.jpg)
 
 ## Realizzazione
 
@@ -76,15 +76,13 @@ Benefici:
 3. realizzazione di un programmatore di EEPROM molto veloce
 4. iniziato a studiare il linguaggio C
 
-Poco dopo
-
-https://www.reddit.com/r/beneater/
+Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 Crediti e ringraziamenti e link utili:
 
-- Ben Eater per la sua grande capacità di creazione di contenuti interessanti
-- Tom Nisbet che ha espanso e migliorato in maniera sostanziale il progetto di Ben Eater
-- il subreddit [r/beneater](https://www.reddit.com/r/beneater/) - in particolar modo [The8BitEnthusiast](https://www.reddit.com/user/The8BitEnthusiast/) e [Tom Nisbet](https://www.reddit.com/user/nib85/) - grazie!
+- Ben Eater per la sua grande capacità di creazione di contenuti interessanti [contenuti interessanti](https://www.youtube.com/@BenEater/playlists/)
+- Tom Nisbet che ha realizzato l'[NQSAP](https://https://tomnisbet.github.io/nqsap/) espandendo e migliorando in maniera sostanziale il progetto di Ben Eater
+- Il subreddit [r/beneater](https://www.reddit.com/r/beneater/) - in particolar modo [The8BitEnthusiast](https://www.reddit.com/user/The8BitEnthusiast/) e [Tom Nisbet](https://www.reddit.com/user/nib85/) - grazie!
 - 6502.org
 - Il blog di Ken Shirrif per una eccellente spiegazione dell'overflow nel 6502
 - quel professore dell'università del Montana
@@ -94,3 +92,5 @@ Crediti e ringraziamenti e link utili:
 Includere appunti su acquisto dei materiali, cavi utilizzati
 problemi di alimentazione
 lkink al video dell'ALU
+
+- non ho utilizzato HC perché...
