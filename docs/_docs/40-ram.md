@@ -43,19 +43,21 @@ Per combinare due chip a 4 bit è stato necessario, nonché molto utile, capire 
 
 Dopo aver letto questo punto avevo iniziato a raccogliere i miei pensieri per l'espansione di memoria a 256 byte, idea che riprendo in seguito in questa pagina. Non avevo intenzione di costruire un IR a più byte, cosa che mi sembrava piuttosto complessa per le mie capacità.
 
-### Memorie con IO separati o comuni?
+### Memorie con IO separati o IO comuni?
 
 Fino ad ora, avevo quasi sostanzialmente dato per scontato di continuare ad usare chip di memoria con porte di Input e Output separati, esattamente come accade nel [74189](https://eater.net/datasheets/74189.pdf) utilizzato nel SAP. Tuttavia, in questo [post su Reddit](https://www.reddit.com/r/beneater/comments/hon6ar/74189_alternative/
-), un utente evidenziava difficoltà nell'approvvigionamento dei 74189 e chiedeva lumi sull'uso del 62256; ho così iniziato ad approfondire le caratteristiche di questo chip, aumentando nel contempo la mia comprensione di queste due diverse architetture.
+), un utente evidenziava difficoltà nell'approvvigionamento dei 74189 e chiedeva lumi sull'uso del [62256](https://web.mit.edu/6.115/www/document/62256.pdf); ho così iniziato ad approfondire le caratteristiche di questo chip, aumentando nel contempo la mia comprensione di queste due diverse architetture.
 
-In origine avevo evidenziato questi pochi appunti, riflettendo sul fatto che l'approccio alla gestione dei segnali di controllo - citati sul post succitato - mi sembrava un po' troppo semplicistico.
+In origine avevo evidenziato questi pochi appunti, riflettendo sul fatto che l'approccio alla gestione dei segnali di controllo - citati sul post succitato - mi sembrava un po' troppo semplicistico:
 
 >> 62256 - The I/O lines are controlled by OE and CE.
 When either are high puts the I/O lines at high impedance.
 When both are low, the RAM outputs data onto the I/O lines.
 Writing takes place (two ways, but this is one way) CE low and OE high. A low pulse on WE will write the data on the I/O lines into the RAM chip.
 
-Un aspetto che avevo notato immediatamente, ipotizzando l'uso del 62256, era l'impossibilità di conservare la visibilità del contenuto della cella di RAM indirizzata dal MAR utilizzando i LED: con i 74189 potevo invece tenere "sempre acceso" l'output per vedere in ogni momento il valore contenuto della cella di memoria.
+Un altro aspetto che avevo notato immediatamente, ipotizzando l'uso del 62256, era l'impossibilità di mantenere la visibilità del contenuto della cella di RAM indirizzata dal MAR utilizzando i LED: se con i 74189 potevo tenere "sempre acceso" l'output per vedere in ogni momento il valore contenuto della cella di memoria correntemente indirizzata dal MAR, con il 62256 avrei avuto visibilità dello stato dei pin di IO solo nel momento in cui la RAM veniva indirizzata - e dunque non costantemente.
+
+[![Schema del modulo RAM basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione continua del contenuto della locazione RAM indirizzata dal MAR](assets/be-ram.jpg "Schema del modulo RAM basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione continua del contenuto della locazione RAM indirizzata dal MAR"){:width="100%"}](assets/be-ram.jpg)
 
 **APPROFONDIRE - spiegare meglio** In pratica, il FF 74LS173 del Memory Address Register, con /MI è attivo, legge dal bus (4 bit LSB) l'indirizzo da attivare e mediante il multiplexer 74LS157 lo passa alla RAM (il MUX '157 permette di selezionare l'indirizzo a 4 bit (A0, A1, A2, A3) da presentare alla RAM scegliendolo tra dip-switch in Program Mode o bus quando in Run Mode).
 

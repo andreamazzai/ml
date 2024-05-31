@@ -25,14 +25,14 @@ Questo repository contiene:
 
 | Left side       |  8-bit bus |      Right side |
 |:---             |:----------:|             ---:|
-| Clock           |    IIII    | Program Counter |
-| RAM             |    IIII    | X Register      |
-| RAM             |    IIII    | Y Register      |
-| MAR             |    IIII    | D Register      |
-| Control Logic   |    IIII    | A Register      |
-| Control Logic   |    IIII    | H Register      |
-| Ring Ctr / IR   |    IIII    | ALU             |
-| Loader          |    IIII    | B Register      |
-| Loader          |    IIII    | Flags Register  |
-| Output Register |    IIII    | Flags Register  |
-| Output / Loader |    IIII    | Stack Pointer   |
+| Clock           |  IIIIIIII  | Program Counter |
+| RAM             |  IIIIIIII  | X Register      |
+| RAM             |  IIIIIIII  | Y Register      |
+| MAR             |  IIIIIIII  | D Register      |
+| Control Logic   |  IIIIIIII  | A Register      |
+| Control Logic   |  IIIIIIII  | H Register      |
+| Ring Ctr / IR   |  IIIIIIII  | ALU             |
+| Loader          |  IIIIIIII  | B Register      |
+| Loader          |  IIIIIIII  | Flags Register  |
+| Output Register |  IIIIIIII  | Flags Register  |
+| Output / Loader |  IIIIIIII  | Stack Pointer   |
