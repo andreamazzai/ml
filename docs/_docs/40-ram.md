@@ -57,7 +57,9 @@ Writing takes place (two ways, but this is one way) CE low and OE high. A low pu
 
 Un altro aspetto che avevo notato immediatamente, ipotizzando l'uso del 62256, era l'impossibilità di mantenere la visibilità del contenuto della cella di RAM indirizzata dal MAR utilizzando i LED: se con i 74189 potevo tenere "sempre acceso" l'output per vedere in ogni momento il valore contenuto della cella di memoria correntemente indirizzata dal MAR, con il 62256 avrei avuto visibilità del contenuto della cella solo nel momento in cui la RAM veniva indirizzata - e dunque non costantemente.
 
-[![Schema del modulo RAM di Ben Eater basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione ininterrotta del contenuto della locazione RAM indirizzata dal MAR](../assets/be-ram.png "Schema del modulo RAM basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione ininterrotta del contenuto della locazione RAM indirizzata dal MAR"){:width="100%"}](../assets/be-ram.png)
+[![Schema del modulo RAM di Ben Eater basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione ininterrotta del contenuto della locazione RAM indirizzata dal MAR](../assets/be-ram.png "Schema del modulo RAM basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione continua del contenuto della locazione RAM indirizzata dal MAR"){:width="100%"}](../assets/be-ram.png)
+
+[![Schema logico luglio 2023](../assets/hand-drawn-logic.jpg "Schema logico luglio 2023"){:width="66%"}](../assets/hand-drawn-logic.jpg)
 
 **inserire qui schma RAM computer SAP**
 
