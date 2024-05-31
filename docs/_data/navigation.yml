@@ -70,7 +70,7 @@
   #       url: /docs/further-reading/
   - title: "Link"
     children:
-      - title: "Repository BEAM su GitHub"
+      - title: "BEAM su GitHub"
         url: "https://github.com/andreamazzai/beam"
       - title: "SAP di Ben Eater"
         url: "https://eater.net/8bit/"
