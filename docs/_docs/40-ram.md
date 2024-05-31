@@ -57,9 +57,8 @@ Writing takes place (two ways, but this is one way) CE low and OE high. A low pu
 
 Un altro aspetto che avevo notato immediatamente, ipotizzando l'uso del 62256, era l'impossibilità di mantenere la visibilità del contenuto della cella di RAM indirizzata dal MAR utilizzando i LED: se con i 74189 potevo tenere "sempre acceso" l'output per vedere in ogni momento il valore contenuto della cella di memoria correntemente indirizzata dal MAR, con il 62256 avrei avuto visibilità del contenuto della cella solo nel momento in cui la RAM veniva indirizzata - e dunque non costantemente.
 
-[![Schema del modulo RAM di Ben Eater basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione ininterrotta del contenuto della locazione RAM indirizzata dal MAR](../assets/be-ram.png "Schema del modulo RAM basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione continua del contenuto della locazione RAM indirizzata dal MAR"){:width="100%"}](../assets/be-ram.png)
+[![Schema del modulo RAM di Ben Eater basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione ininterrotta del contenuto della locazione RAM indirizzata dal MAR](../../assets/be-ram.png "Schema del modulo RAM basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione continua del contenuto della locazione RAM indirizzata dal MAR"){:width="100%"}](../../assets/be-ram.png)
 
-[![Schema logico luglio 2023](../assets/hand-drawn-logic.jpg "Schema logico luglio 2023"){:width="66%"}](../assets/hand-drawn-logic.jpg)
 
 **inserire qui schma RAM computer SAP**
 
@@ -76,9 +75,12 @@ Cosa significa "Program Mode" o "Run Mode"? Sono due modalità di accesso alla R
 * Run Mode è la modalità di esecuzione, nella quale la RAM viene indirizzata dal MAR e acceduta in lettura / scrittura dal bus.
     - PROG diventa HI e dunque il /WE sarà quello dato da I1c (31/05/2023 prima avevo scritto  i1d ma probabilmente avevo sbagliato) impulso di clock alto AND segnale RI alto (RAM Input) attraverso la NAND, che metterà in output un LO (che combacia col /WE delle RAM 189). In questo modo i MUX che leggono i dati dal bus passano ai D1, D2, D3 e D4 della RAM il contenuto del bus stesso.
 
+
 Per utilizzare una RAM con Common IO, devo fare un "doppio passaggio" o qualcosa di simile.
 Come faccio ad avere sempre visibile il contenuto della cella di RAM indirizzata, se devo andarvi a scrivere e dunque disabilito la sua uscita? Devo memorizzare il contenuto delle uscite in qualche latch e poi devo disabilitare le uscite prima di andarvi a scrivere?
 Questo utente https://www.reddit.com/r/beneater/comments/uot8pk/ram_module_using_65256/ ha fatto un disegno che copio qui sotto e che forse potrebbe andare bene, ma è necessario disabilitare le uscite dei multiplexer altrimenti ci sarebbe contenzioso con le uscite della RAM quando questa è attiva (e dunque si dovrebbe mettere un altro 74LS245, credo)… 02/09/2022 ma questi MUX non sono tri-state, dunque sono sempre attivi… e allora…
 … viene detto che in alternativa ai 74LS157 si potrebbero usare i 257, che sono tri-state. (02/09/2022 ora che ho capito il giro del fumo, confermo che bisogna fare un bus "interno" usando un altro 74LS245…
 	però forse potrei usare i MUX 257, togliere il 245 che dalle uscite dei MUX va agli ingressi/uscite della RAM e collegare E dei MUX alla NOT dopo RI, cosi quando devo scrivere su RAM (RI, RAM Input) questo segnale è a HI e la NOT è LO e mi abilita i MUX che dunque mettono in uscita il contenuto del bus così da inserirlo in RAM. Risparmio un 245.
 Però attenzione perché questo continua a essere a 4 bit di address, mentre io voglio passare a 8 bit = 256 byte
+
+[![Schema logico luglio 2023](../../assets/hand-drawn-logic.jpg "Schema logico luglio 2023"){:width="66%"}](../../assets/hand-drawn-logic.jpg)
