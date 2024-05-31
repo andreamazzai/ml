@@ -68,7 +68,11 @@
   #       url: /docs/74181-alu-notes/
   #     - title: "Further Reading"
   #       url: /docs/further-reading/
-  - title: "Links"
+  - title: "Link"
     children:
-      - title: "Code Repository"
+      - title: "Repository BEAM su GitHub"
         url: "https://github.com/andreamazzai/beam"
+      - title: "SAP di Ben Eater"
+        url: "https://eater.net/8bit/"
+      - title: "NQSAP di Tom Nisbet su GitHub"
+        url: "https://github.com/TomNisbet/nqsap"
