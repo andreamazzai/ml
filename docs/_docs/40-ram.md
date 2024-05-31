@@ -57,15 +57,15 @@ Writing takes place (two ways, but this is one way) CE low and OE high. A low pu
 
 Un altro aspetto che avevo notato immediatamente, ipotizzando l'uso del 62256, era l'impossibilità di mantenere la visibilità del contenuto della cella di RAM indirizzata dal MAR utilizzando i LED: se con i 74189 potevo tenere "sempre acceso" l'output per vedere in ogni momento il valore contenuto della cella di memoria correntemente indirizzata dal MAR, con il 62256 avrei avuto visibilità del contenuto della cella solo nel momento in cui la RAM veniva indirizzata - e dunque non costantemente.
 
-[![Schema del modulo RAM di Ben Eater basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione continua del contenuto della locazione RAM indirizzata dal MAR](assets/be-ram.png "Schema del modulo RAM basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione continua del contenuto della locazione RAM indirizzata dal MAR"){:width="100%"}](assets/be-ram.png)
-
-**APPROFONDIRE - spiegare meglio** In pratica, il FF 74LS173 del Memory Address Register, con /MI è attivo, legge dal bus (4 bit LSB) l'indirizzo da attivare e mediante il multiplexer 74LS157 lo passa alla RAM (il MUX '157 permette di selezionare l'indirizzo a 4 bit (A0, A1, A2, A3) da presentare alla RAM scegliendolo tra dip-switch in Program Mode o bus quando in Run Mode).
+[![Schema del modulo RAM di Ben Eater basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione ininterrotta del contenuto della locazione RAM indirizzata dal MAR](../assets/be-ram.png "Schema del modulo RAM basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione ininterrotta del contenuto della locazione RAM indirizzata dal MAR"){:width="100%"}](../assets/be-ram.png)
 
 **inserire qui schma RAM computer SAP**
 
 Il 4x FF 74LS173 del Memory Address Register, quando /MI è attivo, legge dal bus (4x LSB) l'indirizzo da attivare e mediante il multiplexer 74LS157 lo passa alla RAM. Il MUX serve per selezionare l'indirizzo da passare alla RAM (A0, A1, A2, A3) prendendolo dal dip-switch in Program Mode o dal bus in Run Mode.
 
 L'uscita della RAM 74189 è sempre attiva, dunque i LED collegati agli output mostrano sempre il contenuto della RAM ed è sufficiente attivare /RO per esporre il contenuto della RAM sul bus attraverso il buffer Octal Bus Transceiver 74LS245.
+
+**APPROFONDIRE - spiegare meglio** In pratica, il FF 74LS173 del Memory Address Register, con /MI è attivo, legge dal bus (4 bit LSB) l'indirizzo da attivare e mediante il multiplexer 74LS157 lo passa alla RAM (il MUX '157 permette di selezionare l'indirizzo a 4 bit (A0, A1, A2, A3) da presentare alla RAM scegliendolo tra dip-switch in Program Mode o bus quando in Run Mode).
 
 Cosa significa "Program Mode" o "Run Mode"? Sono due modalità di accesso alla RAM selezionabili mediante uno switch:
 
