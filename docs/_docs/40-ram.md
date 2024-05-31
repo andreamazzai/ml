@@ -48,7 +48,7 @@ Dopo aver letto questo punto avevo iniziato a raccogliere i miei pensieri per l'
 Fino ad ora, avevo quasi sostanzialmente dato per scontato di continuare ad usare chip di memoria con porte di Input e Output separati, esattamente come accade nel [74189](https://eater.net/datasheets/74189.pdf) utilizzato nel SAP. Tuttavia, in questo [post su Reddit](https://www.reddit.com/r/beneater/comments/hon6ar/74189_alternative/
 ), un utente evidenziava difficoltà nell'approvvigionamento dei 74189 e chiedeva lumi sull'uso del [62256](https://web.mit.edu/6.115/www/document/62256.pdf); ho così iniziato ad approfondire le caratteristiche di questo chip, aumentando nel contempo la mia comprensione di queste due diverse architetture.
 
-In origine avevo evidenziato questi pochi appunti, riflettendo sul fatto che l'approccio alla gestione dei segnali di controllo - citati sul post succitato - mi sembrava un po' troppo semplicistico:
+In origine avevo evidenziato questi pochi appunti, riflettendo sul fatto che l'approccio alla gestione dei segnali di controllo citati nel post mi sembrava un po' troppo semplicistico:
 
 >> 62256 - The I/O lines are controlled by OE and CE.
 When either are high puts the I/O lines at high impedance.
@@ -57,10 +57,9 @@ Writing takes place (two ways, but this is one way) CE low and OE high. A low pu
 
 Un altro aspetto che avevo notato immediatamente, ipotizzando l'uso del 62256, era l'impossibilità di mantenere la visibilità del contenuto della cella di RAM indirizzata dal MAR utilizzando i LED: se con i 74189 potevo tenere "sempre acceso" l'output per vedere in ogni momento il valore contenuto della cella di memoria correntemente indirizzata dal MAR, con il 62256 avrei avuto visibilità del contenuto della cella solo nel momento in cui la RAM veniva indirizzata - e dunque non costantemente.
 
-[![Schema del modulo RAM di Ben Eater basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione ininterrotta del contenuto della locazione RAM indirizzata dal MAR](../../assets/be-ram.png "Schema del modulo RAM basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione continua del contenuto della locazione RAM indirizzata dal MAR"){:width="100%"}](../../assets/be-ram.png)
+[![Schema del modulo RAM di Ben Eater basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione ininterrotta del contenuto della locazione RAM indirizzata dal MAR](../../assets/be-ram-detail.png "Schema del modulo RAM basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione continua del contenuto della locazione RAM indirizzata dal MAR"){:width="50%"}](../../assets/be-ram-full.png)
 
-
-**inserire qui schma RAM computer SAP**
+Nello schema si notano i 74189 con le porte di Input dedicate D1-D4 e le porte di Output dedicate O1-O4.
 
 Il 4x FF 74LS173 del Memory Address Register, quando /MI è attivo, legge dal bus (4x LSB) l'indirizzo da attivare e mediante il multiplexer 74LS157 lo passa alla RAM. Il MUX serve per selezionare l'indirizzo da passare alla RAM (A0, A1, A2, A3) prendendolo dal dip-switch in Program Mode o dal bus in Run Mode.
 
