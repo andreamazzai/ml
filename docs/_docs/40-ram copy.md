@@ -96,7 +96,7 @@ In questo schema troviamo:
 
 - Il chip di RAM 62256.
 
-- Un FF 74LS273 in alto a destra che si attiva in corrispondenza di Clock + MI (vedi ingressi 1A e 1B del NAND centrale a sinistra nello schema).
+- Un FF 74LS273 in alto a destra che si attiva in corrispondenza di Clock + Memory Address Register In (ingressi 1A e 1B del NAND centrale a sinistra nello schema); il segnale MI indica che il computer si prepara per settare l'indirizzo di RAM sulla quale eseguirà la prossima operazione.
 
 - I due MUX 74LS157 in alto che consentono la selezione degli indirizzi (tra quelli settati sui dip-switch o quelli presenti sulle uscite del FF 74LS273) da esportare verso i pin A0-A7 del chip di RAM; la selezione degli ingressi attivati dal MUX avviene grazie all'interruttore (in alto a sinistra) di selezione della modalità connesso agli ingressi SEL: in Program Mode è acceso il LED rosso e gli ingressi SEL sono allo stato LO, attivando gli ingressi A1-A4; in Run Mode è acceso il LED verde e gli ingressi SEL sono allo stato HI, attivando gli ingressi B1-B4.
 
