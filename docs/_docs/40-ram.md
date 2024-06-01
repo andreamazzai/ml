@@ -11,7 +11,7 @@ All'approssimarsi del completamento della costruzione del SAP, ho iniziato a doc
 
 Il [canale Reddit](https://www.reddit.com/r/beneater/) dedicato ai progetti di Ben Eater è stato fondamentale in questo mio percorso.
 
-Il primo articolo letto e dal quale avevo iniziato a ricavare un po' di informazioni è [questo](https://www.reddit.com/r/beneater/comments/crl270/,8_bit_computer_memory_bootloader_and_display/) e ne avevo tratto queste note:
+Dal [primo articolo letto](https://www.reddit.com/r/beneater/comments/crl270/,8_bit_computer_memory_bootloader_and_display/) avevo tratto queste note:
 
 > Addressable memory - so the idea here is to have 16bit's of addressable memory (about 65KB). This would greatly expand the capabilities compared to the 16 bytes of Ben's PC. This would affect the following things
 
@@ -86,10 +86,12 @@ Il funzionamento e la necessità dei transceiver mi erano chiarissimi, in quanto
 
 Un latch per memorizzare lo stato dei LED, come erroneamente ipotizzavo inizialmente, non era necessario.
 
-Proseguendo nello studio, ho trovato [questo schema](https://imgur.com/a/ruclh), del quale purtroppo non trovo più il link che mi ci ha portato:
+Proseguendo nello studio, ho trovato [questo schema](https://imgur.com/a/ruclh) dell'utente jaxey1631, che aveva lasciato un commento nel video di Ben Eater [Reprogramming CPU microcode with an Arduino
+](https://www.youtube.com/watch?v=JUVt_KYAp-I&lc=UgjusLoROw6az3gCoAEC):
 
 [![RAM e MAR con doppio bus](../../assets/40-ram-ruclh.png "RAM e MAR con doppio bus"){:width="66%"}](../../assets/40-ram-ruclh.png)
-*Schema di RAM e MAR con bus interno*
+
+*Schema di RAM e MAR con bus interno.*
 
 In questo schema troviamo:
 
@@ -116,7 +118,7 @@ E' stato in questo momento (circa agosto / settembre 2022) che ho anche scoperto
 
 Tra i vari link sondati, c'era anche [questo post Reddit](https://www.reddit.com/r/beneater/comments/h8y28k/stepbystep_guide_to_upgrading_the_ram_with/), che molti utenti hanno trovato ben fatto, ma che io ho trovato molto difficile da digerire in quanto mancante di uno schema.
 
-Per aggiungere un ulteriore link utile per la comprensione delle architetture del modulo di RAM, evidenzio questo [post su Reddit](https://www.reddit.com/r/beneater/comments/ad2uko/upgrading_the_ram_module_to_256_bytes/). Il chip di RAM utilizzato è "interessante" perché si presenta come due RAM distinte, ognuna con accessi dedicati e un segnale di Busy per gestire le richieste parallele sulla stessa locazione. Altro aspetto degno di nota nell'implementazione di questo utente è la possibilità di aumentare fino a 256 il numero di istruzioni del computer, grazie alla scelta di utilizzare due byte per ogni istruzione con operando (dunque primo byte = opcode e secondo byte = operando, anziché unico byte di cui i 4 MSB sono l'opcode e i 4 LSB sono l'operando, come nel SAP di Ben Eater).
+Per aggiungere un ulteriore link utile per la comprensione delle architetture del modulo di RAM, evidenzio questo [post su Reddit](https://www.reddit.com/r/beneater/comments/ad2uko/upgrading_the_ram_module_to_256_bytes/). Le spiegazioni sono molto ben fatte e utili. Il chip di RAM utilizzato è interessante perché si presenta come due RAM distinte, ognuna con accessi dedicati e un segnale di Busy per gestire le richieste parallele sulla stessa locazione. Altro aspetto degno di nota nell'implementazione di questo utente è la possibilità di aumentare fino a 256 il numero di istruzioni del computer, grazie alla scelta di utilizzare un byte intero per l'istruzione ed un eventuale byte successivo per l'operando, anziché un unico byte di cui i 4 Most Significant Bit (MSB) rappresentano l'opcode e di cui i 4 Least Significant Bit (LSB) sono l'operando, come nel SAP di Ben Eater.
 
-Un aspetto collaterale (ma importantissimo) dell'aumento del numero di istruzioni, era la necessità di aumentare la dimensione delle EEPROM ospitanti il microcode: avendo ora 256 istruzioni, sono necessari 8 bit di istruzioni, 3 di step e 2 di flag = 13 pin totali, portanto si dovranno utilizzare delle 28C64. In quel momento, non sapevo ancora che avrei speso intere settimane a comprendere il fantastico modulo dei Flag dell'NQSAP di Tom Nisbet, che ha un approccio completamente diverso e che non necessita di segnali in uscita dalle EEPROM.
+Un aspetto collaterale (ma importantissimo) dell'aumento del numero di istruzioni, era la necessità di aumentare la dimensione delle EEPROM ospitanti il microcode: avendo ora 256 istruzioni, sono necessari 8 bit di istruzioni, 3 di step e 2 di flag = 13 pin totali, portanto si dovranno utilizzare delle 28C64... e avevo dimenticato che mi sarebbe servito un bit aggiuntivo per la selezione delle due EEPROM. In quel momento, non sapevo ancora che avrei speso intere settimane a comprendere il fantastico modulo dei Flag dell'NQSAP di Tom Nisbet, che ha un approccio completamente diverso e che non necessita di segnali in uscita dalle EEPROM.
 

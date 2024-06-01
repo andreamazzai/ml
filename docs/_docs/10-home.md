@@ -14,7 +14,7 @@ header:
 
 >NOTA: in alcuni punti della documentazione si presuppone che il lettore abbia realizzato o comprenda il progetto del SAP Computer di Ben Eater. Ove possibile, vengono fornite delle referenze per facilitare la consultazione.
 
-Dopo diversi decenni dalla fine degli studi (diploma di scuola superiore ad indirizzo elettronico conseguito nel 1989), nel 2021 ho deciso di rimettere mano all'elettronica, in particolar modo a quella digitale. Ho iniziato ad interessarmi ad Arduino e Raspberry Pi, riscontrando subito una certa difficoltà: le mie basi di programmazione e di amministrazione di sistemi erano da una parte ben poco sviluppate, dall'altra molto arrugginite; non avevo lcuna conoscenza di C o di altri linguaggi compilati e la mia conoscenza di Linux era molto modesta.
+Dopo diversi decenni dalla fine degli studi (diploma di scuola superiore ad indirizzo elettronico conseguito nel 1989), nel 2021 ho deciso di rimettere mano all'elettronica, in particolar modo a quella digitale. Ho iniziato ad interessarmi ad Arduino e Raspberry Pi, riscontrando subito una certa difficoltà: le mie basi di programmazione e di amministrazione di sistemi erano da una parte ben poco sviluppate, dall'altra molto arrugginite; non avevo alcuna conoscenza di C o di altri linguaggi compilati e la mia conoscenza di Linux era molto modesta.
 
 ### Il primo progetto: 6502
 
@@ -26,7 +26,7 @@ Nei primi mesi del 2022, dopo aver completato i primi moduli base del computer 6
 
 ### Evoluzione del computer a 8 bit: BEAM
 
-Ho completato il SAP computer a settembre, ma già in precedenza avevo cominciato a studiare i miglioramenti e le espansioni fatte da altri follower di Ben, soprattutto in merito alla possibilità di automatizzare l'inserimento del programma da eseguire con un bootloader, nonché alla necessità di incrementare la RAM oltre i 16 byte; durante l'estate di quell'anno ho scoperto il fantastico progetto [NQSAP](https://https://tomnisbet.github.io/nqsap/) di Tom Nisbet: un computer a 8-bit basato su quello di Ben Eater, ma ingegnerizzato per emulare le istruzioni del 6502. Ho realizzato velocemente che sarebbe stato il mio successivo progetto, perché metteva insieme molti aspetti che trovavo di grande interesse:
+Ho completato il SAP computer a settembre, ma già in precedenza avevo cominciato a studiare i miglioramenti e le espansioni fatte da altri follower di Ben, soprattutto in merito alla possibilità di automatizzare l'inserimento del programma da eseguire con un bootloader, nonché alla necessità di incrementare la RAM oltre i 16 byte; durante l'estate di quell'anno ho scoperto il fantastico progetto [NQSAP](https://https://tomnisbet.github.io/nqsap/) di **Tom Nisbet**: un computer a 8-bit basato su quello di Ben Eater, ma ingegnerizzato per emulare le istruzioni del 6502. Ho realizzato velocemente che sarebbe stato il mio successivo progetto, perché metteva insieme molti aspetti che trovavo di grande interesse:
 
 1. evoluzione del computer di Ben Eater, col quale avevo iniziato a riacquistare confidenza con l'elettronica digitale
 2. emulazione del processore del mio primo computer, completa di registri indice, modalità di indirizzamento e Stack Pointer
@@ -39,7 +39,7 @@ Cercando un nome per il mio progetto, ho identificato in "BEAM" quello ideale: d
 
 ### Studio e progettazione
 
-I primi 8 mesi di lavoro sul progetto sono stati interamente devoluti allo studio: volevo capire ogni dettaglio del computer di Tom, che presentava moltissime aggiunte al SAP e diverse idee davvero "clever"!
+I primi 8 mesi di lavoro sul progetto BEAM sono stati interamente devoluti allo studio: volevo capire ogni dettaglio dell'NQSAP, che presentava moltissime aggiunte al SAP e diverse idee davvero "clever"!
 
 Tra gli aspetti da citare e sui quali ho speso molto, **molto**, ***davvero molto*** tempo:
 
