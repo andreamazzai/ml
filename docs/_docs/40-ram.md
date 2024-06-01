@@ -9,7 +9,9 @@ All'approssimarsi del completamento della costruzione del SAP, ho iniziato a doc
 
 ### Primi studi
 
-Il primo articolo letto e dal avevo iniziato a ricavare un po' di informazioni è [questo](https://www.reddit.com/r/beneater/comments/crl270/,8_bit_computer_memory_bootloader_and_display/).
+Il [canale Reddit](https://www.reddit.com/r/beneater/) dedicato ai progetti di Ben Eater è stato fondamentale in questo mio percorso.
+
+Il primo articolo letto e dal quale avevo iniziato a ricavare un po' di informazioni è [questo](https://www.reddit.com/r/beneater/comments/crl270/,8_bit_computer_memory_bootloader_and_display/) e ne avevo tratto queste note:
 
 > Addressable memory - so the idea here is to have 16bit's of addressable memory (about 65KB). This would greatly expand the capabilities compared to the 16 bytes of Ben's PC. This would affect the following things
 
@@ -75,7 +77,7 @@ La selezione di cosa passare a RAM e MAR avviene mediante un MUX (nel nostro cas
 
 Ad esempio, nello schema del SAP visibile più in alto in questa pagina i multiplexer 74LS157 gestiscono gli ingressi della RAM: gli ingressi del dei MUX sono connessi sia al dip-switch sia al bus del computer, mentre le uscite sono connesse alle porte di ingresso D1-D4 dei chip di RAM 74189.
 
-Iniziava a ripresentarsi il tema del "doppio passaggio", o meglio "doppio bus" che nella mia idea doveva rendere possibile la visualizzazione continua del contenuto della RAM. A pagina 17 e 18 del "Building the SAP-3 rev 3.3.pdf" presente nel repository GitHub di <a href = "https://github.com/rolf-electronics/The-8-bit-SAP-3" target = "_blank">rolf-electronics</a>, altro utente di Reddit, avevo notato che era stato inserito un altro transceiver 74LS245.
+Si ripresentava il tema del "doppio passaggio" (o meglio "doppio bus"), che da quanto iniziavo comprendere poteva rendere possibile la visualizzazione persistente del contenuto della RAM. A pagina 17 e 18 del "Building the SAP-3 rev 3.3.pdf" presente nel repository GitHub di <a href = "https://github.com/rolf-electronics/The-8-bit-SAP-3" target = "_blank">rolf-electronics</a>, altro utente del canale Reddit, avevo notato che era stato inserito un altro transceiver 74LS245.
 
 [![Modulo RAM di rolf electronics](../../assets/40-rolf-ram.png "Modulo RAM di rolf electronics"){:width="50%"}](../../assets/40-rolf-ram.png)
 
@@ -83,6 +85,8 @@ Il funzionamento e la necessità dei transceiver mi erano chiarissimi, in quanto
 
 - Il transceiver di sinistra è attivo quando si scrive *sulla* RAM, selezionando quale sia la sorgente mediante il multiplexer 74157 (che in "Program Mode" attiva gli ingressi connessi al dip-switch, mentre in "Run Mode" attiva gli ingressi connessi al bus). I led sono attivi e mostrano il valore che viene scritto sulla RAM.
 - Il transceiver di destra è attivo quando si legge *dalla* RAM. I led sono attivi e mostrano il valore che viene letto dalla RAM e trasferito sul bus del computer.
+
+Un latch per memorizzare lo stato dei LED, come erroneamente ipotizzavo inizialmente, non era necessario.
 
 
 [![Schema logico luglio 2023](../../assets/hand-drawn-logic.jpg "Schema logico luglio 2023"){:width="66%"}](../../assets/hand-drawn-logic.jpg)
