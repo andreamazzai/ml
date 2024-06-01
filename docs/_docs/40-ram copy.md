@@ -88,7 +88,7 @@ Un latch per memorizzare lo stato dei LED, come erroneamente ipotizzavo inizialm
 
 Proseguendo nello studio, ho trovato [questo schema](https://imgur.com/a/ruclh), del quale purtroppo non trovo più il link che mi ci ha portato:
 
-[![RAM e MAR con doppio bus](../../assets/40-ram-ruclh.png "RAM e MAR con doppio bus"){:width="66%"}](../../assets/40-ram-ruclh.png)[!
+[![RAM e MAR con doppio bus](../../assets/40-ram-ruclh.png "RAM e MAR con doppio bus"){:width="66%"}](../../assets/40-ram-ruclh.png)
 
 *Schema di RAM e MAR con bus interno*
 
