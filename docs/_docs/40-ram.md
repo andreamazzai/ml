@@ -3,11 +3,9 @@ title: "RAM"
 permalink: /docs/ram/
 excerpt: "Costruzione del modulo di memoria del BEAM computer"
 ---
-# RAM
-
 Il limite principale del computer SAP di Ben Eater era sicuramente la modesta quantità di RAM indirizzabile, pari a 16 byte; era possibile caricare un semplice contatore da zero a 255 e viceversa, oppure un algoritmo di Fibonacci, ma nulla di più. Questo è stato lo stimolo primario per la ricerca e la realizzazione di un computer più potente.
 
-All'approssimarsi del completamento della costruzione del SAP, ho iniziato a leggere blog, forum e post per raccogliere idee su possibili miglioramenti ed espansioni.
+All'approssimarsi del completamento della costruzione del SAP, ho iniziato a documentarmi su vari blog e forum per raccogliere idee su possibili miglioramenti ed espansioni.
 
 ### Primi studi
 
@@ -48,7 +46,7 @@ Dopo aver letto questo punto avevo iniziato a raccogliere i miei pensieri per l'
 Fino ad ora, avevo quasi sostanzialmente dato per scontato di continuare ad usare chip di memoria con porte di Input e Output separati, esattamente come accade nel [74189](https://eater.net/datasheets/74189.pdf) utilizzato nel SAP. Tuttavia, in questo [post su Reddit](https://www.reddit.com/r/beneater/comments/hon6ar/74189_alternative/
 ), un utente evidenziava difficoltà nell'approvvigionamento dei 74189 e chiedeva lumi sull'uso del [62256](https://web.mit.edu/6.115/www/document/62256.pdf); ho così iniziato ad approfondire le caratteristiche di questo chip, aumentando nel contempo la mia comprensione di queste due diverse architetture.
 
-In origine avevo evidenziato questi pochi appunti, riflettendo sul fatto che l'approccio alla gestione dei segnali di controllo citati nel post mi sembrava un po' troppo semplicistico:
+In origine avevo evidenziato questi pochi appunti presenti nel post, riflettendo sul fatto che l'approccio alla gestione dei segnali di controllo mi sembrava un po' troppo semplicistico:
 
 >> 62256 - The I/O lines are controlled by OE and CE.
 When either are high puts the I/O lines at high impedance.
@@ -61,23 +59,24 @@ Un altro aspetto che avevo notato immediatamente, ipotizzando l'uso del 62256, e
 
 Nello schema si notano i 74189 con le porte di Input dedicate D1-D4 e le porte di Output dedicate O1-O4.
 
-Quello che iniziavo a capire era che per utilizzare una RAM con Common IO dovevo fare un "doppio passaggio" o qualcosa di simile. Come faccio ad avere sempre visibile il contenuto della cella di RAM anche nel momento in cui setto le porte di IO in modalità Input? Devo memorizzare il contenuto delle uscite della RAM in qualche latch e poi devo disabilitarla prima di andarvi a scrivere?
+Quello che iniziavo a capire era che per utilizzare una RAM con Common IO dovevo fare un "doppio passaggio" o qualcosa di simile. Come faccio ad avere sempre visibile il contenuto della locazione di memoria anche nel momento in cui setto le porte di IO del chip in modalità Input? Devo forse memorizzare il contenuto delle uscite della RAM in qualche latch e poi devo disabilitare il chip prima di andarvi a scrivere?
 
-In [questo post](https://www.reddit.com/r/beneater/comments/uot8pk/ram_module_using_65256/) un utente esponeva un disegno che credevo potesse andare bene, ma [nel suo schema](https://imgur.com/upvYjUX) le uscite dei multiplexer (MUX) sono sempre attive in Output (i [74LS157](https://datasheetspdf.com/download_new.php?id=488136) non sono tri-state) e potrebbero creare contenzioso con le uscite della RAM quando questa è attiva in output; andavo capendo che la  soluzione potesse essere quella di aggiungere un altro bus transceiver 74LS245, oppure di utilizzare dei MUX tri-state come i [74LS257](https://datasheetspdf.com/download_new.php?id=935737). Cominciavo a intuire qualcosa, cioè la necessità di gestire i segnali di controllo della RAM in maniera più ampia controllando le interazioni con i MUX e con il/i transceiver di interfacciamento verso il bus del computer.
+In [questo post](https://www.reddit.com/r/beneater/comments/uot8pk/ram_module_using_65256/) un utente esponeva un disegno che credevo potesse andare bene, ma [nel suo schema](https://imgur.com/upvYjUX) le uscite dei multiplexer (MUX) sono sempre attive (i [74LS157](https://datasheetspdf.com/download_new.php?id=488136) non sono tri-state) e potrebbero creare contenzioso con le uscite della RAM quando questa è attiva in output; andavo capendo che la  soluzione potesse essere quella di aggiungere un altro bus transceiver 74LS245, oppure di utilizzare dei MUX tri-state come i [74LS257](https://datasheetspdf.com/download_new.php?id=935737). Cominciavo a intuire qualcosa, cioè la necessità di gestire i segnali di controllo della RAM in maniera più ampia controllando le interazioni con i MUX e con il/i transceiver di interfacciamento verso il bus del computer.
 
 ## MUX, Program Mode e Run Mode
 
 A cosa servono i MUX nel modulo RAM (e nel MAR)? All'accensione, il contenuto della memoria RAM è vuoto / casuale, dunque dobbiamo avere sia la possibilità di programmare la RAM manualmente ("Program Mode"), sia di renderla poi visibile al bus del computer durante la normale esecuzione dei programmi ("Run Mode").
 
-- La modalità **Program Mode** è utilizzata per scrivere manualmente sulla RAM utilizzando i dip-switch e dunque caricare i programmi o leggere il contenuto della RAM in stile "debug mode".
+- La modalità **Program Mode** è utilizzata per scrivere manualmente sulla RAM utilizzando dei dip-switch e dunque caricare i programmi o leggere il contenuto della RAM in stile "debug mode".
 
 - La modalità **Run Mode** è la modalità di esecuzione, nella quale la RAM viene indirizzata dal MAR e acceduta in lettura / scrittura dal bus.
 
-La selezione tra due connessioni elettriche avviene mediante il MUX (nel nostro caso 2:1, cioè ad ogni uscita corrispondono due ingressi selezionabili): gli ingressi sono connessi sia ai dip-switch che utilizzeremo per la programmazione manuale del computer, sia al bus dati del computer; le uscite sono connesse agli ingressi della RAM e del MAR. Un semplice interruttore connesso all'ingresso di selezione del MUX consente di scegliere quali ingressi attivare.
+La selezione di cosa passare a RAM e MAR avviene mediante un MUX (nel nostro caso 2:1, cioè ad ogni uscita corrispondono due ingressi selezionabili): gli ingressi del MUX sono connessi sia ai dip-switch che utilizzeremo per la programmazione manuale del computer, sia al bus dati del computer; le uscite sono connesse agli ingressi della RAM e del MAR. Un semplice interruttore connesso all'ingresso di selezione del MUX consente di scegliere quali ingressi attivare.
 
-Ad esempio, nello schema della RAM del SAP visibile più in alto in questa pagina i multiplexer 74LS157 presentano gli ingressi connessi sia al dip-switch sia al bus del computer e le uscite connesse alle porte di ingresso D1-D4 dei 74189.
+Ad esempio, nello schema del SAP visibile più in alto in questa pagina i multiplexer 74LS157 gestiscono gli ingressi della RAM: gli ingressi del dei MUX sono connessi sia al dip-switch sia al bus del computer, mentre le uscite sono connesse alle porte di ingresso D1-D4 dei chip di RAM 74189.
 
-In seguito ho iniziato a comprendere meglio il tema del "doppio passaggio" e alla possibilità di tenere sempre accesi i LED grazie anche alla documentazione di [rolf-electronics](https://github.com/rolf-electronics/The-8-bit-SAP-3) disponibile su GitHub. A pagina 17 e 18 avevo notato che era stato inserito un altro transceiver 74LS245, 
+In seguito ho iniziato a comprendere meglio il tema del "doppio passaggio" e la possibilità di tenere sempre accesi i LED grazie anche alla documentazione di <a href = "https://github.com/rolf-electronics/The-8-bit-SAP-3" target = "_blank">rolf-electronics</a>
+disponibile su GitHub. A pagina 17 e 18 avevo notato che era stato inserito un altro transceiver 74LS245, 
 
 
 
