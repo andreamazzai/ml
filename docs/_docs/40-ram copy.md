@@ -94,22 +94,16 @@ Proseguendo nello studio, ho trovato [questo schema](https://imgur.com/a/ruclh),
 
 In questo schema troviamo:
 
-- il chip di RAM 62256;
+- Il chip di RAM 62256.
 
-- un FF 74LS273 in alto a destra che si attiva in corrispondenza di Clock + MI (vedi ingressi 1A e 1B del NAND centrale a sinistra nello schema);
+- Un FF 74LS273 in alto a destra che si attiva in corrispondenza di Clock + MI (vedi ingressi 1A e 1B del NAND centrale a sinistra nello schema).
 
-- i due MUX 74LS157 in alto che consentono la selezione degli indirizzi (tra quelli settati sui dip-switch o quelli presenti sulle uscite del FF 74LS273) da esportare verso i pin A0-A7 del chip di RAM;
+- I due MUX 74LS157 in alto che consentono la selezione degli indirizzi (tra quelli settati sui dip-switch o quelli presenti sulle uscite del FF 74LS273) da esportare verso i pin A0-A7 del chip di RAM; la selezione degli ingressi attivati dal MUX avviene grazie all'interruttore (in alto a sinistra) di selezione della modalità connesso agli ingressi SEL: in Program Mode è acceso il LED rosso e gli ingressi SEL sono allo stato LO, attivando gli ingressi A1-A4; in Run Mode è acceso il LED verde e gli ingressi SEL sono allo stato HI, attivando gli ingressi B1-B4.
 
-- la selezione degli ingressi attivati dal MUX avviene grazie all'interruttore di seleziona della modalità in alto a sinistra connesso agli ingressi SEL: in Program Mode è acceso il LED rosso e gli ingressi SEL sono allo stato LO, attivando gli ingressi A1-A4; in Run Mode è acceso il LED verde e gli ingressi SEL sono allo stato HI, attivando gli ingressi B1-B4;
+- Altri due MUX 74LS157 in basso che consentono la selezione di cosa esportare verso i pin dati D0-D7 del chip di RAM; anche questi MUX sono connessi all'interruttore di selezione della modalità e attivano gli ingressi connessi al dip-switch di selezione degli indirizzi o quelli connessi al bus del computer a seconda dello stato dell'interruttore (Program Mode o Run Mode).
 
-- altri due MUX 74LS157 in basso che consentono la selezione di cosa esportare verso il pin dati del chip di RAM;
+- Un primo 74LS245 (in basso) i cui ingressi sono connessi alle uscite dei due MUX citati nel punto precedente. Questo transceiver funge da interfaccia *verso* la RAM (il pin DIR settato a LO configura i pin A1-A8 come ingressi e i pin B1-B8 come uscite) e si attiva nel momento in cui si deve scrivere in memoria; il segnale OE di questo primo transceiver è infatti attivo quando quando si preme il pulsante Write Button (in basso a sinistra) se in Program Mode, o in corrispondenza di Clock + RI (RAM In) (vedi ingressi 4A e 4B del NAND centrale a sinistra nello schema) quando in Run Mode;
 
-- anche questi MUX sono connessi all'interruttore di selezione della modalità e attivano agli ingressi connessi al dip-switch di selezione degli indirizzi o quelli connessi al bus del computer a seconda dello stato attivo (Program Mode o Run Mode);
-
-- le uscite di questi due MUX sono connessi a un primo 74LS245 (in basso) che funge da interfaccia *verso* la RAM (il pin DIR settato a LO configura i pin A1-A8 come ingressi e i pin B1-B8 come uscite) e che si attiva nel momento in cui si deve scrivere in memoria;
-
-- il segnale OE di questo transceiver è infatti attivo quando quando si preme il pulsante Write Button (in basso a sinistra) se in Program Mode, o in corrispondenza di Clock + RI (RAM In) (vedi ingressi 4A e 4B del NAND centrale a sinistra nello schema) quando in Run Mode;
-
-- un secondo 74LS245 che si attiva nel momento in cui si deve leggere *dalla* RAM e che ne trasferisce l'output verso il bus dati (anche in questo caso il pin DIR del 74LS245 settato a LO configura i pin A1-A8 come ingressi e i pin B1-B8 come uscite) .
+- Un secondo 74LS245 che si attiva nel momento in cui si deve leggere *dalla* RAM e che ne trasferisce l'output verso il bus dati (anche in questo caso il pin DIR del 74LS245 settato a LO configura i pin A1-A8 come ingressi e i pin B1-B8 come uscite); notare il suo ingresso OE connesso al segnale RO (RAM Output) del computer.
 
 Notare la configurazione del chip di RAM: i segnali CE e OE sono sempre attivi, che significa che l'utente ha deciso di utilizzare la modalità di scrittura definita come "WE# Controlled" a pagina 6 del [datasheet](https://datasheetspdf.com/download_new.php?id=729365). Rileggendo questi appunti dopo aver completao il mio progetto, mi sembra tutto facile, ma la comprensione delle modalità di scrittura della RAM è stata in realtà piuttosto lunga.
