@@ -12,6 +12,8 @@ header:
 
 <!-- TLDR: vai subito alla [documentazione del BEAM 8-bit computer](https://andreamazzai.github.io/beam/) su GitHub Pages -->
 
+>NOTA: in alcuni punti della documentazione si presuppone che il lettore abbia realizzato o comprenda il progetto del SAP Computer di Ben Eater. Ove possibile, vengono fornite delle referenze per facilitare la consultazione.
+
 Dopo diversi decenni dalla fine degli studi (diploma di scuola superiore ad indirizzo elettronico conseguito nel 1989), nel 2021 ho deciso di rimettere mano all'elettronica, in particolar modo a quella digitale. Ho iniziato ad interessarmi ad Arduino e Raspberry Pi, riscontrando subito una certa difficoltà: le mie basi di programmazione e di amministrazione di sistemi erano da una parte ben poco sviluppate, dall'altra molto arrugginite; non avevo lcuna conoscenza di C o di altri linguaggi compilati e la mia conoscenza di Linux era molto modesta.
 
 ### Il primo progetto: 6502

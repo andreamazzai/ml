@@ -89,14 +89,13 @@ Un latch per memorizzare lo stato dei LED, come erroneamente ipotizzavo inizialm
 Proseguendo nello studio, ho trovato [questo schema](https://imgur.com/a/ruclh), del quale purtroppo non trovo più il link che mi ci ha portato:
 
 [![RAM e MAR con doppio bus](../../assets/40-ram-ruclh.png "RAM e MAR con doppio bus"){:width="66%"}](../../assets/40-ram-ruclh.png)
-
 *Schema di RAM e MAR con bus interno*
 
 In questo schema troviamo:
 
 - Il chip di RAM 62256.
 
-- Un FF 74LS273 in alto a destra che si attiva in corrispondenza di Clock + Memory Address Register In (ingressi 1A e 1B del NAND centrale a sinistra nello schema); il segnale MI indica che il computer si prepara per settare l'indirizzo di RAM sulla quale eseguirà la prossima operazione.
+- Un FF 74LS273 in alto a destra che, sprovvisto di Enable come discusso in precedenza, si attiva in corrispondenza di un Enable fittizio costruito con l'operazione logica "Clock + Memory Address Register In" (ingressi 1A e 1B del NAND a sinistra nello schema); il segnale MI indica che il computer si prepara per settare l'indirizzo di RAM sul quale eseguirà la prossima operazione.
 
 - I due MUX 74LS157 in alto che consentono la selezione degli indirizzi (tra quelli settati sui dip-switch o quelli presenti sulle uscite del FF 74LS273) da esportare verso i pin A0-A7 del chip di RAM; la selezione degli ingressi attivati dal MUX avviene grazie all'interruttore (in alto a sinistra) di selezione della modalità connesso agli ingressi SEL: in Program Mode è acceso il LED rosso e gli ingressi SEL sono allo stato LO, attivando gli ingressi A1-A4; in Run Mode è acceso il LED verde e gli ingressi SEL sono allo stato HI, attivando gli ingressi B1-B4.
 
@@ -106,6 +105,18 @@ In questo schema troviamo:
 
 - Un secondo 74LS245 che si attiva nel momento in cui si deve leggere *dalla* RAM e che ne trasferisce l'output verso il bus dati (anche in questo caso il pin DIR del 74LS245 settato a LO configura i pin A1-A8 come ingressi e i pin B1-B8 come uscite); notare il suo ingresso OE connesso al segnale RO (RAM Output) del computer.
 
-[![Write cicle del 62256](../../assets/40-ram-write-cicle.png "Write cicle del 62256"){:width="50%"}](../../assets/40-ram-write-cicle.png)
+[![Write cicle del 62256](../../assets/40-ram-write-cycle.png "Write cicle del 62256"){:width="50%"}](../../assets/40-ram-write-cycle.png)
+*Write Cycle "WE Controlled" del 62256*
 
-Notare la configurazione del chip di RAM: i segnali CE e OE sono sempre attivi, che significa che l'utente ha deciso di utilizzare la modalità di scrittura definita come "WE# Controlled" definita a pagina 6 del [datasheet](https://datasheetspdf.com/download_new.php?id=729365). Rileggendo questi appunti diverso tempo dopo aver completato il mio progetto, mi sembra tutto facile, ma la comprensione delle modalità di scrittura della RAM è stata in realtà piuttosto lunga.
+Notare la configurazione del chip di RAM: i segnali CE e OE sono sempre attivi, che significa che l'utente ha deciso di utilizzare la modalità di scrittura definita come "WE# Controlled" definita a pagina 6 del [datasheet](https://datasheetspdf.com/download_new.php?id=729365) del 62256. Rileggendo questi appunti diverso tempo dopo aver completato il mio progetto, mi sembra tutto facile, ma la comprensione delle modalità di scrittura della RAM è stata in realtà piuttosto lunga.
+
+Da notare inoltre che anche questo utente non usa il CLR sui FF 74LS273 di input del MAR - a pensarci, potrebbe realmente non servire, perché ogni volta che ho bisogno di accedere alla RAM, vado preventivamente a settare sul MAR l'indirizzo come effettivamente desiderato. Forse il reset all'accensione è più estetico che altro.
+
+E' stato in questo momento (circa agosto / settembre 2022) che ho anche scoperto l'NQSAP, inserendolo tra i miei appunti come "c'è questo https://tomnisbet.github.io/nqsap/docs/ram/ che sembra aver fatto delle belle modifiche al suo computer" 😁.
+
+Tra i vari link sondati, c'era anche [questo post Reddit](https://www.reddit.com/r/beneater/comments/h8y28k/stepbystep_guide_to_upgrading_the_ram_with/), che molti utenti hanno trovato ben fatto, ma che io ho trovato molto difficile da digerire in quanto mancante di uno schema.
+
+Per aggiungere un ulteriore link utile per la comprensione delle architetture del modulo di RAM, evidenzio questo [post su Reddit](https://www.reddit.com/r/beneater/comments/ad2uko/upgrading_the_ram_module_to_256_bytes/). Il chip di RAM utilizzato è "interessante" perché si presenta come due RAM distinte, ognuna con accessi dedicati e un segnale di Busy per gestire le richieste parallele sulla stessa locazione. Altro aspetto degno di nota nell'implementazione di questo utente è la possibilità di aumentare fino a 256 il numero di istruzioni del computer, grazie alla scelta di utilizzare due byte per ogni istruzione con operando (dunque primo byte = opcode e secondo byte = operando, anziché unico byte di cui i 4 MSB sono l'opcode e i 4 LSB sono l'operando, come nel SAP di Ben Eater).
+
+Un aspetto collaterale (ma importantissimo) dell'aumento del numero di istruzioni, era la necessità di aumentare la dimensione delle EEPROM ospitanti il microcode: avendo ora 256 istruzioni, sono necessari 8 bit di istruzioni, 3 di step e 2 di flag = 13 pin totali, portanto si dovranno utilizzare delle 28C64. In quel momento, non sapevo ancora che avrei speso intere settimane a comprendere il fantastico modulo dei Flag dell'NQSAP di Tom Nisbet, che ha un approccio completamente diverso e che non necessita di segnali in uscita dalle EEPROM.
+
