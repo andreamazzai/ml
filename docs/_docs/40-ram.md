@@ -19,7 +19,7 @@ Il primo articolo letto e dal quale avevo iniziato a ricavare un po' di informaz
 
 Questo utente desiderava fare una espansione radicale del computer, passando da 16 byte a 64K; il mio desiderio era quello di crescere fino a 256 byte, ma alcune informazioni sono state comunque molto utili per una comprensione generale della questione.
 
-Per indirizzare 64K di memoria serve un registro MAR (Memory Address Register) da 16 bit (2^16 = 64K); anziché utilizzare 4 registri a 4 bit 74LS173 (il 74LS173 è il Flip-Flop utilizzato in origine nel SAP), sembra più comodo utilizzare due registri Flip-Flop tipo D 74LS273 a 8 bit; uno svantaggio di questi ultimi, rispetto alla loro controparte a 4 bit, è che non hanno un ingresso di Enable, mentre il disegno del computer deve prevederlo, perché il MAR deve leggere dal bus un indirizzo di memoria solo quando necessario - e non ad ogni ciclo di clock. Il segnale MI (Memory Input) del SAP serve infatti per caricare l'indirizzo sul MAR solo quando è necessario; quando MI è attivo, al successivo rising edge del CLK il MAR carica il valore presente nel bus. Senza un ingresso di Enable, il FF 74LS273 andrebbe a "registrare" il dato in ingresso ad ogni rising edge del clock.
+Per indirizzare 64K di memoria serve un registro MAR (Memory Address Register) da 16 bit (2^16 = 64K); anziché utilizzare 4 registri a 4 bit 74LS173 (il 74LS173 è il Flip-Flop utilizzato in origine nel SAP), sembra più comodo utilizzare due registri Flip-Flop tipo D 74LS273 a 8 bit; uno svantaggio di questi ultimi, rispetto alla loro controparte a 4 bit, è che non hanno un ingresso di Enable, mentre il disegno del computer deve prevederlo, perché il MAR deve leggere dal bus un indirizzo di memoria solo quando necessario - e non ad ogni ciclo di clock. Il segnale MI (Memory Input) del SAP serve infatti per caricare l'indirizzo sul MAR solo quando è necessario; quando MI è attivo, al successivo rising edge del CLK il MAR carica il valore presente nel bus. Senza un ingresso di Enable, il Flip-Flop (FF) 74LS273 andrebbe a "registrare" il dato in ingresso ad ogni rising edge del clock.
 
 In un progetto a 8 bit si potrebbero semplicemente utilizzare due 74LS173 a 4 bit continuando a sfruttare i segnali di Enable nativamente disponibili. Bisogna dire che sarebbe comunque possibile utilizzare anche il 74LS273 a 8 bit utilizzando una porta AND per *costruire* un segnale di Enable: i segnali CLK e MI sarebbero gli ingressi della AND, mentre l'output della AND si collegherebbe all'ingresso CLK del FF, che così sarebbe attivato solo quando, oltre al CLK, fosse contemporaneamente presente anche il segnale MI.
 
@@ -44,7 +44,7 @@ Dopo aver letto questo punto avevo iniziato a raccogliere i miei pensieri per l'
 ### Memorie con IO separati o IO comuni?
 
 Fino ad ora, avevo quasi sostanzialmente dato per scontato di continuare ad usare chip di memoria con porte di Input e Output separati, esattamente come accade nel [74189](https://eater.net/datasheets/74189.pdf) utilizzato nel SAP. Tuttavia, in questo [post su Reddit](https://www.reddit.com/r/beneater/comments/hon6ar/74189_alternative/
-), un utente evidenziava difficoltà nell'approvvigionamento dei 74189 e chiedeva lumi sull'uso del [62256](https://web.mit.edu/6.115/www/document/62256.pdf); ho così iniziato ad approfondire le caratteristiche di questo chip, aumentando nel contempo la mia comprensione di queste due diverse architetture.
+), un utente evidenziava difficoltà nell'approvvigionamento dei 74189 e chiedeva lumi sull'uso del [62256](https://datasheetspdf.com/download_new.php?id=729365); ho così iniziato ad approfondire le caratteristiche di questo chip, aumentando nel contempo la mia comprensione di queste due diverse architetture.
 
 In origine avevo evidenziato questi pochi appunti presenti nel post, riflettendo sul fatto che l'approccio alla gestione dei segnali di controllo mi sembrava un po' troppo semplicistico:
 
@@ -86,10 +86,30 @@ Il funzionamento e la necessità dei transceiver mi erano chiarissimi, in quanto
 
 Un latch per memorizzare lo stato dei LED, come erroneamente ipotizzavo inizialmente, non era necessario.
 
-Proseguendo nello studio, ho trovato [questo schema](https://imgur.com/a/ruclh), del quale purtroppo non trovo più il link che mi ha portato qui:
+Proseguendo nello studio, ho trovato [questo schema](https://imgur.com/a/ruclh), del quale purtroppo non trovo più il link che mi ci ha portato:
 
 [![RAM e MAR con doppio bus](../../assets/40-ram-ruclh.png "RAM e MAR con doppio bus"){:width="66%"}](../../assets/40-ram-ruclh.png)[!
 
 *Schema di RAM e MAR con bus interno*
 
-In questo schema troviamo il FF
+In questo schema troviamo:
+
+- il chip di RAM 62256;
+
+- un FF 74LS273 in alto a destra che si attiva in corrispondenza di Clock + MI (vedi ingressi 1A e 1B del NAND centrale a sinistra nello schema);
+
+- i due MUX 74LS157 in alto che consentono la selezione degli indirizzi (tra quelli settati sui dip-switch o quelli presenti sulle uscite del FF 74LS273) da esportare verso i pin A0-A7 del chip di RAM;
+
+- la selezione degli ingressi attivati dal MUX avviene grazie all'interruttore di seleziona della modalità in alto a sinistra connesso agli ingressi SEL: in Program Mode è acceso il LED rosso e gli ingressi SEL sono allo stato LO, attivando gli ingressi A1-A4; in Run Mode è acceso il LED verde e gli ingressi SEL sono allo stato HI, attivando gli ingressi B1-B4;
+
+- altri due MUX 74LS157 in basso che consentono la selezione di cosa esportare verso il pin dati del chip di RAM;
+
+- anche questi MUX sono connessi all'interruttore di selezione della modalità e attivano agli ingressi connessi al dip-switch di selezione degli indirizzi o quelli connessi al bus del computer a seconda dello stato attivo (Program Mode o Run Mode);
+
+- le uscite di questi due MUX sono connessi a un primo 74LS245 (in basso) che funge da interfaccia *verso* la RAM (il pin DIR settato a LO configura i pin A1-A8 come ingressi e i pin B1-B8 come uscite) e che si attiva nel momento in cui si deve scrivere in memoria;
+
+- il segnale OE di questo transceiver è infatti attivo quando quando si preme il pulsante Write Button (in basso a sinistra) se in Program Mode, o in corrispondenza di Clock + RI (RAM In) (vedi ingressi 4A e 4B del NAND centrale a sinistra nello schema) quando in Run Mode;
+
+- un secondo 74LS245 che si attiva nel momento in cui si deve leggere *dalla* RAM e che ne trasferisce l'output verso il bus dati (anche in questo caso il pin DIR del 74LS245 settato a LO configura i pin A1-A8 come ingressi e i pin B1-B8 come uscite) .
+
+Notare la configurazione del chip di RAM: i segnali CE e OE sono sempre attivi, che significa che l'utente ha deciso di utilizzare la modalità di scrittura definita come "WE# Controlled" a pagina 6 del [datasheet](https://datasheetspdf.com/download_new.php?id=729365). Rileggendo questi appunti dopo aver completao il mio progetto, mi sembra tutto facile, ma la comprensione delle modalità di scrittura della RAM è stata in realtà piuttosto lunga.
