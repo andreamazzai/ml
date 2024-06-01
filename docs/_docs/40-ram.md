@@ -59,9 +59,9 @@ Un altro aspetto che avevo notato immediatamente, ipotizzando l'uso del 62256, e
 
 Nello schema si notano i 74189 con le porte di Input dedicate D1-D4 e le porte di Output dedicate O1-O4.
 
-Quello che iniziavo a capire era che per utilizzare una RAM con Common IO dovevo fare un "doppio passaggio" o qualcosa di simile. Come faccio ad avere sempre visibile il contenuto della locazione di memoria anche nel momento in cui setto le porte di IO del chip in modalità Input? Devo forse memorizzare il contenuto delle uscite della RAM in qualche latch e poi devo disabilitare il chip prima di andarvi a scrivere?
+Quello che iniziavo a capire era che per utilizzare una RAM con Common IO dovevo fare un "doppio passaggio" o qualcosa di simile. Come faccio ad avere sempre visibile il contenuto della locazione di memoria anche nel momento in cui setto le porte di IO del chip in modalità Input? Devo forse memorizzare il contenuto delle uscite della RAM in qualche latch e poi devo disabilitare il chip prima di andarvi a scrivere? In seguito avrei capito che non era necessario un latch. ma che c'era un'altra strada.
 
-In [questo post](https://www.reddit.com/r/beneater/comments/uot8pk/ram_module_using_65256/) un utente esponeva un disegno che credevo potesse andare bene, ma [nel suo schema](https://imgur.com/upvYjUX) le uscite dei multiplexer (MUX) sono sempre attive (i [74LS157](https://datasheetspdf.com/download_new.php?id=488136) non sono tri-state) e potrebbero creare contenzioso con le uscite della RAM quando questa è attiva in output; andavo capendo che la  soluzione potesse essere quella di aggiungere un altro bus transceiver 74LS245, oppure di utilizzare dei MUX tri-state come i [74LS257](https://datasheetspdf.com/download_new.php?id=935737). Cominciavo a intuire qualcosa, cioè la necessità di gestire i segnali di controllo della RAM in maniera più ampia controllando le interazioni con i MUX e con il/i transceiver di interfacciamento verso il bus del computer.
+In [questo post](https://www.reddit.com/r/beneater/comments/uot8pk/ram_module_using_65256/) un utente esponeva un disegno che credevo potesse andare bene, ma [nel suo schema](https://imgur.com/upvYjUX) le uscite dei multiplexer (MUX) sono sempre attive (i [multiplexer 74LS157](https://datasheetspdf.com/download_new.php?id=488136) non sono tri-state) e potrebbero creare contenzioso con le uscite della RAM quando questa è attiva in output; andavo capendo che la  soluzione potesse essere quella di aggiungere un altro [bus transceiver 74LS245](https://datasheetspdf.com/download_new.php?id=375533), oppure di utilizzare dei [MUX tri-state 74LS257](https://datasheetspdf.com/download_new.php?id=935737). Cominciavo a intuire qualcosa, cioè la necessità di gestire i segnali di controllo della RAM in maniera più ampia controllando le interazioni con i MUX e con il/i transceiver di interfacciamento verso il bus del computer.
 
 ## MUX, Program Mode e Run Mode
 
@@ -75,10 +75,14 @@ La selezione di cosa passare a RAM e MAR avviene mediante un MUX (nel nostro cas
 
 Ad esempio, nello schema del SAP visibile più in alto in questa pagina i multiplexer 74LS157 gestiscono gli ingressi della RAM: gli ingressi del dei MUX sono connessi sia al dip-switch sia al bus del computer, mentre le uscite sono connesse alle porte di ingresso D1-D4 dei chip di RAM 74189.
 
-In seguito ho iniziato a comprendere meglio il tema del "doppio passaggio" e la possibilità di tenere sempre accesi i LED grazie anche alla documentazione di <a href = "https://github.com/rolf-electronics/The-8-bit-SAP-3" target = "_blank">rolf-electronics</a>
-disponibile su GitHub. A pagina 17 e 18 avevo notato che era stato inserito un altro transceiver 74LS245, 
+Iniziava a ripresentarsi il tema del "doppio passaggio", o meglio "doppio bus" che nella mia idea doveva rendere possibile la visualizzazione continua del contenuto della RAM. A pagina 17 e 18 del "Building the SAP-3 rev 3.3.pdf" presente nel repository GitHub di <a href = "https://github.com/rolf-electronics/The-8-bit-SAP-3" target = "_blank">rolf-electronics</a>, altro utente di Reddit, avevo notato che era stato inserito un altro transceiver 74LS245.
 
+[![Modulo RAM di rolf electronics](../../assets/40-rolf-ram.png "Modulo RAM di rolf electronics"){:width="50%"}](../../assets/40-rolf-ram.png)
 
+Il funzionamento e la necessità dei transceiver mi erano chiarissimi, in quanto ampiamente utilizzati nel SAP computer per poter attivare i vari moduli del computer solo quando fosse necessario farlo; nello schema di Rolf i due transceiver vengono utilizzati per separare il percorso dei dati *verso* la RAM da quello *dalla* RAM.
+
+- Il transceiver di sinistra è attivo quando si scrive *sulla* RAM, selezionando quale sia la sorgente mediante il multiplexer 74157 (che in "Program Mode" attiva gli ingressi connessi al dip-switch, mentre in "Run Mode" attiva gli ingressi connessi al bus). I led sono attivi e mostrano il valore che viene scritto sulla RAM.
+- Il transceiver di destra è attivo quando si legge *dalla* RAM. I led sono attivi e mostrano il valore che viene letto dalla RAM e trasferito sul bus del computer.
 
 
 [![Schema logico luglio 2023](../../assets/hand-drawn-logic.jpg "Schema logico luglio 2023"){:width="66%"}](../../assets/hand-drawn-logic.jpg)
