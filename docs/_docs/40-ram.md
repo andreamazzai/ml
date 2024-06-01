@@ -55,31 +55,31 @@ When either are high puts the I/O lines at high impedance.
 When both are low, the RAM outputs data onto the I/O lines.
 Writing takes place (two ways, but this is one way) CE low and OE high. A low pulse on WE will write the data on the I/O lines into the RAM chip.
 
-Un altro aspetto che avevo notato immediatamente, ipotizzando l'uso del 62256, era l'impossibilità di mantenere la visibilità del contenuto della cella di RAM indirizzata dal MAR utilizzando i LED: se con i 74189 potevo tenere "sempre acceso" l'output per vedere in ogni momento il valore contenuto della cella di memoria correntemente indirizzata dal MAR, con il 62256 avrei avuto visibilità del contenuto della cella solo nel momento in cui la RAM veniva indirizzata - e dunque non costantemente.
+Un altro aspetto che avevo notato immediatamente, ipotizzando l'uso del 62256, era l'impossibilità di mantenere la visibilità del contenuto della cella di RAM indirizzata dal MAR utilizzando i LED (o almeno così credevo): se con i 74189 potevo tenere "sempre acceso" l'output per vedere in ogni momento il valore contenuto della cella di memoria correntemente indirizzata dal MAR, con il 62256 avrei avuto visibilità del contenuto della cella solo nel momento in cui la RAM veniva letta - e dunque non costantemente.
 
 [![Schema del modulo RAM di Ben Eater basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione ininterrotta del contenuto della locazione RAM indirizzata dal MAR](../../assets/be-ram-detail.png "Schema del modulo RAM basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione continua del contenuto della locazione RAM indirizzata dal MAR"){:width="50%"}](../../assets/be-ram-full.png)
 
 Nello schema si notano i 74189 con le porte di Input dedicate D1-D4 e le porte di Output dedicate O1-O4.
 
-Il 4x FF 74LS173 del Memory Address Register, quando /MI è attivo, legge dal bus (4x LSB) l'indirizzo da attivare e mediante il multiplexer 74LS157 lo passa alla RAM. Il MUX serve per selezionare l'indirizzo da passare alla RAM (A0, A1, A2, A3) prendendolo dal dip-switch in Program Mode o dal bus in Run Mode.
+Quello che iniziavo a capire era che per utilizzare una RAM con Common IO dovevo fare un "doppio passaggio" o qualcosa di simile. Come faccio ad avere sempre visibile il contenuto della cella di RAM anche nel momento in cui setto le porte di IO in modalità Input? Devo memorizzare il contenuto delle uscite della RAM in qualche latch e poi devo disabilitarla prima di andarvi a scrivere?
 
-L'uscita della RAM 74189 è sempre attiva, dunque i LED collegati agli output mostrano sempre il contenuto della RAM ed è sufficiente attivare /RO per esporre il contenuto della RAM sul bus attraverso il buffer Octal Bus Transceiver 74LS245.
+In [questo post](https://www.reddit.com/r/beneater/comments/uot8pk/ram_module_using_65256/) un utente esponeva un disegno che credevo potesse andare bene, ma [nel suo schema](https://imgur.com/upvYjUX) le uscite dei multiplexer (MUX) sono sempre attive in Output (i [74LS157](https://datasheetspdf.com/download_new.php?id=488136) non sono tri-state) e potrebbero creare contenzioso con le uscite della RAM quando questa è attiva in output; andavo capendo che la  soluzione potesse essere quella di aggiungere un altro bus transceiver 74LS245, oppure di utilizzare dei MUX tri-state come i [74LS257](https://datasheetspdf.com/download_new.php?id=935737). Cominciavo a intuire qualcosa, cioè la necessità di gestire i segnali di controllo della RAM in maniera più ampia controllando le interazioni con i MUX e con il/i transceiver di interfacciamento verso il bus del computer.
 
-**APPROFONDIRE - spiegare meglio** In pratica, il FF 74LS173 del Memory Address Register, con /MI è attivo, legge dal bus (4 bit LSB) l'indirizzo da attivare e mediante il multiplexer 74LS157 lo passa alla RAM (il MUX '157 permette di selezionare l'indirizzo a 4 bit (A0, A1, A2, A3) da presentare alla RAM scegliendolo tra dip-switch in Program Mode o bus quando in Run Mode).
+## MUX, Program Mode e Run Mode
 
-Cosa significa "Program Mode" o "Run Mode"? Sono due modalità di accesso alla RAM selezionabili mediante uno switch:
+A cosa servono i MUX nel modulo RAM (e nel MAR)? All'accensione, il contenuto della memoria RAM è vuoto / casuale, dunque dobbiamo avere sia la possibilità di programmare la RAM manualmente ("Program Mode"), sia di renderla poi visibile al bus del computer durante la normale esecuzione dei programmi ("Run Mode").
 
-* la modalità Program Mode è utilizzata per scrivere manualmente sulla RAM utilizzando i dip-switch, e dunque caricare i programmi o leggere il contenuto della RAM in stile "debug mode"
-    - devo settare PROG LO, così il MUX 74LS157 esporrà agli /WE della RAM il pulsante di programmazione I0d
-* Run Mode è la modalità di esecuzione, nella quale la RAM viene indirizzata dal MAR e acceduta in lettura / scrittura dal bus.
-    - PROG diventa HI e dunque il /WE sarà quello dato da I1c (31/05/2023 prima avevo scritto  i1d ma probabilmente avevo sbagliato) impulso di clock alto AND segnale RI alto (RAM Input) attraverso la NAND, che metterà in output un LO (che combacia col /WE delle RAM 189). In questo modo i MUX che leggono i dati dal bus passano ai D1, D2, D3 e D4 della RAM il contenuto del bus stesso.
+- La modalità **Program Mode** è utilizzata per scrivere manualmente sulla RAM utilizzando i dip-switch e dunque caricare i programmi o leggere il contenuto della RAM in stile "debug mode".
+
+- La modalità **Run Mode** è la modalità di esecuzione, nella quale la RAM viene indirizzata dal MAR e acceduta in lettura / scrittura dal bus.
+
+La selezione tra due connessioni elettriche avviene mediante il MUX (nel nostro caso 2:1, cioè ad ogni uscita corrispondono due ingressi selezionabili): gli ingressi sono connessi sia ai dip-switch che utilizzeremo per la programmazione manuale del computer, sia al bus dati del computer; le uscite sono connesse agli ingressi della RAM e del MAR. Un semplice interruttore connesso all'ingresso di selezione del MUX consente di scegliere quali ingressi attivare.
+
+Ad esempio, nello schema della RAM del SAP visibile più in alto in questa pagina i multiplexer 74LS157 presentano gli ingressi connessi sia al dip-switch sia al bus del computer e le uscite connesse alle porte di ingresso D1-D4 dei 74189.
+
+In seguito ho iniziato a comprendere meglio il tema del "doppio passaggio" e alla possibilità di tenere sempre accesi i LED grazie anche alla documentazione di [rolf-electronics](https://github.com/rolf-electronics/The-8-bit-SAP-3) disponibile su GitHub. A pagina 17 e 18 avevo notato che era stato inserito un altro transceiver 74LS245, 
 
 
-Per utilizzare una RAM con Common IO, devo fare un "doppio passaggio" o qualcosa di simile.
-Come faccio ad avere sempre visibile il contenuto della cella di RAM indirizzata, se devo andarvi a scrivere e dunque disabilito la sua uscita? Devo memorizzare il contenuto delle uscite in qualche latch e poi devo disabilitare le uscite prima di andarvi a scrivere?
-Questo utente https://www.reddit.com/r/beneater/comments/uot8pk/ram_module_using_65256/ ha fatto un disegno che copio qui sotto e che forse potrebbe andare bene, ma è necessario disabilitare le uscite dei multiplexer altrimenti ci sarebbe contenzioso con le uscite della RAM quando questa è attiva (e dunque si dovrebbe mettere un altro 74LS245, credo)… 02/09/2022 ma questi MUX non sono tri-state, dunque sono sempre attivi… e allora…
-… viene detto che in alternativa ai 74LS157 si potrebbero usare i 257, che sono tri-state. (02/09/2022 ora che ho capito il giro del fumo, confermo che bisogna fare un bus "interno" usando un altro 74LS245…
-	però forse potrei usare i MUX 257, togliere il 245 che dalle uscite dei MUX va agli ingressi/uscite della RAM e collegare E dei MUX alla NOT dopo RI, cosi quando devo scrivere su RAM (RI, RAM Input) questo segnale è a HI e la NOT è LO e mi abilita i MUX che dunque mettono in uscita il contenuto del bus così da inserirlo in RAM. Risparmio un 245.
-Però attenzione perché questo continua a essere a 4 bit di address, mentre io voglio passare a 8 bit = 256 byte
+
 
 [![Schema logico luglio 2023](../../assets/hand-drawn-logic.jpg "Schema logico luglio 2023"){:width="66%"}](../../assets/hand-drawn-logic.jpg)
