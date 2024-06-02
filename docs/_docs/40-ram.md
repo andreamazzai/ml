@@ -108,6 +108,7 @@ In questo schema troviamo:
 - Un secondo 74LS245 che si attiva nel momento in cui si deve leggere *dalla* RAM e che ne trasferisce l'output verso il bus dati (anche in questo caso il pin DIR del 74LS245 settato a LO configura i pin A1-A8 come ingressi e i pin B1-B8 come uscite); notare il suo ingresso OE connesso al segnale RO (RAM Output) del computer.
 
 [![Write cicle del 62256](../../assets/40-ram-write-cycle.png "Write cicle del 62256"){:width="50%"}](../../assets/40-ram-write-cycle.png)
+
 *Write Cycle "WE Controlled" del 62256*
 
 Notare la configurazione del chip di RAM: i segnali CE e OE sono sempre attivi, che significa che l'utente ha deciso di utilizzare la modalità di scrittura definita come "WE# Controlled" definita a pagina 6 del [datasheet](https://datasheetspdf.com/download_new.php?id=729365) del 62256. Rileggendo questi appunti diverso tempo dopo aver completato il mio progetto, mi sembra tutto facile, ma la comprensione delle modalità di scrittura della RAM è stata in realtà piuttosto lunga.
@@ -122,7 +123,7 @@ Per aggiungere un ulteriore link utile per la comprensione delle architetture de
 
 Un aspetto collaterale (ma importantissimo) dell'aumento del numero di istruzioni era la necessità di aumentare la dimensione delle EEPROM ospitanti il microcode: avendo ora 256 istruzioni, erano necessari 8 bit di istruzioni, 3 di step e 2 di flag = 13 pin totali, portanto si rendevano necessarie delle 28C64... e avevo dimenticato che mi sarebbe servito un bit aggiuntivo per la selezione delle due EEPROM! In quel momento, non sapevo ancora che avrei speso intere settimane a comprendere il fantastico modulo dei Flag dell'NQSAP di Tom Nisbet, che ha un approccio completamente diverso e che non necessita di segnali in uscita dalle EEPROM.
 
-I SEGNALI DI GESTIONE
+## Gestione della RAM
 
 Tra i post più utili in merito alla comprensione dei segnali di gestione di RAM e MAR per il modulo di memoria con chip con IO comuni, c'è certamente [Question about RAM replacement](https://www.reddit.com/r/beneater/comments/ut1oud/8bit_question_about_ram_replacement/), nel quale il moderatore The8BitEnthusiast invita a consultare [la sua (**eccellente**, aggiungo io) realizzazione](https://imgur.com/mgeeciL), che ho preso ad esempio e ispirazione.
 
@@ -150,30 +151,38 @@ Per esempio, ipotizzavo che nel primo caso "Scrittura sulla RAM in Run Mode" acc
 
 - Prima del Rising Edge del CLK:
 
-  - il segnale /PROG è disabilitato, dunque HI
+  - PROG è HI, dunque siamo in Run Mode
   - il MUX abilita gli ingressi I1a, I1b, I1c
   - Zb è HI (in quanto l'input I1b è connesso a Vcc) e dunque il '245 di destra, che connette il dip-switch di programmazione, è disabilitato
-  - il segnale RI è attivo (RI = RAM In, cioè scrittura sulla RAM), cioè HI
-  - il segnale /RO non è attivo (RO = RAM Out, cioè lettura dalla RAM), cioè HI
-  - Zc = /(CLK LO * RI HI) = HI, dunque la direzione del '245 dal/al data bus DIR è A-->B
+  - il segnale RI è HI (RI = RAM In, cioè scrittura sulla RAM), dunque stiamo preparando una scrittura
+  - il segnale /RO è HI (RO = RAM Out, cioè lettura dalla RAM), dunque la lettura dalla RAM è disabilitata
+  - Zc = /(CLK LO * RI HI) = HI, dunque la direzione del '245 di sinistra, che connette il data bus, è A-->B (Output)
   - Za = //(/RO HI * Zc HI) = HI, dunque il '245 dal/al data bus è disabilitato
 
 - Con CLK attivo:
 
-  - Zc = /(CLK HI * RI HI) = LO, dunque la direzione del '245 dal/al data bus è B-->A
+  - Zc = /(CLK HI * RI HI) = LO, dunque la direzione del '245 dal/al data bus è B-->A (Input)
   - Za = //(/RO HI * Zc LO) = LO, dunque il '245 dal/al data bus è attivo
-  - /WE = Zc = LO, dunque la RAM riceve un segnale di Write, che permette di scrivere quanto le viene proiettato dal '245 che la connette al data bus
+  - /WE = Zc = LO, dunque la RAM riceve il Falling Edge del segnale di Write e trova sui suoi ingressi quanto le viene proiettato dal '245 dal/al data bus
 
 - Quando l'impulso di Clock finisce:
 
-  - Zc = /(CLK LO * RI HI) = HI, dunque la direzione del '245 dal/al data bus DIR è A-->B
-  - /WE = Zc = HI, dunque l'impulso di Write sulla RAM termina
+  - Zc = /(CLK LO * RI HI) = HI, dunque la direzione del '245 dal/al data bus è A-->B (Output)
+  - /WE = Zc = HI, dunque l'impulso di Write sulla RAM termina con il Rising Edge
   - Za = //(/RO HI * Zc HI) = HI, dunque il '245 dal/al data bus viene disabilitato
+
+Legenda:
+
+- PROG è il segnale dell'interruttore di selezione della modalità Program Mode (LO) / Run (HI) normalmente schematizzato nel modulo MAR
+- / significa NOT
+- \* significa AND
 
 [![Scrittura sulla RAM in Run Mode](../../assets/40-ram-run-mode-write-large-t8be.png "Scrittura sulla RAM in Run Mode"){:width="100%"}](../../assets/40-ram-run-mode-write-large-t8be.png)
 
-Immaginavo che il momento critico fosse il Rising Edge del Clock, perché in quel mentre è necessario attendere il tempo di setup della RAM perché questa si possa preparare per la scrittura ed è proprio qui che accade è necessario sfruttare il ritardo introdotto dal '245 per mostrare i dati alla RAM un po' dopo più tardi, ma non comprendevo esattamente il motivo.
+Immaginavo che il momento critico fosse il Rising Edge del Clock, perché in quel mentre è necessario attendere che la RAM sia pronta per la scrittura e proprio qui è necessario sfruttare il ritardo introdotto dal '245 per mostrare i dati alla RAM "un po' più tardi", ma non capivo esattamente il motivo.
 
-The8BitEnthusiast ha risposto molto gentilmente al mio quesito:
+The8BitEnthusiast ha gentilmente risposto al mio quesito:
 
-	For the write cycle, as you correctly concluded, I needed to make sure that the '245s were not delivering data to the RAM while it was not ready to accept input and still outputting data (I opted to tie OE low on the RAM, like Ben did). The datasheet for the RAM says that the RAM will disable its outputs and be ready for input 20ns after WE is taken low. WE controls the chip enable pin of the 245s... the 245 datasheet specifies a delay of 25ns before they start outputting. Requirement met there. I checked the other parts of the cycle the same way, as well as the other scenarios, and that was it, it seemed to me all timing requirements were met.
+> Dovevo assicurarmi che i '245 non *consegnassero* dati alla RAM quando questa non era ancora pronta per accettare dati in Input e fosse ancora output con le sue uscite. Il datasheet segnala che la RAM disabilita l'output ed è pronta per l'input 20ns dopo che WE viene portato allo stato LO.
+
+ RAM will disable its outputs and be ready for input 20ns after WE is taken low. WE controls the chip enable pin of the 245s... the 245 datasheet specifies a delay of 25ns before they start outputting. Requirement met there. I checked the other parts of the cycle the same way, as well as the other scenarios, and that was it, it seemed to me all timing requirements were met.
