@@ -124,7 +124,23 @@ Un aspetto collaterale (ma importantissimo) dell'aumento del numero di istruzion
 
 I SEGNALI DI GESTIONE
 
-Tra i post più utili in merito alla comprensione dei segnali do governo di RAM e MAR per il modulo con chip con IO comuni, c'è certamente [Question about RAM replacement](https://www.reddit.com/r/beneater/comments/ut1oud/8bit_question_about_ram_replacement/), nel quale il moderatore The8BitEnthusiast invita a consultare [la sua **eccellente** realizzazione](https://imgur.com/mgeeciL).
+Tra i post più utili in merito alla comprensione dei segnali di gestione di RAM e MAR per il modulo di memoria con chip con IO comuni, c'è certamente [Question about RAM replacement](https://www.reddit.com/r/beneater/comments/ut1oud/8bit_question_about_ram_replacement/), nel quale il moderatore The8BitEnthusiast invita a consultare [la sua (**eccellente**, aggiungo io) realizzazione](https://imgur.com/mgeeciL), che ho preso ad esempio e ispirazione.
 
 [![Modulo RAM dell'utente Reddit The8BitEnthusiast](../../assets/40-ram-the8bit_enthusiast.png "Modulo RAM dell'utente Reddit The8BitEnthusiast"){:width="66%"}](../../assets/40-ram-the8bit_enthusiast.png)
-*Modulo RAM dell'utente e moderatore Reddit The8BitEnthusiast*
+
+*Modulo RAM dell'utente e moderatore Reddit The8BitEnthusiast.*
+
+Lo schema mi risultava piuttosto ostico: da un parte era particolarmente semplificato rispetto a tutti gli altri che avevo visto in precedenza, dall'altra l'utilizzo di un solo MUx 74LS157 con segnali che ne uscivano per rientrarne in altre porte mi risultava di difficile comprensione; avevo pertanto provato a farmi gli schemi dei segnali per questi tre possibili stati:
+
+- Scrittura sulla RAM in Run Mode
+- Lettura dalla RAM in Run Mode
+- Scrittura sulla RAM in Program Mode
+
+[![Scrittura sulla RAM in Run Mode](../../assets/40-ram-run-mode-write-t8be.png "Scrittura sulla RAM in Run Mode"){:width="30%"}](../../assets/40-ram-run-mode-write-t8be.png)
+*Scrittura sulla RAM in Run Mode.*
+
+[![Lettura dalla RAM in Run Mode](../../assets/40-ram-run-mode-read-t8be.png "Lettura dalla RAM in Run Mode"){:width="30%"}](../../assets/40-ram-run-mode-read-t8be.png)
+*Lettura dalla RAM in Run Mode.*
+
+[![Scrittura sulla RAM in Program Mode](../../assets/40-ram-program-mode-write-t8be.png "Scrittura sulla RAM in Program Mode"){:width="30%"}](../../assets/40-ram-program-mode-write-t8be.png)
+*Scrittura sulla RAM in Program Mode.*
