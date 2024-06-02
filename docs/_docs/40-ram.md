@@ -169,9 +169,8 @@ Per esempio, ipotizzavo che nel primo caso "Scrittura sulla RAM in Run Mode" acc
 
 Immaginavo che il momento critico fosse il Rising Edge del Clock, perché in quel mentre è necessario attendere il tempo di setup della RAM perché questa si possa preparare per la scrittura ed è proprio qui che accade è necessario sfruttare il ritardo introdotto dal '245 per mostrare i dati alla RAM un po' dopo più tardi, ma non comprendevo esattamente il motivo.
 
-The8BitEnthusiast ha risposto molto gentilmente al mio quesito 
+The8BitEnthusiast ha risposto molto gentilmente al mio quesito:
 
 	For the write cycle, as you correctly concluded, I needed to make sure that the '245s were not delivering data to the RAM while it was not ready to accept input and still outputting data (I opted to tie OE low on the RAM, like Ben did (cioè ciclo di tipo 2… ma il datasheet della sua RAM sembra dare per scontato che OE sia LO, vedi datasheet, e poi tra i due cicli sceglie il primo, che è quello in cui WE è contenuto dentro a CE)). The datasheet for the RAM says that the RAM will disable its outputs and be ready for input 20ns after WE is taken low. WE controls the chip enable pin of the 245s... the 245 datasheet specifies a delay of 25ns before they start outputting. Requirement met there. I checked the other parts of the cycle the same way, as well as the other scenarios, and that was it, it seemed to me all timing requirements were met.
-
 
 [![Scrittura sulla RAM in Run Mode](../../assets/40-ram-run-mode-write-large-t8be.png "Scrittura sulla RAM in Run Mode"){:width="100%"}](../../assets/40-ram-run-mode-write-large-t8be.png)
