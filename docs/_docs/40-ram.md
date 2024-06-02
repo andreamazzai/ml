@@ -133,12 +133,15 @@ Tra i post più utili in merito alla comprensione dei segnali di gestione di RAM
 Da un certo punto di vista lo schema era particolarmente semplificato rispetto a tutti gli altri che avevo visto in precedenza, dall'altra, con l'utilizzo di un solo MUx 74LS157 con segnali che ne uscivano per rientrarne in altre porte, mi risultava di difficile comprensione. Avevo pertanto provato a farmi gli schemi dei segnali per questi tre possibili stati:
 
 - Scrittura sulla RAM in Run Mode
+
 [![Scrittura sulla RAM in Run Mode](../../assets/40-ram-run-mode-write-t8be.png "Scrittura sulla RAM in Run Mode"){:width="30%"}](../../assets/40-ram-run-mode-write-t8be.png)
 
 - Lettura dalla RAM in Run Mode
+
 [![Lettura dalla RAM in Run Mode](../../assets/40-ram-run-mode-read-t8be.png "Lettura dalla RAM in Run Mode"){:width="30%"}](../../assets/40-ram-run-mode-read-t8be.png)
 
 - Scrittura sulla RAM in Program Mode
+
 [![Scrittura sulla RAM in Program Mode](../../assets/40-ram-program-mode-write-t8be.png "Scrittura sulla RAM in Program Mode"){:width="30%"}](../../assets/40-ram-program-mode-write-t8be.png)
 
 The8BitEnthusiast segnalava di aver sfruttato il ritardo di propagazione dei 74LS245 per gestire i requisiti di temporizzazione, al che avevo provato a chiedere se fosse necessario gestire le temporizzazioni in maniera così precisa perché il suo progetto lavorava in modalità "just in time" ogni volta che sopraggiungeva un impulso di clock.
@@ -171,6 +174,6 @@ Immaginavo che il momento critico fosse il Rising Edge del Clock, perché in que
 
 The8BitEnthusiast ha risposto molto gentilmente al mio quesito:
 
-	For the write cycle, as you correctly concluded, I needed to make sure that the '245s were not delivering data to the RAM while it was not ready to accept input and still outputting data (I opted to tie OE low on the RAM, like Ben did (cioè ciclo di tipo 2… ma il datasheet della sua RAM sembra dare per scontato che OE sia LO, vedi datasheet, e poi tra i due cicli sceglie il primo, che è quello in cui WE è contenuto dentro a CE)). The datasheet for the RAM says that the RAM will disable its outputs and be ready for input 20ns after WE is taken low. WE controls the chip enable pin of the 245s... the 245 datasheet specifies a delay of 25ns before they start outputting. Requirement met there. I checked the other parts of the cycle the same way, as well as the other scenarios, and that was it, it seemed to me all timing requirements were met.
+	For the write cycle, as you correctly concluded, I needed to make sure that the '245s were not delivering data to the RAM while it was not ready to accept input and still outputting data (I opted to tie OE low on the RAM, like Ben did). The datasheet for the RAM says that the RAM will disable its outputs and be ready for input 20ns after WE is taken low. WE controls the chip enable pin of the 245s... the 245 datasheet specifies a delay of 25ns before they start outputting. Requirement met there. I checked the other parts of the cycle the same way, as well as the other scenarios, and that was it, it seemed to me all timing requirements were met.
 
 [![Scrittura sulla RAM in Run Mode](../../assets/40-ram-run-mode-write-large-t8be.png "Scrittura sulla RAM in Run Mode"){:width="100%"}](../../assets/40-ram-run-mode-write-large-t8be.png)
