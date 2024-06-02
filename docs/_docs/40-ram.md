@@ -185,11 +185,13 @@ Da quanto leggevo, immaginavo che il momento critico fosse il Rising Edge del Cl
 
 The8BitEnthusiast ha gentilmente risposto al mio quesito:
 
-> Dovevo assicurarmi che i ‘245 non consegnassero dati alla RAM quando questa non era ancora pronta per accettare dati in Input perché le sue uscite erano ancora attive in output\*\*. Il datasheet segnala che la RAM disabilita l’output ed è pronta per l’input 20ns dopo che WE viene portato allo stato LO.
+> Dovevo assicurarmi che i ‘245 non consegnassero dati alla RAM quando questa non era ancora pronta per accettare dati in Input e le sue uscite erano ancora attive in output\*\*. Il datasheet segnala che la RAM disabilita l’output ed è pronta per l’input 20ns dopo che WE viene portato allo stato LO.
 
 [![Timing RAM 62256](../../assets/40-ram-62256-timing.png "Timing RAM 62256"){:width="66%"}](../../assets/40-ram-62256-timing.png)
 
-\*\* Nello schema si nota che il segnale OE è connesso a ground, che significa che i pin dati della RAM sono sempre attivi in output. Quando nel Write Cycle visibile in precedenza in questa pagina si attiva il WE, c'è un tempo tWHZ durante il quale la RAM è ancora in Output; trascorso questo tempo è possibile mettere dei dati in Input sulla RAM.
+\*\* Nello schema si nota che il segnale OE è connesso a ground, che significa che i pin dati della RAM sono sempre attivi in output, *tranne* quando si deve effettuare una scrittura. Quando si attiva il segnale di write WE, vi è un tempo tWHZ durante il quale la RAM è ancora attiva in Output; trascorso questo tempo è possibile mettere dei dati in Input sulla RAM.
+
+[![Write Cycle](../../assets/40-ram-write-cycle-twhz.png "WWrite Cycle"){:width="50%"}](../../assets/40-ram-write-cycle-twhz.png)
 
 > Lo stesso segnale Zc che attiva la scrittura su RAM (WE) abilita anche i due '245; il datasheet del '245 specifica che l'attivazione richiede 25nS; è un valore superiore a quanto necessario alla RAM per attivarsi in Input, dunque il requisito è rispettato.
 
