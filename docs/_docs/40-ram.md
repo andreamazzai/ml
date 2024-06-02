@@ -149,7 +149,7 @@ The8BitEnthusiast segnalava di aver sfruttato il ritardo di propagazione dei '24
 
 Per esempio, ipotizzavo che nel primo caso "Scrittura sulla RAM in Run Mode" accadesse quanto segue.
 
-- Prima del Rising Edge del CLK:
+- **Prima del Rising Edge del CLK**:
 
   - PROG è HI, dunque siamo in Run Mode
   - il MUX abilita gli ingressi I1a, I1b, I1c
@@ -159,13 +159,13 @@ Per esempio, ipotizzavo che nel primo caso "Scrittura sulla RAM in Run Mode" acc
   - Zc = /(CLK LO * RI HI) = HI, dunque la direzione del '245 di sinistra, che connette il data bus, è A-->B (Output)
   - Za = //(/RO HI * Zc HI) = HI, dunque il '245 dal/al data bus è disabilitato
 
-- Con CLK attivo:
+- **CLK attivo**:
 
   - Zc = /(CLK HI * RI HI) = LO, dunque la direzione del '245 dal/al data bus è B-->A (Input)
   - Za = //(/RO HI * Zc LO) = LO, dunque il '245 dal/al data bus è attivo
   - /WE = Zc = LO, dunque la RAM riceve il Falling Edge del segnale di Write e trova sui suoi ingressi quanto le viene proiettato dal '245 dal/al data bus
 
-- Quando l'impulso di Clock finisce:
+- **Quando l'impulso di Clock termina**:
 
   - Zc = /(CLK LO * RI HI) = HI, dunque la direzione del '245 dal/al data bus è A-->B (Output)
   - /WE = Zc = HI, dunque l'impulso di Write sulla RAM termina con il Rising Edge
@@ -173,16 +173,24 @@ Per esempio, ipotizzavo che nel primo caso "Scrittura sulla RAM in Run Mode" acc
 
 Legenda:
 
-- PROG è il segnale dell'interruttore di selezione della modalità Program Mode (LO) / Run (HI) normalmente schematizzato nel modulo MAR
-- / significa NOT
-- \* significa AND
+- PROG è il segnale dell'interruttore di selezione della modalità Program Mode (LO) / Run Mode (HI) ed è normalmente incluso nello schema del MAR
+- **/** significa NOT
+- **\*** significa AND
 
 [![Scrittura sulla RAM in Run Mode](../../assets/40-ram-run-mode-write-large-t8be.png "Scrittura sulla RAM in Run Mode"){:width="100%"}](../../assets/40-ram-run-mode-write-large-t8be.png)
 
-Immaginavo che il momento critico fosse il Rising Edge del Clock, perché in quel mentre è necessario attendere che la RAM sia pronta per la scrittura e proprio qui è necessario sfruttare il ritardo introdotto dal '245 per mostrare i dati alla RAM "un po' più tardi", ma non capivo esattamente il motivo.
+*Scrittura sulla RAM in Run Mode.*
+
+Da quanto leggevo, immaginavo che il momento critico fosse il Rising Edge del Clock, perché in quel mentre è necessario attendere che la RAM sia pronta per la scrittura e proprio qui è necessario sfruttare il ritardo introdotto dal '245 per mostrare i dati alla RAM "un po' più tardi", ma non capivo esattamente il motivo.
 
 The8BitEnthusiast ha gentilmente risposto al mio quesito:
 
-> Dovevo assicurarmi che i '245 non *consegnassero* dati alla RAM quando questa non era ancora pronta per accettare dati in Input e fosse ancora output con le sue uscite. Il datasheet segnala che la RAM disabilita l'output ed è pronta per l'input 20ns dopo che WE viene portato allo stato LO.
+> Dovevo assicurarmi che i ‘245 non consegnassero dati alla RAM quando questa non era ancora pronta per accettare dati in Input perché le sue uscite erano ancora attive in output\*\*. Il datasheet segnala che la RAM disabilita l’output ed è pronta per l’input 20ns dopo che WE viene portato allo stato LO.
 
- RAM will disable its outputs and be ready for input 20ns after WE is taken low. WE controls the chip enable pin of the 245s... the 245 datasheet specifies a delay of 25ns before they start outputting. Requirement met there. I checked the other parts of the cycle the same way, as well as the other scenarios, and that was it, it seemed to me all timing requirements were met.
+[![Timing RAM 62256](../../assets/40-ram-62256-timing.png "Timing RAM 62256"){:width="66%"}](../../assets/40-ram-62256-timing.png)
+
+\*\* Nello schema si nota che il segnale OE è connesso a ground, che significa che i pin dati della RAM sono sempre attivi in output. Quando nel Write Cycle visibile in precedenza in questa pagina si attiva il WE, c'è un tempo tWHZ durante il quale la RAM è ancora in Output; trascorso questo tempo è possibile mettere dei dati in Input sulla RAM.
+
+> Lo stesso segnale Zc che attiva la scrittura su RAM (WE) abilita anche i due '245; il datasheet del '245 specifica che l'attivazione richiede 25nS; è un valore superiore a quanto necessario alla RAM per attivarsi in Input, dunque il requisito è rispettato.
+
+Molto, molto clever.
