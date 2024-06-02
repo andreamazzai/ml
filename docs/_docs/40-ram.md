@@ -140,7 +140,9 @@ Lo schema mi risultava piuttosto ostico: da un parte era particolarmente semplif
 *Scrittura sulla RAM in Run Mode.*
 
 [![Lettura dalla RAM in Run Mode](../../assets/40-ram-run-mode-read-t8be.png "Lettura dalla RAM in Run Mode"){:width="30%"}](../../assets/40-ram-run-mode-read-t8be.png)
+
 *Lettura dalla RAM in Run Mode.*
 
 [![Scrittura sulla RAM in Program Mode](../../assets/40-ram-program-mode-write-t8be.png "Scrittura sulla RAM in Program Mode"){:width="30%"}](../../assets/40-ram-program-mode-write-t8be.png)
+
 *Scrittura sulla RAM in Program Mode.*
