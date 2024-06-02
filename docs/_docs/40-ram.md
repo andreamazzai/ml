@@ -137,12 +137,31 @@ Lo schema mi risultava piuttosto ostico: da un parte era particolarmente semplif
 - Scrittura sulla RAM in Program Mode
 
 [![Scrittura sulla RAM in Run Mode](../../assets/40-ram-run-mode-write-t8be.png "Scrittura sulla RAM in Run Mode"){:width="30%"}](../../assets/40-ram-run-mode-write-t8be.png)
-*Scrittura sulla RAM in Run Mode.*
 
 [![Lettura dalla RAM in Run Mode](../../assets/40-ram-run-mode-read-t8be.png "Lettura dalla RAM in Run Mode"){:width="30%"}](../../assets/40-ram-run-mode-read-t8be.png)
 
-*Lettura dalla RAM in Run Mode.*
-
 [![Scrittura sulla RAM in Program Mode](../../assets/40-ram-program-mode-write-t8be.png "Scrittura sulla RAM in Program Mode"){:width="30%"}](../../assets/40-ram-program-mode-write-t8be.png)
 
-*Scrittura sulla RAM in Program Mode.*
+Provando ad analizzare il primo, notavo 
+
+I saw your design and it's cool because you save a lot of components. I tried to understand how your design works and I wonder if I can ask you to elaborate just a little bit on the RAM timing requirements? I am generally aware of need for timings etc. (learned something thanks to the Ben 6502 computer videos 😃), but I still cannot have a global picture in my head.
+Maybe you need to manage timing because, as far as I can see, you do all the things "just in time" when a CLK pulse comes: in example, let's say you are in RUN Mode and you want to WRITE to the RAM:
+• PROG is disabled, therefore HI
+• MUX enables inputs I1a, I1b, I1c
+• Zb is fixed HI, therefore '245 from/to DIP is disabled
+• RI is active, therefore HI
+• /RO is not active, therefore HI
+• Before CLK comes:
+	• Zc = /(CLK LO * RI HI) = HI therefore '245 from/to bus DIR is A-->B
+	• Za = //(/RO HI * Zc HI) = HI therefore the '245 from/to bus is disabled
+• When CLK comes,
+	• Zc = /(CLK HI * RI HI) = LO therefore '245 from/to bus DIR is B-->A
+	• Za = //(/RO HI * Zc LO) = LO therefore the '245 from/to bus is enabled
+	• /WE = Zc = LO and you write to RAM
+• When CLK ends,
+	• Zc = /(CLK LO * RI HI) = HI therefore '245 from/to bus DIR is A-->B
+	• /WE = Zc = HI therefore you do not write to RAM anymore
+	• Za = //(/RO HI * Zc HI) = HI - therefore the '245 from/to bus is disabled
+I hope this analysis is correct... but still I'd really be grateful if you could let me know something about the timing you're talking about. Maybe it's during the "When CLK comes" phase that you need to wait some time for the RAM to be ready for writing and so you "exploit" the '245 delay to show the data to the RAM little bit later? I'm not sure I get this point...
+
+![Alt text](image.png)
