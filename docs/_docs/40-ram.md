@@ -144,36 +144,36 @@ Da un certo punto di vista lo schema era particolarmente semplificato rispetto a
 
 [![Scrittura sulla RAM in Program Mode](../../assets/40-ram-program-mode-write-t8be.png "Scrittura sulla RAM in Program Mode"){:width="30%"}](../../assets/40-ram-program-mode-write-t8be.png)
 
-The8BitEnthusiast segnalava di aver sfruttato il ritardo di propagazione dei 74LS245 per gestire i requisiti di temporizzazione, al che avevo provato a chiedere se fosse necessario gestire le temporizzazioni in maniera così precisa perché il suo progetto lavorava in modalità "just in time" ogni volta che sopraggiungeva un impulso di clock.
+The8BitEnthusiast segnalava di aver sfruttato il ritardo di propagazione dei 74LS245 per gestire i requisiti di temporizzazione, al che avevo provato a chiedergli se fosse necessario gestire le temporizzazioni in maniera così precisa perché il suo progetto lavorava in modalità "just in time" ogni volta che sopraggiungeva un impulso di clock.
 
 Per esempio, ipotizzavo che nel primo caso "Scrittura sulla RAM in Run Mode" accadesse quanto segue.
 
-**Prima del Rising Edge del CLK:**
+- Prima del Rising Edge del CLK:
 
-- il segnale PROG è disabilitato, dunque HI
-- il MUX abilita gli ingressi I1a, I1b, I1c
-- Zb è HI (in quanto l'input I1b è connesso a Vcc) e dunque il '245 di destra, che connette il dip-switch di programmazione, è disabilitato
-- il segnale RI è attivo (RI = RAM In, cioè si scrive dal bus sulla RAM), cioè HI
-- il segnale /RO non è attivo (RO = RAM Out, cioè si legge dalla RAM verso il bus), cioè HI
-- Zc = /(CLK LO * RI HI) = HI dunque la direzione del '245 dal/al data bus DIR è A-->B
-- Za = //(/RO HI * Zc HI) = HI dunque il '245 dal/al data bus è disabilitato
+  - il segnale /PROG è disabilitato, dunque HI
+  - il MUX abilita gli ingressi I1a, I1b, I1c
+  - Zb è HI (in quanto l'input I1b è connesso a Vcc) e dunque il '245 di destra, che connette il dip-switch di programmazione, è disabilitato
+  - il segnale RI è attivo (RI = RAM In, cioè scrittura sulla RAM), cioè HI
+  - il segnale /RO non è attivo (RO = RAM Out, cioè lettura dalla RAM), cioè HI
+  - Zc = /(CLK LO * RI HI) = HI, dunque la direzione del '245 dal/al data bus DIR è A-->B
+  - Za = //(/RO HI * Zc HI) = HI, dunque il '245 dal/al data bus è disabilitato
 
-**Con CLK attivo:**
+- Con CLK attivo:
 
-- Zc = /(CLK HI * RI HI) = LO, dunque la direzione del '245 dal/al data bus è B-->A
-- • Za = //(/RO HI * Zc LO) = LO, dunque il '245 dal/al data bus è attivo
-- /WE = Zc = LO, dunque la RAM riceve un segnale di Write, che permette di scrivere quanto le viene proiettato dal '245 che la connette al data bus
+  - Zc = /(CLK HI * RI HI) = LO, dunque la direzione del '245 dal/al data bus è B-->A
+  - Za = //(/RO HI * Zc LO) = LO, dunque il '245 dal/al data bus è attivo
+  - /WE = Zc = LO, dunque la RAM riceve un segnale di Write, che permette di scrivere quanto le viene proiettato dal '245 che la connette al data bus
 
-**Quando l'impulso di Clock finisce:**
+- Quando l'impulso di Clock finisce:
 
-- Zc = /(CLK LO * RI HI) = HI dunque la direzione del '245 dal/al data bus DIR è A-->B
-- /WE = Zc = HI, dunque l'impuslo di Write sulla RAM termina
-- Za = //(/RO HI * Zc HI) = HI, dunque il '245 dal/al data bus viene disabilitato
+  - Zc = /(CLK LO * RI HI) = HI, dunque la direzione del '245 dal/al data bus DIR è A-->B
+  - /WE = Zc = HI, dunque l'impulso di Write sulla RAM termina
+  - Za = //(/RO HI * Zc HI) = HI, dunque il '245 dal/al data bus viene disabilitato
+
+[![Scrittura sulla RAM in Run Mode](../../assets/40-ram-run-mode-write-large-t8be.png "Scrittura sulla RAM in Run Mode"){:width="100%"}](../../assets/40-ram-run-mode-write-large-t8be.png)
 
 Immaginavo che il momento critico fosse il Rising Edge del Clock, perché in quel mentre è necessario attendere il tempo di setup della RAM perché questa si possa preparare per la scrittura ed è proprio qui che accade è necessario sfruttare il ritardo introdotto dal '245 per mostrare i dati alla RAM un po' dopo più tardi, ma non comprendevo esattamente il motivo.
 
 The8BitEnthusiast ha risposto molto gentilmente al mio quesito:
 
 	For the write cycle, as you correctly concluded, I needed to make sure that the '245s were not delivering data to the RAM while it was not ready to accept input and still outputting data (I opted to tie OE low on the RAM, like Ben did). The datasheet for the RAM says that the RAM will disable its outputs and be ready for input 20ns after WE is taken low. WE controls the chip enable pin of the 245s... the 245 datasheet specifies a delay of 25ns before they start outputting. Requirement met there. I checked the other parts of the cycle the same way, as well as the other scenarios, and that was it, it seemed to me all timing requirements were met.
-
-[![Scrittura sulla RAM in Run Mode](../../assets/40-ram-run-mode-write-large-t8be.png "Scrittura sulla RAM in Run Mode"){:width="100%"}](../../assets/40-ram-run-mode-write-large-t8be.png)
