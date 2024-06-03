@@ -18,9 +18,9 @@ minimal_mistakes_skin    : "default" # "air", "aqua", "contrast", "dark", "dirt"
 locale                   : "it-IT"
 title                    : "BEAM"
 title_separator          : "-"
-subtitle                 : "Ben Eater Andrea Mazzai Breadboard Computer" # site tagline that appears below site title in masthead
+subtitle                 : "Breadboard computer TTL a 8 bit" # site tagline that appears below site title in masthead
 name                     : "Andrea Mazzai"
-description              : "BEAM TTL Breadboard COmputer"
+description              : "BEAM TTL Breadboard Computer"
 url                      : "https://andreamazzai.github.io" # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 # baseurl                  : "/beam" # the subpath of your site, e.g. "/blog"
 repository               : "andreamazzai/beam" # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
