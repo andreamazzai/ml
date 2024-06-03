@@ -25,6 +25,8 @@ In un progetto a 8 bit si potrebbero semplicemente utilizzare due '173 a 4 bit c
 
 Il '273, al pari del '173, presenta un ingresso Clear / Reset (CLR), che nel MAR è necessario per resettare il registro - o almeno *credevo* necessario. Sembrava anche interessante l'ipotesi alternativa di usare un registro a 8 bit [74LS377](https://datasheetspdf.com/download_new.php?id=375625), che include 8 FF con Enable; tuttavia avevo realizzato che **non** fosse possibile procedere in tal senso, perché nel MAR serviva anche il CLR, non presente in questo chip. Come ormai si sarà capito, ho realizzato successivamente che il MAR può funzionare perfettamente anche senza un segnale di Clear / Reset.
 
+Da notare che il '377 sarebbe in seguito diventato uno dei chip più utilizzati nel BEAM.
+
 **METTERE QUALCHE FOTO E LINK**
 
 >> 2. Program counter - would have to be expanded to a 16 bit counter (should be trivial to do that) I currently have tons of 8 bit counters combined with a register (and the 4 bit 161 counters that Ben used)
@@ -52,6 +54,10 @@ In origine avevo evidenziato questi pochi appunti presenti nel post, riflettendo
 When either are high puts the I/O lines at high impedance.
 When both are low, the RAM outputs data onto the I/O lines.
 Writing takes place (two ways, but this is one way) CE low and OE high. A low pulse on WE will write the data on the I/O lines into the RAM chip.
+
+- **CE** = Chip Enable
+- **OE** = Output Enable
+- **WE** = Write Enable
 
 Un altro aspetto che avevo notato immediatamente, ipotizzando l'uso del 62256, era l'impossibilità di mantenere la visibilità del contenuto della cella di RAM indirizzata dal MAR utilizzando i LED (o almeno così credevo): se con i '189 le porte di output erano sempre attive e potevo vedere in ogni momento il valore contenuto della cella di memoria correntemente indirizzata dal MAR, con il 62256 avrei avuto visibilità del contenuto della cella solo nel momento in cui la RAM veniva letta - e dunque non costantemente.
 
@@ -111,7 +117,7 @@ In questo schema troviamo:
 
 *Write Cycle "WE Controlled" del 62256*
 
-Notare la configurazione del chip di RAM: i segnali CE e OE sono sempre attivi, che significa che l'utente ha deciso di utilizzare la modalità di scrittura definita come "WE# Controlled" definita a pagina 6 del [datasheet](https://datasheetspdf.com/download_new.php?id=729365) del 62256. Rileggendo questi appunti diverso tempo dopo aver completato il mio progetto, mi sembra tutto facile, ma la comprensione delle modalità di scrittura della RAM è stata in realtà piuttosto lunga.
+Notare la configurazione del chip di RAM: i segnali CE ed OE sono sempre attivi, che significa che l'utente ha deciso di utilizzare la modalità di scrittura definita come "WE# Controlled" definita a pagina 6 del [datasheet](https://datasheetspdf.com/download_new.php?id=729365) del 62256. Rileggendo questi appunti diverso tempo dopo aver completato il mio progetto, mi sembra tutto facile, ma la comprensione delle modalità di scrittura della RAM è stata in realtà piuttosto lunga.
 
 Da notare inoltre che anche questo utente non usa il CLR sui FF '273 di input del MAR - a pensarci, potrebbe realmente non servire, perché ogni volta che ho bisogno di accedere alla RAM, vado preventivamente a settare sul MAR l'indirizzo come effettivamente desiderato. Forse il reset all'accensione è più estetico che altro.
 
@@ -145,7 +151,7 @@ Se da un certo punto di vista lo schema era particolarmente semplificato rispett
 
 [![Scrittura sulla RAM in Program Mode](../../assets/40-ram-program-mode-write-t8be.png "Scrittura sulla RAM in Program Mode"){:width="30%"}](../../assets/40-ram-program-mode-write-t8be.png)
 
-The8BitEnthusiast segnalava di aver sfruttato il ritardo di propagazione dei '245 per gestire i requisiti di temporizzazione, al che avevo provato a chiedergli se fosse necessario gestire le temporizzazioni in maniera così precisa perché il suo progetto lavorava in modalità "just in time" ogni volta che sopraggiungeva un impulso di clock.
+The8BitEnthusiast segnalava di *aver sfruttato il ritardo di propagazione dei '245 per gestire i requisiti di temporizzazione*, al che avevo provato a chiedergli se fosse necessario gestire le temporizzazioni in maniera così precisa perché il suo progetto lavorava in modalità "just in time" ogni volta che sopraggiungeva un impulso di clock.
 
 Per esempio, ipotizzavo che nel primo caso "Scrittura sulla RAM in Run Mode" accadesse quanto segue.
 
@@ -173,7 +179,7 @@ Per esempio, ipotizzavo che nel primo caso "Scrittura sulla RAM in Run Mode" acc
 
 Legenda:
 
-- PROG è il segnale dell'interruttore di selezione della modalità Program Mode (LO) / Run Mode (HI) ed è normalmente incluso nello schema del MAR
+- **PROG** è il segnale dell'interruttore di selezione della modalità Program Mode (LO) / Run Mode (HI); negli schemi originali del SAP computer si trova nel MAR
 - **/** significa NOT
 - **\*** significa AND
 
@@ -185,14 +191,132 @@ Da quanto leggevo, immaginavo che il momento critico fosse il Rising Edge del Cl
 
 The8BitEnthusiast ha gentilmente risposto al mio quesito:
 
-> Dovevo assicurarmi che i ‘245 non consegnassero dati alla RAM quando questa non era ancora pronta per accettare dati in Input e le sue uscite erano ancora attive in output\*\*. Il datasheet segnala che la RAM disabilita l’output ed è pronta per l’input 20ns dopo che WE viene portato allo stato LO.
+> Dovevo assicurarmi che i ‘245 non consegnassero dati alla RAM quando questa non era ancora pronta per accettare dati in Input perché le sue uscite erano ancora attive in output\*\*. Il datasheet segnala che la RAM disabilita l’output ed è pronta per l’input 20ns dopo che WE viene portato allo stato LO.
 
 [![Timing RAM 62256](../../assets/40-ram-62256-timing.png "Timing RAM 62256"){:width="66%"}](../../assets/40-ram-62256-timing.png)
 
-\*\* Nello schema si nota che il segnale OE è connesso a ground, che significa che i pin dati della RAM sono sempre attivi in output, *tranne* quando si deve effettuare una scrittura. Quando si attiva il segnale di write WE, vi è un tempo tWHZ durante il quale la RAM è ancora attiva in Output; trascorso questo tempo è possibile mettere dei dati in Input sulla RAM.
+\*\* Nello schema del modulo RAM di The8BitEnthusiast si nota che il segnale OE della RAM è connesso a ground, che significa che i pin dati sono sempre attivi in output, *tranne* quando si deve effettuare una scrittura. Quando si attiva il segnale di write WE, vi è un tempo tWHZ durante il quale la RAM è ancora attiva in output; trascorso questo tempo, è possibile mettere dei dati in input sulla RAM.
+
+In altre parole, la RAM è normalmente attiva in output; per scrivere su di essa, la si deve attivare in input col segnale WE. Poiché la RAM impiega 20nS per commutare i pin dati da output a input, prima di applicare dei segnali in input è necessario attendere almeno 20nS dal momento in cui si attiva WE.
 
 [![Write Cycle](../../assets/40-ram-write-cycle-twhz.png "WWrite Cycle"){:width="50%"}](../../assets/40-ram-write-cycle-twhz.png)
 
-> Lo stesso segnale Zc che attiva la scrittura su RAM (WE) abilita anche i due '245; il datasheet del '245 specifica che l'attivazione richiede 25nS; è un valore superiore a quanto necessario alla RAM per attivarsi in Input, dunque il requisito è rispettato.
+> Lo stesso segnale Zc che attiva la scrittura su RAM (WE) abilita anche i due '245; il datasheet del '245 specifica che la sua attivazione richiede 25n, che è un valore superiore a quello necessario alla RAM per attivarsi in Input, dunque il requisito è rispettato.
 
 Molto, molto clever.
+
+## Design dei moduli MAR e RAM del BEAM
+
+Parallelamente agli studi dei lavori di altri utenti, avevo iniziato a lavorare sul disegno dei miei moduli MAR e RAM, non senza continuare a saltare di palo in frasca per aprprofondire temi ancora parzialmente oscuri o argomenti nuovi.
+
+Ritornando alla dimensione delle EEPROM da utilizzare per il microcode, nei miei appunti trovo traccia di diverse revisioni, ad esempio:
+
+- mi servono EEPROM 28C64 per avere 256 (8 bit) istruzioni + 3 step + 2 flag, ma dimenticavo che avendo due ROM gemelle dovevo gestirne anche la selezione e dunque aggiungere un ulteriore bit, pertanto mi servirebbero delle 28C128;
+- avrei potuto però ridurre il numero di istruzioni a 64, dunque mi sarebbero bastati 6 bit per indirizzarle e ridurre così il numero totale di indirizzi richiesti...
+- ... ma forse mi sarebbero serviti altri segnali di controllo oltre ai 16  disponibili in due ROM e dunque me ne sarebbe servita una terza... e dunque due bit di indirizzamento
+
+Posso sicuramente dire che avevo le idee ancora confuse.
+
+## fare spiega su EEPROM input e output##
+
+Stavo anche iniziando a pensare come avrebbe funzionato la fase di Fetch con un Instruction Register che conteneva la sola istruzione e non operando istruzione + operando, come nel computer SAP**.
+
+Immaginavo che una istruzione di somma tra un operando e il valore correntemente presente nel registro A avrebbe avuto questa sequenza:
+
+| Step | Segnale   | Operazione |
+| ---- | ------    | ----------- |
+|    0 | CO-MI     | Carico l'indirizzo della istruzione nel MAR |
+|    1 | RO-II-CE  | Leggo l'istruzione dalla RAM e la metto nell'Instruction Register e passo alla prossima locazione in RAM. |
+|    2 | CO-MI     | Metto nel MAR l'indirizzo della cella che contiene l'operando (che è l'indirizzo della locazione in RAM nella quale è presente il dato reale da lavorare (istruzione "indiretta"))  |
+|    3 | RO-MI     | Metto nel MAR l'indirizzo della locazione in RAM che contiene il dato reale da lavorare |
+|    4 | RO-BI-CE  | Ora l'output della RAM è il contenuto della cella di memoria indicata dall'operando 😁 e lo metto nel registro B |
+|    5 | EO-AI     | Metto in A il valore della somma A + B |
+
+| Segnale | Operazione | Descrizione |
+| ------  | ---------- | ----------- |
+| CO | Counter Output           | Il contenuto del Program Counter viene esposto sul bus            |
+| MI | MAR In                   | Il contenuto del bus viene caricato nel Memory Address Register   |
+| RO | RAM Output               | Il contenuto della RAM viene esposto sul bus                      |
+| II | Instruction Register In  | Il contenuto del bus viene caricato nell'Instruction Register     |
+| CE | Counter Enable           | Il Program Counter viene incrementato                             |
+| BI | B Register In            | Il contenuto del bus viene caricato nel registro B                |
+| AI | A Register In            | Il contenuto del bus viene caricato nel registro A                |
+| EO | Sum Out                  | Il risultato dell'Adder A+B viene esposto sul bus                 |
+
+** Le istruzioni del computer SAP includevano in un byte sia l'opcode sia l'operando, come desruitto anche in precedenza in questa pagina:
+
+>... un unico byte di cui i 4 Most Significant Bit (MSB) rappresentano l'opcode e di cui i 4 Least Significant Bit (LSB) sono l'operando
+
+Introducendo gli Step, riflettevo anche sul fatto che per talune operazioniu, da quanto capito nella realizzazione dell'NQSAP, avere più di 8 microistruzioni sarebbe stato molto utile ed ecco che, ancora una volta, dovevo riconsiderare il numero di bit di indirizzamento necessari per le EEPROM
+
+Ricordiamo che "Praticamente ho due fasi:
+
+- Fetch, in cui carico l'istruzione dalla RAM nell'Instruction Register
+- Dopo la fase di Fetch so "cosa devo fare", perché a questo punto ho l'istruzione nell'Instruction Register", che attiva opportunamente le EEPROM in modo da aver in uscita i corretti segnali di Control Logic…
+- 02/09/2022 … e a quel punto leggerò la locazione dell'operando, il cui contenuto
+  - ○ se è una istruzione "indiretta" mi darà il valore della locazione reale da indirizzare per leggerne il contenuto o scrivervi un valore
+  - ○ se è un istruzione diretta conterrà il valore da lavorare
+- "Sicuramente" avrò bisogno di EEPROM più grandi, perché dovranno ospitare gli 8 MSB e gli 8 LSB attuali, ma anche altri 8 bit di segnali… 02/09/2022 ma forse anche no, come visto sopra non mi servono (per ora) altri segnali… e addirittura, come visto in seguito, forse non mi serve nemmeno IO
+In seguito ho compreso il decoder 3-8 che usa Tom Nisbet per poter gestire tanti segnali con poche linee
+
+8-bit CPU control logic: Part 2
+https://www.youtube.com/watch?v=X7rCxs1ppyY
+
+Le istruzioni sono fatte di più step, chiamati microistruzioni. La Control Logic deve settare correttamente la Control Word per ogni microistruzione così quando arriva il clock questa viene eseguita. Dobbiamo dunque sapere sempre quale istruzione stiamo eseguendo e a che step siamo. Ci serve un contatore per tracciare la microistruzione. Usiamo 74LS161 che può contare da 0 a 15.
+
+NB: Dobbiamo settare la Control Logic tra un clock e l'altro… come a dire che la Control Logic deve "essere pronta" prima che l'istruzione venga eseguita: possiamo usare un NOT per invertire il clock e usare questo per gestire il 74LS161 della Control Logic.
+	• I registri sono aggiornati al Rising Edge del CLK, che corrisponde al Falling Edge del /CLK.
+	• Le microistruzioni sono aggiornate al Falling Edge del CLK, che corrisponde al Rising Edge del /CLK.
+	• CLK gestisce tutti i registri principali: PC, MAR, RAM, IR, A, B, Flag: al Rising Edge del CLK, avvengono le azioni di caricamento dei registri. Quando c'è il segnale CE Counter Enable attivo, il PC viene incrementato al Rising Edge e l'indirizzo viene aumentato di uno.
+	• /CLK gestisce il Ring Counter e di conseguenza la Control Logic: è sfasato di 180°, dunque al Falling Edge di CLK corrisponde il Rising Edge di /CLK
+		○ All'accensione del computer
+			§ PC è 0 e RC (Ring Counter) è 0
+			§ la CL presenta CO|MI in uscita
+			§ il 245 del PC è attivo in output
+			§ il 245 del MAR è attivo in input.
+		○ Arriva il Rising Edge del CLK
+			§ il FF 173 del MAR carica (MI) l'indirizzo di memoria presentatogli (CO) dal PC
+		○ Arriva il Falling Edge del CLK, che corrisponde al Rising Edge del /CLK
+			§ RC si incrementa e la CL presenta la microistruzione successiva RO|II|CE
+				□ la RAM è attiva in output
+				□ IR è attivo in input
+				□ PC è attivato per contare
+		○ Arriva il Rising Edge del CLK
+			§ il FF 173 dell'IR carica (II) il valore presentato dalla cella di RAM (RO) indirizzata dal MAR
+			§ PC si incrementa (CE)
+		○ Arriva il Falling Edge del CLK, che corrisponde al Rising Edge del /CLK
+			§ RC si incrementa e la CL presenta la microistruzione successiva IO|AI
+				□ IR mette in output
+					® i 4 MSB che vanno ad indirizzare le EEPROM della CL
+					® i 4 LSb che vanno sul bus; immaginiamo ad esempio istruzione immediata LDA #$05
+				□ il 245 del Registro A è attivo in input
+		○ Arriva il Rising Edge del CLK
+			§ il FF 173 del Registro A carica (AI) il valore presentato sul bus (IO) dall'Instruction Register 
+
+Il 74LS138 è un decoder che può prendere i 3 bit (ce ne bastano 3 per gestire 8 cicli, visto che gli step delle microistruzioni sono al massimo 6) e convertirli in singoli bit che rappresentano lo step della microistruzione corrente e poi uno di questi, l'ultimo, che resetta il 74LS161 in modo da risparmiare i cicli di clock inutilizzati.Control Logic
+8-bit CPU control logic: Part 1 
+https://www.youtube.com/watch?v=dXdoim96v5A
+
+Prima cosa che facciamo è leggere un comando e metterlo nell'Instruction Register, che tiene traccia del comando che stiamo eseguendo.
+
+• Prima fase: FETCH. Poiché la prima istruzione sta nell'indirizzo 0, devo mettere 0 dal Program Counter PC (comando CO esporta il PC sul bus) al Memory Address Register MAR (comando MI legge dal bus e setta l'indirizzo sulla RAM) così da poter indirizzare la RAM e leggere il comando.
+• Una volta che ho la RAM attiva all'indirizzo zero, copio il contenuto della RAM nell'Instruction Register IR passando dal bus (comando RO e comando II).
+• Poi incrementiamo il PC col comando Counter Enable CE (nel video successivo il CE viene inserito nella microistruzione con RO II).
+• Ora eseguiamo l'istruzione LDA 14, che prende il contenuto della cella 14 e lo scrive in A. Dunque poiché il valore 14 sono i 4 LSB del comando, sono i led gialli dell'IR e col comando Instruction Register Out IO ne copio il valore nel bus e poi, caricando MI, indirizzo la cella di memoria 14 che è quella che contiene il valore (28 nel mio caso) che esporto nel bus col comando RAM Out RO e che caricherò in A col comando AI. 
+
+• ADD 15 ha sempre una prima fase di Fetch, uguale per tutte le istruzioni, e poi come sopra il valore 15 è quello della cella 15 e dunque Instruction Register Out IO che posiziona sul bus i 4 LSb del comando ADD 15, poi MI così setto l'indirizzo 15 della RAM, il cui contenuto metto sul bus col comando RAM Out RO e lo carico in B con BI così avrò a disposizione la somma di A e B, che metto sul bus con EO e che ricarico in A con AI. 
+
+• Prossima istruzione all'indirizzo 3 è OUT che mette sul display il risultato della somma che avevo latchato in A. La prima fase di Fetch è uguale alle altre. Poi faccio AO per mettere A sul bus e OI. 
+
+
+8-bit CPU control logic: Part 3
+https://www.youtube.com/watch?v=dHWFpkGsxOs
+
+La fase Fetch è uguale per tutte le istruzioni, dunque istruzione XXXX e imposto solo gli step.
+Per LDA uso il valore 0001 e imposto gli step con le microistruzioni opportune.
+Per ADD uso il valore 0010 e imposto gli step con le microistruzioni opportune.
+Per OUT uso il valore 1110 e imposto gli step con le microistruzioni opportune.
+
+Praticamente ora abbiamo il contatore delle microistruzioni (T0-T4) e il contatore dell'istruzione (Instruction Register MSB). Posso creare una combinational logic che, a seconda dell'istruzione che ho caricato nell'Instruction Register + il T0/4 dove mi trovo mi permetta di avere in uscita i segnali corretti da applicare al computer. Praticamente ho due fasi:
+• Fetch, in cui carico l'istruzione dalla RAM nell'Instruction Register
+Dopo la fase di Fetch so "cosa devo fare", perché a questo punto ho l'istruzione nell'Instruction Register
