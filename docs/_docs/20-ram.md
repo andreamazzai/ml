@@ -61,7 +61,7 @@ Writing takes place (two ways, but this is one way) CE low and OE high. A low pu
 
 Un altro aspetto che avevo notato immediatamente, ipotizzando l'uso del 62256, era l'impossibilità di mantenere la visibilità del contenuto della cella di RAM indirizzata dal MAR utilizzando i LED (o almeno così credevo): se con i '189 le porte di output erano sempre attive e potevo vedere in ogni momento il valore contenuto della cella di memoria correntemente indirizzata dal MAR, con il 62256 avrei avuto visibilità del contenuto della cella solo nel momento in cui la RAM veniva letta - e dunque non costantemente.
 
-[![Schema del modulo RAM di Ben Eater basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione ininterrotta del contenuto della locazione RAM indirizzata dal MAR](../../assets/be-ram-detail.png "Schema del modulo RAM basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione continua del contenuto della locazione RAM indirizzata dal MAR"){:width="50%"}](../../assets/be-ram-full.png)
+[![Schema del modulo RAM di Ben Eater basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione ininterrotta del contenuto della locazione RAM indirizzata dal MAR](../../assets/20-be-ram-detail.png "Schema del modulo RAM basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione continua del contenuto della locazione RAM indirizzata dal MAR"){:width="50%"}](../../assets/20-be-ram-full.png)
 
 *Nello schema si notano i 74189 con le porte di Input dedicate D1-D4 e le porte di Output dedicate O1-O4.*
 
@@ -83,7 +83,7 @@ Ad esempio, nello schema del SAP visibile più in alto in questa pagina, i multi
 
 Si ripresentava il tema del "doppio passaggio" (o meglio "doppio bus", come capirò in seguito), che da quanto iniziavo a comprendere poteva rendere possibile la visualizzazione persistente del contenuto della RAM. A pagina 17 e 18 del "Building the SAP-3 rev 3.3.pdf" presente nel repository GitHub di <a href = "https://github.com/rolf-electronics/The-8-bit-SAP-3" target = "_blank">rolf-electronics</a>, altro utente del canale Reddit, avevo notato che era stato inserito un altro transceiver '245.
 
-[![Modulo RAM di rolf electronics](../../assets/40-rolf-ram.png "Modulo RAM di rolf electronics"){:width="50%"}](../../assets/40-rolf-ram.png)
+[![Modulo RAM di rolf electronics](../../assets/20-rolf-ram.png "Modulo RAM di rolf electronics"){:width="50%"}](../../assets/20-rolf-ram.png)
 
 Il funzionamento e la necessità dei transceiver mi erano chiarissimi, in quanto ampiamente utilizzati nel SAP computer per poter attivare i vari moduli del computer solo nel momento in cui fosse necessario farlo; tipicamente ogni modulo ha bisogno di un unico transceiver ci interconnessione verso il bus. Lo schema del modulo RAM di Rolf ne prevede invece due (uno "interno" e uno "esterno") per separare il percorso dei dati *verso* la RAM da quello *dalla* RAM.
 
@@ -95,7 +95,7 @@ Un latch per memorizzare lo stato dei LED, come erroneamente ipotizzavo inizialm
 Proseguendo nello studio, ho trovato [questo schema](https://imgur.com/a/ruclh) dell'utente jaxey1631, che aveva lasciato un commento nel video di Ben Eater [Reprogramming CPU microcode with an Arduino
 ](https://www.youtube.com/watch?v=JUVt_KYAp-I&lc=UgjusLoROw6az3gCoAEC):
 
-[![RAM e MAR con doppio bus](../../assets/40-ram-ruclh.png "RAM e MAR con doppio bus"){:width="66%"}](../../assets/40-ram-ruclh.png)
+[![RAM e MAR con doppio bus](../../assets/20-ram-ruclh.png "RAM e MAR con doppio bus"){:width="66%"}](../../assets/20-ram-ruclh.png)
 
 *Schema di RAM e MAR con bus interno.*
 
@@ -113,7 +113,7 @@ In questo schema troviamo:
 
 - Un secondo transceiver '245 che si attiva nel momento in cui si deve leggere *dalla* RAM e che ne trasferisce l'output verso il bus dati (anche in questo caso il pin DIR del '245 settato a LO configura i pin A1-A8 come ingressi e i pin B1-B8 come uscite); notare il suo ingresso OE connesso al segnale RO (RAM Output) del computer.
 
-[![Write cicle del 62256](../../assets/40-ram-write-cycle.png "Write cicle del 62256"){:width="50%"}](../../assets/40-ram-write-cycle.png)
+[![Write cicle del 62256](../../assets/20-ram-write-cycle.png "Write cicle del 62256"){:width="50%"}](../../assets/20-ram-write-cycle.png)
 
 *Write Cycle "WE Controlled" del 62256.*
 
@@ -133,7 +133,7 @@ Un aspetto collaterale (ma importantissimo) dell'aumento del numero di istruzion
 
 Tra i post più utili relativi alla comprensione dei segnali di gestione di RAM e MAR per il modulo di memoria con IO comuni, c'è certamente il [Question about RAM replacement](https://www.reddit.com/r/beneater/comments/ut1oud/8bit_question_about_ram_replacement/), nel quale il moderatore The8BitEnthusiast invita a consultare la sua (eccellente, aggiungo io) realizzazione, che ho preso ad esempio e ispirazione.
 
-[![Modulo RAM dell'utente Reddit The8BitEnthusiast](../../assets/40-ram-the8bit_enthusiast.png "Modulo RAM dell'utente Reddit The8BitEnthusiast"){:width="66%"}](../../assets/40-ram-the8bit_enthusiast.png)
+[![Modulo RAM dell'utente Reddit The8BitEnthusiast](../../assets/20-ram-the8bit_enthusiast.png "Modulo RAM dell'utente Reddit The8BitEnthusiast"){:width="66%"}](../../assets/20-ram-the8bit_enthusiast.png)
 
 *Modulo RAM dell'utente e moderatore Reddit The8BitEnthusiast.*
 
@@ -141,15 +141,15 @@ Se da un certo punto di vista lo schema era particolarmente semplificato rispett
 
 - Scrittura sulla RAM in Run Mode
 
-[![Scrittura sulla RAM in Run Mode](../../assets/40-ram-run-mode-write-t8be.png "Scrittura sulla RAM in Run Mode"){:width="30%"}](../../assets/40-ram-run-mode-write-t8be.png)
+[![Scrittura sulla RAM in Run Mode](../../assets/20-ram-run-mode-write-t8be.png "Scrittura sulla RAM in Run Mode"){:width="30%"}](../../assets/20-ram-run-mode-write-t8be.png)
 
 - Lettura dalla RAM in Run Mode
 
-[![Lettura dalla RAM in Run Mode](../../assets/40-ram-run-mode-read-t8be.png "Lettura dalla RAM in Run Mode"){:width="30%"}](../../assets/40-ram-run-mode-read-t8be.png)
+[![Lettura dalla RAM in Run Mode](../../assets/20-ram-run-mode-read-t8be.png "Lettura dalla RAM in Run Mode"){:width="30%"}](../../assets/20-ram-run-mode-read-t8be.png)
 
 - Scrittura sulla RAM in Program Mode
 
-[![Scrittura sulla RAM in Program Mode](../../assets/40-ram-program-mode-write-t8be.png "Scrittura sulla RAM in Program Mode"){:width="30%"}](../../assets/40-ram-program-mode-write-t8be.png)
+[![Scrittura sulla RAM in Program Mode](../../assets/20-ram-program-mode-write-t8be.png "Scrittura sulla RAM in Program Mode"){:width="30%"}](../../assets/20-ram-program-mode-write-t8be.png)
 
 The8BitEnthusiast segnalava di *aver sfruttato il ritardo di propagazione dei '245 per gestire i requisiti di temporizzazione*, al che avevo provato a chiedergli se fosse necessario gestire le temporizzazioni in maniera così precisa perché il suo progetto lavorava in modalità "just in time" ogni volta che sopraggiungeva un impulso di clock.
 
@@ -183,7 +183,7 @@ Legenda:
 - **/** significa NOT
 - **\*** significa AND
 
-[![Scrittura sulla RAM in Run Mode](../../assets/40-ram-run-mode-write-large-t8be.png "Scrittura sulla RAM in Run Mode"){:width="100%"}](../../assets/40-ram-run-mode-write-large-t8be.png)
+[![Scrittura sulla RAM in Run Mode](../../assets/20-ram-run-mode-write-large-t8be.png "Scrittura sulla RAM in Run Mode"){:width="100%"}](../../assets/20-ram-run-mode-write-large-t8be.png)
 
 *Scrittura sulla RAM in Run Mode.*
 
@@ -193,13 +193,13 @@ The8BitEnthusiast ha gentilmente risposto al mio quesito:
 
 > Dovevo assicurarmi che i ‘245 non consegnassero dati alla RAM quando questa non era ancora pronta per accettare dati in Input perché le sue uscite erano ancora attive in output\*\*. Il datasheet segnala che la RAM disabilita l’output ed è pronta per l’input 20ns dopo che WE viene portato allo stato LO.
 
-[![Timing RAM 62256](../../assets/40-ram-62256-timing.png "Timing RAM 62256"){:width="66%"}](../../assets/40-ram-62256-timing.png)
+[![Timing RAM 62256](../../assets/20-ram-62256-timing.png "Timing RAM 62256"){:width="66%"}](../../assets/20-ram-62256-timing.png)
 
 \*\* Nello schema del modulo RAM di The8BitEnthusiast si nota che il segnale OE della RAM è connesso a ground, che significa che i pin dati sono sempre attivi in output, *tranne* quando si deve effettuare una scrittura. Quando si attiva il segnale di write WE, vi è un tempo tWHZ durante il quale la RAM è ancora attiva in output; trascorso questo tempo, è possibile mettere dei dati in input sulla RAM.
 
 In altre parole, la RAM è normalmente attiva in output; per scrivere su di essa, la si deve attivare in input col segnale WE. Poiché la RAM impiega 20nS per commutare i pin dati da output a input, prima di applicare dei segnali in input è necessario attendere almeno 20nS dal momento in cui si attiva WE.
 
-[![Write Cycle](../../assets/40-ram-write-cycle-twhz.png "WWrite Cycle"){:width="50%"}](../../assets/40-ram-write-cycle-twhz.png)
+[![Write Cycle](../../assets/20-ram-write-cycle-twhz.png "WWrite Cycle"){:width="50%"}](../../assets/20-ram-write-cycle-twhz.png)
 
 > Lo stesso segnale Zc che attiva la scrittura su RAM (WE) abilita anche i due '245; il datasheet del '245 specifica che la sua attivazione richiede 25n, che è un valore superiore a quello necessario alla RAM per attivarsi in Input, dunque il requisito è rispettato.
 
