@@ -1,7 +1,7 @@
 ---
 title: "BEAM computer"
 permalink: /
-excerpt: "Il mio breadboard computer a 8 bit basato sulla realizzazione di Ben Eater e sui miglioramenti di Tom Nisbet"
+excerpt: "Il mio breadboard computer TTL a 8 bit basato sulla realizzazione di Ben Eater e sui miglioramenti di Tom Nisbet"
 header:
 #   image: /assets/beam.jpg
   overlay_image: /assets/beam.jpg
