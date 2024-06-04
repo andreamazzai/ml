@@ -94,8 +94,7 @@ Lo schema del modulo RAM di Rolf ne prevede invece due, uno "interno" e uno "est
 
 Un latch per memorizzare lo stato dei LED, come erroneamente ipotizzavo inizialmente, non era necessario.
 
-Proseguendo nello studio, ho trovato [questo schema](https://imgur.com/a/ruclh) dell'utente jaxey1631, che aveva lasciato un commento nel video [Reprogramming CPU microcode with an Arduino
-](https://www.youtube.com/watch?v=JUVt_KYAp-I&lc=UgjusLoROw6az3gCoAEC) di Ben Eater:
+Proseguendo nello studio, ho trovato [questo schema](https://imgur.com/a/ruclh) dell'utente jaxey1631, che aveva lasciato un commento nel video di Ben Eater [Reprogramming CPU microcode with an Arduino](https://www.youtube.com/watch?v=JUVt_KYAp-I&lc=UgjusLoROw6az3gCoAEC):
 
 [![RAM e MAR con doppio bus](../../assets/20-ram-ruclh.png "RAM e MAR con doppio bus"){:width="66%"}](../../assets/20-ram-ruclh.png)
 
@@ -129,7 +128,7 @@ Tra i vari link sondati, c'era anche [questo post Reddit](https://www.reddit.com
 
 Per aggiungere un ulteriore link utile per la comprensione delle architetture del modulo di RAM, evidenzio questo [post su Reddit](https://www.reddit.com/r/beneater/comments/ad2uko/upgrading_the_ram_module_to_256_bytes/). Le spiegazioni sono molto ben fatte e utili. Il chip di RAM utilizzato è interessante perché si presenta come due RAM distinte, ognuna con accessi dedicati e un segnale di Busy per gestire le richieste parallele sulla stessa locazione. Altro aspetto degno di nota nell'implementazione di questo utente è la possibilità di aumentare fino a 256 il numero di istruzioni del computer, grazie alla scelta di utilizzare un byte intero per l'istruzione ed un eventuale byte successivo per l'operando, anziché avere un unico byte di cui i 4 Most Significant Bit (MSB) rappresentano l'opcode e di cui i 4 Least Significant Bit (LSB) sono l'operando, come nel SAP di Ben Eater.
 
-Un aspetto collaterale (ma importantissimo) dell'aumento del numero di istruzioni era la necessità di aumentare la dimensione delle EEPROM ospitanti il microcode: avendo ora 256 istruzioni, erano necessari 8 bit di istruzioni, 3 di step e 2 di flag = 13 pin totali, portanto si rendevano necessarie delle 28C64... e avevo dimenticato che mi sarebbe servito un bit aggiuntivo per la selezione delle due EEPROM! In quel momento, non sapevo ancora che avrei speso intere settimane a comprendere il fantastico modulo dei Flag dell'NQSAP di Tom Nisbet, che ha un approccio completamente diverso e che non necessita di segnali in uscita dalle EEPROM.
+Un aspetto collaterale (ma importantissimo) dell'aumento del numero di istruzioni era la necessità di aumentare la dimensione delle EEPROM ospitanti il microcode: volendo gestire (fino a) 256 istruzioni, erano necessari 8 bit di istruzioni, 3 di step e 2 di flag = 13 pin totali, portanto si rendevano necessarie delle 28C64... e avevo dimenticato che mi sarebbe servito un bit aggiuntivo per la selezione delle due EEPROM! In quel momento, non sapevo ancora che avrei speso intere settimane a comprendere il fantastico modulo dei Flag dell'NQSAP di Tom Nisbet, che ha un approccio completamente diverso e che non necessita di segnali in uscita dalle EEPROM.
 
 ## Gestione della RAM
 
@@ -139,7 +138,7 @@ Tra i post più utili relativi alla comprensione dei segnali di gestione di RAM 
 
 *Modulo RAM dell'utente e moderatore Reddit The8BitEnthusiast.*
 
-Se da un certo punto di vista lo schema era particolarmente semplificato rispetto a quelli che avevo visto in precedenza, dall'altra, con l'utilizzo di un solo MUX '157 con segnali che ne uscivano per rientrarne in altre porte, mi risultava di difficile comprensione. Avevo pertanto provato a costruirmi i grafici temporali degli schemi dei segnali per questi tre possibili stati:
+Se da un certo punto di vista lo schema era particolarmente semplificato rispetto a quelli che avevo visto in precedenza, dall'altra, con l'utilizzo di un solo MUX '157 con segnali che ne uscivano per rientrarne in altre porte, mi risultava di difficile comprensione. Avevo pertanto provato a costruirmi i grafici temporali degli schemi dei segnali per questi tre possibili casi:
 
 - Scrittura sulla RAM in Run Mode
 
@@ -159,7 +158,7 @@ Per esempio, ipotizzavo che nel primo caso "Scrittura sulla RAM in Run Mode" acc
 
 - **Prima del Rising Edge del CLK**:
 
-  - PROG è HI, dunque siamo in Run Mode
+  - siamo in Run Mode, dunque PROG è HI
   - il MUX abilita gli ingressi I1a, I1b, I1c
   - Zb è HI (in quanto l'input I1b è connesso a Vcc) e dunque il '245 di destra, che connette il dip-switch di programmazione, è disabilitato
   - il segnale RI è HI (RI = RAM In, cioè scrittura sulla RAM), dunque stiamo preparando una scrittura
