@@ -45,10 +45,7 @@ Dopo aver letto questo punto avevo iniziato a raccogliere i miei pensieri per l'
 
 ### Memorie con IO separati o IO comuni?
 
-Fino ad ora, avevo quasi sostanzialmente dato per scontato di continuare ad usare chip di memoria con porte di Input e Output separati ("dual-port"), esattamente come accade nel [74189](https://eater.net/datasheets/74189.pdf) utilizzato nel SAP. Tuttavia, in questo [post su Reddit](https://www.reddit.com/r/beneater/comments/hon6ar/74189_alternative/
-), un utente evidenziava difficoltà nell'approvvigionamento dei 74189 e chiedeva lumi sull'uso del [62256](https://datasheetspdf.com/download_new.php?id=729365); ho così iniziato ad approfondire le caratteristiche di questo chip "single-port", aumentando la mia comprensione di queste due diverse architetture.
-
-[62256](https://ece-classes.usc.edu/ee459/library/datasheets/hm62256.pdf)
+Fino ad ora, avevo quasi sostanzialmente dato per scontato di continuare ad usare chip di memoria con porte di Input e Output separati ("dual-port"), esattamente come accade nel [74189](https://eater.net/datasheets/74189.pdf) utilizzato nel SAP. Tuttavia, in questo [post su Reddit](https://www.reddit.com/r/beneater/comments/hon6ar/74189_alternative/), un utente evidenziava difficoltà nell'approvvigionamento dei 74189 e chiedeva lumi sull'uso del [62256](https://www.alliancememory.com/wp-content/uploads/pdf/AS6C62256.pdf); ho così iniziato ad approfondire le caratteristiche di questo chip "single-port", aumentando la mia comprensione di queste due diverse architetture.
 
 In origine avevo evidenziato questi pochi appunti presenti nel post, riflettendo sul fatto che l'approccio alla gestione dei segnali di controllo mi sembrava un po' troppo semplice, ma più in là nel tempo avevo realizzato che, tutto sommato, la scrittura sulla RAM non è *eccessivamente* complessa:
 
@@ -120,7 +117,7 @@ In questo schema troviamo:
 
 *Write Cycle "WE Controlled" del 62256.*
 
-Notare la configurazione del chip di RAM: i segnali CE ed OE sono sempre attivi, che significa che l'utente ha deciso di utilizzare la modalità di scrittura definita come "WE# Controlled" definita a pagina 6 del [datasheet](https://datasheetspdf.com/download_new.php?id=729365) del 62256. Rileggendo questi appunti diverso tempo dopo aver completato il mio progetto, mi sembra tutto facile, ma la comprensione delle modalità di scrittura della RAM è stata in realtà piuttosto lunga.
+Notare la configurazione del chip di RAM: i segnali CE ed OE sono sempre attivi, che significa che l'utente ha deciso di utilizzare la modalità di scrittura definita come "WE# Controlled" definita a pagina 6 del [datasheet](https://www.alliancememory.com/wp-content/uploads/pdf/AS6C62256.pdf) del 62256. Rileggendo questi appunti diverso tempo dopo aver completato il mio progetto, mi sembra tutto facile, ma la comprensione delle modalità di scrittura della RAM è stata in realtà piuttosto lunga.
 
 Da notare inoltre che anche questo utente non usa il CLR sui FF '273 di input del MAR - a pensarci, potrebbe realmente non servire, perché ogni volta che ho bisogno di accedere alla RAM, vado preventivamente a settare sul MAR l'indirizzo desiderato. Forse il reset all'accensione è più estetico che altro.
 
@@ -202,7 +199,7 @@ The8BitEnthusiast ha gentilmente risposto al mio quesito:
 
 In altre parole, la RAM è normalmente attiva in output; per scrivere su di essa, la si deve attivare in input col segnale WE. Poiché la RAM impiega 20 nanosecondi per commutare i pin dati da output a input, prima di applicare dei segnali in input è necessario attendere almeno 20 nanosecondi dal momento in cui si attiva WE.
 
-[![Write Cycle](../../assets/20-ram-write-cycle-twhz.png "WWrite Cycle"){:width="50%"}](../../assets/20-ram-write-cycle-twhz.png)
+[![Write Cycle](../../assets/20-ram-write-cycle-twhz.png "Write Cycle"){:width="50%"}](../../assets/20-ram-write-cycle-twhz.png)
 
 > Lo stesso segnale Zc che attiva la scrittura su RAM (WE) abilita anche i due '245; il datasheet del '245 specifica che la sua attivazione richiede 25 nanosecondi, che è un valore superiore a quello necessario alla RAM per attivarsi in Input, dunque il requisito è rispettato.
 
@@ -235,6 +232,7 @@ Come già detto, per quanto riguarda la realizzazione del modulo RAM avevo Decis
     - Chip Enable /CE LO (in realtà il datasheet mostra ↘↗, ma come segnalava The8BitEnthusiast lo si può tenere fisso LO)
     -- /WE ↘↗ (che deve essere "contenuto" all'interno del ciclo ↘↗ di /CE)
 
+Riprendendo il datasheet del [62256](https://www.alliancememory.com/wp-content/uploads/pdf/AS6C62256.pdf) a pagina 
 
   - § /OE HI (in realtà ↗↘, forse con lo stesso ciclo del clock) che fa partire il TOHZ "Output disable to output in high-Z" entro il quale le uscite diventano in HI-Z
   - § /CE aka /CS LO (in realtà ↘↗, ma forse va bene tenerlo LO)
