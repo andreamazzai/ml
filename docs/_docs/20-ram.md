@@ -45,8 +45,10 @@ Dopo aver letto questo punto avevo iniziato a raccogliere i miei pensieri per l'
 
 ### Memorie con IO separati o IO comuni?
 
-Fino ad ora, avevo quasi sostanzialmente dato per scontato di continuare ad usare chip di memoria con porte di Input e Output separati, esattamente come accade nel [74189](https://eater.net/datasheets/74189.pdf) utilizzato nel SAP. Tuttavia, in questo [post su Reddit](https://www.reddit.com/r/beneater/comments/hon6ar/74189_alternative/
-), un utente evidenziava difficoltà nell'approvvigionamento dei 74189 e chiedeva lumi sull'uso del [62256](https://datasheetspdf.com/download_new.php?id=729365); ho così iniziato ad approfondire le caratteristiche di questo chip, aumentando nel contempo la mia comprensione di queste due diverse architetture.
+Fino ad ora, avevo quasi sostanzialmente dato per scontato di continuare ad usare chip di memoria con porte di Input e Output separati ("dual-port"), esattamente come accade nel [74189](https://eater.net/datasheets/74189.pdf) utilizzato nel SAP. Tuttavia, in questo [post su Reddit](https://www.reddit.com/r/beneater/comments/hon6ar/74189_alternative/
+), un utente evidenziava difficoltà nell'approvvigionamento dei 74189 e chiedeva lumi sull'uso del [62256](https://datasheetspdf.com/download_new.php?id=729365); ho così iniziato ad approfondire le caratteristiche di questo chip "single-port", aumentando la mia comprensione di queste due diverse architetture.
+
+[62256](../../assets/DS/hm62256.pdF)
 
 In origine avevo evidenziato questi pochi appunti presenti nel post, riflettendo sul fatto che l'approccio alla gestione dei segnali di controllo mi sembrava un po' troppo semplice, ma più in là nel tempo avevo realizzato che, tutto sommato, la scrittura sulla RAM non è *eccessivamente* complessa:
 
@@ -210,6 +212,36 @@ Molto, molto clever.
 
 Parallelamente agli studi dei lavori di altri utenti, avevo iniziato a lavorare sul disegno dei miei moduli MAR e RAM, non senza continuare a saltare di palo in frasca per approfondire temi ancora parzialmente oscuri o affrontare argomenti nuovi.
 
+Nel frattempo avevo sviluppato lo schema del MAR a 8 bit, in grado di pilotare 256 indirizzi di memoria. Inizialmente avevo utilizzato due FF '173 a 4 bit, poi sostituiti da un unico FF '273 a 8 bit (sprovvisto di controllo dell'attivazione dell'output, che però non è necessario). Infine ho utilizzato un registro a 8 bit '377, altrettanto adatto al nostro scopo.
+
+[![Memory Address Register](../../assets/20-mar-beam.png "Memory Address Register"){:width="66%"}](../../assets/20-mar-beam.png)
+
+*Memory Address Register (MAR) del BEAM.*
+
+Notare l'interruttore di selezione Program Mode / Run Mode (segnale PROG, che è connesso anche al modulo RAM):
+
+- alla chiusura dei contatti 1-2 i pin di selezione dei MUX '157 si trovano allo stato logico LO, attivando gli ingressi I0a, I0b, I0c ed I0d, che trasmettono così al bus di indirizzi della RAM i valori settati sul dip-switch;
+- alla chiusura dei contatti 2-3 i pin di selezione dei MUX '157 si trovano allo stato logico HI, attivando gli ingressi I1a, I1b, I1c ed I1d, che trasmettono così al bus di indirizzi della RAM i valori rpresenti in output sul '377.
+
+Come già detto, per quanto riguarda la realizzazione del modulo RAM avevo Deciso di procedere con il chip 62256 con IO comuni. Per cercare di fissare i concetti, avevo trascritto nuovamente le differenze tra le architetture con chip con IO separati ed IO comuni:
+
+- Con le RAM dual-port, avevo i segnali di RAM IN e RAM OUT su bus "separati":
+  - il bus "IN" collegava le uscite dei MUX 74LS157 ai pin Data In delle RAM: i MUX erano sempre attivi sulle porte "Write" delle RAM e mostravano ad esse tutto quello che accadeva sul bus principale del computer in Run Mode o sul DIP-Switch in Program Mode, ma non era un problema, in quanto le RAM scrivevano solo in corrispondenza del segnale RI (RAM In);
+  - il bus "OUT" collegava il transceiver '245 e le uscite Data Out delle RAM; l'uscita del transceiver veniva abilitata solo in corrispondenza del segnale /RO (RAM Out).
+
+- Con la RAM single-port le linee Data sono le stesse per Write e Read. A seconda dell'operazione da eseguire, si attivano due percorsi diversi, come già discusso parlando del doppio bus:
+  - Per scrivere sulla RAM la sequenza era questa:
+    - Output Enable /OE LO fisso
+    - Chip Enable /CE LO (in realtà il datasheet mostra ↘↗, ma come segnalava The8BitEnthusiast lo si può tenere fisso LO)
+    -- /WE ↘↗ (che deve essere "contenuto" all'interno del ciclo ↘↗ di /CE)
+
+
+  - § /OE HI (in realtà ↗↘, forse con lo stesso ciclo del clock) che fa partire il TOHZ "Output disable to output in high-Z" entro il quale le uscite diventano in HI-Z
+  - § /CE aka /CS LO (in realtà ↘↗, ma forse va bene tenerlo LO)
+/WE LO (in realtà ↘↗, ma forse va bene tenerlo LO dentro al ciclo ↘↗ di /CE) che fa partire il TWHZ "WE to output in high-Z" entro il quale le uscite diventano in HI-Z
+
+## XXXXXXXXXXXXXXXXXX
+
 Ritornando alla dimensione delle EEPROM da utilizzare per il microcode, nei miei appunti trovo traccia di diverse revisioni, ad esempio:
 
 - mi servono EEPROM 28C64 per avere 256 (8 bit) istruzioni + 3 step + 2 flag, ma dimenticavo che avendo due ROM gemelle dovevo gestirne anche la selezione e dunque aggiungere un ulteriore bit, pertanto mi servirebbero delle 28C128;
@@ -217,12 +249,6 @@ Ritornando alla dimensione delle EEPROM da utilizzare per il microcode, nei miei
 - ... ma forse mi sarebbero serviti altri segnali di controllo oltre ai 16  disponibili in due ROM e dunque me ne sarebbe servita una terza... e dunque due bit di indirizzamento
 
 Posso sicuramente dire che avevo le idee ancora confuse.
-
-Nel frattempo avevo sviluppato lo schema del MAR a 8 bit, in grado di pilotare 256 indirizzi di memoria. Inizialmente avevo utilizzato due FF '173 a 4 bit, poi sostituiti da un unico FF '273 a 8 bit (sprovvisto di controllo dell'attivazione dell'output, che però non è necessario). Infine ho utilizzato un registro a 8 bit '377, altrettanto adatto al nostro scopo.
-
-[![Memory Address Register](../../assets/20-ram-write-cycle-twhz.png "Memory Address Register"){:width="66%"}](../../assets/20-mar-beam.png)
-
-*Memory Address Register (MAR) del BEAM.*
 
 ## Fare spiega su EEPROM input e output
 
