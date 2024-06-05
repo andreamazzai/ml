@@ -261,6 +261,8 @@ Le porte dei MUX 157 non sono tri-state
 
 ## XXXXXXXXXXXXXXXXXX
 
+xxxxxxxxxxxxxxxxxxxxxxxxxx
+
 Ritornando alla dimensione delle EEPROM da utilizzare per il microcode, nei miei appunti trovo traccia di diverse revisioni, ad esempio:
 
 - mi servono EEPROM 28C64 per avere 256 (8 bit) istruzioni + 3 step + 2 flag, ma dimenticavo che avendo due ROM gemelle dovevo gestirne anche la selezione e dunque aggiungere un ulteriore bit, pertanto mi servirebbero delle 28C128;
