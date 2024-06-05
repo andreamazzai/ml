@@ -226,17 +226,40 @@ Come già detto, per quanto riguarda la realizzazione del modulo RAM avevo Decis
   - il bus "IN" collegava le uscite dei MUX 74LS157 ai pin Data In delle RAM: i MUX erano sempre attivi sulle porte "Write" delle RAM e mostravano ad esse tutto quello che accadeva sul bus principale del computer in Run Mode o sul DIP-Switch in Program Mode, ma non era un problema, in quanto le RAM scrivevano solo in corrispondenza del segnale RI (RAM In);
   - il bus "OUT" collegava il transceiver '245 e le uscite Data Out delle RAM; l'uscita del transceiver veniva abilitata solo in corrispondenza del segnale /RO (RAM Out).
 
-- Con la RAM single-port le linee Data sono le stesse per Write e Read. A seconda dell'operazione da eseguire, si attivano due percorsi diversi, come già discusso parlando del doppio bus:
-  - Per scrivere sulla RAM la sequenza era questa:
-    - Output Enable /OE LO fisso
-    - Chip Enable /CE LO (in realtà il datasheet mostra ↘↗, ma come segnalava The8BitEnthusiast lo si può tenere fisso LO)
-    -- /WE ↘↗ (che deve essere "contenuto" all'interno del ciclo ↘↗ di /CE)
+Con la RAM single-port le linee Data sono le stesse per Write e Read. A seconda dell'operazione da eseguire, si attivano due percorsi diversi, come già discusso parlando del doppio bus. Per scrivere sulla RAM la sequenza era questa:
 
-Riprendendo il datasheet del [62256](https://www.alliancememory.com/wp-content/uploads/pdf/AS6C62256.pdf) a pagina 
+- Output Enable /OE LO fisso
+- Chip Enable /CE LO fisso (in realtà il datasheet mostra ↘↗, ma come segnalava The8BitEnthusiast lo si può tenere fisso LO)
+- /WE ↘↗ (che deve essere "contenuto" all'interno del ciclo ↘↗ di /CE)
 
-  - § /OE HI (in realtà ↗↘, forse con lo stesso ciclo del clock) che fa partire il TOHZ "Output disable to output in high-Z" entro il quale le uscite diventano in HI-Z
-  - § /CE aka /CS LO (in realtà ↘↗, ma forse va bene tenerlo LO)
-/WE LO (in realtà ↘↗, ma forse va bene tenerlo LO dentro al ciclo ↘↗ di /CE) che fa partire il TWHZ "WE to output in high-Z" entro il quale le uscite diventano in HI-Z
+Riprendendo il datasheet del [62256](https://www.alliancememory.com/wp-content/uploads/pdf/AS6C62256.pdf) a pagina 6 troviamo anche un'altra possibilità per scrivere, indicata come "WRITE CYCLE 2 (CE# Controlled)", ma non mi era chiaro e non volevo fare lo sperimentatore - il mio desiderio era quello di realizzare un modulo che funzionasse con certezza.
+
+Il primo disegno del modulo RAM è il seguente:
+
+[![Prima versione del modulo RAM](../../assets/20-ram-1st.png "Prima versione del modulo RAM"){:width="66%"}](../../assets/20-ram-1st.png)
+
+*Modulo di memoria (RAM) del BEAM.*
+
+Riponevo grandi speranze su questo design.
+
+Per scrivere in RAM in Run Mode:
+
+- RI (che nel ciclo di Write è HI) abilita il '245 superiore mediante una NOT;
+- /RO (che nel ciclo di Write è HI) porta OE a HI, disabilitando l'output del 62256;
+- /CE è fisso LO in quanto connesso a ground;
+- i valori presenti nel bus o nel DIP-Switch vengono presentati via MUX al transceiver che, a sua volta, presenta tali valori alle porte della RAM;
+- al rising edge del clock la NAND passa da HI a LO per il tempo RC e l'impulso /WE LO viene trasmesso alla RAM attraverso il MUX '157: la RAM memorizza quanto trova nelle sue porte di ingresso D0-D7.
+
+In Program Mode l'altro ingresso del MUX è HI grazie alla resistenza di pull-up da 1K, ma premendo il bottone si crea un impulso negativo che attiva /WE LO: anche in questo caso la RAM memorizza quanto trova nelle sue porte di ingresso D0-D7.
+
+- Per leggere dalla RAM [B], mi servono CE LO [4] e WE HI [5] e OE LO [6] (modo 1 pagina 8)
+  - RI sarà LO, dunque la NOT mi disabiliterà il XCVR superiore
+  - /RO diventa LO e mi abilita il XCVR inferiore e mi porta /OE LO [6]
+  - CE è LO perché sempre connesso a ground [4]
+  - Nel frattempo WE è HI perché:
+    - In Run Mode RI LO significa che la NAND di ingresso del MUX che pilota WE mette output HI (perché uno dei due input A e B è LO, Y è sempre HI e dunque anche /WE è HI [5])
+    - In Program Mode l'altro ingresso del MUX è HI [5] grazie alla resistenza da 1K
+Le porte dei MUX 157 non sono tri-state
 
 ## XXXXXXXXXXXXXXXXXX
 
