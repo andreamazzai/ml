@@ -95,7 +95,7 @@ Un latch per memorizzare lo stato dei LED, come erroneamente ipotizzavo inizialm
 
 Proseguendo nello studio, ho trovato [questo schema](https://imgur.com/a/ruclh) dell'utente jaxey1631, che aveva lasciato un commento nel video di Ben Eater [Reprogramming CPU microcode with an Arduino](https://www.youtube.com/watch?v=JUVt_KYAp-I&lc=UgjusLoROw6az3gCoAEC):
 
-[![RAM e MAR con doppio bus](../../assets/20-ram-ruclh.png "RAM e MAR con doppio bus"){:width="66%"}](../../assets/20-ram-ruclh.png)
+[![RAM e MAR con doppio bus](../../assets/20-ram-ruclh.png "RAM e MAR con doppio bus"){:width="8%"}](../../assets/20-ram-ruclh.png)
 
 *Schema di RAM e MAR con bus interno.*
 
@@ -133,7 +133,7 @@ Un aspetto collaterale (ma importantissimo) dell'aumento del numero di istruzion
 
 Tra i post più utili relativi alla comprensione dei segnali di gestione di RAM e MAR per il modulo di memoria con IO comuni, c'è certamente il [Question about RAM replacement](https://www.reddit.com/r/beneater/comments/ut1oud/8bit_question_about_ram_replacement/), nel quale il moderatore The8BitEnthusiast invita a consultare la sua (eccellente, aggiungo io) realizzazione, che ho preso ad esempio e ispirazione.
 
-[![Modulo RAM dell'utente Reddit The8BitEnthusiast](../../assets/20-ram-the8bit_enthusiast.png "Modulo RAM dell'utente Reddit The8BitEnthusiast"){:width="66%"}](../../assets/20-ram-the8bit_enthusiast.png)
+[![Modulo RAM dell'utente Reddit The8BitEnthusiast](../../assets/20-ram-the8bit_enthusiast.png "Modulo RAM dell'utente Reddit The8BitEnthusiast"){:width="80%"}](../../assets/20-ram-the8bit_enthusiast.png)
 
 *Modulo RAM dell'utente e moderatore Reddit The8BitEnthusiast.*
 
@@ -211,7 +211,7 @@ Parallelamente agli studi dei lavori di altri utenti, avevo iniziato a lavorare 
 
 Nel frattempo avevo sviluppato lo schema del MAR a 8 bit, in grado di pilotare 256 indirizzi di memoria. Inizialmente avevo utilizzato due FF '173 a 4 bit, poi sostituiti da un unico FF '273 a 8 bit (sprovvisto di controllo dell'attivazione dell'output, che però non è necessario). Infine ho utilizzato un registro a 8 bit '377, altrettanto adatto al nostro scopo.
 
-[![Memory Address Register](../../assets/20-mar-beam.png "Memory Address Register"){:width="66%"}](../../assets/20-mar-beam.png)
+[![Memory Address Register](../../assets/20-mar-beam.png "Memory Address Register"){:width="80%"}](../../assets/20-mar-beam.png)
 
 *Memory Address Register (MAR) del BEAM.*
 
@@ -234,11 +234,9 @@ Come già detto, per quanto riguarda la realizzazione del modulo RAM avevo decis
 
 Riprendendo il datasheet del [62256](https://www.alliancememory.com/wp-content/uploads/pdf/AS6C62256.pdf) a pagina 6 troviamo anche un'altra possibilità per scrivere, indicata come "WRITE CYCLE 2 (CE# Controlled)", ma non mi era chiaro e non volevo fare lo sperimentatore - il mio desiderio era quello di realizzare un modulo che funzionasse con certezza.
 
-Il primo disegno del modulo RAM è il seguente:
+[![Prima versione del modulo RAM](../../assets/20-ram-1st.png "Prima versione del modulo RAM"){:width="80%"}](../../assets/20-ram-1st.png)
 
-[![Prima versione del modulo RAM](../../assets/20-ram-1st.png "Prima versione del modulo RAM"){:width="66%"}](../../assets/20-ram-1st.png)
-
-*Modulo di memoria (RAM) del BEAM.*
+*Prima versione del Modulo di memoria (RAM) del BEAM.*
 
 Riponevo grandi speranze su questo design.
 
