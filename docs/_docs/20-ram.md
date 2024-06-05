@@ -218,19 +218,19 @@ Nel frattempo avevo sviluppato lo schema del MAR a 8 bit, in grado di pilotare 2
 Notare l'interruttore di selezione Program Mode / Run Mode (segnale PROG, che è connesso anche al modulo RAM):
 
 - alla chiusura dei contatti 1-2 i pin di selezione dei MUX '157 si trovano allo stato logico LO, attivando gli ingressi I0a, I0b, I0c ed I0d, che trasmettono così al bus di indirizzi della RAM i valori settati sul dip-switch;
-- alla chiusura dei contatti 2-3 i pin di selezione dei MUX '157 si trovano allo stato logico HI, attivando gli ingressi I1a, I1b, I1c ed I1d, che trasmettono così al bus di indirizzi della RAM i valori rpresenti in output sul '377.
+- alla chiusura dei contatti 2-3 i pin di selezione dei MUX '157 si trovano allo stato logico HI, attivando gli ingressi I1a, I1b, I1c ed I1d, che trasmettono così al bus di indirizzi della RAM i valori presenti in output sul '377.
 
-Come già detto, per quanto riguarda la realizzazione del modulo RAM avevo Deciso di procedere con il chip 62256 con IO comuni. Per cercare di fissare i concetti, avevo trascritto nuovamente le differenze tra le architetture con chip con IO separati ed IO comuni:
+Come già detto, per quanto riguarda la realizzazione del modulo RAM avevo deciso di procedere con il chip 62256 con IO comuni. Per cercare di fissare i concetti, avevo trascritto nuovamente le differenze tra le architetture con chip con IO separati ed IO comuni:
 
 - Con le RAM dual-port, avevo i segnali di RAM IN e RAM OUT su bus "separati":
   - il bus "IN" collegava le uscite dei MUX 74LS157 ai pin Data In delle RAM: i MUX erano sempre attivi sulle porte "Write" delle RAM e mostravano ad esse tutto quello che accadeva sul bus principale del computer in Run Mode o sul DIP-Switch in Program Mode, ma non era un problema, in quanto le RAM scrivevano solo in corrispondenza del segnale RI (RAM In);
   - il bus "OUT" collegava il transceiver '245 e le uscite Data Out delle RAM; l'uscita del transceiver veniva abilitata solo in corrispondenza del segnale /RO (RAM Out).
 
-Con la RAM single-port le linee Data sono le stesse per Write e Read. A seconda dell'operazione da eseguire, si attivano due percorsi diversi, come già discusso parlando del doppio bus. Per scrivere sulla RAM la sequenza era questa:
+- Con la RAM single-port le linee Data sono invece le stesse per Write e Read. A seconda dell'operazione da eseguire, si attivano due percorsi diversi, come già discusso parlando del doppio bus. Per scrivere sulla RAM la sequenza era questa:
 
-- Output Enable /OE LO fisso
-- Chip Enable /CE LO fisso (in realtà il datasheet mostra ↘↗, ma come segnalava The8BitEnthusiast lo si può tenere fisso LO)
-- /WE ↘↗ (che deve essere "contenuto" all'interno del ciclo ↘↗ di /CE)
+  - Output Enable /OE LO fisso;
+  - Chip Enable /CE LO fisso (in realtà il datasheet mostra ↘↗, ma come segnalava The8BitEnthusiast lo si può tenere fisso LO);
+  - /WE ↘↗ (che deve essere "contenuto" all'interno del ciclo ↘↗ di /CE, se /CE non viene mantenuto fisso LO).
 
 Riprendendo il datasheet del [62256](https://www.alliancememory.com/wp-content/uploads/pdf/AS6C62256.pdf) a pagina 6 troviamo anche un'altra possibilità per scrivere, indicata come "WRITE CYCLE 2 (CE# Controlled)", ma non mi era chiaro e non volevo fare lo sperimentatore - il mio desiderio era quello di realizzare un modulo che funzionasse con certezza.
 
