@@ -48,7 +48,7 @@ Dopo aver letto questo punto avevo iniziato a raccogliere i miei pensieri per l'
 Fino ad ora, avevo quasi sostanzialmente dato per scontato di continuare ad usare chip di memoria con porte di Input e Output separati, esattamente come accade nel [74189](https://eater.net/datasheets/74189.pdf) utilizzato nel SAP. Tuttavia, in questo [post su Reddit](https://www.reddit.com/r/beneater/comments/hon6ar/74189_alternative/
 ), un utente evidenziava difficoltà nell'approvvigionamento dei 74189 e chiedeva lumi sull'uso del [62256](https://datasheetspdf.com/download_new.php?id=729365); ho così iniziato ad approfondire le caratteristiche di questo chip, aumentando nel contempo la mia comprensione di queste due diverse architetture.
 
-In origine avevo evidenziato questi pochi appunti presenti nel post, riflettendo sul fatto che l'approccio alla gestione dei segnali di controllo mi sembrava un po' troppo semplicistico:
+In origine avevo evidenziato questi pochi appunti presenti nel post, riflettendo sul fatto che l'approccio alla gestione dei segnali di controllo mi sembrava un po' troppo semplice, ma più in là nel tempo avevo realizzato che, tutto sommato, la scrittura sulla RAM non è *eccessivamente* complessa:
 
 >> 62256 - The I/O lines are controlled by OE and CE.
 When either are high puts the I/O lines at high impedance.
@@ -208,7 +208,7 @@ Molto, molto clever.
 
 ## Design dei moduli MAR e RAM del BEAM
 
-Parallelamente agli studi dei lavori di altri utenti, avevo iniziato a lavorare sul disegno dei miei moduli MAR e RAM, non senza continuare a saltare di palo in frasca per aprprofondire temi ancora parzialmente oscuri o argomenti nuovi.
+Parallelamente agli studi dei lavori di altri utenti, avevo iniziato a lavorare sul disegno dei miei moduli MAR e RAM, non senza continuare a saltare di palo in frasca per approfondire temi ancora parzialmente oscuri o affrontare argomenti nuovi.
 
 Ritornando alla dimensione delle EEPROM da utilizzare per il microcode, nei miei appunti trovo traccia di diverse revisioni, ad esempio:
 
@@ -218,20 +218,28 @@ Ritornando alla dimensione delle EEPROM da utilizzare per il microcode, nei miei
 
 Posso sicuramente dire che avevo le idee ancora confuse.
 
+Nel frattempo avevo sviluppato lo schema del MAR a 8 bit, in grado di pilotare 256 indirizzi di memoria. Inizialmente avevo utilizzato due FF '173 a 4 bit, poi sostituiti da un unico FF '273 a 8 bit (sprovvisto di controllo dell'attivazione dell'output, che però non è necessario). Infine ho utilizzato un registro a 8 bit '377, altrettanto adatto al nostro scopo.
+
+[![Memory Address Register](../../assets/20-ram-write-cycle-twhz.png "Memory Address Register"){:width="66%"}](../../assets/20-mar-beam.png)
+
+*Memory Address Register (MAR) del BEAM.*
+
 ## Fare spiega su EEPROM input e output
 
 Stavo anche iniziando a pensare come avrebbe funzionato la fase di Fetch con un Instruction Register che conteneva la sola istruzione e non operando istruzione + operando, come nel computer SAP**.
 
-Immaginavo che una istruzione di somma tra un operando e il valore correntemente presente nel registro A avrebbe avuto questa sequenza:
+Immaginavo che una istruzione di somma tra l'Accumulatore e il valore contenuto in una cella di memoria specifica avrebbe avuto questa sequenza:
 
 | Step | Segnale   | Operazione |
 | ---- | ------    | ----------- |
-|    0 | CO-MI     | Carico l'indirizzo della istruzione nel MAR |
-|    1 | RO-II-CE  | Leggo l'istruzione dalla RAM e la metto nell'Instruction Register e passo alla prossima locazione in RAM. |
-|    2 | CO-MI     | Metto nel MAR l'indirizzo della cella che contiene l'operando (che è l'indirizzo della locazione in RAM nella quale è presente il dato reale da lavorare (istruzione "indiretta"))  |
-|    3 | RO-MI     | Metto nel MAR l'indirizzo della locazione in RAM che contiene il dato reale da lavorare |
-|    4 | RO-BI-CE  | Ora l'output della RAM è il contenuto della cella di memoria indicata dall'operando 😁 e lo metto nel registro B |
+|    0 | CO-MI     | Carico l'indirizzo dell'istruzione nel MAR |
+|    1 | RO-II-CE  | Leggo l'istruzione dalla RAM e la metto nell'Instruction Register; incremento il Program Counter che punta così alla locazione che contiene l'operando |
+|    2 | CO-MI     | Metto nel MAR l'indirizzo della cella che contiene l'operando |
+|    3 | RO-MI     | Leggo dalla RAM l'operando, che rappresenta l'indirizzo della locazione che contiene il valore che desidero addizionare all'accumulatore |
+|    4 | RO-BI-CE  | Leggo dalla RAM il valore contenuto nella locazione selezionata e lo posiziono nel registro B; incremento il Program Counter che punta così alla locazione che contiene la prossima istruzione |
 |    5 | EO-AI     | Metto in A il valore della somma A + B |
+
+Legenda dei segnali:
 
 | Segnale | Operazione | Descrizione |
 | ------  | ---------- | ----------- |
@@ -242,13 +250,13 @@ Immaginavo che una istruzione di somma tra un operando e il valore correntemente
 | CE | Counter Enable           | Il Program Counter viene incrementato                             |
 | BI | B Register In            | Il contenuto del bus viene caricato nel registro B                |
 | AI | A Register In            | Il contenuto del bus viene caricato nel registro A                |
-| EO | Sum Out                  | Il risultato dell'Adder A+B viene esposto sul bus                 |
+| EO | Sum Out                  | L'adder computa A+B e il suo risultato viene esposto sul bus      |
 
-** Le istruzioni del computer SAP includevano in un byte sia l'opcode sia l'operando, come desruitto anche in precedenza in questa pagina:
+** Le istruzioni del computer SAP includevano in un byte sia l'opcode sia l'operando, come descritto anche in precedenza in questa stessa pagina:
 
 >... un unico byte di cui i 4 Most Significant Bit (MSB) rappresentano l'opcode e di cui i 4 Least Significant Bit (LSB) sono l'operando
 
-Introducendo gli Step, riflettevo anche sul fatto che per talune operazioniu, da quanto capito nella realizzazione dell'NQSAP, avere più di 8 microistruzioni sarebbe stato molto utile ed ecco che, ancora una volta, dovevo riconsiderare il numero di bit di indirizzamento necessari per le EEPROM
+Introducendo gli Step, riflettevo anche sul fatto che per talune operazioni, da quanto capivo approfondendo l'NQSAP, avere più di 8 microistruzioni sarebbe stato molto util: ecco che, ancora una volta, dovevo riconsiderare il numero di bit di indirizzamento necessari per le EEPROM
 
 Ricordiamo che "Praticamente ho due fasi:
 
