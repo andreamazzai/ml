@@ -3,7 +3,7 @@ title: "RAM"
 permalink: /docs/ram/
 excerpt: "Costruzione del modulo di memoria del BEAM computer"
 ---
-Il limite principale del computer SAP di Ben Eater era sicuramente la modesta quantità di RAM indirizzabile, pari a 16 byte; era possibile caricare un semplice contatore da zero a 255 e viceversa, oppure un algoritmo di Fibonacci, ma nulla di più. Questo è stato lo stimolo primario per la realizzazione di un computer più potente.
+Il limite principale del computer SAP di Ben Eater era sicuramente la modesta quantità di RAM indirizzabile, pari a 16 byte; era possibile caricare un semplice contatore da 0 a 255 e viceversa, oppure un piccolo algoritmo di Fibonacci, ma nulla di più. Questo è stato lo stimolo primario per la realizzazione di un computer più potente.
 
 All'approssimarsi del completamento della costruzione del SAP, ho iniziato a documentarmi su vari blog e forum per raccogliere idee su possibili miglioramenti ed espansioni.
 
@@ -19,11 +19,11 @@ Dal [primo articolo letto](https://www.reddit.com/r/beneater/comments/crl270/,8_
 
 Questo utente desiderava fare una espansione radicale del computer, passando da 16 byte a 64K; il mio desiderio era quello di crescere fino a 256 byte (e non complicarmi troppo la vita con un bus a 16 bit), ma alcune informazioni sono state comunque molto utili per una comprensione generale della questione.
 
-Per indirizzare 64K di memoria serve infatti un registro MAR (Memory Address Register) da 16 bit (2^16 = 64K); anziché utilizzare 4 registri a 4 bit 74LS173 (il '173 è il Flip-Flop utilizzato in origine nel SAP), sembra più comodo utilizzare due registri Flip-Flop tipo D 74LS273 a 8 bit; uno svantaggio di questi ultimi, rispetto alla loro controparte a 4 bit, è che non hanno un ingresso di Enable, mentre il disegno del computer deve prevederlo, perché il MAR deve leggere dal bus un indirizzo di memoria solo quando necessario - e non ad ogni ciclo di clock. Il segnale MI (Memory Input) del SAP serve infatti per caricare l'indirizzo sul MAR solo quando è necessario; quando MI è attivo, al successivo rising edge del CLK il MAR carica il valore presente nel bus. Senza un ingresso di Enable, il FF '273 andrebbe a "registrare" il dato in ingresso ad ogni rising edge del clock.
+Per indirizzare 64K di memoria serve un registro MAR (Memory Address Register) da 16 bit (2^16 = 64K); anziché utilizzare 4 registri a 4 bit 74LS173 (il '173 è il Flip-Flop utilizzato in origine nel SAP), sembra più comodo utilizzare due registri Flip-Flop tipo D 74LS273 a 8 bit; uno svantaggio di questi ultimi, rispetto alla loro controparte a 4 bit, è che non hanno un ingresso di Enable, mentre il disegno del computer deve prevederlo, perché il MAR deve leggere dal bus un indirizzo di memoria solo quando istruito a farlo - e non ad ogni ciclo di clock. Il segnale MI (Memory Address Register Input) del SAP serve infatti per caricare l'indirizzo sul MAR solo quando è necessario farlo: con MI attivo, in corrispondenza del rising edge del clock il MAR memorizza il valore presente nel bus. Senza un ingresso di Enable, il FF '273 andrebbe a "registrare" il dato in corrispondenza di ogni ciclo di clock e non solo quando fosse necessario.
 
-In un progetto a 8 bit si potrebbero semplicemente utilizzare due '173 a 4 bit continuando a sfruttare i segnali di Enable nativamente disponibili. Bisogna dire che sarebbe comunque possibile utilizzare anche il '273 a 8 bit utilizzando una porta AND per *costruire* un segnale di Enable artificiale: i segnali CLK e MI sarebbero gli ingressi della AND, mentre l'output della AND si collegherebbe all'ingresso CLK del FF, che così sarebbe attivato solo quando, oltre al CLK, fosse contemporaneamente presente anche il segnale MI.
+Nel mio progetto a 8 bit si potrebbero semplicemente utilizzare due '173 a 4 bit continuando a sfruttare i segnali di Enable nativamente disponibili. Bisogna dire che sarebbe comunque possibile utilizzare anche il '273 a 8 bit utilizzando una porta AND per *costruire* un segnale di Enable artificiale: i segnali CLK e MI sarebbero gli ingressi della AND, mentre l'output della AND si collegherebbe all'ingresso CLK del FF, che così sarebbe attivato solo quando, oltre al CLK, fosse contemporaneamente presente anche il segnale MI.
 
-Il '273, al pari del '173, presenta un ingresso Clear / Reset (CLR), che nel MAR è necessario per resettare il registro - o almeno *credevo* necessario. Sembrava anche interessante l'ipotesi alternativa di usare un registro a 8 bit [74LS377](https://datasheetspdf.com/download_new.php?id=375625), che include 8 FF con Enable; tuttavia avevo realizzato che **non** fosse possibile procedere in tal senso, perché nel MAR serviva anche il CLR, non presente in questo chip. Come ormai si sarà capito, ho realizzato successivamente che il MAR può funzionare perfettamente anche senza un segnale di Clear / Reset.
+Il '273, al pari del '173, presenta un ingresso Clear / Reset (CLR), che nel MAR è necessario per resettare il registro - o almeno *credevo* necessario. Sembrava anche interessante l'ipotesi alternativa di usare un registro a 8 bit [74LS377](https://datasheetspdf.com/download_new.php?id=375625), che include 8 FF con Enable; tuttavia avevo realizzato che **non** fosse possibile procedere in tal senso, perché nel MAR serviva anche il CLR, non presente in questo chip. Come ormai si sarà capito, ho realizzato successivamente che il MAR poteva funzionare perfettamente anche senza un segnale di Clear / Reset.
 
 Da notare che il '377 sarebbe in seguito diventato uno dei chip più utilizzati nel BEAM.
 
@@ -33,7 +33,7 @@ Da notare che il '377 sarebbe in seguito diventato uno dei chip più utilizzati 
 
 Come nel caso del MAR, per indirizzare 256 byte di RAM era necessario un registro Program Counter (PC) a 8 bit. Nel computer SAP era invece presente un contatore a 4 bit [74LS161](https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf) e dovevo pertanto cercare di combinarne due in cascata.
 
-Sarebbe stato comodo utilizzare un singolo contatore a 8 bit, ma tra i chip disponibili sul mercato non ne ho trovato uno che includesse anche l'ingresso LOAD. Il LOAD permette il caricamento parallelo sul PC di uno specifico indirizzo al quale il computer deve saltare (ad esempio, per eseguire un'istruzione di salto assoluto o branch relativo a un determinato indirizzo, si carica quel valore nel PC).
+Sarebbe stato comodo utilizzare un singolo contatore a 8 bit, ma tra i chip disponibili sul mercato non ne ho trovato uno che includesse anche l'ingresso LOAD. Il LOAD permette il caricamento parallelo sul PC di uno specifico indirizzo al quale il computer deve saltare (ad esempio, per eseguire un'istruzione di salto assoluto o branch relativo, si calcola l'indirizzo di destinazione e lo si carica nel PC).
 
 Per combinare due chip a 4 bit è stato necessario, nonché molto utile, capire la differenza fra "Ripple Mode Carry" e "Carry Look Ahead": il datasheet del contatore 74LS161 riportava infatti questi due diversi esempi di collegamento di chip in cascata tra di loro.
 
@@ -64,7 +64,7 @@ Un altro aspetto che avevo notato immediatamente, ipotizzando l'uso del 62256, e
 
 *Nello schema si notano i 74189 con le porte di Input dedicate D1-D4 e le porte di Output dedicate O1-O4.*
 
-Quello che iniziavo a capire era che per utilizzare una RAM con Common IO dovevo fare un "doppio passaggio" o qualcosa di simile. Come faccio ad avere sempre visibile il contenuto della locazione di memoria anche nel momento in cui setto le porte di IO del chip in modalità Input? Devo forse memorizzare il contenuto delle uscite della RAM in qualche latch e solo a quel punto disabilitare il chip prima di andarvi a scrivere? In seguito avrei capito che non era necessario un latch, ma che c'era un'altra strada.
+Quello che iniziavo a capire era che per utilizzare una RAM con Common IO dovevo fare un "doppio passaggio" o qualcosa di simile. Come faccio ad avere sempre visibile il contenuto della locazione di memoria anche nel momento in cui setto le porte di IO del chip in modalità Input? Come faccio a mantenere la visibilità del contenuto della RAM quando questa non è attiva in output? Devo forse memorizzare il contenuto delle uscite della RAM in qualche latch e solo a quel punto disabilitare il chip prima di andarvi a scrivere? In seguito avrei capito che non era necessario un latch, ma che c'era un'altra strada.
 
 In [questo post](https://www.reddit.com/r/beneater/comments/uot8pk/ram_module_using_65256/) un utente esponeva un disegno che credevo potesse andare bene, ma [nel suo schema](https://imgur.com/upvYjUX) le uscite dei multiplexer (MUX) sono sempre attive (i [multiplexer 74LS157](https://datasheetspdf.com/download_new.php?id=488136) non sono tri-state) e potrebbero creare contenzioso con le uscite della RAM quando questa è attiva in output; la soluzione poteva essere quella di aggiungere un altro [bus transceiver 74LS245](https://datasheetspdf.com/download_new.php?id=375533), oppure di utilizzare dei [MUX tri-state 74LS257](https://datasheetspdf.com/download_new.php?id=935737); intuivo qualcosa, relativamente alla necessità di gestire i segnali di controllo della RAM in maniera più ampia, controllando le interazioni con i MUX e con il/i transceiver di interfacciamento verso il bus del computer.
 
@@ -72,9 +72,9 @@ In [questo post](https://www.reddit.com/r/beneater/comments/uot8pk/ram_module_us
 
 A cosa servono i MUX nel modulo RAM (e nel MAR)? All'accensione, il contenuto della memoria RAM è vuoto / casuale, dunque dobbiamo avere sia la possibilità di programmare la RAM ("Program Mode"), sia di renderla poi visibile al bus del computer durante la normale esecuzione dei programmi ("Run Mode").
 
-- La modalità **Program Mode** è manuale e sfrutta dei dip-switch per scrivere manualmente sulla RAM per caricare i programmi (o leggere il contenuto della RAM in stile "debug mode").
+- La modalità **Program Mode** è manuale e sfrutta dei dip-switch per indirizzare e programmare manualmente la RAM (o leggerne il contenuto della RAM in stile "debug mode").
 
-- La modalità **Run Mode** è la modalità di esecuzione, nella quale la RAM viene indirizzata dal MAR e viene acceduta in lettura / scrittura esclusivamente dal bus del computer.
+- La modalità **Run Mode** è la modalità di esecuzione, nella quale la RAM viene indirizzata esclusivamente dal MAR e altrettanto esclusivamente viene acceduta in lettura / scrittura solo dal bus del computer.
 
 La selezione di cosa passare a RAM e MAR avviene mediante un MUX (nel nostro caso 2:1, cioè ad ogni uscita corrispondono due ingressi selezionabili): gli ingressi del MUX sono connessi sia ai dip-switch che utilizzeremo per la programmazione manuale del computer, sia al bus dati del computer; le uscite sono connesse agli ingressi della RAM e del MAR. Un semplice interruttore connesso all'ingresso di selezione del MUX consente di scegliere quali ingressi attivare.
 
@@ -209,7 +209,7 @@ Molto, molto clever.
 
 Parallelamente agli studi dei lavori di altri utenti, avevo iniziato a lavorare sul disegno dei miei moduli MAR e RAM, non senza continuare a saltare di palo in frasca per approfondire temi ancora parzialmente oscuri o affrontare argomenti nuovi.
 
-Nel frattempo avevo sviluppato lo schema del MAR a 8 bit, in grado di pilotare 256 indirizzi di memoria. Inizialmente avevo utilizzato due FF '173 a 4 bit, poi sostituiti da un unico FF '273 a 8 bit (sprovvisto di controllo dell'attivazione dell'output, che però non è necessario). Infine ho utilizzato un registro a 8 bit '377, altrettanto adatto al nostro scopo.
+Il MAR era progettato a 8 bit per pilotare 256 indirizzi di memoria. Inizialmente avevo utilizzato due FF '173 a 4 bit, poi sostituiti da un unico FF '273 a 8 bit (sprovvisto di controllo dell'attivazione dell'output, che però non è necessario). Infine ho utilizzato un registro a 8 bit '377, altrettanto adatto al nostro scopo.
 
 [![Memory Address Register](../../assets/20-mar-beam.png "Memory Address Register"){:width="100%"}](../../assets/20-mar-beam.png)
 
@@ -217,8 +217,8 @@ Nel frattempo avevo sviluppato lo schema del MAR a 8 bit, in grado di pilotare 2
 
 Notare l'interruttore di selezione Program Mode / Run Mode (segnale PROG, che è connesso anche al modulo RAM):
 
-- alla chiusura dei contatti 1-2 i pin di selezione dei MUX '157 si trovano allo stato logico LO, attivando gli ingressi I0a, I0b, I0c ed I0d, che trasmettono così al bus di indirizzi della RAM i valori settati sul dip-switch;
-- alla chiusura dei contatti 2-3 i pin di selezione dei MUX '157 si trovano allo stato logico HI, attivando gli ingressi I1a, I1b, I1c ed I1d, che trasmettono così al bus di indirizzi della RAM i valori presenti in output sul '377.
+- alla chiusura dei contatti 1-2 i pin di selezione dei MUX '157 si trovano allo stato logico LO, attivando gli ingressi I0a, I0b, I0c ed I0d, che trasmettono così al bus indirizzi della RAM i valori settati sul dip-switch;
+- alla chiusura dei contatti 2-3 i pin di selezione dei MUX '157 si trovano allo stato logico HI, attivando gli ingressi I1a, I1b, I1c ed I1d, che trasmettono così al bus indirizzi della RAM i valori presenti in output sul '377.
 
 Come già detto, per quanto riguarda la realizzazione del modulo RAM avevo deciso di procedere con il chip 62256 con IO comuni. Per cercare di fissare i concetti, avevo trascritto nuovamente le differenze tra le architetture con chip con IO separati ed IO comuni:
 
@@ -229,16 +229,16 @@ Come già detto, per quanto riguarda la realizzazione del modulo RAM avevo decis
 - Con la RAM single-port le linee Data sono invece le stesse per Write e Read. A seconda dell'operazione da eseguire, si attivano due percorsi diversi, come già discusso parlando del doppio bus. Per scrivere sulla RAM la sequenza era questa:
 
   - Output Enable /OE LO fisso;
-  - Chip Enable /CE LO fisso (in realtà il datasheet mostra ↘↗, ma come segnalava The8BitEnthusiast lo si può tenere fisso LO);
+  - Chip Enable /CE LO fisso (in realtà il datasheet mostra ↘↗, ma, come segnalava The8BitEnthusiast, lo si può tenere fisso LO);
   - /WE ↘↗ (che deve essere "contenuto" all'interno del ciclo ↘↗ di /CE, se /CE non viene mantenuto fisso LO).
 
-Riprendendo il datasheet del [62256](https://www.alliancememory.com/wp-content/uploads/pdf/AS6C62256.pdf) a pagina 6 troviamo anche un'altra possibilità per scrivere, indicata come "WRITE CYCLE 2 (CE# Controlled)", ma non mi era chiaro e non volevo fare lo sperimentatore - il mio desiderio era quello di realizzare un modulo che funzionasse con certezza.
+Riprendendo il datasheet del [62256](https://www.alliancememory.com/wp-content/uploads/pdf/AS6C62256.pdf) a pagina 6 troviamo anche un'altra possibilità per scrivere, indicata come "WRITE CYCLE 2 (CE# Controlled)", ma non mi era chiara e non volevo fare lo sperimentatore - il mio desiderio era quello di realizzare un modulo che funzionasse con certezza.
 
 [![Prima versione del modulo RAM](../../assets/20-ram-1st.png "Prima versione del modulo RAM"){:width="100%"}](../../assets/20-ram-1st.png)
 
 *Prima versione del Modulo di memoria (RAM) del BEAM.*
 
-Riponevo grandi speranze su questo design.
+Riponevo grandi speranze su questo primo design.
 
 Per scrivere in RAM in Run Mode:
 
@@ -262,21 +262,21 @@ La sequenza degli eventi è dunque la seguente:
 - RI è LO, dunque la NOT mi disabiliterà il XCVR superiore che non metterà dunque alcunché in utput verso la RAM;
 - RO LO abilita il XCVR inferiore e /OE della RAM, che viene attivata in output;
 - /CE (aka /CS, Chip Select) è fisso LO in quanto connesso a ground;
-- nel frattempo WE è HI perché:
+- nel frattempo WE è HI (e dunque la scrittura inibita) perché:
   - in Run Mode RI LO mantiene HI all'uscita della NAND connessa a I1d del MUX (se uno dei due input della RAM è LO, l'uscita è HI) e dunque anche /WE è fisso HI, inibendo la scrittura;
   - in Program Mode l'ingresso I0d del MUX è fisso HI grazie alla resistenza da 1K, perciò anche in questo caso non vi è scrittura.
 
-Una analisi successiva di questo schema, che "all'occhio" era molto bello, mi evidenziava che probabilmente avevo gestito correttamente il discorso del "bus interno" e che la fase di output mi sembrava in regola, mentre nella fase di input notavo ridondanze superflue: il transceiver inferiore poteva lavorare bidirezionalmente a seconda di come necessario per far interagire RAM e BUS, mentre potevo eliminare i MUX e collegare il transceiver superiore direttamente al dip-switch, attivandolo solo al monento opportuno per la programmazione manuale della RAM. In pratica, ritornavo alla soluzione concepita da The8BitEnthusiast, senza tuttavia aver ancora acquisito capacità e autonomia sufficienti per progettare una soluzione di attivazione just-in-time dei transceiver come aveva fatto lui.
+Una analisi successiva di questo schema, che "all'occhio" era molto bello, mi evidenziava che probabilmente avevo gestito correttamente il discorso del "bus interno" e che anche la fase di outputpoteva essere funzionale, mentre nella fase di input notavo ridondanze superflue: avrei potuto far lavorare il transceiver inferiore bidirezionalmente a seconda della necessità per far interagire RAM e BUS e avrei potuto anche eliminare i MUX e collegare il transceiver superiore direttamente al dip-switch, attivandolo solo al monento opportuno per la programmazione manuale della RAM. In pratica, ritornavo alla soluzione concepita da The8BitEnthusiast, senza tuttavia aver ancora acquisito capacità e autonomia sufficienti per progettare una soluzione di attivazione just-in-time dei transceiver come aveva fatto lui.
 
-Avevo comunque provato a ridisegnare lo schema ipotizzando di poter utilizzare un solo transceiver e mantenendo i MUX per gestire l'input della RAM facendolo provenire dal bus o dal dip-switch a seconda della modalità Program o Run-Mode.
+Stabilito che non sarei riuscito a far funzionare una soluzione just-in-time, avevo dunque provato a ridisegnare lo schema ipotizzando di poter utilizzare un solo transceiver e mantenendo i MUX per gestire l'input della RAM facendolo provenire dal bus o dal dip-switch a seconda della modalità Program o Run-Mode.
 
 [![Seconda versione del modulo RAM](../../assets/20-ram-2nd.png "Seconda versione del modulo RAM"){:width="100%"}](../../assets/20-ram-2nd.png)
 
 *Seconda versione del Modulo di memoria (RAM) del BEAM.*
 
-Questo è anche il momento ufficiale della nascita del nome BEAM 😁- ma alla fine sembrava che avessi  aggiunto più chip (per la logica) rispetto a prima = maggior complessità 🙄. Però l'idea continuava a piacermi ed era un interessante esercizio logico per provare a sfruttare l'unico transceiver invertendone la direzione a seconda dell'operazione da fare.
+Questo è anche il momento ufficiale della nascita del nome BEAM 😁. Dopo aver realizzato il disegno, mi sembrava di aver aggiunto più chip (per la logica) rispetto a prima = maggior complessità 🙄. Però l'idea continuava a piacermi ed era un interessante esercizio logico per provare a sfruttare l'unico transceiver invertendone la direzione a seconda dell'operazione da fare.
 
-Avevo provato a chiedere un [consiglio](https://www.reddit.com/r/beneater/comments/10inkvs/8bit_computer_ram_module_would_this_work/) su Reddit e the8BitEnthusiast, instancabille, mi aveva dato alcune indicazioni.
+Avevo provato a chiedere un [consiglio](https://www.reddit.com/r/beneater/comments/10inkvs/8bit_computer_ram_module_would_this_work/) su Reddit e the8BitEnthusiast, instancabile, mi aveva dato alcune indicazioni.
 
 
 
