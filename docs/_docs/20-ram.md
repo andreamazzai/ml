@@ -243,21 +243,42 @@ Riponevo grandi speranze su questo design.
 Per scrivere in RAM in Run Mode:
 
 - RI (che nel ciclo di Write è HI) abilita il '245 superiore mediante una NOT;
-- /RO (che nel ciclo di Write è HI) porta OE a HI, disabilitando l'output del 62256;
-- /CE è fisso LO in quanto connesso a ground;
-- i valori presenti nel bus o nel DIP-Switch vengono presentati via MUX al transceiver che, a sua volta, presenta tali valori alle porte della RAM;
-- al rising edge del clock la NAND passa da HI a LO per il tempo RC e l'impulso /WE LO viene trasmesso alla RAM attraverso il MUX '157: la RAM memorizza quanto trova nelle sue porte di ingresso D0-D7.
+- /RO (che nel ciclo di Write è HI) porta /OE a HI, disabilitando l'output del 62256;
+- /CE (aka /CS, Chip Select) è fisso LO in quanto connesso a ground;
+- i valori presenti nel bus o nel dip-switch vengono presentati via MUX al transceiver che, a sua volta, presenta tali valori alle porte della RAM;
+- Zd, e dunque /WE,  è HI, in quanto il pin 1 della NAND è LO
+- al rising edge del clock l'uscita della NAND passa da HI a LO per il tempo RC e l'impulso /WE ↘↗ viene trasmesso alla RAM attraverso il MUX '157: la RAM memorizza quanto trova nelle sue porte di ingresso D0-D7.
 
-In Program Mode l'altro ingresso del MUX è HI grazie alla resistenza di pull-up da 1K, ma premendo il bottone si crea un impulso negativo che attiva /WE LO: anche in questo caso la RAM memorizza quanto trova nelle sue porte di ingresso D0-D7.
+In Program Mode l'ingresso I0d del MUX è HI grazie alla resistenza di pull-up da 1K, ma premendo il bottone si crea un impulso negativo che attiva un ciclo /WE ↘↗: anche in questo caso la RAM memorizza quanto trova nelle sue porte di ingresso D0-D7.
 
-- Per leggere dalla RAM [B], mi servono CE LO [4] e WE HI [5] e OE LO [6] (modo 1 pagina 8)
-  - RI sarà LO, dunque la NOT mi disabiliterà il XCVR superiore
-  - /RO diventa LO e mi abilita il XCVR inferiore e mi porta /OE LO [6]
-  - CE è LO perché sempre connesso a ground [4]
-  - Nel frattempo WE è HI perché:
-    - In Run Mode RI LO significa che la NAND di ingresso del MUX che pilota WE mette output HI (perché uno dei due input A e B è LO, Y è sempre HI e dunque anche /WE è HI [5])
-    - In Program Mode l'altro ingresso del MUX è HI [5] grazie alla resistenza da 1K
-Le porte dei MUX 157 non sono tri-state
+Per leggere dalla RAM si devono soddisfare le seguenti condizioni:
+
+- /CE LO, cioè il chip deve essere abilitato
+- /WE HI, dunque non devo attivare il segnale di scrittura
+- /OE LO, cioè le uscite devono essere attivate
+
+La sequenza degli eventi è dunque la seguente:
+
+- RI è LO, dunque la NOT mi disabiliterà il XCVR superiore che non metterà dunque alcunché in utput verso la RAM;
+- RO LO abilita il XCVR inferiore e /OE della RAM, che viene attivata in output;
+- /CE (aka /CS, Chip Select) è fisso LO in quanto connesso a ground;
+- nel frattempo WE è HI perché:
+  - in Run Mode RI LO mantiene HI all'uscita della NAND connessa a I1d del MUX (se uno dei due input della RAM è LO, l'uscita è HI) e dunque anche /WE è fisso HI, inibendo la scrittura;
+  - in Program Mode l'ingresso I0d del MUX è fisso HI grazie alla resistenza da 1K, perciò anche in questo caso non vi è scrittura.
+
+Una analisi successiva di questo schema, che "all'occhio" era molto bello, mi evidenziava che probabilmente avevo gestito correttamente il discorso del "bus interno" e che la fase di output mi sembrava in regola, mentre nella fase di input notavo ridondanze superflue: il transceiver inferiore poteva lavorare bidirezionalmente a seconda di come necessario per far interagire RAM e BUS, mentre potevo eliminare i MUX e collegare il transceiver superiore direttamente al dip-switch, attivandolo solo al monento opportuno per la programmazione manuale della RAM. In pratica, ritornavo alla soluzione concepita da The8BitEnthusiast, senza tuttavia aver ancora acquisito capacità e autonomia sufficienti per progettare una soluzione di attivazione just-in-time dei transceiver come aveva fatto lui.
+
+Avevo comunque provato a ridisegnare lo schema ipotizzando di poter utilizzare un solo transceiver e mantenendo i MUX per gestire l'input della RAM facendolo provenire dal bus o dal dip-switch a seconda della modalità Program o Run-Mode.
+
+[![Seconda versione del modulo RAM](../../assets/20-ram-2nd.png "Seconda versione del modulo RAM"){:width="100%"}](../../assets/20-ram-2nd.png)
+
+*Seconda versione del Modulo di memoria (RAM) del BEAM.*
+
+Questo è anche il momento ufficiale della nascita del nome BEAM 😁- ma alla fine sembrava che avessi  aggiunto più chip (per la logica) rispetto a prima = maggior complessità 🙄. Però l'idea continuava a piacermi ed era un interessante esercizio logico per provare a sfruttare l'unico transceiver invertendone la direzione a seconda dell'operazione da fare.
+
+Avevo provato a chiedere un [consiglio](https://www.reddit.com/r/beneater/comments/10inkvs/8bit_computer_ram_module_would_this_work/) su Reddit e the8BitEnthusiast, instancabille, mi aveva dato alcune indicazioni.
+
+
 
 ## XXXXXXXXXXXXXXXXXX
 
