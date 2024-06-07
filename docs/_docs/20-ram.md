@@ -309,7 +309,7 @@ e così via.
 
 Ho dunque riscritto la "truth table" del modulo RAM:
 
-[![Tabella analisi modulo RAM - terza versione](../../assets/20-ram-3rd-table.png "Tabella analisi modulo RAM - terza versione"){:width="100%"}](../../assets/20-ram-3rd-table.png)
+[![Tabella analisi modulo RAM - terza versione](../../assets/20-ram-3rd-table.png "Tabella analisi modulo RAM - terza versione"){:width="100%"}]
 
 *Tabella analisi modulo RAM - terza versione.*
 
