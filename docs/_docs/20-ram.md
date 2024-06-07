@@ -309,11 +309,11 @@ e così via.
 
 Ho dunque riscritto la "truth table" del modulo RAM:
 
-[![Tabella analisi modulo RAM - terza versione](../../assets/20-ram-2nd.png "Tabella analisi modulo RAM - terza versione"){:width="100%"}](../../assets/20-ram-2nd-table2.png)
+[![Tabella analisi modulo RAM - terza versione](../../assets/20-ram-3rd-table.png "Tabella analisi modulo RAM - terza versione"){:width="100%"}](../../assets/20-ram-3rd-table.png)
 
 *Tabella analisi modulo RAM - terza versione.*
 
-I due asterischi in tabella \*\* mi servivano a ricordare che non dovevo mai avere /WR e /RR attivi contemporaneamente perché /WR non ha controlli e scrive sempre sulla RAM; dovrei mettere una NAND a 3 ingressi che si attiva solo per CLK, RR e /WR, cioè /WE = CLK * RR * /WR
+I due asterischi in tabella \*\* mi servivano a ricordare che non dovevo mai avere /WR e /RR attivi contemporaneamente perché /WR non ha controlli e scrive sempre sulla RAM; dovrei mettere una NAND a 3 ingressi che si attiva solo per CLK, RR e /WR, cioè /WE = CLK \* RR \* /WR.
 
 [![Terza versione del modulo RAM](../../assets/20-ram-3rd.png "Terza versione del modulo RAM"){:width="100%"}](../../assets/20-ram-3nd.png)
 
