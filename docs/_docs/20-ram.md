@@ -284,13 +284,13 @@ Avevo provato a chiedere un [consiglio](https://www.reddit.com/r/beneater/commen
 
 Per analizzare tutti gli stati logici possibili avevo preparato una tabella di riepilogo con la quale verificare se il comportamento del modulo fosse in linea con le aspettative; la tabella mostrata in seguito è solo una parte di quella completa.
 
-[![Tabella analisi modulo RAM](../../assets/20-ram-2nd.png "Tabella analisi modulo RAM"){:width="66%"}](../../assets/20-ram-2nd-table.png)
+[![Tabella analisi modulo RAM](../../assets/20-ram-2nd-table.png "Tabella analisi modulo RAM"){:width="100%"}]
 
 *Tabella riepilogativa analisi stati logici seconda versione modulo RAM.*
 
 A un certo punto ho capito che nello schema c'era un problema piuttosto importante: i due MUX 157 proiettavano in continuazione i loro input verso il bus interno, causando un possibile short con RAM quando questa si trovava in output mode. Ho dunque pensato di sostituire i 2x '157 con i '257, che sono tri-state.
 
-[![Tabella analisi rivista modulo RAM](../../assets/20-ram-2nd-table2.png "Tabella analisi rivista modulo RAM"){:width="66%"}](../../assets/20-ram-2nd-table2.png)
+[![Tabella analisi rivista modulo RAM](../../assets/20-ram-2nd-table2.png){:width="100%"}]
 
 *Tabella riepilogativa rivista analisi stati logici seconda versione modulo RAM.*
 
@@ -315,7 +315,7 @@ Ho dunque riscritto la "truth table" del modulo RAM:
 
 I due asterischi in tabella \*\* mi servivano a ricordare che dovevo stare particolarmente attento alla preparazione del microcode che non dovevo mai avere /WR e /RR attivi contemporaneamente, perché non controllano se vanno conflitto tra di loro. Per evitare conflitti avrei dovuto mettere su /WR una NAND a 3 ingressi che si attiva solo per CLK, RR e /WR, cioè /WE = CLK \* RR \* /WR, in altre parole: posso scrivere sulla RAM *solo* se non la sto già leggendo.
 
-[![Terza versione del modulo RAM](../../assets/20-ram-3rd.png){:width="100%"}]
+[![Terza versione del modulo RAM](../../assets/20-ram-3rd.png "Terza versione del modulo RAM"){:width="100%"}](../../assets/20-ram-3rd.png)
 
 *Terza versione del Modulo di memoria (RAM) del BEAM.*
 
