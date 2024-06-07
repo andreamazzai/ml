@@ -220,6 +220,8 @@ Notare l'interruttore di selezione Program Mode / Run Mode (segnale PROG, che è
 - alla chiusura dei contatti 1-2 i pin di selezione dei MUX '157 si trovano allo stato logico LO, attivando gli ingressi I0a, I0b, I0c ed I0d, che trasmettono così al bus indirizzi della RAM i valori settati sul dip-switch;
 - alla chiusura dei contatti 2-3 i pin di selezione dei MUX '157 si trovano allo stato logico HI, attivando gli ingressi I1a, I1b, I1c ed I1d, che trasmettono così al bus indirizzi della RAM i valori presenti in output sul '377.
 
+### Prima versione del modulo RAM
+
 Come già detto, per quanto riguarda la realizzazione del modulo RAM avevo deciso di procedere con il chip 62256 con IO comuni. Per cercare di fissare i concetti, avevo trascritto nuovamente le differenze tra le architetture con chip con IO separati ed IO comuni:
 
 - Con le RAM dual-port, avevo i segnali di RAM IN e RAM OUT su bus "separati":
@@ -266,18 +268,60 @@ La sequenza degli eventi è dunque la seguente:
   - in Run Mode RI LO mantiene HI all'uscita della NAND connessa a I1d del MUX (se uno dei due input della RAM è LO, l'uscita è HI) e dunque anche /WE è fisso HI, inibendo la scrittura;
   - in Program Mode l'ingresso I0d del MUX è fisso HI grazie alla resistenza da 1K, perciò anche in questo caso non vi è scrittura.
 
-Una analisi successiva di questo schema, che "all'occhio" era molto bello, mi evidenziava che probabilmente avevo gestito correttamente il discorso del "bus interno" e che anche la fase di outputpoteva essere funzionale, mentre nella fase di input notavo ridondanze superflue: avrei potuto far lavorare il transceiver inferiore bidirezionalmente a seconda della necessità per far interagire RAM e BUS e avrei potuto anche eliminare i MUX e collegare il transceiver superiore direttamente al dip-switch, attivandolo solo al monento opportuno per la programmazione manuale della RAM. In pratica, ritornavo alla soluzione concepita da The8BitEnthusiast, senza tuttavia aver ancora acquisito capacità e autonomia sufficienti per progettare una soluzione di attivazione just-in-time dei transceiver come aveva fatto lui.
+Una analisi successiva di questo schema, che "all'occhio" era molto bello, mi evidenziava che probabilmente avevo gestito correttamente il discorso del "bus interno" e che anche la fase di output poteva essere funzionale, mentre nella fase di input notavo ridondanze superflue: avrei potuto far lavorare il transceiver inferiore bidirezionalmente a seconda della necessità per far interagire RAM e BUS e avrei potuto anche eliminare i MUX e collegare il transceiver superiore direttamente al dip-switch, attivandolo solo al momento opportuno per la programmazione manuale della RAM. In pratica, ritornavo alla soluzione concepita da The8BitEnthusiast, senza tuttavia aver ancora acquisito capacità e autonomia sufficienti per progettare una soluzione di attivazione just-in-time dei transceiver come aveva fatto lui.
 
-Stabilito che non sarei riuscito a far funzionare una soluzione just-in-time, avevo dunque provato a ridisegnare lo schema ipotizzando di poter utilizzare un solo transceiver e mantenendo i MUX per gestire l'input della RAM facendolo provenire dal bus o dal dip-switch a seconda della modalità Program o Run-Mode.
+### Seconda versione del modulo RAM
+
+Stabilito che non sarei riuscito a far funzionare una soluzione just-in-time, avevo dunque provato a ridisegnare lo schema con un solo transceiver e mantenendo i MUX per gestire l'input della RAM, facendolo provenire dal bus o dal dip-switch a seconda della modalità Program o Run-Mode.
 
 [![Seconda versione del modulo RAM](../../assets/20-ram-2nd.png "Seconda versione del modulo RAM"){:width="100%"}](../../assets/20-ram-2nd.png)
 
 *Seconda versione del Modulo di memoria (RAM) del BEAM.*
 
-Questo è anche il momento ufficiale della nascita del nome BEAM 😁. Dopo aver realizzato il disegno, mi sembrava di aver aggiunto più chip (per la logica) rispetto a prima = maggior complessità 🙄. Però l'idea continuava a piacermi ed era un interessante esercizio logico per provare a sfruttare l'unico transceiver invertendone la direzione a seconda dell'operazione da fare.
+Questo è anche il momento ufficiale della nascita del nome BEAM 😁. Dopo aver realizzato il disegno, mi sembrava di aver aggiunto più chip (per la logica) rispetto a prima = maggior complessità 🙄. Tuttavia, l'idea continuava a piacermi ed era un interessante esercizio logico per provare a sfruttare l'unico transceiver invertendone la direzione a seconda dell'operazione da fare.
 
-Avevo provato a chiedere un [consiglio](https://www.reddit.com/r/beneater/comments/10inkvs/8bit_computer_ram_module_would_this_work/) su Reddit e the8BitEnthusiast, instancabile, mi aveva dato alcune indicazioni.
+Avevo provato a chiedere un [consiglio](https://www.reddit.com/r/beneater/comments/10inkvs/8bit_computer_ram_module_would_this_work/) su Reddit e il solito The8BitEnthusiast, instancabile, mi aveva dato alcune indicazioni e una risposta tutto sommato positiva.
 
+Per analizzare tutti gli stati logici possibili avevo preparato una tabella di riepilogo con la quale verificare se il comportamento del modulo fosse in linea con le aspettative; la tabella mostrata in seguito è solo una parte di quella completa.
+
+[![Tabella analisi modulo RAM](../../assets/20-ram-2nd.png "Tabella analisi modulo RAM"){:width="66%"}](../../assets/20-ram-2nd-table.png)
+
+*Tabella riepilogativa analisi stati logici seconda versione modulo RAM.*
+
+A un certo punto ho capito che nello schema c'era un problema piuttosto importante: i due MUX 157 proiettavano in continuazione i loro input verso il bus interno, causando un possibile short con RAM quando questa si trovava in output mode. Ho dunque pensato di sostituire i 2x '157 con i '257, che sono tri-state.
+
+[![Tabella analisi rivista modulo RAM](../../assets/20-ram-2nd-table2.png "Tabella analisi rivista modulo RAM"){:width="66%"}](../../assets/20-ram-2nd-table2.png)
+
+*Tabella riepilogativa rivista analisi stati logici seconda versione modulo RAM.*
+
+Quando sono arrivato a questo punto ho realizzato di aver lavorato inutilmente: a cosa mi servono due MUX e un 245? Sono sufficienti due 245, uno per gestire I/O sul bus, uno per gestire DIP SW, che in effetti è come aveva fatto 8bitEnthusiast! Ero stato illuminato e in quel momento mi è sembrato tutto chiaro!
+
+Nel frattempo avevo anche iniziato a rinominare i segnali logici prendendo come punto di vista il computer e non il modulo:
+
+| Vecchio | Descrizione | Nuovo | Descrizione |
+|-        |-            |-      |-            |
+| RI      | RAM In      | WR    | Write RAM   |
+| RO      | RAM Out     | RR    | Read RAM    |
+
+e così via.
+
+### Terza versione del modulo RAM
+
+Ho dunque riscritto la "truth table" del modulo RAM:
+
+[![Tabella analisi modulo RAM - terza versione](../../assets/20-ram-2nd.png "Tabella analisi modulo RAM - terza versione"){:width="100%"}](../../assets/20-ram-2nd-table2.png)
+
+*Tabella analisi modulo RAM - terza versione.*
+
+I due asterischi in tabella \*\* mi servivano a ricordare che non dovevo mai avere /WR e /RR attivi contemporaneamente perché /WR non ha controlli e scrive sempre sulla RAM; dovrei mettere una NAND a 3 ingressi che si attiva solo per CLK, RR e /WR, cioè /WE = CLK * RR * /WR
+
+[![Terza versione del modulo RAM](../../assets/20-ram-3rd.png "Terza versione del modulo RAM"){:width="100%"}](../../assets/20-ram-3nd.png)
+
+*Tabella analisi modulo RAM - terza versione.*
+
+
+Paralle
+	
 
 
 ## XXXXXXXXXXXXXXXXXX
