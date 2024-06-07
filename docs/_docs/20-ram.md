@@ -313,16 +313,13 @@ Ho dunque riscritto la "truth table" del modulo RAM:
 
 *Tabella analisi modulo RAM - terza versione.*
 
-I due asterischi in tabella \*\* mi servivano a ricordare che non dovevo mai avere /WR e /RR attivi contemporaneamente perché /WR non ha controlli e scrive sempre sulla RAM; dovrei mettere una NAND a 3 ingressi che si attiva solo per CLK, RR e /WR, cioè /WE = CLK \* RR \* /WR.
+I due asterischi in tabella \*\* mi servivano a ricordare che dovevo stare particolarmente attento alla preparazione del microcode che non dovevo mai avere /WR e /RR attivi contemporaneamente, perché non controllano se vanno conflitto tra di loro. Per evitare conflitti avrei dovuto mettere su /WR una NAND a 3 ingressi che si attiva solo per CLK, RR e /WR, cioè /WE = CLK \* RR \* /WR, in altre parole: posso scrivere sulla RAM *solo* se non la sto già leggendo.
 
-[![Terza versione del modulo RAM](../../assets/20-ram-3rd.png "Terza versione del modulo RAM"){:width="100%"}](../../assets/20-ram-3nd.png)
+[![Terza versione del modulo RAM](../../assets/20-ram-3rd.png "Terza versione del modulo RAM"){:width="100%"}](../../assets/20-ram-3rd.png)
 
-*Tabella analisi modulo RAM - terza versione.*
+*Terza versione del Modulo di memoria (RAM) del BEAM.*
 
-
-Paralle
-	
-
+Controllare se nello schema attuale i requisiti di timing sono a posto
 
 ## XXXXXXXXXXXXXXXXXX
 
