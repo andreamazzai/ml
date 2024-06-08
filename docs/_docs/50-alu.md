@@ -11,21 +11,32 @@ Sviluppata attorno ai chip [74LS181](https://www.ti.com/lit/ds/symlink/sn54ls181
 
 Il 74181 è un'ALU a 4 bit, sviluppata negli anni '70, che può eseguire 16 operazioni aritmetiche e 16 operazioni logiche. E' possibile concatenarne più di una per elaborare word di dimensioni maggiori.
 
+Come detto nell'introduzione, il computer BEAM, al pari dell'NQSAP, include il set di istruzioni completo del 6502, comprese quelle logiche e aritmetiche.
+
 Tra le caratteristiche che spiccavano nello schema, notavo soprattutto un discreto numero di chip, tra i quali gli Shift Register 74LS194, e un modo particolare per indirizzare i '181, che erano "strettamente legati" all'istruzione presente nell'Instruction Register della Control Logic. Il legame con la Control Logic è stato tra i più complessi da analizzare e comprendere, ma quello con il modulo del Flag è altrettanto importante e non meno complesso: ad ogni operazione dell'ALU (e non solo!), corrisponde un'azione sul registro dei Flag.
 
-Il datasheet del '181 era abbastanza criptico e dunque ho avevo fatto ricorso anche a molte altre risorse disponibili in rete che ho riportato a fondo pagina.
+Il datasheet del '181 era abbastanza criptico e dunque ho avevo fatto ricorso anche alle molte risorse disponibili in rete riportate a fondo pagina. Dal datasheet si comprende che vi sono 4 segnali S0, S1, S2 ed S3 per la selezione della funzione e un segnale di controllo della modalità M. Vengono menzionati anche il Carry Look-Ahead e il Ripple-Carry, che approfondirò nella sezione dedicata all'Aritmetica Binaria
 
-Dal data sheet avevo compreso che il chip permettesse di eseguire 16 operazioni aritmetiche
 
-[![Operazioni logiche e aritmetiche del 74LS181](../../assets/alu/50-alu-operations.png "Operazioni logiche e aritmetiche del 74LS181"){:width="100%"}](../../assets/alu/50-alu-operations.png)
+[![Operazioni logiche e aritmetiche del 74LS181](../../assets/alu/50-alu-operations.png "Operazioni logiche e aritmetiche del 74LS181"){:width="66%"}](../../assets/alu/50-alu-operations.png)
 
 *Operazioni logiche e aritmetiche del 74LS181.*
 
 
+Ricordavo discretamente le principali operazioni del 6502 e 
+
+- Ricordo che uno degli aspetti che mi ha portato via letteralmente decine di ore per la comprensione del funzionamento era la frase di Tom "Poiché ho solo 16 combinazioni possibili , utilizzo un XXX per poter mettere il chip in subtract mode"
 - doppia modalità di lavoro, active low o active high
 - subtract mode
 complemento di 1
 
+## Aritmetica Binaria
+
+Il BEAM 
+
+## Ripple Mode Carry e Carry Look Ahead
+
+Ne parliamo perché i '161 usati nel MAR e i '181 dell'ALU ne parlano nei datasheet.
 
 
 ### Link utili
