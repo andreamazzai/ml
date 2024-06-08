@@ -6,7 +6,7 @@ Il BEAM è un computer TTL su breaboard ispirato al [SAP 8-bit computer di Ben E
 
 Alcuni aspetti interessanti del progetto:
 
-* Set di istruzioni e indirizzamenti ispirati al processore 6502
+* Set di istruzioni e modalità di indirizzamento ispirati al processore 6502
 * Registri A, X, Y come nel 6502
 * Stack Pointer
 * ALU basata su 74LS181 per tutte le operazioni aritmetiche e logiche
