@@ -28,7 +28,7 @@
   #       url: /docs/registers/
   #     - title: "ALU"
   #       url: /docs/alu/
-      - title: "RAM"
+      - title: "RAM e MAR"
         url: /docs/ram/
   #     - title: "Loader"
   #       url: /docs/loader/
