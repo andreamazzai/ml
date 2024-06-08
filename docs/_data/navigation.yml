@@ -22,30 +22,28 @@
     children:
   #     - title: "Getting Started"
   #       url: /docs/getting-started/
-  #     - title: "Clock"
-  #       url: /docs/clock/
+      - title: "Clock"
+        url: /docs/clock/
   #     - title: "Registers"
   #       url: /docs/registers/
-  #     - title: "ALU"
-  #       url: /docs/alu/
       - title: "RAM e MAR"
         url: /docs/ram/
-  #     - title: "Loader"
-  #       url: /docs/loader/
-  #     - title: "Ring Counter"
-  #       url: /docs/ring-counter/
-  #     - title: "Output Register"
-  #       url: /docs/output-register/
-  #     - title: "Control"
-  #       url: /docs/control/
-  #     - title: "Microcode"
-  #       url: /docs/microcode/
-  #     - title: "Stack Pointer"
-  #       url: /docs/stack-pointer/
-  #     - title: "DXY Registers"
-  #       url: /docs/dxy-registers/
+      - title: "ALU"
+        url: /docs/alu/
       - title: "Flags"
         url: /docs/flags/
+      - title: "Control Logic"
+        url: /docs/control/
+      - title: "Registri DXY"
+        url: /docs/dxy/
+      - title: "Stack Pointer"
+        url: /docs/sp/
+  #     - title: "Ring Counter"
+  #       url: /docs/ring-counter/
+  #     - title: "Control"
+  #       url: /docs/microcode/
+      - title: "Output"
+        url: /docs/output/
   # - title: "Wrap-up"
   #   children:
   #     - title: "Tips"
@@ -68,7 +66,7 @@
   #       url: /docs/74181-alu-notes/
   #     - title: "Further Reading"
   #       url: /docs/further-reading/
-  - title: "Link"
+  - title: "Riferimenti"
     children:
       - title: "BEAM su GitHub"
         url: "https://github.com/andreamazzai/beam"

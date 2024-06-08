@@ -1,6 +1,6 @@
 ---
-title: "ALU"
-permalink: /docs/alu/
+title: "OUTPUT"
+permalink: /docs/output/
 excerpt: "Costruzione dell'unità logica aritmetica del BEAM computer"
 ---
 Il limite principale del computer SAP di Ben Eater era sicuramente la modesta quantità di RAM indirizzabile, pari a 16 byte; era possibile caricare un semplice contatore da 0 a 255 e viceversa, oppure un piccolo algoritmo di Fibonacci, ma nulla di più. Questo è stato lo stimolo primario per la realizzazione di un computer più potente.
