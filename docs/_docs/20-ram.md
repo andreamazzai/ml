@@ -284,13 +284,13 @@ Avevo provato a chiedere un [consiglio](https://www.reddit.com/r/beneater/commen
 
 Per analizzare tutti gli stati logici possibili avevo preparato una tabella di riepilogo con la quale verificare se il comportamento del modulo fosse in linea con le aspettative; la tabella mostrata in seguito è solo una parte di quella completa.
 
-[![Tabella analisi modulo RAM](../../assets/20-ram-2nd-table.png "Tabella analisi modulo RAM"){:width="100%"}]
+![Tabella analisi modulo RAM](../../assets/20-ram-2nd-table.png "Tabella analisi modulo RAM"){:width="100%"}
 
 *Tabella riepilogativa analisi stati logici seconda versione modulo RAM.*
 
 A un certo punto ho capito che nello schema c'era un problema piuttosto importante: i due MUX 157 proiettavano in continuazione i loro input verso il bus interno, causando un possibile short con RAM quando questa si trovava in output mode. Ho dunque pensato di sostituire i 2x '157 con i '257, che sono tri-state.
 
-[![Tabella analisi rivista modulo RAM](../../assets/20-ram-2nd-table2.png){:width="100%"}]
+![Tabella analisi rivista modulo RAM](../../assets/20-ram-2nd-table2.png){:width="100%"}
 
 *Tabella riepilogativa rivista analisi stati logici seconda versione modulo RAM.*
 
@@ -323,7 +323,7 @@ La gestione dei segnali passa in maniera importante attraverso il MUX '157, cos�
 
 Ecco un riassunto degli stati possibili:
 
-- **/PROG**: In Program Mode il MUX attiva gli ingressi I0a, I0b, I0c e I0d.
+- **/PROG**: In Program Mode il MUX attiva gli ingressi I0a, I0b, I0c e I0d. In Run Mode sono attivi I1a, I1b, I1c e I1d.
   - Za è normalmente HI attraverso la resistenza che lo collega a Vcc, ma passa a LO premendo il tasto di programmazione e attiva /WE, scrivendo sulla RAM.
   - Zb è normalmente HI attraverso la resistenza che lo collega a Vcc, ma passa a LO premendo il tasto di programmazione e attiva il transceiver che interconnette RAM e dip-switch.
   - Zc è fisso HI e disattiva il transceiver che interconnette RAM e bus.
