@@ -18,7 +18,7 @@ Dopo diversi decenni dalla fine degli studi (diploma di scuola superiore ad indi
 
 ### Il primo progetto: 6502
 
-Verso la fine dell'anno ho scoperto casualmente il blog di [Ben Eater](https://eater.net/) e i suoi [video](https://www.youtube.com/@BenEater/playlists) e, memore del mio primo computer (Commodore 64, 1985) e del fatto che all'epoca avevo fatto un po' di programmazione in assembly, ho costruito il breadboard computer di Ben basato su 6502 e ho iniziato a leggere parecchi blog e forum sul tema, riesumando un po' di vecchie conoscenze.
+Verso la fine dell'anno ho scoperto casualmente il blog di [Ben Eater](https://eater.net/) e i suoi [video](https://www.youtube.com/@BenEater/playlists) e, memore del mio primo computer (Commodore 64, 1984) e del fatto che all'epoca avevo fatto un po' di programmazione in assembly, ho costruito il breadboard computer di Ben basato su 6502 e ho iniziato a leggere parecchi blog e forum sul tema, riesumando un po' di vecchie conoscenze.
 
 ### Computer a 8 bit in logica TTL: SAP
 

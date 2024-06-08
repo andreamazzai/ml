@@ -20,40 +20,40 @@
       #   url: /docs/why/
   - title: "COSTRUZIONE"
     children:
-  #     - title: "Getting Started"
-  #       url: /docs/getting-started/
+      - title: "Per iniziare"
+        url: /docs/beginning/
       - title: "Clock"
         url: /docs/clock/
-  #     - title: "Registers"
-  #       url: /docs/registers/
       - title: "RAM e MAR"
         url: /docs/ram/
       - title: "ALU"
         url: /docs/alu/
-      - title: "Flags"
-        url: /docs/flags/
       - title: "Control Logic"
         url: /docs/control/
+      - title: "Program Counter"
+        url: /docs/programcounter/
+      - title: "Flags"
+        url: /docs/flags/
       - title: "Registri DXY"
         url: /docs/dxy/
       - title: "Stack Pointer"
         url: /docs/sp/
+      - title: "Output"
+        url: /docs/output/
   #     - title: "Ring Counter"
   #       url: /docs/ring-counter/
   #     - title: "Control"
   #       url: /docs/microcode/
-      - title: "Output"
-        url: /docs/output/
   # - title: "Wrap-up"
   #   children:
   #     - title: "Tips"
   #       url: /docs/tips/
   #     - title: "Build History"
   #       url: /docs/build-history/
-  # - title: "Instruction Set"
-  #   children:
-  #     - title: "Instruction Summary"
-  #       url: /docs/in-summary/
+  - title: "Set di Istruzioni"
+    children:
+      - title: "Instruction Summary"
+        url: /docs/in-summary/
   #     - title: "Instruction Details"
   #       url: /docs/in-details/
   #     - title: "Opcode Table"
