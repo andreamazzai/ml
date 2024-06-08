@@ -11,8 +11,132 @@ Questo non è il disegno originale dell'autore, ma il mio rivisto.
 
 La realizzazione del comuter SAP mi ha permesso finalmente di capire cosa sia il microcode di un computer moderno.
 
-È piuttosto comune leggere ad esempio che è necessario aggiornare il bios dei server, per indirizzare farle di sicurezza che sono state scoperte e che potrebbero essere utilizzate dagli hacker per puntini puntini puntini nuovo paragrafo
+È piuttosto comune leggere ad esempio che è necessario aggiornare il bios dei server per indirizzare falle di sicurezza che sono state scoperte e che potrebbero essere utilizzate dagli hacker per puntini puntini puntini nuovo paragrafo
 Non capendo come potesse essere aggiornata una CPU, dal momento che si tratta di un componente non programmabile virgola non riuscivo a comprendere come fosse possibile arginare i problemi di sicurezza; con il microcode ho capito
+
+
+
+
+
+
+
+
+
+
+Ritornando alla dimensione delle EEPROM da utilizzare per il microcode, nei miei appunti trovo traccia di diverse revisioni, ad esempio:
+
+- mi servono EEPROM 28C64 per avere 256 (8 bit) istruzioni + 3 step + 2 flag, ma dimenticavo che avendo due ROM gemelle dovevo gestirne anche la selezione e dunque aggiungere un ulteriore bit, pertanto mi servirebbero delle 28C128;
+- avrei potuto però ridurre il numero di istruzioni a 64, dunque mi sarebbero bastati 6 bit per indirizzarle e ridurre così il numero totale di indirizzi richiesti...
+- ... ma forse mi sarebbero serviti altri segnali di controllo oltre ai 16  disponibili in due ROM e dunque me ne sarebbe servita una terza... e dunque due bit di indirizzamento
+
+Posso sicuramente dire che avevo le idee ancora confuse.
+
+## Fare spiega su EEPROM input e output
+
+Stavo anche iniziando a pensare come avrebbe funzionato la fase di Fetch con un Instruction Register che conteneva la sola istruzione e non operando istruzione + operando, come nel computer SAP**.
+
+Immaginavo che una istruzione di somma tra l'Accumulatore e il valore contenuto in una cella di memoria specifica avrebbe avuto questa sequenza:
+
+| Step | Segnale   | Operazione |
+| ---- | ------    | ----------- |
+|    0 | CO-MI     | Carico l'indirizzo dell'istruzione nel MAR |
+|    1 | RO-II-CE  | Leggo l'istruzione dalla RAM e la metto nell'Instruction Register; incremento il Program Counter che punta così alla locazione che contiene l'operando |
+|    2 | CO-MI     | Metto nel MAR l'indirizzo della cella che contiene l'operando |
+|    3 | RO-MI     | Leggo dalla RAM l'operando, che rappresenta l'indirizzo della locazione che contiene il valore che desidero addizionare all'accumulatore |
+|    4 | RO-BI-CE  | Leggo dalla RAM il valore contenuto nella locazione selezionata e lo posiziono nel registro B; incremento il Program Counter che punta così alla locazione che contiene la prossima istruzione |
+|    5 | EO-AI     | Metto in A il valore della somma A + B |
+
+Legenda dei segnali:
+
+| Segnale | Operazione | Descrizione |
+| ------  | ---------- | ----------- |
+| CO | Counter Output           | Il contenuto del Program Counter viene esposto sul bus            |
+| MI | MAR In                   | Il contenuto del bus viene caricato nel Memory Address Register   |
+| RO | RAM Output               | Il contenuto della RAM viene esposto sul bus                      |
+| II | Instruction Register In  | Il contenuto del bus viene caricato nell'Instruction Register     |
+| CE | Counter Enable           | Il Program Counter viene incrementato                             |
+| BI | B Register In            | Il contenuto del bus viene caricato nel registro B                |
+| AI | A Register In            | Il contenuto del bus viene caricato nel registro A                |
+| EO | Sum Out                  | L'adder computa A+B e il suo risultato viene esposto sul bus      |
+
+** Le istruzioni del computer SAP includevano in un byte sia l'opcode sia l'operando, come descritto anche in precedenza in questa stessa pagina:
+
+>... un unico byte di cui i 4 Most Significant Bit (MSB) rappresentano l'opcode e di cui i 4 Least Significant Bit (LSB) sono l'operando
+
+Introducendo gli Step, riflettevo anche sul fatto che per talune operazioni, da quanto capivo approfondendo l'NQSAP, avere più di 8 microistruzioni sarebbe stato molto util: ecco che, ancora una volta, dovevo riconsiderare il numero di bit di indirizzamento necessari per le EEPROM
+
+Ricordiamo che "Praticamente ho due fasi:
+
+- Fetch, in cui carico l'istruzione dalla RAM nell'Instruction Register
+- Dopo la fase di Fetch so "cosa devo fare", perché a questo punto ho l'istruzione nell'Instruction Register", che attiva opportunamente le EEPROM in modo da aver in uscita i corretti segnali di Control Logic…
+- 02/09/2022 … e a quel punto leggerò la locazione dell'operando, il cui contenuto
+  - ○ se è una istruzione "indiretta" mi darà il valore della locazione reale da indirizzare per leggerne il contenuto o scrivervi un valore
+  - ○ se è un istruzione diretta conterrà il valore da lavorare
+- "Sicuramente" avrò bisogno di EEPROM più grandi, perché dovranno ospitare gli 8 MSB e gli 8 LSB attuali, ma anche altri 8 bit di segnali… 02/09/2022 ma forse anche no, come visto sopra non mi servono (per ora) altri segnali… e addirittura, come visto in seguito, forse non mi serve nemmeno IO
+In seguito ho compreso il decoder 3-8 che usa Tom Nisbet per poter gestire tanti segnali con poche linee
+
+8-bit CPU control logic: Part 2
+https://www.youtube.com/watch?v=X7rCxs1ppyY
+
+Le istruzioni sono fatte di più step, chiamati microistruzioni. La Control Logic deve settare correttamente la Control Word per ogni microistruzione così quando arriva il clock questa viene eseguita. Dobbiamo dunque sapere sempre quale istruzione stiamo eseguendo e a che step siamo. Ci serve un contatore per tracciare la microistruzione. Usiamo 74LS161 che può contare da 0 a 15.
+
+NB: Dobbiamo settare la Control Logic tra un clock e l'altro… come a dire che la Control Logic deve "essere pronta" prima che l'istruzione venga eseguita: possiamo usare un NOT per invertire il clock e usare questo per gestire il 74LS161 della Control Logic.
+	• I registri sono aggiornati al Rising Edge del CLK, che corrisponde al Falling Edge del /CLK.
+	• Le microistruzioni sono aggiornate al Falling Edge del CLK, che corrisponde al Rising Edge del /CLK.
+	• CLK gestisce tutti i registri principali: PC, MAR, RAM, IR, A, B, Flag: al Rising Edge del CLK, avvengono le azioni di caricamento dei registri. Quando c'è il segnale CE Counter Enable attivo, il PC viene incrementato al Rising Edge e l'indirizzo viene aumentato di uno.
+	• /CLK gestisce il Ring Counter e di conseguenza la Control Logic: è sfasato di 180°, dunque al Falling Edge di CLK corrisponde il Rising Edge di /CLK
+		○ All'accensione del computer
+			§ PC è 0 e RC (Ring Counter) è 0
+			§ la CL presenta CO|MI in uscita
+			§ il 245 del PC è attivo in output
+			§ il 245 del MAR è attivo in input.
+		○ Arriva il Rising Edge del CLK
+			§ il FF 173 del MAR carica (MI) l'indirizzo di memoria presentatogli (CO) dal PC
+		○ Arriva il Falling Edge del CLK, che corrisponde al Rising Edge del /CLK
+			§ RC si incrementa e la CL presenta la microistruzione successiva RO|II|CE
+				□ la RAM è attiva in output
+				□ IR è attivo in input
+				□ PC è attivato per contare
+		○ Arriva il Rising Edge del CLK
+			§ il FF 173 dell'IR carica (II) il valore presentato dalla cella di RAM (RO) indirizzata dal MAR
+			§ PC si incrementa (CE)
+		○ Arriva il Falling Edge del CLK, che corrisponde al Rising Edge del /CLK
+			§ RC si incrementa e la CL presenta la microistruzione successiva IO|AI
+				□ IR mette in output
+					® i 4 MSB che vanno ad indirizzare le EEPROM della CL
+					® i 4 LSb che vanno sul bus; immaginiamo ad esempio istruzione immediata LDA #$05
+				□ il 245 del Registro A è attivo in input
+		○ Arriva il Rising Edge del CLK
+			§ il FF 173 del Registro A carica (AI) il valore presentato sul bus (IO) dall'Instruction Register 
+
+Il 74LS138 è un decoder che può prendere i 3 bit (ce ne bastano 3 per gestire 8 cicli, visto che gli step delle microistruzioni sono al massimo 6) e convertirli in singoli bit che rappresentano lo step della microistruzione corrente e poi uno di questi, l'ultimo, che resetta il 74LS161 in modo da risparmiare i cicli di clock inutilizzati.Control Logic
+8-bit CPU control logic: Part 1 
+https://www.youtube.com/watch?v=dXdoim96v5A
+
+Prima cosa che facciamo è leggere un comando e metterlo nell'Instruction Register, che tiene traccia del comando che stiamo eseguendo.
+
+• Prima fase: FETCH. Poiché la prima istruzione sta nell'indirizzo 0, devo mettere 0 dal Program Counter PC (comando CO esporta il PC sul bus) al Memory Address Register MAR (comando MI legge dal bus e setta l'indirizzo sulla RAM) così da poter indirizzare la RAM e leggere il comando.
+• Una volta che ho la RAM attiva all'indirizzo zero, copio il contenuto della RAM nell'Instruction Register IR passando dal bus (comando RO e comando II).
+• Poi incrementiamo il PC col comando Counter Enable CE (nel video successivo il CE viene inserito nella microistruzione con RO II).
+• Ora eseguiamo l'istruzione LDA 14, che prende il contenuto della cella 14 e lo scrive in A. Dunque poiché il valore 14 sono i 4 LSB del comando, sono i led gialli dell'IR e col comando Instruction Register Out IO ne copio il valore nel bus e poi, caricando MI, indirizzo la cella di memoria 14 che è quella che contiene il valore (28 nel mio caso) che esporto nel bus col comando RAM Out RO e che caricherò in A col comando AI. 
+
+• ADD 15 ha sempre una prima fase di Fetch, uguale per tutte le istruzioni, e poi come sopra il valore 15 è quello della cella 15 e dunque Instruction Register Out IO che posiziona sul bus i 4 LSb del comando ADD 15, poi MI così setto l'indirizzo 15 della RAM, il cui contenuto metto sul bus col comando RAM Out RO e lo carico in B con BI così avrò a disposizione la somma di A e B, che metto sul bus con EO e che ricarico in A con AI. 
+
+• Prossima istruzione all'indirizzo 3 è OUT che mette sul display il risultato della somma che avevo latchato in A. La prima fase di Fetch è uguale alle altre. Poi faccio AO per mettere A sul bus e OI. 
+
+
+8-bit CPU control logic: Part 3
+https://www.youtube.com/watch?v=dHWFpkGsxOs
+
+La fase Fetch è uguale per tutte le istruzioni, dunque istruzione XXXX e imposto solo gli step.
+Per LDA uso il valore 0001 e imposto gli step con le microistruzioni opportune.
+Per ADD uso il valore 0010 e imposto gli step con le microistruzioni opportune.
+Per OUT uso il valore 1110 e imposto gli step con le microistruzioni opportune.
+
+Praticamente ora abbiamo il contatore delle microistruzioni (T0-T4) e il contatore dell'istruzione (Instruction Register MSB). Posso creare una combinational logic che, a seconda dell'istruzione che ho caricato nell'Instruction Register + il T0/4 dove mi trovo mi permetta di avere in uscita i segnali corretti da applicare al computer. Praticamente ho due fasi:
+• Fetch, in cui carico l'istruzione dalla RAM nell'Instruction Register
+Dopo la fase di Fetch so "cosa devo fare", perché a questo punto ho l'istruzione nell'Instruction Register
+
 
 
 Il Flags Register emula quello del 6502 con questi flag:
