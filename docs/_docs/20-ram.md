@@ -234,7 +234,7 @@ Come già detto, per quanto riguarda la realizzazione del modulo RAM avevo decis
   - Chip Enable /CE LO fisso (in realtà il datasheet mostra ↘↗, ma, come segnalava The8BitEnthusiast, lo si può tenere fisso LO);
   - /WE ↘↗ (che deve essere "contenuto" all'interno del ciclo ↘↗ di /CE, se /CE non viene mantenuto fisso LO).
 
-Riprendendo il datasheet del [62256](https://www.alliancememory.com/wp-content/uploads/pdf/AS6C62256.pdf) a pagina 6 troviamo anche un'altra possibilità per scrivere, indicata come "WRITE CYCLE 2 (CE# Controlled)", ma non mi era chiara e non volevo fare lo sperimentatore - il mio desiderio era quello di realizzare un modulo che funzionasse con certezza.
+Riprendendo il datasheet del [62256](https://www.alliancememory.com/wp-content/uploads/pdf/AS6C62256.pdf) a pagina 6 troviamo anche un'altra possibilità per scrivere, indicata come "WRITE CYCLE 2 (CE# Controlled)", ma non l'ho approfondita, perché mantenere /OE e /CE LO fissi sia per le letture sia per le scritture semplicava il disegno del modulo, e inoltre non volevo fare lo sperimentatore - il mio desiderio era quello di realizzare un modulo che funzionasse con certezza.
 
 [![Prima versione del modulo RAM](../../assets/20-ram-1st.png "Prima versione del modulo RAM"){:width="100%"}](../../assets/20-ram-1st.png)
 
@@ -321,21 +321,25 @@ I due asterischi in tabella \*\* mi servivano a ricordare che dovevo stare parti
 
 La gestione dei segnali passa in maniera importante attraverso il MUX '157, così come avviene anche nello schema di The8BitEnthusiast, con qualche differenza.
 
-Ecco un riassunto 
+Ecco un riassunto degli stati possibili:
 
-| Modo    | Note |
-| -       | -    |
-| /PROG   | In Program Mode il MUX attiva gli ingressi I0a, I0b, I0c e I0d. <ul><li>Za è normalmente HI attraverso la resistenza che lo collega a Vcc, ma passa a LO premendo il tasto di programmazione e attiva /WE, scrivendo sulla RAM.</li><li>Zb è normalmente HI attraverso la resistenza che lo collega a Vcc, ma passa a LO premendo il tasto di programmazione e attiva il transceiver che interconnette RAM e dip-switch.</li><li>Zc è fisso HI e disattiva il transceiver che interconnette RAM e bus.</li></ul> |
-| RR WR   | <ul><li>Read RAM e Write RAM non sono attivi.</li><li>Za è fisso HI (perché la NAND su I1a ha un ingresso fisso LO) e la scrittura su RAM è inibita.</li><li>Zb è fisso HI e inibisce il transceiver tra RAM e dip-switch.</li><li> Zc è fisso HI e disattiva il transceiver che interconnette RAM e bus.</li></ul> |
-| RR /WR  | <ul><li>Read RAM non è attivo, Write RAM è attivo.</li><li>Za è normalmente HI (perché la NAND su I1a ha un'ingresso LO), ma in corrispondenza dell'impulso di clock passa a LO e attiva /WE, scrivendo sulla RAM.</li><li>Zb è fisso HI e inibisce il transceiver tra RAM e dip-switch.</li><li>Zc è normalmente HI, dunque disattiva il transceiver che interconnette RAM e bus, ma in corrispondenza dell'impulso di clock passa a LO (perché Za passa a LO), attivando il transceiver.</li></ul> |
-| /RR WR  | <ul><li>Read RAM è attivo, Write RAM non è attivo.</li><li>Za è fisso HI (perché la NAND su I1a ha un ingresso fisso LO) e la scrittura su RAM è inibita.</li><li>Zb è fisso HI e inibisce il transceiver tra RAM e dip-switch.</li><li>Zc è fisso LO e attiva il transceiver tra RAM e bus.</li></ul> |
-| /RR /WR | <ul><li>Stato illegale.</li></ul> |
-
-
-Controllare se nello schema attuale i requisiti di timing sono a posto.
-Mi sembra che la tabella sia sbagliata, vedi il primo caso di PRogram Mode, ma controllare anche gli altri.
-
-
+- **/PROG**: In Program Mode il MUX attiva gli ingressi I0a, I0b, I0c e I0d.
+  - Za è normalmente HI attraverso la resistenza che lo collega a Vcc, ma passa a LO premendo il tasto di programmazione e attiva /WE, scrivendo sulla RAM.
+  - Zb è normalmente HI attraverso la resistenza che lo collega a Vcc, ma passa a LO premendo il tasto di programmazione e attiva il transceiver che interconnette RAM e dip-switch.
+  - Zc è fisso HI e disattiva il transceiver che interconnette RAM e bus.
+- **RR WR**: Read RAM e Write RAM non sono attivi.
+  - Za è fisso HI (perché la NAND su I1a ha un ingresso fisso LO) e la scrittura su RAM è inibita.
+  - Zb è fisso HI e inibisce il transceiver tra RAM e dip-switch.
+  - Zc è fisso HI e disattiva il transceiver che interconnette RAM e bus.
+- **RR /WR**: Read RAM non è attivo, Write RAM è attivo.
+  - Za è normalmente HI (perché la NAND su I1a ha un'ingresso LO), ma in corrispondenza dell'impulso di clock passa a LO e attiva /WE, scrivendo sulla RAM.
+  - Zb è fisso HI e inibisce il transceiver tra RAM e dip-switch.
+  - Zc è normalmente HI, dunque disattiva il transceiver che interconnette RAM e bus, ma in corrispondenza dell'impulso di clock passa a LO (perché Za passa a LO), attivando il transceiver.
+- **/RR WR**: Read RAM è attivo, Write RAM non è attivo.
+  - Za è fisso HI (perché la NAND su I1a ha un ingresso fisso LO) e la scrittura su RAM è inibita.
+  - Zb è fisso HI e inibisce il transceiver tra RAM e dip-switch.
+  - Zc è fisso LO e attiva il transceiver tra RAM e bus.
+- **/RR /WR**: Stato illegale.
 
 ## XXXXXXXXXXXXXXXXXX
 
