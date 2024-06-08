@@ -1,7 +1,7 @@
 ---
 title: "Flags"
 permalink: /docs/flags/
-excerpt: "Costruzione del registro dei flag"
+excerpt: "Costruzione del registro dei flag del BEAM computer"
 ---
 21/09/2022 - Flags and Conditional Jumps NQSAP	https://tomnisbet.github.io/nqsap/docs/flags/
 Bisogna dire che più volte, leggendo il blog di Tom Nisbet, ho trovato delle idee molto clever.

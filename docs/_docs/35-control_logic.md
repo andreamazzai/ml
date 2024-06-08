@@ -1,7 +1,7 @@
 ---
-title: "Flags"
-permalink: /docs/flags/
-excerpt: "Costruzione del registro dei flag"
+title: "Control Logic"
+permalink: /docs/control/
+excerpt: "Costruzione del della Control Logic del BEAM computer"
 ---
 21/09/2022 - Flags and Conditional Jumps NQSAP	https://tomnisbet.github.io/nqsap/docs/flags/
 Bisogna dire che più volte, leggendo il blog di Tom Nisbet, ho trovato delle idee molto clever.
