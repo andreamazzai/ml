@@ -13,11 +13,11 @@ Il '181 è un'ALU a 4 bit, sviluppata negli anni '70, che può eseguire 16 opera
 
 Come detto nell'introduzione, il computer BEAM, al pari dell'NQSAP, include il set di istruzioni completo del 6502, comprese quelle logiche e aritmetiche.
 
-Tra le caratteristiche che spiccavano nello schema dell'NQSAP, notavo soprattutto un discreto numero di chip, tra i quali gli Shift Register 74LS194, e un modo particolare per indirizzare i '181, che erano "strettamente legati" all'istruzione presente nell'Instruction Register della Control Logic. Il legame con la Control Logic è stato tra i più complessi da analizzare e comprendere, ma quello con il modulo del Flag è altrettanto importante e non meno complesso: ad ogni operazione dell'ALU (e non solo!), corrisponde un'azione sul registro dei Flag.
+Tra le caratteristiche che spiccavano nello schema dell'ALU dell'NQSAP notavo soprattutto un discreto numero di chip - tra i quali gli Shift Register 74LS194 - e un modo particolare per indirizzare i '181, che erano "strettamente legati" all'istruzione presente nell'Instruction Register della Control Logic. Il legame con la Control Logic è stato tra i più complessi da analizzare e comprendere, ma quello con il modulo del Flag è altrettanto importante e non meno complesso: ad ogni operazione dell'ALU (e non solo!), corrisponde un'azione sul registro dei Flag.
 
 [![Schema logico dell'ALU di Tom Nisbet](../../assets/alu/50-alu-nqsap.png "Schema logico dell'ALU di Tom Nisbet"){:width="100%"}](../../assets/alu/50-alu-nqsap.png)
 
-*Schema logico dell'ALU di Tom Nisbet.*
+*Schema logico dell'ALU di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità.*
 
 Il datasheet del '181 era abbastanza criptico e dunque ho avevo fatto ricorso anche alle molte risorse disponibili in rete riportate a fondo pagina. Dal datasheet si comprende che vi sono 4 segnali S0, S1, S2 ed S3 per la selezione della funzione e un segnale di controllo della modalità M. Vengono menzionati anche il Carry Look-Ahead e il Ripple-Carry, che approfondirò nella sezione dedicata all'Aritmetica Binaria.
 
@@ -26,6 +26,29 @@ Il datasheet del '181 era abbastanza criptico e dunque ho avevo fatto ricorso an
 *Operazioni logiche e aritmetiche del 74LS181.*
 
 Ricordavo discretamente le principali operazioni del 6502 e sapevo abbastanza bene quale dovesse essere il risultato di quello che stavo facendo, ma in quel momento non avevo idea di come farlo.
+
+Avevo dunque deciso di iniziare provando a capire le operazioni messe a disposizione del '181 e se vi fosse una logica, una sorta di raggruppamento.
+
+Inizialmente avevo trascritto la tabella delle operazioni in un foglio Excel per poterci lavorare più agevolmente:
+
+[![Operazioni logiche e aritmetiche del 74LS181](../../assets/alu/50-alu-operations-xls.png "Operazioni logiche e aritmetiche del 74LS181"){:width="100%"}](../../assets/alu/50-alu-operations-xls.png)
+
+*Operazioni logiche e aritmetiche del 74LS181 - su Excel.*
+
+Avevo evidenziato le operazioni ripetute più volte, non trovando però alcun raggruppamento o filo conduttore tra righe e colonne. Cercavo  di capire quale fosse il senso di quella disposizione così apparentemente disordinata, ma non l'avevo trovato. Illuminante è stato l'articolo di [Ken Shirrif](https://www.righto.com/2017/03/inside-vintage-74181-alu-chip-how-it.html) citato in calce.
+
+Uno dei ricordi vividi è quello della comprensione di cosa accomunava le due colonne delle operazioni aritmetiche (eseguite in corrispondenza della modalità M = LO):
+
+- senza Carry ("Cn = HI  --> No Carry")
+- con Carry   ("Cn = LO  --> With Carry")
+
+Per quanto bizzarre possano apparire alcune delle operazioni disponibili, il filo conduttore tra le due colonne è che l'output evidenziato in tabella è sempre lo stesso, con l'unica differenza data dalla assenza o presenza del Carry in ingresso (il cui valore, se presente, è 1). Si noti che, in ogni riga, l'output ha sempre una differenza pari ad 1; ad esempio, nella decima riga troviamo una semplice operazione di somma: la differenza tra quanto computato nelle due colonne è 1 (**A più B** in un caso e **A più B più 1** nell'altro).
+
+Lo stesso ragionamento è valido per in tutte le altre operazioni aritmetiche disponibili. In un altro esempio, la prima riga restituisce quanto presente in ingresso in assenza di Carry e restituisce quanto presente in ingresso + 1 in presenza di Carry (questa operazione sarà sfruttata per creare l'istruzione INC del computer, similarmente all'istruzione DEC costruita intorno all'ultima funzione della tabella).
+
+A questo punto è anche opportuno segnalare che il '181 mette a disposizione due modalità di utilizzo: una con la logica attiva bassa ("Active-Low data") e uno con la logica attiva alta ("Active-High  data"); quest'ultima, per complicare un po' le cose, si attende in ingresso un Carry negato, nel senso che un segnale Cn (Carry In) allo stato logico 0 viene interpretato come Carry attivo, mentre un segnale Cn allo stato logico 1 viene interpretato come Carry non presente. XXXXXXXXXXXX Vedere se qui ha senso prendere quel discorso del 6502 citato da Ken XXXXXXXXXX
+
+
 
 
 
