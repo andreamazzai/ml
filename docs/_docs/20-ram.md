@@ -45,7 +45,7 @@ Fino ad ora, avevo quasi sostanzialmente dato per scontato di continuare ad usar
 
 In origine avevo evidenziato questi pochi appunti presenti nel post, riflettendo sul fatto che l'approccio di questo utente alla gestione dei segnali di controllo mi sembrava un po' troppo semplificato, ma più in là nel tempo avevo realizzato che, tutto sommato, la scrittura sulla RAM non è *eccessivamente* complessa:
 
->> 62256 - The I/O lines are controlled by OE and CE.
+> 62256 - The I/O lines are controlled by OE and CE.
 When either are high puts the I/O lines at high impedance.
 When both are low, the RAM outputs data onto the I/O lines.
 Writing takes place (two ways, but this is one way) CE low and OE high. A low pulse on WE will write the data on the I/O lines into the RAM chip.
