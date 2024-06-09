@@ -9,37 +9,37 @@ L'Unità Aritmetica e Logica (ALU) del SAP computer di Ben Eater era limitata a 
 
 Sviluppata attorno ai chip [74LS181](https://www.ti.com/lit/ds/symlink/sn54ls181.pdf), l'ALU dell'NQSAP presentava delle caratteristiche molto interessanti, ma di comprensione particolarmente difficile: sarà uno dei moduli sui quali spenderò più tempo, ma che alla fine darà maggiori soddisfazioni per il risultato.
 
-Il '181 è un'ALU a 4 bit sviluppata negli anni '70 che può eseguire 16 operazioni aritmetiche e 16 operazioni logiche. E' possibile concatenarne più di una per elaborare word di dimensioni maggiori.
+Il '181 è un'ALU a 4 bit sviluppata negli anni '70 che può eseguire 16 operazioni aritmetiche e 16 funzioni logiche. E' possibile concatenare più chip per elaborare word di dimensioni maggiori.
 
-Tra le caratteristiche che spiccavano nello schema dell'ALU dell'NQSAP notavo soprattutto un discreto numero di chip - tra i quali gli Shift Register 74LS194 - e un modo particolare per indirizzare i '181, che erano "strettamente legati" all'istruzione presente nell'Instruction Register della [Control Logic](../control). Il legame con la Control Logic è stato tra i più complessi da analizzare e comprendere, ma quello con il modulo del Flag è altrettanto importante e non meno complesso: ad ogni operazione dell'ALU (e non solo!) corrisponde un'azione sul registro dei Flag.
+Tra le caratteristiche che spiccavano nello schema dell'ALU dell'NQSAP notavo soprattutto un discreto quantitativo di chip - tra i quali gli Shift Register 74LS194 - e un modo particolare per indirizzare i '181, che erano "strettamente legati" all'istruzione presente nell'Instruction Register della [Control Logic](../control). Il legame con la Control Logic è stato tra i più complessi da analizzare e comprendere, ma quello con il modulo del Flag è altrettanto importante e non meno complesso: ad ogni operazione dell'ALU (e non solo!) corrisponde un'azione sul registro dei Flag.
 
 [![Schema logico dell'ALU di Tom Nisbet](../../assets/alu/50-alu-nqsap.png "Schema logico dell'ALU di Tom Nisbet"){:width="100%"}](../../assets/alu/50-alu-nqsap.png)
 
 *Schema logico dell'ALU di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità.*
 
-L'ALU è sommariamente composta da due registri di input H e B e da una coppia di '181 interconnessi, che permettono di gestire un dato di 8 bit.
+Il modulo ALU è sommariamente composto da due registri di input H e B e da una coppia di '181 interconnessi, che permettono di gestire un dato di 8 bit.
 
 - Il registro H è in realtà uno shift register che è in grado di comportarsi come un normale registro a 8 bit (per esempio per le istruzioni A + B) o per *shiftare* il valore presente in ingresso (istruzioni di rotazione).
 - Il registro B è un normale registro a 8 bit. Il chip utilizzato non include un ingresso Enable, che è dunque stato realizzato in maniera artificiale mettendo una NOR su /Clock e /WB ("Write B"); in questo modo il registro si attiva solo in corrispondenza di /WB (che è attivo LO) e del falling edge del clock negato, equivalente al rising edge del clock non negato, che è il momento in cui si caricano i registri (vedasi il video di Ben Eater [8-bit CPU control logic: Part 2](https://www.youtube.com/watch?v=X7rCxs1ppyY)).
 - Tre transceiver permettono di poter leggere i valori contenuti in H, B ed L (così è stato definito l'output dell'A**L**U).
 
+Come detto nell'introduzione, il computer BEAM, al pari dell'NQSAP, include il set di istruzioni completo del 6502, comprese quelle logiche e aritmetiche. Ricordavo discretamente le principali operazioni del 6502 e sapevo *abbastanza* bene quale dovesse essere il risultato di quello che stavo facendo, ma in quel momento non avevo ancora idea di come fosse possibile ottenerlo.
+
+Avevo intanto deciso di comprendere le operazioni messe a disposizione del '181 e se vi fosse una logica nella loro disposizione, una sorta di raggruppamento.
+
 [![Operazioni logiche e aritmetiche del 74LS181](../../assets/alu/50-alu-operations.png "Operazioni logiche e aritmetiche del 74LS181"){:width="100%"}](../../assets/alu/50-alu-operations.png)
 
 *Operazioni logiche e aritmetiche del 74LS181.*
 
-Come detto nell'introduzione, il computer BEAM, al pari dell'NQSAP, include il set di istruzioni completo del 6502, comprese quelle logiche e aritmetiche. Ricordavo discretamente le principali operazioni del 6502 e sapevo *abbastanza* bene quale dovesse essere il risultato di quello che stavo facendo, ma in quel momento non avevo ancora idea di come fosse possibile ottenerlo.
+Il datasheet del '181 era abbastanza criptico e dunque ho avevo fatto ricorso anche alle molte risorse disponibili in rete riportate a fondo pagina. Dal datasheet si comprende che vi sono 4 segnali S0, S1, S2 ed S3 per la selezione della funzione / operazione e un segnale di controllo della modalità M (M = HI per le funzioni logiche; M = LO per le operazioni aritmetiche). Vengono menzionati anche il Carry Look-Ahead e il Ripple-Carry, che approfondirò nella sezione dedicata all'Aritmetica Binaria.
 
-Avevo intanto deciso di comprendere le operazioni messe a disposizione del '181 e se vi fosse una logica, una sorta di raggruppamento.
-
-Il datasheet del '181 era abbastanza criptico e dunque ho avevo fatto ricorso anche alle molte risorse disponibili in rete riportate a fondo pagina. Dal datasheet si comprende che vi sono 4 segnali S0, S1, S2 ed S3 per la selezione della funzione e un segnale di controllo della modalità M. Vengono menzionati anche il Carry Look-Ahead e il Ripple-Carry, che approfondirò nella sezione dedicata all'Aritmetica Binaria.
-
-Inizialmente avevo trascritto la tabella delle operazioni in un foglio Excel per poterci lavorare più agevolmente:
+Inizialmente avevo trascritto la tabella delle operazioni in un foglio Excel per poter lavorare più agevolmente:
 
 [![Operazioni logiche e aritmetiche del 74LS181](../../assets/alu/50-alu-operations-xls.png "Operazioni logiche e aritmetiche del 74LS181"){:width="100%"}](../../assets/alu/50-alu-operations-xls.png)
 
 *Operazioni logiche e aritmetiche del 74LS181 - su Excel.*
 
-Avevo evidenziato le operazioni ripetute più volte, non trovando però alcun raggruppamento o filo conduttore tra righe e colonne. Cercavo  di capire quale fosse il senso di quella disposizione così apparentemente disordinata, ma non l'avevo trovato. Illuminante è stato l'articolo di [Ken Shirrif](https://www.righto.com/2017/03/inside-vintage-74181-alu-chip-how-it.html) citato in calce.
+Avevo evidenziato le operazioni ripetute più volte, non trovando però alcun raggruppamento o filo conduttore tra righe e colonne. Cercavo  di capire quale fosse il senso di quella disposizione così apparentemente disordinata, ma non l'avevo trovato. Illuminante è stato l'articolo di [Ken Shirriff](https://www.righto.com/2017/03/inside-vintage-74181-alu-chip-how-it.html) citato in calce.
 
 Uno dei ricordi vividi è quello della comprensione di cosa accomunava le due colonne delle operazioni aritmetiche (eseguite in corrispondenza della modalità M = LO):
 
@@ -48,11 +48,13 @@ Uno dei ricordi vividi è quello della comprensione di cosa accomunava le due co
 
 Per quanto bizzarre possano apparire alcune delle operazioni disponibili, il filo conduttore tra le due colonne è che l'output *è sempre lo stesso*, con l'unica differenza data dalla assenza o presenza del Carry in ingresso (il cui valore binario è 1). Si noti che, in ogni riga, l'output ha sempre una differenza pari ad 1; ad esempio, nella decima riga troviamo una semplice operazione di somma: la differenza tra quanto computato nelle due colonne è 1 (**A più B** in un caso e **A più B più 1** nell'altro).
 
-Lo stesso ragionamento è valido per in tutte le altre operazioni aritmetiche disponibili. In un altro esempio, la prima riga restituisce quanto presente in ingresso in assenza di Carry e restituisce quanto presente in ingresso + 1 in presenza di Carry (questa operazione sarà sfruttata per creare l'istruzione INC del computer, similarmente all'istruzione DEC costruita intorno all'ultima funzione della tabella).
+Lo stesso ragionamento è valido per in tutte le altre operazioni aritmetiche disponibili. In un altro esempio, la prima riga restituisce quanto presente in ingresso in assenza di Carry, mentre in presenza di Carry restituisce quanto presente in ingresso + 1 (questa operazione sarà sfruttata per creare l'istruzione INC del computer, similarmente all'istruzione DEC costruita intorno all'ultima funzione della tabella).
 
-A questo punto è anche opportuno segnalare che il '181 mette a disposizione due modalità di utilizzo: una con la logica attiva bassa ("Active-Low data") e uno con la logica attiva alta ("Active-High  data"); quest'ultima, per complicare un po' le cose, si attende in ingresso un Carry negato, nel senso che un segnale Cn (Carry In) allo stato logico 0 viene interpretato come Carry attivo, mentre un segnale Cn allo stato logico 1 viene interpretato come Carry non presente. XXXXXXXXXXXX Vedere se qui ha senso prendere quel discorso del 6502 citato da Ken XXXXXXXXXX
+A questo punto è anche opportuno segnalare che il '181 mette a disposizione due modalità di utilizzo: una con la logica attiva bassa ("Active-Low data") e una con la logica attiva alta ("Active-High data"); quest'ultima, per complicare un po' le cose, si attende in ingresso un Carry negato, nel senso che un segnale Cn (Carry In) allo stato logico 0 viene interpretato come Carry attivo, mentre un segnale Cn allo stato logico 1 viene interpretato come Carry non presente. XXXXXXXXXXXX Vedere se qui ha senso prendere quel discorso del 6502 citato da Ken XXXXXXXXXX
 
+Ritornando alla tabella delle funzioni / operazioni, solo un sottoinsieme di esse era utile per lo scopo prefissato, che era quello di poter emulare le istruzioni del 6502:
 
+[![Operazioni logiche e aritmetiche utili del 74LS181](../../assets/alu/50-alu-operations-xls-subset.png "Operazioni logiche e aritmetiche utili del 74LS181"){:width="100%"}](../../assets/alu/50-alu-operations-xls-subset.png)
 
 
 
