@@ -35,7 +35,7 @@ Il datasheet del '181 era abbastanza criptico e dunque ho avevo fatto ricorso an
 
 Inizialmente avevo trascritto la tabella delle operazioni in un foglio Excel per poter lavorare più agevolmente:
 
-[![Operazioni logiche e aritmetiche del 74LS181](../../assets/alu/50-alu-operations-xls.png "Operazioni logiche e aritmetiche del 74LS181"){:width="100%"}](../../assets/alu/50-alu-operations-xls.png)
+![Operazioni logiche e aritmetiche del 74LS181](../../assets/alu/50-alu-operations-xls.png)
 
 *Operazioni logiche e aritmetiche del 74LS181 - su Excel.*
 
@@ -48,13 +48,34 @@ Uno dei ricordi vividi è quello della comprensione di cosa accomunava le due co
 
 Per quanto bizzarre possano apparire alcune delle operazioni disponibili, il filo conduttore tra le due colonne è che l'output *è sempre lo stesso*, con l'unica differenza data dalla assenza o presenza del Carry in ingresso (il cui valore binario è 1). Si noti che, in ogni riga, l'output ha sempre una differenza pari ad 1; ad esempio, nella decima riga troviamo una semplice operazione di somma: la differenza tra quanto computato nelle due colonne è 1 (**A più B** in un caso e **A più B più 1** nell'altro).
 
-Lo stesso ragionamento è valido per in tutte le altre operazioni aritmetiche disponibili. In un altro esempio, la prima riga restituisce quanto presente in ingresso in assenza di Carry, mentre in presenza di Carry restituisce quanto presente in ingresso + 1 (questa operazione sarà sfruttata per creare l'istruzione INC del computer, similarmente all'istruzione DEC costruita intorno all'ultima funzione della tabella).
+Lo stesso ragionamento è valido per in tutte le altre operazioni aritmetiche disponibili. In un altro esempio, la prima riga restituisce quanto presente in ingresso in assenza di Carry, mentre in presenza di Carry restituisce quanto presente in ingresso + 1 (questa operazione sarà sfruttata per creare l'istruzione INC del computer "iniettando" un Carry artificiale; quasi similarmente, l'istruzione DEC costruita è intorno all'ultima funzione della tabella, ma in questo caso senza essere dopata da un carry artificiale).
 
-A questo punto è anche opportuno segnalare che il '181 mette a disposizione due modalità di utilizzo: una con la logica attiva bassa ("Active-Low data") e una con la logica attiva alta ("Active-High data"); quest'ultima, per complicare un po' le cose, si attende in ingresso un Carry negato, nel senso che un segnale Cn (Carry In) allo stato logico 0 viene interpretato come Carry attivo, mentre un segnale Cn allo stato logico 1 viene interpretato come Carry non presente. XXXXXXXXXXXX Vedere se qui ha senso prendere quel discorso del 6502 citato da Ken XXXXXXXXXX
+A questo punto è anche opportuno segnalare che il '181 mette a disposizione due modalità di utilizzo: una con la logica attiva bassa ("Active-Low data") e una con la logica attiva alta ("Active-High data"); quest'ultima, per complicare un po' le cose, si attende in ingresso un *Carry In negato*, nel senso che un segnale Cn (Carry In) allo stato logico 0 viene interpretato come Carry attivo, mentre un segnale Cn allo stato logico 1 viene interpretato come Carry non presente. Allo stesso modo, anche il *Carry Out* out è negato: Cn+4 è HI per indicare che non c'è Carry in uscita, mentre è LO per indicare che è presente un Carry.
 
-Ritornando alla tabella delle funzioni / operazioni, solo un sottoinsieme di esse era utile per lo scopo prefissato, che era quello di poter emulare le istruzioni del 6502:
+XXXXXXXXXXXX Vedere se qui ha senso prendere quel discorso del 6502 citato da Ken XXXXXXXXXX
 
-[![Operazioni logiche e aritmetiche utili del 74LS181](../../assets/alu/50-alu-operations-xls-subset.png "Operazioni logiche e aritmetiche utili del 74LS181"){:width="100%"}](../../assets/alu/50-alu-operations-xls-subset.png)
+Ritornando alla tabella delle funzioni / operazioni, ritenevo che solo il sottoinsieme visibile di seguito fosse utile per lo scopo prefissato, che era quello di poter emulare le istruzioni del 6502:
+
+![Operazioni logiche e aritmetiche utili del 74LS181](../../assets/alu/50-alu-operations-xls-subset.png)
+
+Successivamente capirò che le istruzioni necessarie erano ancora meno....... espandere?
+
+
+
+	• Dice "poiché la ALU è legata all'IR, ci sono solo 8 Opcode disponibili per metterla in Subtract Mode", ma questo non lo capisco. "Per creare i 16 Opcode necessari per tutte le combinazioni di Subtract e Compare, mettiamo una NOR su ALU-S0 (IR 0) e l'altro input su LF, così possiamo "riutilizzare" la Selection 0111 come se fosse 0110, che è la modalità Subtract, ma in questo caso… non capisco. 07/01/2023 ho capito un pezzo extra: praticamente significa che 0111 è inutilizzato nelle istruzioni scelte e pertanto possiamo mettere in uscita dalla ROM 0111 trasformandolo poi in 0110 grazie alla NOR in modo da avere più combinazioni possibili per fare tutte le operazioni.
+		○ 29/01/2023 Credo di aver capito. Se sul bus io dell'IR ho 8 bit totali per le istruzioni, e 5 linee sono hardwired anche verso l'ALU, significa che mi trovo in questa situazione:
+		Bit IR	7	6	5	4	3	2	1	0
+		Associazione	ALU-M	ALU-S3	ALU-S2	ALU-S1	ALU-S0	JMP-S2	JMP-S1	JMP-S0
+		Opcode	L	L	H	H	L	0	0	0
+		Opcode	L	L	H	H	L	0	0	1
+		Opcode	L	L	H	H	L	0	1	0
+		Opcode	L	L	H	H	L	0	1	1
+		Opcode	L	L	H	H	L	1	0	0
+		Opcode	L	L	H	H	L	1	0	1
+		Opcode	L	L	H	H	L	1	1	0
+		Opcode	L	L	H	H	L	1	1	1
+		Come si vede, solo 8 sono gli opcode (fra tutti i 256) che mi permettono di avere M e S3-S0 in Subtract Mode, però a me servono 16 opcode per poter gestire tutte le combinazioni di indirizzamenti di Subtract e Compare e dunque con un segnale dalla ROM LF (ALU Force) trasformo lo 00111, che corrisponde all'operazione A AND NOT B (inutile) in 00110, che è nuovamente Subtract 😁.
+		○ Approfondire cosa significa Subtract Mode… 07/01/2023 come spiegato nel video di David Courtney, il Subtract mode è quando settiamo il 181 in LHHL.
 
 
 
@@ -62,6 +83,12 @@ Ritornando alla tabella delle funzioni / operazioni, solo un sottoinsieme di ess
 - doppia modalità di lavoro, active low o active high
 - subtract mode
 complemento di 1
+
+*********************************
+CONTROLLARE LA PAROLA CARRY CON INIZIALE MAIUSCOLA O NO A SECONDA DEI CONTESTI
+*********************************
+
+
 
 ## Aritmetica Binaria
 
