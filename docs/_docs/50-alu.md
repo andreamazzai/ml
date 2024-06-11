@@ -11,7 +11,7 @@ Sviluppata attorno ai chip [74LS181](https://www.ti.com/lit/ds/symlink/sn54ls181
 
 Il '181 è un'ALU a 4 bit sviluppata negli anni '70 che può eseguire 16 operazioni aritmetiche e 16 funzioni logiche. E' possibile concatenare più chip per elaborare word di dimensioni maggiori.
 
-Tra le caratteristiche che spiccavano nello schema dell'ALU dell'NQSAP notavo soprattutto un discreto quantitativo di chip - tra i quali gli Shift Register 74LS194 - e un modo particolare per indirizzare i '181, che erano "strettamente legati" all'istruzione presente nell'Instruction Register della [Control Logic](../control). Il legame con la Control Logic è stato tra i più complessi da analizzare e comprendere, ma quello con il modulo del Flag è altrettanto importante e non meno complesso: ad ogni operazione dell'ALU (e non solo!) corrisponde un'azione sul registro dei Flag.
+Tra le caratteristiche che spiccavano nello schema dell'ALU dell'NQSAP notavo soprattutto un discreto quantitativo di chip - tra i quali gli Shift Register 74LS194 - e un modo particolare per indirizzare i '181, che erano "strettamente legati" all'istruzione presente nell'Instruction Register della [Control Logic](../control). Il legame con la Control Logic è stato tra i più complessi da analizzare e comprendere, ma quello con il modulo dei Flag è altrettanto importante e non meno complesso: ad ogni operazione dell'ALU (e non solo) corrisponde infatti un'azione sul registro dei Flag.
 
 [![Schema logico dell'ALU di Tom Nisbet](../../assets/alu/50-alu-nqsap.png "Schema logico dell'ALU di Tom Nisbet"){:width="100%"}](../../assets/alu/50-alu-nqsap.png)
 
@@ -19,8 +19,8 @@ Tra le caratteristiche che spiccavano nello schema dell'ALU dell'NQSAP notavo so
 
 Il modulo ALU è sommariamente composto da due registri di input H e B e da una coppia di '181 interconnessi, che permettono di gestire un dato di 8 bit.
 
-- Il registro H è in realtà uno shift register che è in grado di comportarsi come un normale registro a 8 bit (per esempio per le istruzioni A + B) o per *shiftare* il valore presente in ingresso (istruzioni di rotazione).
-- Il registro B è un normale registro a 8 bit. Il chip utilizzato non include un ingresso Enable, che è dunque stato realizzato in maniera artificiale mettendo una NOR su /Clock e /WB ("Write B"); in questo modo il registro si attiva solo in corrispondenza di /WB (che è attivo LO) e del falling edge del clock negato, equivalente al rising edge del clock non negato, che è il momento in cui si caricano i registri (vedasi il video di Ben Eater [8-bit CPU control logic: Part 2](https://www.youtube.com/watch?v=X7rCxs1ppyY)).
+- Il registro H è in realtà uno shift register che è in grado di comportarsi come un normale registro a 8 bit oppure *shiftare* sia a destra sia a sinistra il valore presente in ingresso (istruzioni di rotazione).
+- Il registro B è un normale registro a 8 bit. Il chip utilizzato non include un ingresso Enable, che è dunque stato realizzato in maniera artificiale mettendo una NOR su /Clock e /WB ("Write B"); in questo modo il registro si attiva solo in corrispondenza di /WB (che è attivo LO) e del falling edge del clock negato, equivalente al rising edge del clock non negato, che è il momento in cui si caricano i registri (riferimento utile: il video di Ben Eater [8-bit CPU control logic: Part 2](https://www.youtube.com/watch?v=X7rCxs1ppyY)).
 - Tre transceiver permettono di poter leggere i valori contenuti in H, B ed L (così è stato definito l'output dell'A**L**U).
 
 Come detto nell'introduzione, il computer BEAM, al pari dell'NQSAP, include il set di istruzioni completo del 6502, comprese quelle logiche e aritmetiche. Ricordavo discretamente le principali operazioni del 6502 e sapevo *abbastanza* bene quale dovesse essere il risultato di quello che stavo facendo, ma in quel momento non avevo ancora idea di come fosse possibile ottenerlo.
@@ -31,7 +31,7 @@ Avevo intanto deciso di comprendere le operazioni messe a disposizione del '181 
 
 *Funzioni logiche e operazioni aritmetiche del 74LS181.*
 
-Il datasheet del '181 era abbastanza criptico e dunque ho avevo fatto ricorso anche alle molte risorse disponibili in rete riportate a fondo pagina. Dal datasheet si comprende che vi sono 4 segnali S0, S1, S2 ed S3 per la selezione della funzione / operazione e un segnale di controllo della modalità M (M = HI per le funzioni logiche; M = LO per le operazioni aritmetiche). Vengono menzionati anche il Carry Look-Ahead e il Ripple-Carry, che approfondirò nella sezione dedicata all'Aritmetica Binaria.
+Il datasheet del '181 era abbastanza criptico e dunque ho avevo fatto ricorso anche alle molte risorse disponibili in rete riportate a fondo pagina. Dal datasheet si comprende che vi sono 4 segnali S0, S1, S2 ed S3 per la selezione della funzione / operazione e un segnale di controllo della modalità M (M = HI per le funzioni logiche; M = LO per le operazioni aritmetiche); A e B sono gli input dei dati. Nel datasheet venivano menzionati anche il Carry Look-Ahead e il Ripple-Carry, che approfondirò nella sezione dedicata all'Aritmetica Binaria.
 
 Inizialmente avevo trascritto la tabella delle funzioni / operazioni in un foglio Excel per poter lavorare più agevolmente:
 
@@ -46,9 +46,9 @@ Uno dei ricordi vividi è quello della comprensione di cosa accomunava le due co
 - senza Carry ("Cn = HI  --> No Carry")
 - con Carry   ("Cn = LO  --> With Carry")
 
-Per quanto bizzarre possano apparire alcune delle operazioni disponibili, il filo conduttore tra le due colonne è che l'output *è sempre lo stesso*, con l'unica differenza data dalla assenza o presenza del Carry in ingresso (il cui valore binario è 1). Si noti che, in ogni riga, l'output ha sempre una differenza pari ad 1; ad esempio, nella decima riga troviamo una semplice operazione di somma: la differenza tra quanto computato nelle due colonne è 1 (**A più B** in un caso e **A più B più 1** nell'altro).
+Per quanto bizzarre possano apparire alcune delle operazioni disponibili, il filo conduttore tra le due colonne è che l'output del '181 *è sempre lo stesso*, con l'unica differenza data dalla assenza o presenza del Carry in ingresso. Si noti infatti che, in ogni riga, l'output ha sempre una differenza pari ad 1, che corrisponde al valore di un carry; ad esempio, nella decima riga troviamo una semplice operazione di somma: la differenza tra quanto computato nelle due colonne è 1 (**A più B** in un caso e **A più B più 1** nell'altro).
 
-Lo stesso ragionamento è valido per in tutte le altre operazioni aritmetiche disponibili. In un altro esempio, la prima riga restituisce quanto presente in ingresso in assenza di Carry, mentre in presenza di Carry restituisce quanto presente in ingresso + 1 (questa operazione sarà sfruttata per creare l'istruzione INC del computer "iniettando" un Carry artificiale; quasi similarmente, l'istruzione DEC costruita è intorno all'ultima funzione della tabella, ma in questo caso senza essere "dopata" da un carry artificiale).
+Lo stesso ragionamento è valido per in tutte le altre operazioni aritmetiche disponibili. Prendiamo come altro esempio la prima riga: in assenza di Carry l'ALU restituisce quanto presente agli ingressi A, mentre in presenza di Carry restituisce quanto presente A + 1 (questa operazione sarà sfruttata per creare l'istruzione INC del computer "iniettando" un Carry artificiale; quasi similarmente, l'istruzione DEC è costruita intorno all'ultima funzione della tabella, ma in questo caso senza essere "dopata" da un carry artificiale).
 
 A questo punto è anche opportuno segnalare che il '181 mette a disposizione due modalità di utilizzo: una con la logica attiva bassa ("Active-Low data") e una con la logica attiva alta ("Active-High data"); quest'ultima, per complicare un po' le cose, si attende in ingresso un *Carry In negato*, nel senso che un segnale Cn (Carry In) LO viene interpretato come Carry attivo, mentre un segnale Cn HI viene interpretato come Carry non presente. Allo stesso modo, anche il *Carry Out* out è negato: Cn+4 è HI per indicare che non c'è Carry in uscita, mentre è LO per indicare che è presente un Carry.
 
@@ -62,27 +62,27 @@ Ritornando alla tabella delle funzioni / operazioni, ritenevo che solo il sottoi
 
 Successivamente capirò che le istruzioni necessarie erano in realtà ancora meno di quelle che ipotizzavo.
 
-Uno degli aspetti di pià difficile comprensione, come anticipato in precedenza, è stata l'associazione diretta tra istruzione correntemente contenuta nell'Instruction Register e funzione logica / operazione matematica eseguita dall'ALU.
+Un altro degli aspetti di più difficile comprensione, come anticipato in precedenza, è stata l'associazione diretta tra istruzione correntemente contenuta nell'Instruction Register e funzione logica / operazione matematica eseguita dall'ALU.
 
 Provando a sintetizzare quando disegnato nell'NQSAP, avevo costruito questa tabella:
 
-| Cn | M  | S3 | S2 | S1 | S0 | Operazione | S3/S0 Hex |
-|  - | -  |  - |  - |  - |  - |          - |   -       |
-| 0  | 0  | 0  | 0  | 0  | 1  | A plus 1   |  00 + C*  |
-| 0  | 0  | 0  | 0  | 1  | 1  | Tutti 0    |  03 + C*  |
-| 0  | 0  | 0  | 1  | 1  | 0  | A minus B  |  06 + C*  |
-| 0  | 0  | 0  | 1  | 1  | 1  | CMP        |  07**     |
-| 1  | 0  | 0  | 0  | 1  | 1  | Tutti 1    |  03       |
-| 1  | 0  | 1  | 0  | 0  | 1  | A plus B   |  09       |
-| 1  | 0  | 1  | 1  | 0  | 0  | A plus A*  |  0C       |
-| 1  | 0  | 1  | 1  | 1  | 1  | A minus 1  |  0F       |
-| x  | 1  | 0  | 0  | 0  | 0  | Not A      |  10       |
-| x  | 1  | 0  | 1  | 1  | 0  | A XOR B    |  16       |
-| x  | 1  | 1  | 0  | 1  | 0  | B          |  1A       |
-| x  | 1  | 1  | 0  | 1  | 1  | A AND B    |  1B       |
-| x  | 1  | 1  | 1  | 1  | 0  | A OR B     |  1E       |
+| Cn | M  | S3 | S2 | S1 | S0 | Operazione  | S3/S0 Hex |
+|  - | -  |  - |  - |  - |  - |          -  |   -       |
+| 0  | 0  | 0  | 0  | 0  | 1  | A plus 1    |  00 + C*  |
+| 0  | 0  | 0  | 0  | 1  | 1  | Tutti 0     |  03 + C*  |
+| 0  | 0  | 0  | 1  | 1  | 0  | A minus B   |  06 + C*  |
+| 0  | 0  | 0  | 1  | 1  | 1  | CMP         |  07**     |
+| 1  | 0  | 0  | 0  | 1  | 1  | Tutti 1     |  03       |
+| 1  | 0  | 1  | 0  | 0  | 1  | A plus B    |  09       |
+| 1  | 0  | 1  | 1  | 0  | 0  | A plus A*** |  0C       |
+| 1  | 0  | 1  | 1  | 1  | 1  | A minus 1   |  0F       |
+| x  | 1  | 0  | 0  | 0  | 0  | Not A       |  10       |
+| x  | 1  | 0  | 1  | 1  | 0  | A XOR B     |  16       |
+| x  | 1  | 1  | 0  | 1  | 0  | B           |  1A       |
+| x  | 1  | 1  | 0  | 1  | 1  | A AND B     |  1B       |
+| x  | 1  | 1  | 1  | 1  | 0  | A OR B      |  1E       |
 
-Facciamo un esempio. In pratica si stava dicendo che per fare una somma era necessario avere:
+Per fare un esempio, si stava in pratica dicendo che per fare una somma ("A plus B") era necessario avere:
 
 - Cn = 1 (che, ricordiamo, è gestito con stato logico invertito, dunque in questo caso l'ALU considera in carry non presente)
 - M = **0**
@@ -98,10 +98,10 @@ In pratica, il microcodice per l'operazione di somma avrebbe dovuto presentare *
 
 Attivando questa istruzione il risultato esposto in output dall'ALU sarebbe stato esattamente A + B, proprio come indicato nella decima riga / colonna Cn = HI della tabella "Operazioni logiche e aritmetiche utili del 74LS181"; se avessimo avuto un carry in ingresso, il risultato esposto sarebbe stato A + B + 1, proprio come indicato nella decima riga / colonna Cn = LO. Ecco che iniziavo a far luce sul legame tra le due colonne: il risultato in output è sempre lo stesso e varia solo in conseguenza del fatto che in ingresso ci sua un carry o meno.
 
-* = per queste tre istruzioni si deve "iniettare" un carry artificale LO in ingresso (che significa presenza del carry)
+\* per queste tre istruzioni si deve "iniettare" un carry artificale LO in ingresso (che significa presenza del carry)
 ** = Le operazioni di salto relativo saltano in corrispondenza della presenza di un certo Flag; Questo Flag viene tipicamente calcolato facendo una sottrazione fittizia tra due valori: il risultato della sottrazione non viene tenuto in considerazione e si prende in considerazione solo il Flag. Le istruzioni di confronto sono eseguite facendo una sottrazione, ma la sottrazione è già utilizzata per eseguire l'operazione A mius B (0110 = 0x06)
 
-* L'operazione A+A veniva usata nell'NQSAP per fare lo shift verso sinistra dei bit; io ho adottato un altro metodo che descriverò in seguito.
+\*\*\* L'operazione A+A veniva usata nell'NQSAP per fare lo shift verso sinistra dei bit; io ho adottato un altro metodo che descriverò in seguito.
 ** 
  l'associazione 
 ù

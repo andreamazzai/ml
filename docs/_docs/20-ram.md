@@ -309,7 +309,7 @@ e così via.
 
 ### Terza versione del modulo RAM
 
-Ho dunque riscritto la "truth table" del modulo RAM:
+Avevo dunque infine riscritto la "truth table" del modulo RAM:
 
 ![Tabella analisi modulo RAM - terza versione](../../assets/ram/20-ram-3rd-table.png "Tabella analisi modulo RAM - terza versione"){:width="100%"}
 
