@@ -102,11 +102,9 @@ Attivando questa istruzione, il risultato esposto in output dall'ALU sarebbe sta
 
 Legenda tabella *Sintesi operazioni dell'ALU dell'NQSAP*:
 
-\* per queste tre istruzioni si deve "iniettare" un carry artificale LO in ingresso (che significa presenza del carry)
-
-\*\* = Le operazioni di salto relativo saltano in corrispondenza della presenza di un certo Flag; Questo Flag viene tipicamente calcolato facendo una sottrazione fittizia tra due valori: il risultato della sottrazione non viene tenuto in considerazione e si prende in considerazione solo il Flag. Le istruzioni di confronto sono eseguite facendo una sottrazione, ma la sottrazione è già utilizzata per eseguire l'operazione A mius B (0110 = 0x06)
-
-\*\*\* L'operazione A+A veniva usata nell'NQSAP per fare lo shift verso sinistra dei bit; io ho adottato un altro metodo che descriverò in seguito.
+- \* Avevo evidenziato queste righe per ricordare che su queste tre istruzioni si deve "iniettare" un carry artificale (che è invertito, dunque il segnale doveva essere LO)
+- \*\* = Le operazioni di salto relativo saltano in corrispondenza della presenza di un certo Flag; Questo Flag viene tipicamente calcolato facendo una sottrazione fittizia tra due valori: il risultato della sottrazione non viene tenuto in considerazione e si prende in considerazione solo il Flag. Le istruzioni di confronto sono eseguite facendo una sottrazione, ma la sottrazione è già utilizzata per eseguire l'operazione A mius B (0110 = 0x06)
+- \*\*\* L'operazione A+A veniva usata nell'NQSAP per fare lo shift verso sinistra dei bit; io ho adottato un altro metodo che descriverò in seguito.
 **
 
 l'associazione 
