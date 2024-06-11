@@ -82,6 +82,8 @@ Provando a sintetizzare quando disegnato nell'NQSAP, avevo costruito questa tabe
 | x  | 1  | 1  | 0  | 1  | 1  | A AND B     |  1B       |
 | x  | 1  | 1  | 1  | 1  | 0  | A OR B      |  1E       |
 
+*Sintesi operazioni dell'ALU dell'NQSAP.*
+
 Per fare un esempio, si stava in pratica dicendo che per fare una somma ("A plus B") era necessario avere:
 
 - Cn = 1 (che, ricordiamo, è gestito con stato logico invertito, dunque in questo caso l'ALU considera in carry non presente)
@@ -98,14 +100,16 @@ In pratica, il microcodice per l'operazione di somma avrebbe dovuto presentare *
 
 Attivando questa istruzione, il risultato esposto in output dall'ALU sarebbe stato esattamente A + B, proprio come indicato nella decima riga / colonna Cn = HI (cioè carry non presente) della tabella "Funzioni logiche e operazioni aritmetiche del 74LS181." estratta dal datasheet; se avessimo invece avuto un carry in ingresso, il risultato esposto sarebbe stato A + B + 1, proprio come indicato nella decima riga / colonna Cn = LO. La somma (almeno in teoria) funzionava e iniziavo anche a far luce sul legame tra le due colonne Cn = LO / Cn = HI: il risultato in output era sempre lo stesso e variava solo in conseguenza del fatto che in ingresso ci fosse un carry o meno.
 
+Legenda tabella *Sintesi operazioni dell'ALU dell'NQSAP*:
+
 \* per queste tre istruzioni si deve "iniettare" un carry artificale LO in ingresso (che significa presenza del carry)
-** = Le operazioni di salto relativo saltano in corrispondenza della presenza di un certo Flag; Questo Flag viene tipicamente calcolato facendo una sottrazione fittizia tra due valori: il risultato della sottrazione non viene tenuto in considerazione e si prende in considerazione solo il Flag. Le istruzioni di confronto sono eseguite facendo una sottrazione, ma la sottrazione è già utilizzata per eseguire l'operazione A mius B (0110 = 0x06)
+
+\*\* = Le operazioni di salto relativo saltano in corrispondenza della presenza di un certo Flag; Questo Flag viene tipicamente calcolato facendo una sottrazione fittizia tra due valori: il risultato della sottrazione non viene tenuto in considerazione e si prende in considerazione solo il Flag. Le istruzioni di confronto sono eseguite facendo una sottrazione, ma la sottrazione è già utilizzata per eseguire l'operazione A mius B (0110 = 0x06)
 
 \*\*\* L'operazione A+A veniva usata nell'NQSAP per fare lo shift verso sinistra dei bit; io ho adottato un altro metodo che descriverò in seguito.
-** 
- l'associazione 
-ù
+**
 
+l'associazione 
 
 	• Tutti i segnali derivano direttamente dall'Instruction Register, escluso il Carry In.
 		○ S0 è in realtà "indiretto" perché transita attraverso la NOR pilotata dalla ROM, così che LHHH diventa LHHL che è il Subtract Mode.
@@ -113,11 +117,6 @@ Attivando questa istruzione, il risultato esposto in output dall'ALU sarebbe sta
 	• Nessuno dei due è accessibile da istruzioni utente, ma solo da microistruzioni…
 		○ 23/10/2022 forse successivamente grazie al 245 viene reso possibile l'accesso diretto al B in lettura; vedi anche poco più sotto **
 Tutte le istruzioni dell'ALU scrivono il risultato in A
-
-
-
-
-
 
 	• Dice "poiché la ALU è legata all'IR, ci sono solo 8 Opcode disponibili per metterla in Subtract Mode", ma questo non lo capisco. "Per creare i 16 Opcode necessari per tutte le combinazioni di Subtract e Compare, mettiamo una NOR su ALU-S0 (IR 0) e l'altro input su LF, così possiamo "riutilizzare" la Selection 0111 come se fosse 0110, che è la modalità Subtract, ma in questo caso… non capisco. 07/01/2023 ho capito un pezzo extra: praticamente significa che 0111 è inutilizzato nelle istruzioni scelte e pertanto possiamo mettere in uscita dalla ROM 0111 trasformandolo poi in 0110 grazie alla NOR in modo da avere più combinazioni possibili per fare tutte le operazioni.
 		○ 29/01/2023 Credo di aver capito. Se sul bus io dell'IR ho 8 bit totali per le istruzioni, e 5 linee sono hardwired anche verso l'ALU, significa che mi trovo in questa situazione:
