@@ -17,11 +17,11 @@ Tra le caratteristiche che spiccavano nello schema dell'ALU dell'NQSAP notavo so
 
 *Schema logico dell'ALU di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità.*
 
-Il modulo ALU è sommariamente composto da due registri di input H e B e da una coppia di '181 interconnessi, che permettono di gestire un dato di 8 bit.
+Il modulo ALU è sommariamente composto da due registri di input H e B e da una coppia di '181 interconnessi, che permettono di gestire una word di 8 bit.
 
 - Il registro H è in realtà uno shift register che è in grado di comportarsi come un normale registro a 8 bit oppure *shiftare* sia a destra sia a sinistra il valore presente in ingresso (istruzioni di rotazione).
-- Il registro B è un normale registro a 8 bit. Il chip utilizzato non include un ingresso Enable, che è dunque stato realizzato in maniera artificiale mettendo una NOR su /Clock e /WB ("Write B"); in questo modo il registro si attiva solo in corrispondenza di /WB (che è attivo LO) e del falling edge del clock negato, equivalente al rising edge del clock non negato, che è il momento in cui si caricano i registri (riferimento utile: il video di Ben Eater [8-bit CPU control logic: Part 2](https://www.youtube.com/watch?v=X7rCxs1ppyY)).
-- Tre transceiver permettono di poter leggere i valori contenuti in H, B ed L (così è stato definito l'output dell'A**L**U).
+- Il registro B è un normale registro a 8 bit. Il chip utilizzato non include un ingresso Enable, che è dunque stato realizzato in maniera artificiale mettendo una NOR su /Clock e /WB ("Write B"); in questo modo il registro si attiva solo in corrispondenza di /WB (che è attivo LO) e del falling edge del clock negato, equivalente al rising edge del clock non negato, che è il momento in cui si caricano i registri (riferimento : il video di Ben Eater [8-bit CPU control logic: Part 2](https://www.youtube.com/watch?v=X7rCxs1ppyY)).
+- Tre transceiver permettono di poter leggere i valori contenuti in H, B ed L (L è l'output dell'A**L**U).
 
 Come detto nell'introduzione, il computer BEAM, al pari dell'NQSAP, include il set di istruzioni completo del 6502, comprese quelle logiche e aritmetiche. Ricordavo discretamente le principali operazioni del 6502 e sapevo *abbastanza* bene quale dovesse essere il risultato di quello che stavo facendo, ma in quel momento non avevo ancora idea di come fosse possibile ottenerlo.
 
@@ -48,9 +48,9 @@ Uno dei ricordi vividi è quello della comprensione di cosa accomunava le due co
 
 Per quanto bizzarre possano apparire alcune delle operazioni disponibili, il filo conduttore tra le due colonne è che l'output del '181 *è sempre lo stesso*, con l'unica differenza data dalla assenza o presenza del Carry in ingresso. Si noti infatti che, in ogni riga, l'output ha sempre una differenza pari ad 1, che corrisponde al valore di un carry; ad esempio, nella decima riga troviamo una semplice operazione di somma: la differenza tra quanto computato nelle due colonne è 1 (**A più B** in un caso e **A più B più 1** nell'altro).
 
-Lo stesso ragionamento è valido per in tutte le altre operazioni aritmetiche disponibili. Prendiamo come altro esempio la prima riga: in assenza di Carry l'ALU restituisce quanto presente agli ingressi A, mentre in presenza di Carry restituisce quanto presente A + 1 (questa operazione sarà sfruttata per creare l'istruzione INC del computer "iniettando" un Carry artificiale; quasi similarmente, l'istruzione DEC è costruita intorno all'ultima funzione della tabella, ma in questo caso senza essere "dopata" da un carry artificiale).
+Lo stesso ragionamento è valido per in tutte le altre operazioni aritmetiche disponibili. Prendiamo come altro esempio la prima riga: in assenza di Carry l'ALU restituisce quanto presente agli ingressi A, mentre in presenza di Carry restituisce quanto presente in A + 1 (questa operazione sarà sfruttata per creare l'istruzione INC del computer "iniettando" un Carry artificiale; similarmente, l'istruzione DEC è costruita intorno all'ultima funzione della tabella, ma in questo caso senza essere "dopata" da un carry artificiale).
 
-A questo punto è anche opportuno segnalare che il '181 mette a disposizione due modalità di utilizzo: una con la logica attiva bassa ("Active-Low data") e una con la logica attiva alta ("Active-High data"); quest'ultima, per complicare un po' le cose, si attende in ingresso un *Carry In negato*, nel senso che un segnale Cn (Carry In) LO viene interpretato come Carry attivo, mentre un segnale Cn HI viene interpretato come Carry non presente. Allo stesso modo, anche il *Carry Out* out è negato: Cn+4 è HI per indicare che non c'è Carry in uscita, mentre è LO per indicare che è presente un Carry.
+A questo punto è anche opportuno segnalare che il '181 mette a disposizione due modalità di utilizzo: una con la logica attiva bassa ("Active-Low data") e una con la logica attiva alta ("Active-High data") che è quella utilizzata nell'NQSAP; quest'ultima, per complicare un po' le cose, si attende in ingresso un *Carry In negato*, nel senso che un segnale Cn (Carry In) LO viene interpretato come Carry attivo, mentre un segnale Cn HI viene interpretato come Carry non presente. Allo stesso modo, anche il *Carry Out* out è negato: Cn+4 è infatti HI per indicare che non c'è Carry in uscita, mentre è LO per indicare che è presente un Carry.
 
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Vedere se qui ha senso prendere quel discorso del 6502 citato da Ken XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
@@ -84,9 +84,9 @@ Provando a sintetizzare quando disegnato nell'NQSAP, avevo costruito questa tabe
 
 *Sintesi operazioni dell'ALU dell'NQSAP.*
 
-Per fare un esempio, si stava in pratica dicendo che per fare una somma ("A plus B") era necessario avere:
+Per fare un esempio, si stava in pratica dicendo che per fare una somma ("A plus B", vedi sesta riga) era necessario avere:
 
-- Cn = 1 (che, ricordiamo, è gestito con stato logico invertito, dunque in questo caso l'ALU considera in carry non presente)
+- Cn = 1 (che, ricordiamo, è gestito con stato logico invertito, dunque in questo caso l'ALU considera il carry non presente)
 - M = **0**
 - S3/S2/S1/S0 = **1001**
 
@@ -96,20 +96,48 @@ cioè:
 >|  - | -  |  - |  - |  - |  - |          - |   -       |
 >| 1  | **0**  | **1**  | **0**  | **0**  | **1**  | A plus B   |  09       |
 
-In pratica, il microcodice per l'operazione di somma avrebbe dovuto presentare **01001** ai 5 bit comuni tra Instruction Register e ALU.
+In pratica, poiché gli ingressi M ed S3-S0 sono direttamente connessi all'[Instruction Register](../control), il microcodice per l'operazione di somma dovrà presentare **01001** sui 5 bit comuni tra Instruction Register e ALU.
 
-Attivando questa istruzione, il risultato esposto in output dall'ALU sarebbe stato esattamente A + B, proprio come indicato nella decima riga / colonna Cn = HI (cioè carry non presente) della tabella "Funzioni logiche e operazioni aritmetiche del 74LS181." estratta dal datasheet; se avessimo invece avuto un carry in ingresso, il risultato esposto sarebbe stato A + B + 1, proprio come indicato nella decima riga / colonna Cn = LO. La somma (almeno in teoria) funzionava e iniziavo anche a far luce sul legame tra le due colonne Cn = LO / Cn = HI: il risultato in output era sempre lo stesso e variava solo in conseguenza del fatto che in ingresso ci fosse un carry o meno.
+Attivando questa istruzione, il risultato esposto in output dall'ALU sarebbe stato esattamente A + B, proprio come indicato nella decima riga / colonna Cn = HI (Carry non presente) della tabella "Funzioni logiche e operazioni aritmetiche del 74LS181." estratta dal datasheet; se avessimo invece avuto un carry in ingresso, il risultato esposto sarebbe stato A + B + 1, proprio come indicato nella decima riga / colonna Cn = LO. La somma (almeno in teoria) funzionava e iniziavo anche a far luce sul legame tra le due colonne Cn = LO / Cn = HI: il risultato in output era sempre lo stesso e variava solo in conseguenza del fatto che in ingresso ci fosse un carry o meno.
 
 Legenda tabella *Sintesi operazioni dell'ALU dell'NQSAP*:
 
 - \* Avevo evidenziato queste righe per ricordare che su queste tre istruzioni si deve "iniettare" un carry artificale (che è invertito, dunque il segnale doveva essere LO)
-- \*\* = Le operazioni di salto relativo saltano in corrispondenza della presenza di un certo Flag; Questo Flag viene tipicamente calcolato facendo una sottrazione fittizia tra due valori: il risultato della sottrazione non viene tenuto in considerazione e si prende in considerazione solo il Flag. Le istruzioni di confronto sono eseguite facendo una sottrazione, ma la sottrazione è già utilizzata per eseguire l'operazione A mius B (0110 = 0x06)
-- \*\*\* L'operazione A+A veniva usata nell'NQSAP per fare lo shift verso sinistra dei bit; io ho adottato un altro metodo che descriverò in seguito.
-**
+- \*\* = Le operazioni di salto relativo del 6502 dipendono dallo stato dei flag N, V, Z e C. Le istruzioni di comparazione (CMP) hanno effetto sui flag N, Z e C, che vengono computati effettuando una sottrazione (SUB) fittizia tra due valori, che nella logica del 6502 corrisponde a scartare il risultato e tenere in considerazione solo i flag risultanti dalla sottrazione fittizia. Tuttavia, le operazioni di sottrazione del '181 sono già utilizzate per eseguire l'operazione A Minus B che è mappata su M/S3-S0 = microcode 00110, dunque si deve trovare un modo per poter effettuare le sottrazioni utilizzando un altro codice di istruzioni, che sono quelle appunto della comparazione... ne parleremo più diffusamente in seguito.
+
+Ad esempio, BMI (**B**ranch on **MI**nus) viene eseguito solo in corrispondenza del flag N, che indica che il numero *con segno* è **N**egativo, dunque compreso tra -128 e -1, cioè tra 0x80 e 0xFF. I Flag sono calcolati facendo una sottrazione fittizia tra due valori: il risultato della sottrazione viene scartato e si prendono in considerazione solo i flag risultanti dall'operazione. I Flag sono dunque utilizzati per eseguire le operazioni di confronto e sfruttano l'operazione di sottrazione, che è però già utilizzata per eseguire l'operazione A Minus B (terza riga della tabella *Sintesi operazioni dell'ALU dell'NQSAP* dove S3/S2/S1/S0 = 0110 = 0x06 e il microcodice per l'operazione di sottrazione dovrà presentare **00110** sui 5 bit comuni tra Instruction Register e ALU).
+
+- \*\*\* L'operazione A+A veniva usata nell'NQSAP per fare lo shift verso sinistra dei bit; vista la presenza delo shft Register H, ho preferito riversare su di esso tutte le operazioni di rotazione (a destra e a sinistra, sia con Carry sia senza Carry).
 
 l'associazione 
 
-	• Tutti i segnali derivano direttamente dall'Instruction Register, escluso il Carry In.
+### Istruzioni di comparazione
+
+- Tutti i segnali che pilotano i '181 derivano direttamente dall'Instruction Register, eccetto il Carry In.
+- Il segnale S0 è in realtà "indiretto" perché transita attraverso una NOR pilotata da una ROM che viene attivata solo in corrispondenza delle istruzioni CMP, così che 0111 (codice che è stato assegnato alle istruzioni CMP di comparazione) venga presentato ai '181 come 0110, che è il codice per l'istruzione di sottrazione (Subtract Mode).
+
+In altre parole, per eseguire una operazione di confronto, che nella mnemonica del 6502 può essere CMP , CPX , CPY, non faccio altro cheattivare un segnale chiamato LF, cioè ALU force, in uscita su una EE prom, così che questo attivi la porta NOR per trasmettere ai 181 il codice 0110 anziché 0111.
+
+Detto in altre parole ancora:
+
+- le istruzioni di comparazione (CMP) del 6502 simulano una sottrazione e tengono in considerazione solo i Flag risultanti da quella sottrazione fittizia.
+- Il '181 esegue una sottrazione (SUB) quando si configurano i segnali M/S3-S0 = 00110.
+
+Come faccio a gestire sia le sottrazioni reali che le comparazioni considerando che devo mettere in input sui '181 la stessa codifica 01110 a partire da due diverse istruzioni SUB e CMP, che avranno dunque opcode diversi?
+
+Come detto sopra, l'operazione di sottrazione è codificata nel '181 come M/S3-S0 = 00110 (e non è modificabile).
+
+Decido di usare un opcode arbitrario per le operazioni di comparazione utilizzandone uno che è assegnato a un'operazione aritmetica del '181 che non utilizzerò, ad esempio A AND NOT B, che ha come codice M/S3-S0 = 00111.
+
+La differenza tra l'operazione A Minus B e l'operazione A AND NOT B sta nell'ultimo bit: la prima si attiva con M/S3-S0 = 0011**0**, la seconda con M/S3-S0 = 0011**1**.
+
+
+Quando l'IR trova una istruzione LHHH, dunque 0x7, lo metterà in output verso le ROM e verso l'ALU, ma l'ultimo bit di LHHH passa attraverso una NOR.
+La ROM, quando troverà in ingresso xxxx0111, attiverà il segnale LF (ALU Force) all'altro input della NOR, così questa mi invertirà l'ultimo bit di LHHH e dunque metterò in output ancora LHHL, cioè 0x6, all'ALU, che si metterà dunque in Subtract Mode permettendomi di fare il CMP.
+
+
+
+
 		○ S0 è in realtà "indiretto" perché transita attraverso la NOR pilotata dalla ROM, così che LHHH diventa LHHL che è il Subtract Mode.
 	• Gli input dell'ALU sono i registri B e H.
 	• Nessuno dei due è accessibile da istruzioni utente, ma solo da microistruzioni…
