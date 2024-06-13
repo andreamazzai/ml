@@ -98,7 +98,7 @@ cioè:
 
 In pratica, poiché gli ingressi M ed S3-S0 sono direttamente connessi all'[Instruction Register](../control), l'istruzione di somma dovrà essere coficata presentando **01001** sui 5 bit comuni tra Instruction Register e ALU, nonché su 5 dei pin di ingresso delle EEPROM.
 
-Attivando questa istruzione, il risultato esposto in output dall'ALU sarebbe stato esattamente A + B, proprio come indicato nella decima riga / colonna Cn = HI (Carry non presente) della tabella "Funzioni logiche e operazioni aritmetiche del 74LS181." estratta dal datasheet; se avessimo invece avuto un Carry in ingresso, il risultato esposto sarebbe stato A + B + 1, proprio come indicato nella decima riga / colonna Cn = LO. La somma (almeno in teoria) funzionava e iniziavo anche a far luce sul legame tra le due colonne Cn = LO / Cn = HI: il risultato in output era sempre lo stesso e variava solo in conseguenza del fatto che in ingresso ci fosse un Carry o meno.
+Attivando questa istruzione, il risultato esposto in output dall'ALU sarebbe stato esattamente A + B, proprio come indicato nella decima riga / colonna Cn = HI (Carry non presente) della tabella "Funzioni logiche e operazioni aritmetiche del 74LS181." estratta dal datasheet; se avessimo invece avuto un Carry in ingresso, il risultato esposto sarebbe stato A + B + 1, come indicato nella decima riga / colonna Cn = LO. La somma (almeno in teoria) funzionava e iniziavo anche a far luce sul legame tra le due colonne Cn = LO / Cn = HI: il risultato in output era sempre lo stesso e variava solo in conseguenza del fatto che in ingresso ci fosse un Carry o meno.
 
 Legenda tabella *Sintesi operazioni dell'ALU dell'NQSAP*:
 
@@ -135,9 +135,11 @@ Come è possibile gestire sia le sottrazioni reali sia le comparazioni considera
 - Quando l'IR carica trova una istruzione 00111 di comparazione, metterà tale codifica in output verso le ROM e verso l'ALU, ma l'ultimo bit di transita attraverso la NOR.
 - Una delle EEPROM ospitanti il microcode, quando troverà in ingresso xxx00111, dovrà attivare il segnale LF (ALU Force) su un input della NOR, così questa invertirà l'ultimo bit 0011**1** così che in realtà venga trasmesso 0011**0** all'ALU, che si metterà dunque in Subtract Mode ed effettuando la sottrazione necessaria al calcolo dei flag.
 
-Tutto questo ragionamento deriva da ciò che ho compreso con grande fatica. La documentazione dell'NQSAP segnalava che "poiché la ALU è legata all'IR, ci sono solo 8 Opcode disponibili per metterla in Subtract Mode", ma non capivo cosa volesse dire. "Per creare i 16 Opcode necessari per tutte le combinazioni di Subtract e Compare, si mette una NOR su ALU-S0 (IR 0) e l'altro input su LF, così possiamo "riutilizzare" la Selection 0111 come se fosse 0110, che è la modalità Subtract".
+Tutto questo ragionamento deriva da ciò che ho compreso con grande fatica. La documentazione dell'NQSAP segnalava che "poiché la ALU è legata all'IR, ci sono solo 8 Opcode disponibili per metterla in Subtract Mode", ma non capivo cosa volesse dire. "Per creare i 16 Opcode necessari per tutte le combinazioni di Subtract e Compare, si mette una NOR su ALU-S0 (IR 0) e l'altro input su LF, così da  riutilizzare la Selection 0111 come se fosse 0110, che è la modalità Subtract".
 
-La tabella successiva evidenzia come nella disponibilità di un byte (256 combinazioni possibili) per la codifica delle istruzioni, solo 8 combinazioni (2^3) sonocompongano gli opcode (fra tutti i 256) che permettono di avere M e S3-S0 in Subtract Mode, cioè **00110**: tuttavia, la gestione di tutte le operazioni di sottrazione SBC e le comparazioni CMP, CPX e CPY richiede ben più di 8 combinazioni, poiché si devono infatti poter gestire anche tutte le combinazioni di indirizzamenti. Ecco che il segnale LF (ALU Force) trasforma la codifica 00111 (corrispondente all'operazione inutilizzata A AND NOT B) in 00110, che attiva nuovamente l'operazione aritmetica di sottrazione del '181 e che ci permette di ottenere 16 opcode totali da inserire nel microcode per la gestione di sottrazioni e comparazioni in tutte le [modalità di indirizzamento](https://www.masswerk.at/6502/6502_instruction_set.html#modes) previste nel 6502.
+Importante evidenziare che la modalità **Subtract Mode** del '181 non è altro che la configurazione di Input M/S3-S0 = 00110 che equivale alla operazione aritmetica di sottrazione, come chiarito da David Courtney nel video [Comparator Functions of 74LS181 (74HCT181) ALU](https://www.youtube.com/watch?v=jmROTNtoUGI).
+
+La tabella successiva evidenzia come nella disponibilità di un byte per la codifica delle istruzioni (256 combinazioni possibili), solo 8 combinazioni (2^3) siano quelle degli opcode che permettono di avere M e S3-S0 in Subtract Mode, cioè **00110**: tuttavia, la gestione di tutte le operazioni di sottrazione SBC e le comparazioni CMP, CPX e CPY richiede ben più di 8 combinazioni, poiché si devono infatti poter gestire anche tutte le combinazioni di indirizzamenti del 6502. Ecco che il segnale LF (ALU Force) trasforma la codifica 00111 (corrispondente all'operazione inutilizzata A AND NOT B) in 00110, che attiva nuovamente l'operazione aritmetica di sottrazione del '181 e che ci permette di ottenere 16 opcode totali da inserire nel microcode per la gestione di sottrazioni e comparazioni in tutte le [modalità di indirizzamento](https://www.masswerk.at/6502/6502_instruction_set.html#modes) previste nel 6502.
 
 | Bit IR  | 7  | 6  | 5  | 4  | 3  | 2  | 1  | 0  |
 |  -      | -  | -  | -  | -  | -  | -  | -  | -  |
@@ -151,28 +153,33 @@ La tabella successiva evidenzia come nella disponibilità di un byte (256 combin
 | Opcode  | **0**  | **0**  | **1**  | **1**  | **0**  | 1  | 1  | 1  |
 | Opcode  | **0**  | **0**  | **1**  | **1**  | **0**  | 1  | 1  | 1  |
 
-| | M  | S3 | S2 | S1 | S0 | Operazione  | S3/S0 Hex |
-| 0  | 0  | 0  | 0  | 0  | 1  | A plus 1    |  00 + C*  |
-| 0  | 0  | 0  | 0  | 1  | 1  | Tutti 0     |  03 + C*  |
-| 0  | 0  | 0  | 1  | 1  | 0  | A minus B   |  06 + C*  |
-| 0  | 0  | 0  | 1  | 1  | 1  | CMP         |  07**     |
-| 1  | 0  | 0  | 0  | 1  | 1  | Tutti 1     |  03       |
-| 1  | 0  | 1  | 0  | 0  | 1  | A plus B    |  09       |
-| 1  | 0  | 1  | 1  | 0  | 0  | A plus A    |  0C***    |
-| 1  | 0  | 1  | 1  | 1  | 1  | A minus 1   |  0F       |
-| x  | 1  | 0  | 0  | 0  | 0  | Not A       |  10****   |
-| x  | 1  | 0  | 1  | 1  | 0  | A XOR B     |  16****   |
-| x  | 1  | 1  | 0  | 1  | 0  | B           |  1A****   |
-| x  | 1  | 1  | 0  | 1  | 1  | A AND B     |  1B****   |
-| x  | 1  | 1  | 1  | 1  | 0  | A OR B      |  1E****   |
+### Esempio di addizione e sottrazione con Carry
 
-*Sintesi operazioni dell'ALU dell'NQSAP.*
+Supponiamo di fare un'operazione **A plus B** con due ALU. Il **/Cn+4** (Carry Out) della prima entra nel **/Cn** (Carry In) della seconda. Non settiamo un Carry in ingresso nella prima ALU, dunque iniettiamo uno stato logico HI (ricordiamo che nella logica "Active-High Data" il Carry è negato).
+
+- Se /Cn+4 della prima ALU è HI, significa che il suo risultato di A plus B non comporta un Carry, la cui assenza sarà propagata alla seconda ALU che troverà dunque l'ingresso Cn allo stato HI: entrambe le ALU eseguiranno A plus B.
+- se /Cn+4 della prima ALU è LO, significa che il suo risultato di A plus comporta un Carry, la cui presenza sarà propagata alla seconda ALU che troverà dunque l'ingresso Cn allo stato LO: la prima ALU eseguirà dunque A plus B, mentre la seconda eseguirà A plus B plus 1.
+
+Per eseguire una sottrazione A minus B dobbiamo attivare il Carry, cioè /Cn = LO
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+SONO ARRIVATO QUI
 
 
-- Ricordo che uno degli aspetti che mi ha portato via letteralmente decine di ore per la comprensione del funzionamento era la frase di Tom "Poiché ho solo 16 combinazioni possibili , utilizzo un XXX per poter mettere il chip in subtract mode"
-- doppia modalità di lavoro, active low o active high
-- subtract mode
-complemento di 1
+- se la prima ALU non genera borrow, il suo /COUT sarà LO, entrambe le ALU eseguiranno A-B
+- se la prima ALU genererà un borrow, il suo /COUT sarà HI e dunque la seconda ALU eseguirà un A-B-1
+Questi punti sono esposti in dettaglio in https://tomnisbet.github.io/nqsap/docs/74181-alu-notes/#carry-flag
+	• Per come funziona il 74181 e provando a fare delle addizioni o sottrazioni con e senza Carry, si potrebbe pensare di poter semplicemente guardare le uscite COUT delle due ALU e fare una XOR per capire se c'è Overflow o no. Tuttavia il giochino non funziona quando facciamo INC e DEC, dunque si ricorre ai 74151, come vedremo poi.
+		○ Perché il giochino non funziona? 11/07/2023 non funziona perché come spiegato qui quando faccio un A+1 si possono verificare due casi:
+			§ 0000 0101 che incrementato diventa 0000 0110; il primo chip ha CIN LO cioè attivato; il COUT è HI cioè disattivato
+			§ 0000 1111 che incrementato diventa 0001 0000; il primo chip ha CIN LO cioè attivato; il COUT è LO cioè attivato
+nel secondo caso non ho overflow del risultato, ma se andassi a interpretare i COUT dei due chip incorrerei in un errore
+
+*Opcode validi per le operazioni aritmetiche di sottrazione.*
+
+
+
+- complemento di 1
 
 *********************************
 CONTROLLARE LA PAROLA CARRY CON INIZIALE MAIUSCOLA O NO A SECONDA DEI CONTESTI
