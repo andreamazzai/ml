@@ -229,18 +229,13 @@ L'utente segnala che ci sono due modalità di scrittura; quella evidenziata da l
 
 A cosa servono i MUX nel modulo RAM (e nel MAR)? All'accensione, il contenuto della memoria RAM è vuoto / casuale, dunque dobbiamo prima avere la possibilità di programmare la RAM ("Program Mode") e  poi di renderla visibile al bus del computer durante la normale esecuzione dei programmi ("Run Mode").
 
-[![Modulo RAM di rolf electronics](../../assets/ram/20-rolf-ram.png "Modulo RAM di rolf electronics"){:width="50%"}](../../assets/ram/20-rolf-ram.png)
+Il funzionamento e la necessità dei transceiver mi erano chiarissimi, in quanto ampiamente utilizzati nel SAP computer per poter at
 
-Il funzionamento e la necessità dei transceiver mi erano chiarissimi, in quanto ampiamente utilizzati nel SAP computer per poter attivare i vari moduli del computer solo nel momento in cui fosse necessario farlo: tipicamente ogni modulo ha bisogno di un unico transceiver di interconnessione verso il bus.
-
-- Il transceiver di sinistra è attivo quando si scrive *sulla* RAM, selezionando quale sia la sorgente mediante il MUX '157 (che in "Program Mode" attiva gli ingressi connessi al dip-switch, mentre in "Run Mode" attiva gli ingressi connessi al bus); i LED mostrano il valore che viene scritto sulla RAM.
 - Il transceiver di destra è attivo quando si legge *dalla* RAM; i LED mostrano il valore che viene letto dalla RAM e trasferito sul bus del computer.
 
 Un latch per memorizzare lo stato dei LED, come erroneamente ipotizzavo inizialmente, non era necessario.
 
-- Un FF '273 in alto a destra che, sprovvisto di Enable come discusso in precedenza, si attiva in corrispondenza di un Enable fittizio costruito con l'operazione logica "Clock *AND* Memory Address Register In" (ingressi 1A e 1B del NAND a sinistra nello schema); il segnale MI indica che il computer si prepara a settare l'indirizzo di RAM sul quale eseguirà la prossima operazione.
-
-- Un secondo transceiver '245 che si attiva nel momento in cui si deve leggere *dalla* RAM e trasferirne l'output verso il bus dati (anche in questo caso il pin DIR del '245 settato a LO configura i pin A1-A8 come ingressi e i pin B1-B8 come uscite); notare il suo ingresso OE connesso al segnale RO (RAM Output) del computer.
+- Un secondo transceiver '245 che si attiva nel momento in cui si deve leggere *dalla* RAM e trasferirne l'output verso il bus dati (anche in questo caso il pin DIR del '245 settato a LO .
 
 [![Write cicle del 62256](../../assets/ram/20-ram-write-cycle.png "Write cicle del 62256"){:width="50%"}](../../assets/ram/20-ram-write-cycle.png)
 
@@ -254,17 +249,13 @@ Tra i vari link sondati, c'era anche [questo post Reddit](https://www.reddit.com
 
 Tra i post più utili relativi alla comprensione dei segnali di gestione di RAM e MAR per il modulo di memoria con IO comuni, c'è certamente il [Question about RAM replacement](https://www.reddit.com/r/beneater/comments/ut1oud/8bit_question_about_ram_replacement/), nel quale il moderatore The8BitEnthusiast invita a consultare la sua (*eccellente*, aggiungo io) realizzazione, che ho preso ad esempio e ispirazione.
 
-[![Modulo RAM dell'utente Reddit The8BitEnthusiast](../../assets/ram/20-ram-the8bit_enthusiast.png "Modulo RAM dell'utente Reddit The8BitEnthusiast"){:width="100%"}](../../assets/ram/20-ram-the8bit_enthusiast.png)
-
-*Modulo RAM dell'utente e moderatore Reddit The8BitEnthusiast.*
-
 Se da un certo punto di vista lo schema era particolarmente semplificato rispetto a quelli che avevo visto in precedenza, dall'altra, con l'utilizzo di un solo MUX '157 con segnali che ne uscivano per rientrarne in altre porte, mi risultava di difficile comprensione. Avevo pertanto provato a costruirmi i grafici temporali degli schemi dei segnali per questi tre possibili casi:
 
 Per esempio, ipotizzavo che nel primo caso "Scrittura sulla RAM in Run Mode" accadesse quanto segue.
 
 - **Prima del Rising Edge del CLK**:
 
-  - Zc = /(CLK LO * RI HI) = HI, dunque la direzione del '245 di sinistra, che connette il data bus, è A-->B (Output)
+  - Zc = /(CLK LO * RI HI) = HI, 
   - Za = //(/RO HI * Zc HI) = HI, dunque il '245 dal/al data bus è disabilitato
 
 - **CLK attivo**:
@@ -283,7 +274,7 @@ The8BitEnthusiast aveva gentilmente risposto al mio quesito:
 
 [![Timing RAM 62256](../../assets/ram/20-ram-62256-timing.png "Timing RAM 62256"){:width="66%"}](../../assets/ram/20-ram-62256-timing.png)
 
-\*\* Nello schema del modulo RAM di The8BitEnthusiast si nota che il segnale OE della RAM è connesso a ground, che significa che i pin dati sono sempre attivi in output, *tranne* quando si deve effettuare una scrittura. Quando si attiva il segnale di write WE, vi è un tempo tWHZ durante il quale la RAM è ancora attiva in output; trascorso questo tempo, è possibile mettere dei dati in input sulla RAM.
+\*\* Nello schema del modulo RAM di The8BitEnthusiast si nota che il segnale OE della 
 
 ## Design dei moduli MAR e RAM del BEAM
 
@@ -308,12 +299,6 @@ Come già detto, per quanto riguarda la realizzazione del modulo RAM avevo decis
 
 *Prima versione del Modulo di memoria (RAM) del BEAM.*
 
-Riponevo grandi speranze su questo primo design.
-
-Per scrivere in RAM in Run Mode:
-
-- al rising edge del clock l'uscita della NAND passa da HI a LO per il tempo RC e l'impulso /WE ↘↗ viene trasmesso alla RAM attraverso il MUX '157: la RAM memorizza quanto trova nelle sue porte di ingresso D0-D7.
-
 Per leggere dalla RAM si devono soddisfare le seguenti condizioni:
 
 - /CE LO, cioè il chip deve essere abilitato
@@ -323,18 +308,12 @@ Per leggere dalla RAM si devono soddisfare le seguenti condizioni:
 La sequenza degli eventi è dunque la seguente:
 
 - RI è LO, dunque la NOT disabiliterà il transceiver superiore, che non metterà dunque alcunché in output verso la RAM;
-- RO LO abilita il XCVR inferiore e /OE della RAM, che viene attivata in output;
-- /CE (aka /CS, Chip Select) è fisso LO in quanto connesso a ground;
 - nel frattempo WE è HI (e dunque la scrittura è inibita) perché:
-  - in Run Mode RI LO mantiene HI all'uscita della NAND connessa a I1d del MUX (se uno dei due input della RAM è LO, l'uscita è HI) e dunque anche /WE è fisso HI, inibendo la scrittura;
   - in Program Mode l'ingresso I0d del MUX è fisso HI grazie alla resistenza da 1K, perciò anche in questo caso non vi è scrittura.
 
 ### Seconda versione del modulo RAM
 
 Stabilito che una soluzione just-in-time sarebbe stata prematura per le mie competenze, avevo dunque provato a ridisegnare lo schema con un solo transceiver mantenendo i MUX per gestire l'input della RAM, facendolo provenire dal bus o dal dip-switch a seconda della modalità Program o Run-Mode.
-
-
-
 
 I due asterischi in tabella \*\* mi servivano a ricordare che dovevo stare particolarmente attento alla preparazione del microcode e che non dovevo mai avere /WR e /RR attivi contemporaneamente, perché non avevo previsto un controllo di eventuale conflitto. Per evitare conflitti avrei dovuto mettere su /WR una NAND a 3 ingressi che si attiva solo per CLK, RR e /WR, cioè /WE = CLK \* RR \* /WR, in altre parole: posso scrivere sulla RAM *solo* se non la sto leggendo.
 
