@@ -64,9 +64,11 @@ Ritornando alla tabella delle funzioni / operazioni e cercando di seguire le spi
 
 Successivamente capirò che le istruzioni necessarie erano in realtà ancora meno di quelle che ipotizzavo.
 
+## Relazione diretta tra Instruction Register e ALU
+
 Un altro degli aspetti di più difficile comprensione, come anticipato in precedenza, è stata l'associazione diretta tra istruzione correntemente contenuta nell'Instruction Register e funzione logica / operazione aritmetica eseguita dal '181.
 
-Provando a sintetizzare quando disegnato nell'NQSAP, avevo costruito questa tabella per avere un riepilogo dei segnali applicati all'ALU, dei loro valori esadecimali corrispondenti e delle operazioni risultanti:
+Provando a sintetizzare quando disegnato nell'NQSAP, avevo costruito questa tabella per avere un riepilogo dei segnali applicati all'ALU, dei loro valori esadecimali corrispondenti e delle operazioni risultanti, estrapolandola dalla tabella completa delle istruzioni visibile in [NQSAP Instructions by Address Mode Group](https://tomnisbet.github.io/nqsap/docs/in-by-mode-group/):
 
 | Cn | M  | S3 | S2 | S1 | S0 | Operazione  | M-S3/S0 Hex |
 |  - | -  |  - |  - |  - |  - |          -  |   -       |
@@ -86,6 +88,19 @@ Provando a sintetizzare quando disegnato nell'NQSAP, avevo costruito questa tabe
 
 *Sintesi operazioni dell'ALU dell'NQSAP.*
 
+Legenda tabella *Sintesi operazioni dell'ALU dell'NQSAP*:
+
+- \* Avevo evidenziato queste righe per ricordare che su queste tre istruzioni si deve "iniettare" un Carry artificale (che è invertito, dunque il segnale applicato doveva essere LO)
+- \*\* = Le istruzioni di salto relativo del 6502 dipendono dallo stato dei flag N, V, Z e C. Le istruzioni che modificano lo stato dei flag sono molte: aritmetiche, incremento/decremento, rotazione, logiche, stack, caricamento/trasferimento registri e *comparazione*. Queste ultime (CMP, CPX, CPY) hanno effetto sui flag N, Z e C, che vengono computati effettuando una sottrazione (SBC) fittizia tra due valori, scartandone il risultato e tenendo in considerazione solo i flag risultanti dalla sottrazione. Per eseguire le comparazioni bisogna dunque effettuare delle sottrazioni scartando il risultato, tuttavia le operazioni di sottrazione del '181 sono già utilizzate per eseguire le sottrazioni vere e proprie (A Minus B), già codificate nella terza riga della tabella con M/S3-S0 = 00110: come è possibile eseguire altre istruzioni di sottrazione utilizzando una istruzione con codifica diversa? Ne parleremo più diffusamente in seguito.
+
+**+++++++++++++++++++++++++ Vedere se ne parlerò sempre in questa stessa pagina o nella pagina dei Flag++++++++++++++++++++++++++**
+
+FARE UN ESEMPIO di SOTTRAZIONE E CALCOLO DEL FLAG, Oppure spiegare che verrà spiegata più in seguito quando si parla dei Flag
+
+Ad esempio, BMI (**B**ranch on **MI**nus) viene eseguito solo in corrispondenza del flag N, che indica che il numero *con segno* è **N**egativo, dunque compreso tra -128 e -1, cioè tra 0x80 e 0xFF. I Flag sono calcolati facendo una sottrazione fittizia tra due valori: il risultato della sottrazione tra il valore contenuto nel registro A, X o Y e il valore indicato dall'operando viene scartato e si prendono in considerazione solo i flag risultanti dall'operazione. I Flag sono dunque utilizzati per eseguire le operazioni di confronto e sfruttano l'operazione di sottrazione, che è però già utilizzata per eseguire l'operazione A Minus B (terza riga della tabella *Sintesi operazioni dell'ALU dell'NQSAP* dove S3/S2/S1/S0 = 0110 = 0x06 e il microcodice per l'operazione di sottrazione dovrà presentare **00110** sui 5 bit comuni tra Instruction Register e ALU).
+
+- \*\*\* L'operazione A+A veniva usata nell'NQSAP per fare lo shift verso sinistra dei bit; vista la presenza dello Shift Register H, ho preferito riversare su di esso tutte le operazioni di rotazione (a destra e a sinistra, sia con Carry sia senza Carry).
+- \*\*\*\*Il Carry è ininfluente in quanto questa è una funzione logica e non una operazione aritmetica.
 Per fare un esempio, si stava in pratica dicendo che per eseguire una somma ("A Plus B", vedi sesta riga) era necessario avere:
 
 - Cn = 1 (che, ricordiamo, è gestito con stato logico invertito, dunque in questo caso l'ALU considera il Carry non presente)
@@ -106,25 +121,12 @@ Gli altri 3 bit di output dell'IR erano stati scelti arbitrariamente, pur se con
 
 *Output dell'Instruction Register verso il modulo ALU con evidenza dei 5 bit di selezione della funzione / operazione dei '181.*
 
-Attivando questa istruzione, il risultato esposto in output dall'ALU sarebbe stato esattamente A Plus B, proprio come indicato nella decima riga / colonna Cn = HI della tabella "Funzioni logiche e operazioni aritmetiche del 74LS181." estratta dal datasheet; se avessimo invece avuto un Carry in ingresso, il risultato esposto sarebbe stato A + B + 1, come indicato nella decima riga / colonna Cn = LO. La somma (almeno in teoria) funzionava e iniziavo anche a far luce sul legame tra le due colonne Cn = LO / Cn = HI: il risultato in output era sempre lo stesso e variava solo in conseguenza del fatto che in ingresso ci fosse un Carry o meno.
+Attivando questa istruzione, il risultato esposto in output sarebbe stato esattamente A Plus B, proprio come indicato nella decima riga / colonna Cn = HI della tabella "Funzioni logiche e operazioni aritmetiche del 74LS181." estratta dal datasheet; se avessimo invece avuto un Carry in ingresso, il risultato esposto sarebbe stato A + B + 1, come indicato nella decima riga / colonna Cn = LO. La somma (almeno in teoria) funzionava e iniziavo anche a far luce sul legame tra le due colonne Cn = LO / Cn = HI: il risultato in output era sempre lo stesso e variava solo in conseguenza del fatto che in ingresso ci fosse un Carry o meno.
 
-Legenda tabella *Sintesi operazioni dell'ALU dell'NQSAP*:
-
-- \* Avevo evidenziato queste righe per ricordare che su queste tre istruzioni si deve "iniettare" un Carry artificale (che è invertito, dunque il segnale applicato doveva essere LO)
-- \*\* = Le istruzioni di salto relativo del 6502 dipendono dallo stato dei flag N, V, Z e C. Le istruzioni che modificano lo stato dei flag sono molte: aritmetiche, incremento/decremento, rotazione, logiche, stack, caricamento/trasferimento registri e *comparazione*. Queste ultime (CMP, CPX, CPY) hanno effetto sui flag N, Z e C, che vengono computati effettuando una sottrazione (SBC) fittizia tra due valori scartando il risultato e tenendo in considerazione solo i flag risultanti dalla sottrazione. Per eseguire le comparazioni bisogna dunque effettuare delle sottrazioni scartando il risultato, tuttavia le operazioni di sottrazione del '181 sono già utilizzate per eseguire le sottrazioni vere e proprie (A Minus B), codificate con M/S3-S0 = 00110: come è possibile eseguire istruzioni di sottrazione utilizzando una istruzione con codifica diversa? Ne parleremo più diffusamente in seguito.
-
-+++++++++++++++++++++++++ Vedere se ne parlerò sempre in questa stessa pagina o nella pagina dei FlagVedere se ne parlerò sempre in questa stessa pagina o nella pagina dei Flag ++++++++++++++++++++++++++
-
-FARE UN ESEMPIO di SOTTRAZIONE E CALCOLO DEL FLAG, Oppure spiegare che verrà spiegata più in seguito quando si parla dei Flag
-
-Ad esempio, BMI (**B**ranch on **MI**nus) viene eseguito solo in corrispondenza del flag N, che indica che il numero *con segno* è **N**egativo, dunque compreso tra -128 e -1, cioè tra 0x80 e 0xFF. I Flag sono calcolati facendo una sottrazione fittizia tra due valori: il risultato della sottrazione viene scartato e si prendono in considerazione solo i flag risultanti dall'operazione. I Flag sono dunque utilizzati per eseguire le operazioni di confronto e sfruttano l'operazione di sottrazione, che è però già utilizzata per eseguire l'operazione A Minus B (terza riga della tabella *Sintesi operazioni dell'ALU dell'NQSAP* dove S3/S2/S1/S0 = 0110 = 0x06 e il microcodice per l'operazione di sottrazione dovrà presentare **00110** sui 5 bit comuni tra Instruction Register e ALU).
-
-- \*\*\* L'operazione A+A veniva usata nell'NQSAP per fare lo shift verso sinistra dei bit; vista la presenza dello Shift Register H, ho preferito riversare su di esso tutte le operazioni di rotazione (a destra e a sinistra, sia con Carry sia senza Carry).
-- \*\*\*\*Il Carry è ininfluente in quanto questa è una funzione logica e non una operazione aritmetica.
 
 ### Istruzioni di comparazione
 
-- Tutti i segnali che pilotano i '181 derivano direttamente dall'Instruction Register (IR), eccetto il Carry In. Si può dire che l'ALU è *hardwired* all'IR e che pertanto il microcode del computer dovrà essere scritto in modo tale che le sue istruzioni rispecchino i segnali in ingresso del '181: ad esempio, osservando la tabella *Funzioni logiche e operazioni aritmetiche del 74LS181*, l'istruzione di somma del computer dovrà avere i bit comuni tra IR ed ALU codificati come 01001.
+- Tutti i segnali che pilotano i '181 derivano direttamente dall'Instruction Register (IR), eccetto il Carry In. Si può dire che l'ALU è *hardwired* all'IR e che pertanto il microcode del computer dee essere scritto in modo tale che le sue istruzioni rispecchino i segnali in ingresso del '181: ad esempio, osservando la tabella *Funzioni logiche e operazioni aritmetiche del 74LS181*, l'istruzione di somma del computer dovrà avere i bit comuni tra IR ed ALU codificati come 01001.
 
 - Il segnale S0 è in realtà "parzialmente indiretto" perché transita attraverso una NOR pilotata da una ROM che viene attivata solo in corrispondenza delle istruzioni CMP, così che la codifica 0011**1**, arbitrariamente designata per indicare le istruzioni di comparazione, venga presentata ai '181 come 0011**0**, che è il codice per l'istruzione di sottrazione (Subtract Mode).
 
