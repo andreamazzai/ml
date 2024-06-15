@@ -102,7 +102,7 @@ In pratica, poiché gli ingressi M ed S3-S0 sono direttamente connessi all'[Inst
 
 Gli altri 3 bit di output dell'IR erano stati scelti arbitrariamente, pur se con qualche accorgimento strutturato, per gestire le diverse modalità di indirizzamento disponibili sul 6502 e che dovevano essere emulate dal computer.
 
-![Alt text](../../assets/50-alu-cl-ir-out.png)
+![Alt text](../../assets/alu/50-alu-cl-ir-out.png)
 
 *Output dell'Instruction Register verso il modulo ALU.*
 
