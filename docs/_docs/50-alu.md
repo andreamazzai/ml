@@ -104,7 +104,7 @@ Gli altri 3 bit di output dell'IR erano stati scelti arbitrariamente, pur se con
 
 ![Alt text](../../assets/alu/50-alu-cl-ir-out.png)
 
-*Output dell'Instruction Register verso il modulo ALU.*
+*Output dell'Instruction Register verso il modulo ALU con evidenza dei 5 bit di selezione della funzione / operazione dei '181.*
 
 Attivando questa istruzione, il risultato esposto in output dall'ALU sarebbe stato esattamente A Plus B, proprio come indicato nella decima riga / colonna Cn = HI della tabella "Funzioni logiche e operazioni aritmetiche del 74LS181." estratta dal datasheet; se avessimo invece avuto un Carry in ingresso, il risultato esposto sarebbe stato A + B + 1, come indicato nella decima riga / colonna Cn = LO. La somma (almeno in teoria) funzionava e iniziavo anche a far luce sul legame tra le due colonne Cn = LO / Cn = HI: il risultato in output era sempre lo stesso e variava solo in conseguenza del fatto che in ingresso ci fosse un Carry o meno.
 
