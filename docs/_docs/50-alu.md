@@ -82,7 +82,6 @@ Provando a sintetizzare quando disegnato nell'NQSAP, avevo costruito questa tabe
 | 1  | 0  | 1  | 1  | 1  | 1  | A Minus 1   |  0F       |
 | x  | 1  | 0  | 0  | 0  | 0  | Not A       |  10****   |
 | x  | 1  | 0  | 1  | 1  | 0  | A XOR B     |  16****   |
-| x  | 1  | 1  | 0  | 1  | 0  | B           |  1A****   |
 | x  | 1  | 1  | 0  | 1  | 1  | A AND B     |  1B****   |
 | x  | 1  | 1  | 1  | 1  | 0  | A OR B      |  1E****   |
 
@@ -91,9 +90,10 @@ Provando a sintetizzare quando disegnato nell'NQSAP, avevo costruito questa tabe
 Legenda tabella *Sintesi operazioni dell'ALU dell'NQSAP*:
 
 - \* Avevo evidenziato queste righe per ricordare che su queste tre istruzioni si deve "iniettare" un Carry artificale (che è invertito, dunque il segnale applicato doveva essere LO)
-- \*\* = Le istruzioni di salto relativo del 6502 dipendono dallo stato dei flag N, V, Z e C. Le istruzioni che modificano lo stato dei flag sono molte: aritmetiche, incremento/decremento, rotazione, logiche, stack, caricamento/trasferimento registri e *comparazione*. Queste ultime (CMP, CPX, CPY) hanno effetto sui flag N, Z e C, che vengono computati effettuando una sottrazione (SBC) fittizia tra due valori, scartandone il risultato e tenendo in considerazione solo i flag risultanti dalla sottrazione (non avevo mai approfondito come i flag fossero generati sul 6502 e questo esercizio è stato fondamentale). Per eseguire le comparazioni bisogna dunque effettuare delle sottrazioni scartando il risultato, tuttavia le operazioni di sottrazione del '181 sono già utilizzate per eseguire le sottrazioni vere e proprie (A Minus B), già codificate nella terza riga della tabella con M/S3-S0 = 00110: come è possibile eseguire altre operazioni di sottrazione utilizzando una istruzione con codifica diversa? Ne parleremo più diffusamente in seguito.
+- \*\* = Le istruzioni di salto relativo del 6502 dipendono dallo stato dei flag N, V, Z e C. Le istruzioni che modificano lo stato dei flag sono molte: aritmetiche, incremento/decremento, rotazione, logiche, stack, caricamento/trasferimento registri e *comparazione*. Queste ultime (CMP, CPX, CPY) hanno effetto sui flag N, Z e C, che vengono computati effettuando una sottrazione (SBC) fittizia tra due valori, scartandone il risultato e tenendo in considerazione solo i flag risultanti dalla sottrazione (non avevo mai approfondito come i flag fossero generati sul 6502 e questo esercizio è stato fondamentale). Per eseguire le comparazioni bisogna dunque effettuare delle sottrazioni scartando il risultato, tuttavia le operazioni di sottrazione del '181 sono già utilizzate per eseguire le sottrazioni vere e proprie (A Minus B), già codificate nella terza riga della tabella con M/S3-S0 = 00110: come è possibile eseguire altre operazioni di sottrazione utilizzando un opcode diverso? Ne parleremo più diffusamente in seguito.
 - \*\*\* L'operazione A+A veniva usata nell'NQSAP per fare lo shift verso sinistra dei bit; vista la presenza dello Shift Register H, ho preferito riversare su di esso tutte le operazioni di rotazione (a destra e a sinistra, sia con Carry sia senza Carry).
-- \*\*\*\*Il Carry è ininfluente in quanto questa è una funzione logica e non una operazione aritmetica.
+- \*\*\*\*Il Carry è ininfluente in quanto si tratta di funzione logica e non di una operazione aritmetica.
+
 Per fare un esempio, si stava in pratica dicendo che per eseguire una somma ("A Plus B", vedi sesta riga) era necessario avere:
 
 - Cn = 1 (che, ricordiamo, è gestito con stato logico invertito, dunque in questo caso l'ALU considera il Carry non presente)
