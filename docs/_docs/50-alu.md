@@ -50,11 +50,11 @@ Uno dei ricordi vividi è quello della comprensione di cosa accomunava le due co
 
 Per quanto bizzarre possano apparire alcune delle operazioni disponibili, il filo conduttore tra le due colonne è che l'output del '181 *è sempre lo stesso*, con l'unica differenza data dalla assenza o presenza del Carry in ingresso. Si noti infatti che, in ogni riga, l'output ha sempre una differenza pari ad 1, che corrisponde al valore del Carry; ad esempio, nella decima riga troviamo la semplice operazione di somma **A Plus B**: la differenza tra quanto computato nelle due colonne è 1 (**A Plus B** in caso di nessun Carry in ingresso e **A Plus B Plus 1** in caso di Carry in ingresso).
 
-Lo stesso ragionamento è valido per in tutte le altre operazioni aritmetiche disponibili. Prendiamo come altro esempio la prima riga: in assenza di Carry l'ALU restituisce quanto presente agli ingressi A, mentre in presenza di Carry aggiunge 1 a quanto presente in A (l'operazione aritmetica **A Plus 1** sarà sfruttata per creare l'istruzione INC del computer "iniettando" un Carry artificiale; similarmente, l'istruzione DEC è stata costruita intorno all'operazione **A Minus 1** della tabella, ma in questo caso senza essere "dopata" da un Carry artificiale).
+Lo stesso ragionamento è valido per in tutte le altre operazioni aritmetiche disponibili. Prendiamo come altro esempio la prima riga: in assenza di Carry, l'ALU restituisce quanto presente agli ingressi A, mentre in presenza di Carry aggiunge 1 a quanto presente in A (l'operazione aritmetica **A Plus 1** sarà sfruttata per creare l'istruzione INC del computer "iniettando" un Carry artificiale; similarmente, l'istruzione DEC è stata costruita intorno all'operazione **A Minus 1** della tabella, ma in questo caso senza essere "dopata" da un Carry artificiale).
 
 A questo punto è anche opportuno segnalare che il '181 mette a disposizione due modalità di utilizzo: una con la logica attiva bassa ("Active-Low data") e una con la logica attiva alta ("Active-High data") che è quella utilizzata nell'NQSAP; quest'ultima, per complicare un po' le cose, si attende in ingresso un *Carry In negato*, nel senso che un segnale Cn (Carry In) = LO viene interpretato come Carry attivo, mentre un segnale Cn = HI viene interpretato come Carry non presente. Allo stesso modo, anche il *Carry Out* è negato: Cn+4 è infatti HI per indicare che non c'è Carry in uscita, mentre è LO per indicare che è presente un Carry.
 
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Vedere se qui ha senso prendere quel discorso del 6502 citato da Ken XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+**XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Vedere se qui ha senso prendere quel discorso del 6502 citato da Ken XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX**
 
 Ritornando alla tabella delle funzioni / operazioni e cercando di seguire le spiegazioni e logica dell'NQSAP, ritenevo che solo il sottoinsieme visibile di seguito fosse utile per lo scopo prefissato, che era quello di poter emulare le istruzioni del 6502:
 
@@ -64,7 +64,7 @@ Ritornando alla tabella delle funzioni / operazioni e cercando di seguire le spi
 
 Successivamente capirò che le istruzioni necessarie erano in realtà ancora meno di quelle che ipotizzavo.
 
-Un altro degli aspetti di più difficile comprensione, come anticipato in precedenza, è stata l'associazione diretta tra istruzione correntemente contenuta nell'Instruction Register e funzione logica / operazione matematica eseguita dal '181.
+Un altro degli aspetti di più difficile comprensione, come anticipato in precedenza, è stata l'associazione diretta tra istruzione correntemente contenuta nell'Instruction Register e funzione logica / operazione aritmetica eseguita dal '181.
 
 Provando a sintetizzare quando disegnato nell'NQSAP, avevo costruito questa tabella per avere un riepilogo dei segnali applicati all'ALU, dei loro valori esadecimali corrispondenti e delle operazioni risultanti:
 
