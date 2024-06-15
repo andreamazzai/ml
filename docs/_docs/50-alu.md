@@ -11,6 +11,10 @@ Sviluppata attorno ai chip [74LS181](https://www.ti.com/lit/ds/symlink/sn54ls181
 
 Il '181 è un'ALU a 4 bit sviluppata negli anni '70 che può eseguire 16 operazioni aritmetiche e 16 funzioni logiche. E' possibile concatenare più chip per elaborare word di dimensioni maggiori.
 
+In questa pagina, i termini ALU e '181 sono spesso utilizzati per riferirsi al chip
+
+**Utilizzo dei termini '181 e ALU come Sinonimi**: in questa pagina, troveremo i termini ALU e '181 che vengono spesso utilizzati come sinonimi. Notare che ALU potrebbe indicare sia il modulo Unità Aritmetica e Logica nella sua interezza, sia il solo chip '181. Il contesto aiuterà a comprendere se per ALU si intenda il modulo, oppure il solo chip.
+
 Tra le caratteristiche che spiccavano nello schema dell'ALU dell'NQSAP notavo soprattutto un discreto quantitativo di chip - tra i quali gli Shift Register 74LS194 - e un modo particolare per indirizzare i '181, che erano "strettamente legati" all'istruzione presente nell'Instruction Register della [Control Logic](../control). Il legame con la Control Logic è stato tra i più complessi da analizzare e comprendere, ma quello con il modulo dei Flag è altrettanto importante e non meno complesso: ad ogni operazione dell'ALU (e non solo) corrisponde infatti un'azione sul registro dei Flag.
 
 [![Schema logico dell'ALU di Tom Nisbet](../../assets/alu/50-alu-nqsap.png "Schema logico dell'ALU di Tom Nisbet"){:width="100%"}](../../assets/alu/50-alu-nqsap.png)
@@ -155,29 +159,34 @@ La tabella successiva evidenzia come nella disponibilità di un byte per la codi
 
 ### Esempio di addizione e sottrazione con Carry
 
-Supponiamo di fare un'operazione **A plus B** con due ALU. Il **/Cn+4** (Carry Out) della prima entra nel **/Cn** (Carry In) della seconda. Non settiamo un Carry in ingresso nella prima ALU, dunque iniettiamo uno stato logico HI (ricordiamo che nella logica "Active-High Data" il Carry è negato).
+Supponiamo di fare un'operazione **A plus B** con due ALU. Il **/Cn+4** (Carry Out) del primo '181 entra nel **/Cn** (Carry In) del econdo. Mettiamo in ingresso nel un segnale allo stato logico HI, che corrisponde a non avere un Carry (ricordiamo che nella logica "Active-High Data" il Carry è negato).
 
-- Se /Cn+4 della prima ALU è HI, significa che il suo risultato di A plus B non comporta un Carry, la cui assenza sarà propagata alla seconda ALU che troverà dunque l'ingresso Cn allo stato HI: entrambe le ALU eseguiranno A plus B.
-- se /Cn+4 della prima ALU è LO, significa che il suo risultato di A plus comporta un Carry, la cui presenza sarà propagata alla seconda ALU che troverà dunque l'ingresso Cn allo stato LO: la prima ALU eseguirà dunque A plus B, mentre la seconda eseguirà A plus B plus 1.
+- Se /Cn+4 del primo '181 è HI, significa che il suo risultato di A plus B non comporta un Carry, la cui assenza sarà propagata al secondo '181, che troverà dunque l'ingresso Cn allo stato HI: entrambi i '181 eseguiranno A plus B.
+- se /Cn+4 del primo '181 è LO, significa che il suo risultato di A plus B comporta un Carry, la cui presenza sarà propagata al secondo '181, che troverà dunque l'ingresso Cn allo stato LO: il primo '181 eseguirà dunque l'operazione A plus B, mentre il secondo eseguirà l'operazione A plus B plus 1.
 
-Per eseguire una sottrazione A minus B dobbiamo attivare il Carry, cioè /Cn = LO
+Per eseguire invece una sottrazione **A minus B** dobbiamo attivare il Carry, cioè settare /Cn = LO **(un po' come il SEC del 6502, da settare prima di una sottrazione)**
+
+- Se il primo '181 non genera un prestito ("borrow"), il suo /Cn+4 sarà allo stato logico LO ed anche il secondo '181 eseguirà l'operazione A minus B
+- Se invece il primo '181 genererà un borrow, il suo /Cn+4 sarà allo stato logico HI e dunque il secondo '181 eseguirà A minus B - 1.
+
+Questi punti sono spiegati in dettaglio da Tom nella sezione [Carry Flag](https://tomnisbet.github.io/nqsap/docs/74181-alu-notes/#carry-flag) della sua pagina dedicata all'ALU.
+
+Annotavo che per come funziona il '181 e provando a fare delle addizioni o sottrazioni con e senza Carry, si potrebbe pensare di poter semplicemente eseguire un OR esclusivo (XOR) tra le uscite del Carry /Cn+4 dei due chip per capire se c'è Overflow o no. Tuttavia il meccanismo non funziona in caso di istruzioni INC e DEC (e dunque per la verifica dell'esistenza di un overflow si ricorrerà ad un altro metodo, **come si vedrà in seguito**).
+
+Per quale motivo la verifica suddetta non funziona in tutte le situazioni?
+
+- Eseguendo un'operazione A + 1 (si vedano i segnali da applicare al '181 *Sintesi operazioni dell'ALU dell'NQSAP*) si possono verificare due casi - facciamo due esempi:
+  1) A = 0000 0101 che incrementato diventa 0000 0110; il primo '181 presenta un Carry in ingresso attivo (LO); il suo Carry in uscita (Cn+4) è HI, cioè non attivo;
+  2) A = 0000 1111 che incrementato diventa 0001 0000; il primo '181 presenta un Carry in ingresso attivo (LO); il suo Carry in uscita (Cn+4) è LO, cioè attivo.
+- Nel secondo caso non ho reale Overflow del risultato, ma se andassi a interpretare i Carry in uscita dei due '181 con una funzione XOR incorrerei in un errore.
+
+
+Inizialmente complessa 
 
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 SONO ARRIVATO QUI
 
-
-- se la prima ALU non genera borrow, il suo /COUT sarà LO, entrambe le ALU eseguiranno A-B
-- se la prima ALU genererà un borrow, il suo /COUT sarà HI e dunque la seconda ALU eseguirà un A-B-1
-Questi punti sono esposti in dettaglio in https://tomnisbet.github.io/nqsap/docs/74181-alu-notes/#carry-flag
-	• Per come funziona il 74181 e provando a fare delle addizioni o sottrazioni con e senza Carry, si potrebbe pensare di poter semplicemente guardare le uscite COUT delle due ALU e fare una XOR per capire se c'è Overflow o no. Tuttavia il giochino non funziona quando facciamo INC e DEC, dunque si ricorre ai 74151, come vedremo poi.
-		○ Perché il giochino non funziona? 11/07/2023 non funziona perché come spiegato qui quando faccio un A+1 si possono verificare due casi:
-			§ 0000 0101 che incrementato diventa 0000 0110; il primo chip ha CIN LO cioè attivato; il COUT è HI cioè disattivato
-			§ 0000 1111 che incrementato diventa 0001 0000; il primo chip ha CIN LO cioè attivato; il COUT è LO cioè attivato
-nel secondo caso non ho overflow del risultato, ma se andassi a interpretare i COUT dei due chip incorrerei in un errore
-
 *Opcode validi per le operazioni aritmetiche di sottrazione.*
-
-
 
 - complemento di 1
 
@@ -201,29 +210,19 @@ Ne parliamo perché i '161 usati nel MAR e i '181 dell'ALU ne parlano nei datash
 - [Inside the vintage 74181 ALU chip: how it works and why it's so strange](https://www.righto.com/2017/03/inside-vintage-74181-alu-chip-how-it.html) di Ken Shirriff. Fondamentale per capire il perché dell'implementazione apparentemente così strana del chip.
 - David Courtney
 
-
-### Primi studi
-
-Il [canale Reddit](https://www.reddit.com/r/beneater/) dedicato ai progetti di Ben Eater è stato fondamentale in questo mio percorso.
-
-Dal [primo articolo letto](https://www.reddit.com/r/beneater/comments/crl270/,8_bit_computer_memory_bootloader_and_display/) avevo tratto queste note:
-
 > Addressable memory - so the idea here is to have 16bit's of addressable memory (about 65KB). This would greatly expand the capabilities compared to the 16 bytes of Ben's PC. This would affect the following things
-
->>1. Memory Address register - after the expansion of course the MAR would have to be 16 bits wide. Here i was considering using 2 x LS273 8 bit flip-flop along with an AND gate to allow the chip to have Input Enable signal (that would be implemented by AND-ing the CLK with an Input signal, since the chip has no InputEnable and i was unable to find one that is 8 bit wide, has CLR and inputenable and did not want to use LS173 but might reconsider)
 
 ### Memorie con IO separati o IO comuni?
 
 >> 62256 - The I/O lines are controlled by OE and CE.
 When either are high puts the I/O lines at high impedance.
 When both are low, the RAM outputs data onto the I/O lines.
-Writing takes place (two ways, but this is one way) CE low and OE high. A low pulse on WE will write the data on the I/O lines into the RAM chip.
 
 - **CE** = Chip Enable
 - **OE** = Output Enable
 - **WE** = Write Enable
 
-L'utente segnala che ci sono due modalità di scrittura; quella evidenziata da lui prevede OE HI, CE LO e l'impulso WE LO; l'altra modalità riportata nel datasheet ("WE Controlled") prevede sia OE sia CE allo stato LO e l'impulso WE LO. 
+L'utente segnala che ci sono due modalità di scrittura; quella evidenziata da lui prevede OE HI, CE LO e l'impulso WE LO; l'altra modalità riportata nel datasheet ("WE Controlled") prevede sia OE sia CE allo stato LO e l'impulso WE LO.
 
 ## MUX, Program Mode e Run Mode
 
@@ -240,10 +239,6 @@ Un latch per memorizzare lo stato dei LED, come erroneamente ipotizzavo inizialm
 [![Write cicle del 62256](../../assets/ram/20-ram-write-cycle.png "Write cicle del 62256"){:width="50%"}](../../assets/ram/20-ram-write-cycle.png)
 
 *Write Cycle "WE Controlled" del 62256.*
-
-E' stato in questo momento (agosto 2022) che ho scoperto l'**NQSAP**, inserendolo tra i miei appunti come "c'è questo [https://tomnisbet.github.io/nqsap/docs/ram/](https://tomnisbet.github.io/nqsap/docs/ram/) che sembra aver fatto delle belle modifiche al suo computer" 😁; ho deciso di seguire questo progetto perché permetteva di costruire un instruction set come quello del 6502 che, come scoprirò in seguito, richiederà un numero elevato di indirizzi per il microcode delle EEPROM.
-
-Tra i vari link sondati, c'era anche [questo post Reddit](https://www.reddit.com/r/beneater/comments/h8y28k/stepbystep_guide_to_upgrading_the_ram_with/), che molti utenti hanno trovato ben fatto, ma che io ho trovato particolarmente difficile da digerire in quanto mancante di uno schema.
 
 ## Gestione della RAM
 
@@ -290,7 +285,7 @@ Notare l'interruttore di selezione Program Mode / Run Mode (segnale /PROG, che �
 
 ### Prima versione del modulo RAM
 
-Come già detto, per quanto riguarda la realizzazione del modulo RAM avevo deciso di procedere con il chip 62256 con IO comuni. Per cercare di fissare i concetti, avevo trascritto nuovamente le differenze tra le architetture con chip con IO separati ed IO comuni:
+Come già detto, per quanto riguarda la realizzazione del modulo RAM avevo deciso 
 
 - Con le RAM dual-port, avevo i segnali di RAM IN e RAM OUT su bus "separati":
   - /WE ↘↗ (che deve essere "contenuto" all'interno del ciclo ↘↗ di /CE).
@@ -309,7 +304,6 @@ La sequenza degli eventi è dunque la seguente:
 
 - RI è LO, dunque la NOT disabiliterà il transceiver superiore, che non metterà dunque alcunché in output verso la RAM;
 - nel frattempo WE è HI (e dunque la scrittura è inibita) perché:
-  - in Program Mode l'ingresso I0d del MUX è fisso HI grazie alla resistenza da 1K, perciò anche in questo caso non vi è scrittura.
 
 ### Seconda versione del modulo RAM
 
