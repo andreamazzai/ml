@@ -21,7 +21,7 @@ Tra le caratteristiche che spiccavano nello schema dell'ALU dell'NQSAP, notavo s
 
 Il modulo ALU è sommariamente composto da due registri di input H e B e da una coppia di '181 interconnessi, che permettono di gestire una word di 8 bit.
 
-- Il registro H è in realtà uno Shift Register ed è in grado di comportarsi come un normale registro a 8 bit, oppure di *shiftare* sia a destra sia a sinistra il valore presente in ingresso (istruzioni di rotazione).
+- Il registro H è in realtà uno Shift Register in grado sia di comportarsi come un normale registro a 8 bit, sia di *shiftare* a destra o a sinistra il valore presente in ingresso (istruzioni di rotazione).
 - Il registro B è un normale registro a 8 bit. Il chip utilizzato per questo registro non include un ingresso Enable, che è dunque stato realizzato in maniera artificiale mettendo una NOR su /Clock e /WB ("Write B"); in questo modo il registro si attiva solo in corrispondenza di /WB (che è attivo LO) e del falling edge del clock negato, equivalente al rising edge del clock non negato, che è il momento in cui si caricano i registri (riferimento: video di Ben Eater [8-bit CPU control logic: Part 2](https://www.youtube.com/watch?v=X7rCxs1ppyY)).
 - Tre transceiver '245 permettono di poter leggere i valori contenuti in H, B ed L (L è l'output dell'A**L**U).
 
@@ -48,15 +48,15 @@ Uno dei ricordi vividi è quello della comprensione di cosa accomunava le due co
 - senza Carry ("Cn = HI  --> No Carry")
 - con Carry   ("Cn = LO  --> With Carry")
 
-Per quanto bizzarre possano apparire alcune delle operazioni disponibili, il filo conduttore tra le due colonne è che l'output del '181 *è sempre lo stesso*, con l'unica differenza data dalla assenza o presenza del Carry in ingresso. Si noti infatti che, in ogni riga, l'output ha sempre una differenza pari ad 1, che corrisponde al valore di un Carry; ad esempio, nella decima riga troviamo una semplice operazione di somma: la differenza tra quanto computato nelle due colonne è 1 (**A più B** in caso di nessun Carry in ingresso e **A più B più 1** in caso di Carry in ingresso).
+Per quanto bizzarre possano apparire alcune delle operazioni disponibili, il filo conduttore tra le due colonne è che l'output del '181 *è sempre lo stesso*, con l'unica differenza data dalla assenza o presenza del Carry in ingresso. Si noti infatti che, in ogni riga, l'output ha sempre una differenza pari ad 1, che corrisponde al valore del Carry; ad esempio, nella decima riga troviamo la semplice operazione di somma **A Plus B**: la differenza tra quanto computato nelle due colonne è 1 (**A Plus B** in caso di nessun Carry in ingresso e **A Plus B Plus 1** in caso di Carry in ingresso).
 
-Lo stesso ragionamento è valido per in tutte le altre operazioni aritmetiche disponibili. Prendiamo come altro esempio la prima riga: in assenza di Carry l'ALU restituisce quanto presente agli ingressi A, mentre in presenza di Carry restituisce quanto presente in A + 1 (questa operazione sarà sfruttata per creare l'istruzione INC del computer "iniettando" un Carry artificiale; similarmente, l'istruzione DEC è costruita intorno all'ultima funzione della tabella, ma in questo caso senza essere "dopata" da un Carry artificiale).
+Lo stesso ragionamento è valido per in tutte le altre operazioni aritmetiche disponibili. Prendiamo come altro esempio la prima riga: in assenza di Carry l'ALU restituisce quanto presente agli ingressi A, mentre in presenza di Carry aggiunge 1 a quanto presente in A (questa operazione aritmetica sarà sfruttata per creare l'istruzione INC del computer "iniettando" un Carry artificiale; similarmente, l'istruzione DEC è stata costruita intorno all'ultima funzione della tabella, ma in questo caso senza essere "dopata" da un Carry artificiale).
 
-A questo punto è anche opportuno segnalare che il '181 mette a disposizione due modalità di utilizzo: una con la logica attiva bassa ("Active-Low data") e una con la logica attiva alta ("Active-High data") che è quella utilizzata nell'NQSAP; quest'ultima, per complicare un po' le cose, si attende in ingresso un *Carry In negato*, nel senso che un segnale Cn (Carry In) LO viene interpretato come Carry attivo, mentre un segnale Cn HI viene interpretato come Carry non presente. Allo stesso modo, anche il *Carry Out* out è negato: Cn+4 è infatti HI per indicare che non c'è Carry in uscita, mentre è LO per indicare che è presente un Carry.
+A questo punto è anche opportuno segnalare che il '181 mette a disposizione due modalità di utilizzo: una con la logica attiva bassa ("Active-Low data") e una con la logica attiva alta ("Active-High data") che è quella utilizzata nell'NQSAP; quest'ultima, per complicare un po' le cose, si attende in ingresso un *Carry In negato*, nel senso che un segnale Cn (Carry In) = LO viene interpretato come Carry attivo, mentre un segnale Cn = HI viene interpretato come Carry non presente. Allo stesso modo, anche il *Carry Out* è negato: Cn+4 è infatti HI per indicare che non c'è Carry in uscita, mentre è LO per indicare che è presente un Carry.
 
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Vedere se qui ha senso prendere quel discorso del 6502 citato da Ken XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-Ritornando alla tabella delle funzioni / operazioni, ritenevo che solo il sottoinsieme visibile di seguito fosse utile per lo scopo prefissato, che era quello di poter emulare le istruzioni del 6502:
+Ritornando alla tabella delle funzioni / operazioni e cercando di seguire le spiegazioni e logica dell'NQSAP, ritenevo che solo il sottoinsieme visibile di seguito fosse utile per lo scopo prefissato, che era quello di poter emulare le istruzioni del 6502:
 
 ![Operazioni logiche e aritmetiche utili del 74LS181](../../assets/alu/50-alu-operations-xls-subset.png)
 
@@ -66,18 +66,18 @@ Successivamente capirò che le istruzioni necessarie erano in realtà ancora men
 
 Un altro degli aspetti di più difficile comprensione, come anticipato in precedenza, è stata l'associazione diretta tra istruzione correntemente contenuta nell'Instruction Register e funzione logica / operazione matematica eseguita dal '181.
 
-Provando a sintetizzare quando disegnato nell'NQSAP, avevo costruito questa tabella:
+Provando a sintetizzare quando disegnato nell'NQSAP, avevo costruito questa tabella per avere un riepilogo dei segnali applicati all'ALU, dei loro valori esadecimali corrispondenti e delle operazioni risultanti:
 
-| Cn | M  | S3 | S2 | S1 | S0 | Operazione  | S3/S0 Hex |
+| Cn | M  | S3 | S2 | S1 | S0 | Operazione  | M-S3/S0 Hex |
 |  - | -  |  - |  - |  - |  - |          -  |   -       |
-| 0  | 0  | 0  | 0  | 0  | 1  | A plus 1    |  00 + C*  |
+| 0  | 0  | 0  | 0  | 0  | 1  | A Plus 1    |  00 + C*  |
 | 0  | 0  | 0  | 0  | 1  | 1  | Tutti 0     |  03 + C*  |
-| 0  | 0  | 0  | 1  | 1  | 0  | A minus B   |  06 + C*  |
+| 0  | 0  | 0  | 1  | 1  | 0  | A Minus B   |  06 + C*  |
 | 0  | 0  | 0  | 1  | 1  | 1  | CMP         |  07**     |
 | 1  | 0  | 0  | 0  | 1  | 1  | Tutti 1     |  03       |
-| 1  | 0  | 1  | 0  | 0  | 1  | A plus B    |  09       |
-| 1  | 0  | 1  | 1  | 0  | 0  | A plus A    |  0C***    |
-| 1  | 0  | 1  | 1  | 1  | 1  | A minus 1   |  0F       |
+| 1  | 0  | 1  | 0  | 0  | 1  | A Plus B    |  09       |
+| 1  | 0  | 1  | 1  | 0  | 0  | A Plus A    |  0C***    |
+| 1  | 0  | 1  | 1  | 1  | 1  | A Minus 1   |  0F       |
 | x  | 1  | 0  | 0  | 0  | 0  | Not A       |  10****   |
 | x  | 1  | 0  | 1  | 1  | 0  | A XOR B     |  16****   |
 | x  | 1  | 1  | 0  | 1  | 0  | B           |  1A****   |
@@ -86,7 +86,7 @@ Provando a sintetizzare quando disegnato nell'NQSAP, avevo costruito questa tabe
 
 *Sintesi operazioni dell'ALU dell'NQSAP.*
 
-Per fare un esempio, si stava in pratica dicendo che per fare una somma ("A plus B", vedi sesta riga) era necessario avere:
+Per fare un esempio, si stava in pratica dicendo che per eseguire una somma ("A Plus B", vedi sesta riga) era necessario avere:
 
 - Cn = 1 (che, ricordiamo, è gestito con stato logico invertito, dunque in questo caso l'ALU considera il Carry non presente)
 - M = **0**
@@ -96,16 +96,22 @@ cioè:
 
 >| Cn | M  | S3 | S2 | S1 | S0 | Operazione | S3/S0 Hex |
 >|  - | -  |  - |  - |  - |  - |          - |   -       |
->| 1  | **0**  | **1**  | **0**  | **0**  | **1**  | A plus B   |  09       |
+>| 1  | **0**  | **1**  | **0**  | **0**  | **1**  | A Plus B   |  09       |
 
-In pratica, poiché gli ingressi M ed S3-S0 sono direttamente connessi all'[Instruction Register](../control), l'istruzione di somma dovrà essere coficata presentando **01001** sui 5 bit comuni tra Instruction Register e ALU, nonché su 5 dei pin di ingresso delle EEPROM.
+In pratica, poiché gli ingressi M ed S3-S0 sono direttamente connessi all'[Instruction Register](../control), l'istruzione di somma dovrà essere codificata nel microcode presentando **01001** sui 5 bit comuni tra Instruction Register e ALU.
 
-Attivando questa istruzione, il risultato esposto in output dall'ALU sarebbe stato esattamente A + B, proprio come indicato nella decima riga / colonna Cn = HI (Carry non presente) della tabella "Funzioni logiche e operazioni aritmetiche del 74LS181." estratta dal datasheet; se avessimo invece avuto un Carry in ingresso, il risultato esposto sarebbe stato A + B + 1, come indicato nella decima riga / colonna Cn = LO. La somma (almeno in teoria) funzionava e iniziavo anche a far luce sul legame tra le due colonne Cn = LO / Cn = HI: il risultato in output era sempre lo stesso e variava solo in conseguenza del fatto che in ingresso ci fosse un Carry o meno.
+Gli altri 3 bit erano stati scelti arbitrariamente, pur se con qualche accorgimento, per gestire le diverse modalità di indirizzamento disponibili sul 6502 e che dovevano essere emulate dal computer.
+
+![Alt text](../assets/50-alu-cl-ir-out.png)
+
+
+
+Attivando questa istruzione, il risultato esposto in output dall'ALU sarebbe stato esattamente A Plus B, proprio come indicato nella decima riga / colonna Cn = HI della tabella "Funzioni logiche e operazioni aritmetiche del 74LS181." estratta dal datasheet; se avessimo invece avuto un Carry in ingresso, il risultato esposto sarebbe stato A + B + 1, come indicato nella decima riga / colonna Cn = LO. La somma (almeno in teoria) funzionava e iniziavo anche a far luce sul legame tra le due colonne Cn = LO / Cn = HI: il risultato in output era sempre lo stesso e variava solo in conseguenza del fatto che in ingresso ci fosse un Carry o meno.
 
 Legenda tabella *Sintesi operazioni dell'ALU dell'NQSAP*:
 
-- \* Avevo evidenziato queste righe per ricordare che su queste tre istruzioni si deve "iniettare" un Carry artificale (che è invertito, dunque il segnale doveva essere LO)
-- \*\* = Le operazioni di salto relativo del 6502 dipendono dallo stato dei flag N, V, Z e C. Le istruzioni di comparazione (CMP) hanno effetto sui flag N, Z e C, che vengono computati effettuando una sottrazione (SBC) fittizia tra due valori, che nella logica del 6502 corrisponde a scartare il risultato e tenere in considerazione solo i flag risultanti dalla sottrazione fittizia. Si evince che per eseguire le comparazioni bisogna dunque effettuare delle sottrazioni scartando il risultato, tuttavia le operazioni di sottrazione del '181 sono già utilizzate per eseguire le sottrazioni vere e proprie (A Minus B), codificate su M/S3-S0 = 00110: come è possibile eseguire istruzioni di sottrazione utilizzando una istruzione con codifica diversa? Ne parleremo più diffusamente in seguito.
+- \* Avevo evidenziato queste righe per ricordare che su queste tre istruzioni si deve "iniettare" un Carry artificale (che è invertito, dunque il segnale applicato doveva essere LO)
+- \*\* = Le istruzioni di salto relativo del 6502 dipendono dallo stato dei flag N, V, Z e C. Le istruzioni che modificano lo stato dei flag sono molte: aritmetiche, incremento/decremento, rotazione, logiche, stack, caricamento/trasferimento registri e *comparazione*. Queste ultime (CMP, CPX, CPY) hanno effetto sui flag N, Z e C, che vengono computati effettuando una sottrazione (SBC) fittizia tra due valori scartando il risultato e tenendo in considerazione solo i flag risultanti dalla sottrazione. Per eseguire le comparazioni bisogna dunque effettuare delle sottrazioni scartando il risultato, tuttavia le operazioni di sottrazione del '181 sono già utilizzate per eseguire le sottrazioni vere e proprie (A Minus B), codificate con M/S3-S0 = 00110: come è possibile eseguire istruzioni di sottrazione utilizzando una istruzione con codifica diversa? Ne parleremo più diffusamente in seguito.
 
 +++++++++++++++++++++++++ Vedere se ne parlerò sempre in questa stessa pagina o nella pagina dei FlagVedere se ne parlerò sempre in questa stessa pagina o nella pagina dei Flag ++++++++++++++++++++++++++
 
@@ -157,10 +163,10 @@ La tabella successiva evidenzia come nella disponibilità di un byte per la codi
 
 ### Esempio di addizione e sottrazione con Carry
 
-Supponiamo di fare un'operazione **A plus B** con due ALU. Il **/Cn+4** (Carry Out) del primo '181 entra nel **/Cn** (Carry In) del econdo. Mettiamo in ingresso nel un segnale allo stato logico HI, che corrisponde a non avere un Carry (ricordiamo che nella logica "Active-High Data" il Carry è negato).
+Supponiamo di fare un'operazione **A Plus B** con due ALU. Il **/Cn+4** (Carry Out) del primo '181 entra nel **/Cn** (Carry In) del econdo. Mettiamo in ingresso nel un segnale allo stato logico HI, che corrisponde a non avere un Carry (ricordiamo che nella logica "Active-High Data" il Carry è negato).
 
-- Se /Cn+4 del primo '181 è HI, significa che il suo risultato di A plus B non comporta un Carry, la cui assenza sarà propagata al secondo '181, che troverà dunque l'ingresso Cn allo stato HI: entrambi i '181 eseguiranno A plus B.
-- se /Cn+4 del primo '181 è LO, significa che il suo risultato di A plus B comporta un Carry, la cui presenza sarà propagata al secondo '181, che troverà dunque l'ingresso Cn allo stato LO: il primo '181 eseguirà dunque l'operazione A plus B, mentre il secondo eseguirà l'operazione A plus B plus 1.
+- Se /Cn+4 del primo '181 è HI, significa che il suo risultato di A Plus B non comporta un Carry, la cui assenza sarà propagata al secondo '181, che troverà dunque l'ingresso Cn allo stato HI: entrambi i '181 eseguiranno A Plus B.
+- se /Cn+4 del primo '181 è LO, significa che il suo risultato di A Plus B comporta un Carry, la cui presenza sarà propagata al secondo '181, che troverà dunque l'ingresso Cn allo stato LO: il primo '181 eseguirà dunque l'operazione A Plus B, mentre il secondo eseguirà l'operazione A Plus B plus 1.
 
 Per eseguire invece una sottrazione **A minus B** dobbiamo attivare il Carry, cioè settare /Cn = LO **(un po' come il SEC del 6502, da settare prima di una sottrazione)**
 
