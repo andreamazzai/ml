@@ -118,13 +118,13 @@ Gli altri 3 bit di output dell'IR erano stati scelti arbitrariamente, pur se con
 
 ### Indirizzamenti
 
-Ogni istruzione del 6502, come ad esempio la succitata ADC, offre un certo numero di indirizzamenti tra le 13 modalità disponibili (Accumulatore, Assoluto, Assoluto Indicizzato X o Y, Immediato, Implicito, Indiretto, Indiretto Indicizzato X, Indicizzato Y Indiretto, Relativo, Pagina Zero, Pagina Zero Indicizzato X o Y).
+Ogni istruzione del 6502, come ad esempio la succitata ADC, offre infatti un certo numero di indirizzamenti tra le 13 modalità totali disponibili (Accumulatore, Assoluto, Assoluto Indicizzato X o Y, Immediato, Implicito, Indiretto, Indiretto Indicizzato X, Indicizzato Y Indiretto, Relativo, Pagina Zero, Pagina Zero Indicizzato X o Y).
 
-Un valido riferimento per l'analisi della relazione tra Control Logic ("CL") ed IR è stata la pagina [6502 Instruction Set](https://www.masswerk.at/6502/6502_instruction_set.html) di Norbert Landsteiner, che invito a consultare anche per il [6502 Assembler](https://www.masswerk.at/6502/assembler.html) e il [Virtual 6502](https://www.masswerk.at/6502/) che ho utilizzato in fase di debug del microcode.
+Un valido riferimento per l'analisi della relazione tra IR ed ALU è stata la pagina [6502 Instruction Set](https://www.masswerk.at/6502/6502_instruction_set.html) di Norbert Landsteiner, che invito a consultare anche per il [6502 Assembler](https://www.masswerk.at/6502/assembler.html) e il [Virtual 6502](https://www.masswerk.at/6502/) che avrei utilizzato in seguito in fase di debug del microcode che dovevo sviluppare.
 
-Dalla tabella delle istruzioni ho ricavato una tabella Excel, facilmente modificabile, a partire dalla quale ho successivamente costruito il microcode del computer BEAM, ma che in questa fase ho utilizzato per ragionare sugli indirizzamenti, notando che ogni istruzione del 6502 non utilizzava mai più di 8 modalità di indirizzamento: ecco che i tre bit rimanenti citati poco più sopra permettevano dunque di costruire un set di istruzioni basato sulle funzioni logiche / operazioni aritmetiche del '181 incrociando le modalità di indirizzamento.
+Dalla tabella HTML delle istruzioni ho ricavato una tabella Excel a partire dalla quale ho ragionato sugli indirizzamenti, notando che ogni istruzione del 6502 non utilizzava mai più di 8 modalità di indirizzamento: ecco che i tre bit rimanenti citati poco più sopra permettevano dunque di costruire un set di istruzioni basato sulle funzioni logiche / operazioni aritmetiche del '181 incrociando le modalità di indirizzamento.
 
-Notare che in un computer con 256 byte di RAM gli Indirizzamenti Zero Page e quelli assoluti sono ridondanti, in quanto utilizzano entrambi gli 2stessi 256 byte di memoria, pertanto le modalità di indirizzamento Pagina Zero (ZP, "Zero Page" in inglese) non vengono presi in considerazione.
+Si noti che in un computer con 256 byte di RAM gli Indirizzamenti Zero Page e quelli assoluti sono ridondanti, in quanto utilizzano entrambi gli stessi 256 byte di memoria, pertanto le 3 modalità di indirizzamento Pagina Zero (ZP, "Zero Page" in inglese) non vengono prese in considerazione.
 
 Riprendendo l'operazione A Plus B ed integrando la tabella con i 3 bit utilizzati per gestire le modalità di indirizzamento troveremo - ad esempio - :
 
