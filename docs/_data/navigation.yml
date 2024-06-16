@@ -32,7 +32,7 @@
         url: /docs/control/
       - title: "Program Counter"
         url: /docs/programcounter/
-      - title: "Flags"
+      - title: "Flag"
         url: /docs/flags/
       - title: "Registri DXY"
         url: /docs/dxy/
