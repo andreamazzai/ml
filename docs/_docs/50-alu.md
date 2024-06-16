@@ -72,19 +72,19 @@ Provando a sintetizzare quando disegnato nell'NQSAP, avevo costruito questa tabe
 
 | Cn | M  | S3 | S2 | S1 | S0 | Operazione  | M-S3/S0 Hex |
 |  - | -  |  - |  - |  - |  - |          -  |   -       |
-| 0  | 0  | 0  | 0  | 0  | 1  | A Plus 1    |  00 + C*  |
-| 0  | 0  | 0  | 0  | 1  | 1  | Tutti 0     |  03 + C*  |
-| 0  | 0  | 0  | 1  | 1  | 0  | A Minus B   |  06 + C*  |
-| 0  | 0  | 0  | 1  | 1  | 1  | CMP         |  07**     |
-| 1  | 0  | 0  | 0  | 1  | 1  | Tutti 1     |  03       |
-| 1  | 0  | 1  | 0  | 0  | 1  | A Plus B    |  09       |
-| 1  | 0  | 1  | 1  | 0  | 0  | A Plus A    |  0C***    |
-| 1  | 0  | 1  | 1  | 1  | 1  | A Minus 1   |  0F       |
-| x  | 1  | 0  | 0  | 0  | 0  | Not A       |  10****   |
-| x  | 1  | 0  | 1  | 1  | 0  | A XOR B     |  16****   |
-| x  | 1  | 1  | 0  | 1  | 1  | A AND B     |  1B****   |
-| x  | 1  | 1  | 1  | 1  | 0  | A OR B      |  1E****   |
-
+| 0  | 0  | 0  | 0  | 0  | 1  | A Plus 1    |  0x00 + C*  |
+| 0  | 0  | 0  | 0  | 1  | 1  | Tutti 0     |  0x03 + C*  |
+| 0  | 0  | 0  | 1  | 1  | 0  | A Minus B   |  0x06 + C*  |
+| 0  | 0  | 0  | 1  | 1  | 1  | CMP         |  0x07**     |
+| 1  | 0  | 0  | 0  | 1  | 1  | Tutti 1     |  0x03       |
+| 1  | 0  | 1  | 0  | 0  | 1  | A Plus B    |  0x09       |
+| 1  | 0  | 1  | 1  | 0  | 0  | A Plus A    |  0x0C***    |
+| 1  | 0  | 1  | 1  | 1  | 1  | A Minus 1   |  0x0F       |
+| x  | 1  | 0  | 0  | 0  | 0  | Not A       |  0x10****   |
+| x  | 1  | 0  | 1  | 1  | 0  | A XOR B     |  0x16****   |
+| x  | 1  | 1  | 0  | 1  | 1  | A AND B     |  0x1B****   |
+| x  | 1  | 1  | 1  | 1  | 0  | A OR B      |  0x1E****   |
+0x
 *Sintesi operazioni dell'ALU dell'NQSAP.*
 
 Legenda tabella *Sintesi operazioni dell'ALU dell'NQSAP*:
@@ -104,7 +104,7 @@ cioè:
 
 >| Cn | M  | S3 | S2 | S1 | S0 | Operazione | S3/S0 Hex |
 >|  - | -  |  - |  - |  - |  - |          - |   -       |
->| 1  | **0**  | **1**  | **0**  | **0**  | **1**  | A Plus B   |  09       |
+>| 1  | **0**  | **1**  | **0**  | **0**  | **1**  | A Plus B   |  0x09       |
 
 In pratica, poiché gli ingressi M ed S3-S0 sono direttamente connessi all'[Instruction Register](../control), l'istruzione di somma dovrà essere codificata nel microcode presentando **01001** sui 5 bit comuni tra Instruction Register e ALU.
 
@@ -126,16 +126,16 @@ Dalla tabella HTML delle istruzioni ho ricavato una tabella Excel a partire dall
 
 Si noti che in un computer con 256 byte di RAM gli Indirizzamenti Zero Page e quelli assoluti sono ridondanti, in quanto utilizzano entrambi gli stessi 256 byte di memoria, pertanto le 3 modalità di indirizzamento Pagina Zero (ZP, "Zero Page" in inglese) non vengono prese in considerazione.
 
-Riprendendo l'operazione A Plus B ed integrando la tabella con i 3 bit utilizzati per gestire le modalità di indirizzamento troveremo - ad esempio - :
+Riprendendo l'operazione A Plus B ed integrando la tabella con i 3 bit utilizzati per gestire le modalità di indirizzamento troveremo - ad esempio:
 
->| Cn | M  | I3  | I2  | I1  | S3 | S2 | S1 | S0 | Operazione | Indirizzamento | S3/S0 Hex |
+>| Cn | I3  | I2  | I1  | M  | S3 | S2 | S1 | S0 | Operazione | Indirizzamento | S3/S0 Hex |
 >|  - | -  |  - |  - |  - |  - |  - |  - |  - |          - |   -       |   -       |
->| 1  | **0**  |  - |  - |  - | **1**  | **0**  | **0**  | **1**  | A Plus B   | Immediato |  09       |
->| 1  | **0**  |  - |  - |  - | **1**  | **0**  | **0**  | **1**  | A Plus B   | Assoluto |  09       |
->| 1  | **0**  |  - |  - |  - | **1**  | **0**  | **0**  | **1**  | A Plus B   | Assoluto, X |  09       |
->| 1  | **0**  |  - |  - |  - | **1**  | **0**  | **0**  | **1**  | A Plus B   | Assoluto, Y |  09       |
->| 1  | **0**  |  - |  - |  - | **1**  | **0**  | **0**  | **1**  | A Plus B   | Indiretto Indicizzato X |  09       |
->| 1  | **0**  |  - |  - |  - | **1**  | **0**  | **0**  | **1**  | A Plus B   | Indicizzato Y Indiretto |  09       |
+>| 1  |  **0** |  **0** |  **1** | **0**  | **1**  | **0**  | **0**  | **1**  | A Plus B   | Immediato               |  0x29  |
+>| 1  |  **0** |  **1** |  **0** | **0**  | **1**  | **0**  | **0**  | **1**  | A Plus B   | Assoluto                |  0x49  |
+>| 1  |  **0** |  **1** |  **1** | **0**  | **1**  | **0**  | **0**  | **1**  | A Plus B   | Assoluto, X             |  0x69  |
+>| 1  |  **1** |  **0** |  **0** | **0**  | **1**  | **0**  | **0**  | **1**  | A Plus B   | Assoluto, Y             |  0x89  |
+>| 1  |  **1** |  **0** |  **1** | **0**  | **1**  | **0**  | **0**  | **1**  | A Plus B   | Indiretto Indicizzato X |  0xA9  |
+>| 1  |  **1** |  **1** |  **0** | **0**  | **1**  | **0**  | **0**  | **1**  | A Plus B   | Indicizzato Y Indiretto |  0xC9  |
 
 
 ### Istruzioni di comparazione
