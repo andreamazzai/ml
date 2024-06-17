@@ -171,6 +171,10 @@ Come anticipato, i flag delle istruzioni di comparazione sono calcolati eseguend
 
 - Tutti i segnali che pilotano i '181 derivano direttamente dall'Instruction Register (IR), eccetto per il Carry In. Si può dire che l'ALU è *hardwired* all'IR e che pertanto il microcode del computer deve essere scritto in modo tale che le istruzioni che utilizzano l'ALU rispecchino i segnali in ingresso del '181: ad esempio, osservando la tabella *Esempio della relazione tra IR ed ALU per tutte le modalità di indirizzamento delle istruzioni ADC e SBC del 6502*, l'istruzione di somma **A Plus B** dovrà avere i bit comuni tra IR ed ALU codificati come **01001**, mentre l'istruzione di sottrazione **A Minus B** dovrà averli codificati come **00110**.
 
+![Alt text](../../assets/alu/50-alu-select-in.png)
+
+*Ingressi di selezione della funzione logica / operazione aritmetiche dell'ALU e sua connessione "hardwired" con l'IR.*
+
 - Come si nota nell'estratto dello schema dell'IR, il segnale S0 è in realtà solo "parzialmente diretto" verso i '181, perché transita prima attraverso una NOR che viene pilotata da una ROM ed attivata solo in corrispondenza delle istruzioni di comparazione, cosicché la codifica **0011*1***, da noi arbitrariamente designata per indicare le istruzioni di comparazione, venga presentata ai '181 come **0011*****0***, che è nuovamente il codice per l'istruzione di sottrazione (Subtract Mode)!
 
 In altre parole, il microcode delle istruzioni di comparazione (che nella mnemonica del 6502 sono CMP, CPX o CPY) dovrà attivare un segnale ("*LF*") in una delle EEPROM: questo segnale attiverà la porta NOR per trasmettere ai '181 il codice 0011**0** della sottrazione anziché 0011**1**, che corrisponde originariamente al codice dell'operazione **A AND NOT B**, non necessario per simulare le istruzioni del 6502 e dunque inutilizzato. LF è l'abbreviazione di A**L**U **F**orce.
@@ -196,7 +200,7 @@ La tabella successiva evidenzia come nella disponibilità di un byte per la codi
 
 | Bit IR  | 7      | 6      | 5      | 4  | 3   | 2   | 1   | 0   |
 |  -      | -      | -      | -      | -  | -   | -   | -   | -   |
-| Segnale | I3     | I2     | I1     | M  | S3  | S2  | S1  | S0  |
+| Segnale | I2     | I1     | I0     | M  | S3  | S2  | S1  | S0  |
 | Opcode  | **0**  | **0**  | **0**  | 0  | 0   | 1   | 1   | 0   |
 | Opcode  | **0**  | **0**  | **1**  | 0  | 0   | 1   | 1   | 0   |
 | Opcode  | **0**  | **1**  | **0**  | 0  | 0   | 1   | 1   | 0   |
@@ -206,8 +210,7 @@ La tabella successiva evidenzia come nella disponibilità di un byte per la codi
 | Opcode  | **1**  | **1**  | **0**  | 0  | 0   | 1   | 1   | 0   |
 | Opcode  | **1**  | **1**  | **1**  | 0  | 0   | 1   | 1   | 0   |
 
-*Istruzione di sottrazione SBC e le 8 combinazioni possibili date dalle modalità di indirizzamento.*
-
+*Istruzione di sottrazione SBC e le 8 combinazioni possibili date dalle modalità di indirizzamento determinate dai 3 bit I0, I1, I2.*
 
 Letto dopo averlo capito sembra semplice; inizialmente non lo era proprio.
 
