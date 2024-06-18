@@ -119,7 +119,7 @@ cioè:
 
 In pratica, poiché gli ingressi M ed S3-S0 dei '181 sono direttamente connessi all'[Instruction Register](../control), l'istruzione di somma dovrà forzatamente essere codificata nel microcode presentando **01001** sui 5 bit comuni tra Instruction Register e ALU.
 
-![Alt text](../../assets/alu/50-alu-cl-ir-out.png)
+![Output dell'Instruction Register verso il modulo ALU con evidenza dei 5 bit di selezione della funzione / operazione dei '181](../../assets/alu/50-alu-cl-ir-out.png)
 
 *Output dell'Instruction Register verso il modulo ALU con evidenza dei 5 bit di selezione della funzione / operazione dei '181.*
 
@@ -173,7 +173,7 @@ Come anticipato, i flag delle istruzioni di comparazione sono calcolati eseguend
 
 - Tutti i segnali che pilotano i '181 derivano direttamente dall'Instruction Register (IR), eccetto per il Carry In. Si può dire che l'ALU è *hardwired* all'IR e che pertanto il microcode del computer deve essere scritto in modo tale che le istruzioni che utilizzano l'ALU rispecchino i segnali in ingresso del '181: ad esempio, osservando la tabella *Esempio della relazione tra IR ed ALU per tutte le modalità di indirizzamento delle istruzioni ADC e SBC del 6502*, l'istruzione di somma **A Plus B** dovrà avere i bit comuni tra IR ed ALU codificati come **01001**, mentre l'istruzione di sottrazione **A Minus B** dovrà averli codificati come **00110**.
 
-![Alt text](../../assets/alu/50-alu-select-in.png)
+![Ingressi di selezione della funzione logica / operazione aritmetica dell'ALU e connessione "hardwired" con l'IR](../../assets/alu/50-alu-select-in.png)
 
 *Ingressi di selezione della funzione logica / operazione aritmetica dell'ALU e connessione "hardwired" con l'IR.*
 
@@ -215,7 +215,12 @@ Letto dopo averlo capito mi sembra ora molto semplice; inizialmente non lo era p
 
 ### Esempio di addizione e sottrazione con Carry
 
-Alcuni esempio chiariranno il funzionamento del Carry utilizzando due '181 in cascata tra di loro per comporre una word di 8 bit.
+Alcuni esempi chiariranno il funzionamento del Carry utilizzando due '181 messi in cascata tra di loro per comporre una word di 8 bit.
+
+
+![Interconnessione di due ALU '181 in cascata](../../assets/alu/50-alu-nqsap-cascade.png)
+
+*Interconnessione di due ALU '181 in cascata.*
 
 Supponiamo di fare un'operazione **A Plus B** con due ALU. Il **/Cn+4** (Carry Out) del primo '181 entra nel **/Cn** (Carry In) del secondo. Mettiamo in ingresso su /Cn del primo '181 un segnale allo stato logico HI, che corrisponde a non avere un Carry (ricordiamo che nella logica "Active-High Data" il Carry è negato):
 
@@ -226,7 +231,6 @@ Supponiamo di fare un'operazione **A Plus B** con due ALU. Il **/Cn+4** (Carry O
 Per eseguire invece una sottrazione **A minus B** dobbiamo attivare il Carry, cioè settare /Cn = LO.
 
 - Se il primo '181 non genera un prestito ("borrow"), il suo /Cn+4 sarà allo stato logico LO, che sarà propagato al /Cn del secondo '181 e che eseguirà dunque l'operazione **A Minus B**.
-
 - Se invece il primo '181 genererà un borrow, il suo /Cn+4 sarà allo stato logico HI, che sarà propagato al /Cn del secondo '181 e che eseguirà l'operazione **A Minus B - 1**: il '181 inferiore va sostanzialmente a prendere un prestito dal '181 superiore.
 
 Questi ed altri punti sono spiegati molto bene da Tom nella sezione [Carry Flag](https://tomnisbet.github.io/nqsap/docs/74181-alu-notes/#carry-flag) della sua pagina *74181 ALU Notes* dedicata all'ALU.
@@ -234,7 +238,6 @@ Questi ed altri punti sono spiegati molto bene da Tom nella sezione [Carry Flag]
 L'uso del Carry nel '181 è simile a quanto avviene nel 6502, in cui prima di fare una addizione il Carry viene azzerato (CLC), mentre prima di fare una sottrazione il Carry viene settato (SEC):
 
 - se al completamento della sottrazione il Carry viene azzerato, significa che vi è un prestito che si propaga oltre gli 8 bit degli operandi;
-
 - viceversa, se al completamento della addizione  il Carry è settato, significa che vi è un riporto che si propaga oltre gli 8 bit degli operandi.
 
 Trascrivevo anche che, per le caratteristiche di funzionamento del '181 e provando a fare delle addizioni o sottrazioni con e senza Carry, si potrebbe pensare di poter eseguire un semplice OR esclusivo (XOR) tra le uscite del Carry /Cn+4 dei due chip per capire se c'è Overflow o no. Tuttavia il meccanismo non funziona in caso di istruzioni INC e DEC (e dunque per la verifica dell'esistenza di un overflow si ricorrerà ad un altro metodo, **come si vedrà in seguito analizzando in dettaglio il flag Overflow**).
