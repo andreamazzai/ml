@@ -24,9 +24,7 @@ Tra le caratteristiche che spiccavano nello schema dell'ALU dell'NQSAP, notavo s
 Il modulo ALU è sommariamente composto da due registri di input H e B e da una coppia di '181 interconnessi, che permettono di gestire una word di 8 bit.
 
 - Il registro H è in realtà uno Shift Register in grado sia di comportarsi come un normale registro a 8 bit, sia di *shiftare* a destra o a sinistra il valore presente in ingresso (istruzioni di rotazione).
-
 - Il registro B è un normale registro a 8 bit. Il chip utilizzato per questo registro non include un ingresso Enable, che è dunque stato realizzato in maniera artificiale mettendo una NOR su /Clock e /WB ("Write B"); in questo modo il registro si attiva solo in corrispondenza di /WB (che è attivo LO) e del falling edge del clock negato, equivalente al rising edge del clock non negato, che è il momento in cui si caricano i registri (riferimento: video di Ben Eater [8-bit CPU control logic: Part 2](https://www.youtube.com/watch?v=X7rCxs1ppyY)).
-
 - Tre transceiver '245 permettono di poter leggere i valori contenuti in H, B ed L (L è l'output dell'A**L**U).
 
 Come detto nell'introduzione, il computer BEAM, al pari dell'NQSAP, include il set di istruzioni completo del 6502, comprese quelle logiche e aritmetiche. Ricordavo discretamente le principali operazioni del 6502 e sapevo *abbastanza* bene quale dovesse essere il risultato di quello che stavo facendo, ma in quel momento non avevo ancora idea di come fosse possibile ottenerlo.
@@ -186,17 +184,11 @@ In altre parole, il microcode delle istruzioni di comparazione (che nella mnemon
 Detto in altre parole ancora:
 
 - Le istruzioni di comparazione del 6502 sono eseguite simulando una sottrazione.
-
 - L'operazione di sottrazione è codificata nel '181 come M/S3-S0 = **00110** (e non è modificabile).
-
 - Come è possibile gestire sia le sottrazioni reali sia le comparazioni, considerando che entrambe necessitano di mettere in input sui '181 la stessa codifica **01110**, la quale deve però essere assegnata sia alle istruzioni di sottrazione sia a quelle di comparazione, che devono in realtà avere opcode diversi - e dunque anche codifiche diverse?
-
 - Si identifica un opcode arbitrario per le operazioni di comparazione utilizzandone uno che è assegnato a un'operazione inutilizzata , ad esempio **A And Not B**, che ha come codice M/S3-S0 = **00111**.
-
 - La differenza tra l'operazione A Minus B e l'operazione A And Not B sta nell'ultimo bit: la prima si attiva con M/S3-S0 = 0011**0**, la seconda con M/S3-S0 = 0011**1**.
-
 - Quando l'IR carica una istruzione 00111 di comparazione, metterà tale codifica in output verso le ROM e verso l'ALU, ma l'ultimo bit di tale codifica raggiungerà l'ALU solo dopo aver attraversato la NOR.
-
 - Una delle EEPROM ospitanti il microcode, quando troverà in ingresso xxx00111, attiverà il segnale LF sul pin 8 della NOR: la NOR invertirà l'ultimo bit 0011**1** e i '181 troveranno in realtà in ingresso 0011**0**, configurandosi dunque in Subtract Mode ed effettuando la sottrazione.
 
 Importante evidenziare che la modalità **Subtract Mode** del '181 altro non è che la configurazione di Input M/S3-S0 = 00110 che equivale alla operazione aritmetica di sottrazione, come chiarito da David Courtney nel video [Comparator Functions of 74LS181 (74HCT181) ALU](https://www.youtube.com/watch?v=jmROTNtoUGI). Il datasheet non era così chiaro relativamente alla definizione di questa modalità.
