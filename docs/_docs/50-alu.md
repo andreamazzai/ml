@@ -13,6 +13,8 @@ Il '181 è un'ALU a 4 bit sviluppata negli anni '70 che può eseguire 16 operazi
 
 **Utilizzo dei termini '181 e ALU come Sinonimi**: in questa pagina, troveremo i termini ALU e '181 che vengono spesso utilizzati come sinonimi. Notare che ALU potrebbe indicare sia il modulo Unità Aritmetica e Logica nella sua interezza, sia il solo chip '181. Il contesto aiuterà a comprendere se per ALU si intenda il modulo, oppure il solo chip.
 
+Inoltre, poiché nel modulo si utilizzano due '181 per poter comporre una word di 8 bit, in determinate situazioni si definiscono primo e secondo '181 rispettivamente quello che contiene i 4 bit meno significativi (LSB) e quello che contiene i 4 bit più significativi (MSB).
+
 Tra le caratteristiche che spiccavano nello schema dell'ALU dell'NQSAP, notavo soprattutto un numero elevato di chip - tra i quali gli Shift Register 74LS194 - e un modo particolare di indirizzare i '181, che erano "strettamente legati" all'istruzione presente nell'Instruction Register della [Control Logic](../control). Il legame con la Control Logic è stato tra i più complessi da analizzare e comprendere, ma quello con il modulo dei Flag è altrettanto importante e la sua comprensione non è stata meno complessa (ad ogni operazione dell'ALU - e non solo - corrisponde infatti un'azione sul registro dei Flag).
 
 [![Schema logico dell'ALU di Tom Nisbet](../../assets/alu/50-alu-nqsap.png "Schema logico dell'ALU di Tom Nisbet"){:width="100%"}](../../assets/alu/50-alu-nqsap.png)
@@ -22,7 +24,9 @@ Tra le caratteristiche che spiccavano nello schema dell'ALU dell'NQSAP, notavo s
 Il modulo ALU è sommariamente composto da due registri di input H e B e da una coppia di '181 interconnessi, che permettono di gestire una word di 8 bit.
 
 - Il registro H è in realtà uno Shift Register in grado sia di comportarsi come un normale registro a 8 bit, sia di *shiftare* a destra o a sinistra il valore presente in ingresso (istruzioni di rotazione).
+
 - Il registro B è un normale registro a 8 bit. Il chip utilizzato per questo registro non include un ingresso Enable, che è dunque stato realizzato in maniera artificiale mettendo una NOR su /Clock e /WB ("Write B"); in questo modo il registro si attiva solo in corrispondenza di /WB (che è attivo LO) e del falling edge del clock negato, equivalente al rising edge del clock non negato, che è il momento in cui si caricano i registri (riferimento: video di Ben Eater [8-bit CPU control logic: Part 2](https://www.youtube.com/watch?v=X7rCxs1ppyY)).
+
 - Tre transceiver '245 permettono di poter leggere i valori contenuti in H, B ed L (L è l'output dell'A**L**U).
 
 Come detto nell'introduzione, il computer BEAM, al pari dell'NQSAP, include il set di istruzioni completo del 6502, comprese quelle logiche e aritmetiche. Ricordavo discretamente le principali operazioni del 6502 e sapevo *abbastanza* bene quale dovesse essere il risultato di quello che stavo facendo, ma in quel momento non avevo ancora idea di come fosse possibile ottenerlo.
@@ -173,30 +177,33 @@ Come anticipato, i flag delle istruzioni di comparazione sono calcolati eseguend
 
 ![Alt text](../../assets/alu/50-alu-select-in.png)
 
-*Ingressi di selezione della funzione logica / operazione aritmetiche dell'ALU e sua connessione "hardwired" con l'IR.*
+*Ingressi di selezione della funzione logica / operazione aritmetica dell'ALU e connessione "hardwired" con l'IR.*
 
-- Come si nota nell'estratto dello schema dell'IR, il segnale S0 è in realtà solo "parzialmente diretto" verso i '181, perché transita prima attraverso una NOR che viene pilotata da una ROM ed attivata solo in corrispondenza delle istruzioni di comparazione, cosicché la codifica **0011*1***, da noi arbitrariamente designata per indicare le istruzioni di comparazione, venga presentata ai '181 come **0011*****0***, che è nuovamente il codice per l'istruzione di sottrazione (Subtract Mode)!
+- Come si nota nell'estratto dello schema *Output dell’Instruction Register verso il modulo ALU con evidenza dei 5 bit di selezione della funzione / operazione dei ‘181*, il segnale S0 è in realtà solo "parzialmente diretto" verso i '181, perché transita prima attraverso una NOR che viene pilotata da una ROM (pin 8) ed attivata solo in corrispondenza delle istruzioni di comparazione, cosicché la codifica **0011*1***, da noi arbitrariamente designata per indicare le istruzioni di comparazione, venga presentata ai '181 come **0011*****0***, che è nuovamente il codice per l'istruzione di sottrazione (Subtract Mode)!
 
 In altre parole, il microcode delle istruzioni di comparazione (che nella mnemonica del 6502 sono CMP, CPX o CPY) dovrà attivare un segnale ("*LF*") in una delle EEPROM: questo segnale attiverà la porta NOR per trasmettere ai '181 il codice 0011**0** della sottrazione anziché 0011**1**, che corrisponde originariamente al codice dell'operazione **A AND NOT B**, non necessario per simulare le istruzioni del 6502 e dunque inutilizzato. LF è l'abbreviazione di A**L**U **F**orce.
 
 Detto in altre parole ancora:
 
-- Le istruzioni di comparazione del 6502 simulano una sottrazione e tengono in considerazione solo i flag risultanti da tale sottrazione fittizia.
-- In condizioni normali il '181 esegue una sottrazione (**SBC**) quando si configurano i segnali M/S3-S0 = **00110** (Subtract Mode).
+- Le istruzioni di comparazione del 6502 sono eseguite simulando una sottrazione.
 
-Come è possibile gestire sia le sottrazioni reali sia le comparazioni, considerando che entrambe necessitano di mettere in input sui '181 la stessa codifica **01110**, la quale deve però essere assegnata sia alle istruzioni di sottrazione sia a quelle di comparazione, che devono in realtà avere opcode diversi - e dunque anche codifiche diverse?
+- L'operazione di sottrazione è codificata nel '181 come M/S3-S0 = **00110** (e non è modificabile).
 
-- Come detto sopra, l'operazione di sottrazione è codificata nel '181 come M/S3-S0 = **00110** (e non è modificabile).
-- Si identifica dunque un opcode arbitrario per le operazioni di comparazione utilizzandone uno che è assegnato a un'operazione aritmetica del '181 inutilizzata, ad esempio A AND NOT B, che ha come codice M/S3-S0 = **00111**.
-- La differenza tra l'operazione A Minus B e l'operazione A AND NOT B sta nell'ultimo bit: la prima si attiva con M/S3-S0 = 0011**0**, la seconda con M/S3-S0 = 0011**1**.
-- Quando l'IR carica una istruzione 00111 di comparazione, metterà tale codifica in output verso le ROM e verso l'ALU, ma l'ultimo bit di tale codifica transiterà anche attraverso la NOR prima di raggiungere l'ALU.
-- Una delle EEPROM ospitanti il microcode, quando troverà in ingresso xxx00111, attiverà il segnale LF sull'altro input della NOR: come conseguenza la NOR invertirà l'ultimo bit 0011**1** e i '181 troveranno in realtà in ingresso 0011**0**, configurandosi dunque in Subtract Mode ed effettuando la sottrazione.
+- Come è possibile gestire sia le sottrazioni reali sia le comparazioni, considerando che entrambe necessitano di mettere in input sui '181 la stessa codifica **01110**, la quale deve però essere assegnata sia alle istruzioni di sottrazione sia a quelle di comparazione, che devono in realtà avere opcode diversi - e dunque anche codifiche diverse?
 
-Importante evidenziare che la modalità **Subtract Mode** del '181 non è altro che la configurazione di Input M/S3-S0 = 00110 che equivale alla operazione aritmetica di sottrazione, come chiarito da David Courtney nel video [Comparator Functions of 74LS181 (74HCT181) ALU](https://www.youtube.com/watch?v=jmROTNtoUGI). Il datasheet non era così chiaro relativamente alla definizione di questa modalità.
+- Si identifica un opcode arbitrario per le operazioni di comparazione utilizzandone uno che è assegnato a un'operazione inutilizzata , ad esempio **A And Not B**, che ha come codice M/S3-S0 = **00111**.
+
+- La differenza tra l'operazione A Minus B e l'operazione A And Not B sta nell'ultimo bit: la prima si attiva con M/S3-S0 = 0011**0**, la seconda con M/S3-S0 = 0011**1**.
+
+- Quando l'IR carica una istruzione 00111 di comparazione, metterà tale codifica in output verso le ROM e verso l'ALU, ma l'ultimo bit di tale codifica raggiungerà l'ALU solo dopo aver attraversato la NOR.
+
+- Una delle EEPROM ospitanti il microcode, quando troverà in ingresso xxx00111, attiverà il segnale LF sul pin 8 della NOR: la NOR invertirà l'ultimo bit 0011**1** e i '181 troveranno in realtà in ingresso 0011**0**, configurandosi dunque in Subtract Mode ed effettuando la sottrazione.
+
+Importante evidenziare che la modalità **Subtract Mode** del '181 altro non è che la configurazione di Input M/S3-S0 = 00110 che equivale alla operazione aritmetica di sottrazione, come chiarito da David Courtney nel video [Comparator Functions of 74LS181 (74HCT181) ALU](https://www.youtube.com/watch?v=jmROTNtoUGI). Il datasheet non era così chiaro relativamente alla definizione di questa modalità.
 
 Confesso di aver impiegato diverso tempo per comprendere tutto questo e "farlo mio". La documentazione dell'NQSAP segnalava che "poiché la ALU è legata all'IR, ci sono solo 8 Opcode disponibili per metterla in Subtract Mode", ma non capivo cosa volesse dire. "Per creare i 16 Opcode necessari per tutte le combinazioni di Subtract e Compare, si mette una NOR su ALU-S0 (IR 0) e l'altro input su LF, così da  riutilizzare la Selection 0111 come se fosse 0110, che è la modalità Subtract".
 
-La tabella successiva evidenzia come nella disponibilità di un byte per la codifica delle istruzioni (256 combinazioni possibili), solo 8 combinazioni (2^3, descritte dai bit I3-I2-I1) siano quelle degli opcode che permettono di avere M e S3-S0 in Subtract Mode, cioè **00110**: tuttavia, la gestione di tutte le operazioni di sottrazione SBC e di comparazione CMP, CPX e CPY richiede ben più di 8 combinazioni, poiché si devono infatti poter gestire anche tutte le combinazioni degli indirizzamenti del 6502. Ecco che il segnale LF (ALU Force) trasforma la codifica 00111 (corrispondente all'operazione inutilizzata A AND NOT B) in 00110, che attiva nuovamente l'operazione aritmetica di sottrazione del '181 e che ci permette di ottenere 16 opcode totali da inserire nel microcode per la gestione di sottrazioni e comparazioni in tutte le [modalità di indirizzamento](https://www.masswerk.at/6502/6502_instruction_set.html#modes) previste nel 6502.
+La tabella successiva evidenzia come con la disponibilità di 8 bit per la codifica delle istruzioni (256 combinazioni possibili), solo 8 combinazioni (2^3, descritte dai bit I3-I2-I1) siano quelle degli opcode che permettono di avere M e S3-S0 in Subtract Mode, cioè **00110**: tuttavia, la gestione di tutte le operazioni di sottrazione SBC e di comparazione CMP, CPX e CPY richiede ben più di 8 combinazioni, poiché si devono poter gestire anche tutte le combinazioni degli indirizzamenti del 6502. Ecco che il segnale LF (ALU Force) trasforma la codifica 00111 (corrispondente all'operazione inutilizzata A AND NOT B) in 00110, che attiva nuovamente l'operazione aritmetica di sottrazione del '181 e che ci permette di ottenere 16 opcode totali da inserire nel microcode per la gestione di sottrazioni e comparazioni in tutte le [modalità di indirizzamento](https://www.masswerk.at/6502/6502_instruction_set.html#modes) previste nel 6502.
 
 | Bit IR  | 7      | 6      | 5      | 4  | 3   | 2   | 1   | 0   |
 |  -      | -      | -      | -      | -  | -   | -   | -   | -   |
@@ -210,33 +217,50 @@ La tabella successiva evidenzia come nella disponibilità di un byte per la codi
 | Opcode  | **1**  | **1**  | **0**  | 0  | 0   | 1   | 1   | 0   |
 | Opcode  | **1**  | **1**  | **1**  | 0  | 0   | 1   | 1   | 0   |
 
-*Istruzione di sottrazione SBC e le 8 combinazioni possibili date dalle modalità di indirizzamento determinate dai 3 bit I0, I1, I2.*
+*Istruzione di sottrazione SBC e le 8 combinazioni possibili di indirizzamento determinate dai 3 bit I0, I1, I2.*
 
-Letto dopo averlo capito sembra semplice; inizialmente non lo era proprio.
+Letto dopo averlo capito mi sembra ora molto semplice; inizialmente non lo era proprio.
 
 ### Esempio di addizione e sottrazione con Carry
 
-Supponiamo di fare un'operazione **A Plus B** con due ALU. Il **/Cn+4** (Carry Out) del primo '181 entra nel **/Cn** (Carry In) del econdo. Mettiamo in ingresso nel un segnale allo stato logico HI, che corrisponde a non avere un Carry (ricordiamo che nella logica "Active-High Data" il Carry è negato).
+Alcuni esempio chiariranno il funzionamento del Carry utilizzando due '181 in cascata tra di loro per comporre una word di 8 bit.
 
-- Se /Cn+4 del primo '181 è HI, significa che il suo risultato di A Plus B non comporta un Carry, la cui assenza sarà propagata al secondo '181, che troverà dunque l'ingresso Cn allo stato HI: entrambi i '181 eseguiranno A Plus B.
-- se /Cn+4 del primo '181 è LO, significa che il suo risultato di A Plus B comporta un Carry, la cui presenza sarà propagata al secondo '181, che troverà dunque l'ingresso Cn allo stato LO: il primo '181 eseguirà dunque l'operazione A Plus B, mentre il secondo eseguirà l'operazione A Plus B plus 1.
+Supponiamo di fare un'operazione **A Plus B** con due ALU. Il **/Cn+4** (Carry Out) del primo '181 entra nel **/Cn** (Carry In) del secondo. Mettiamo in ingresso su /Cn del primo '181 un segnale allo stato logico HI, che corrisponde a non avere un Carry (ricordiamo che nella logica "Active-High Data" il Carry è negato):
 
-Per eseguire invece una sottrazione **A minus B** dobbiamo attivare il Carry, cioè settare /Cn = LO **(un po' come il SEC del 6502, da settare prima di una sottrazione)**
+- Se il /Cn+4 del primo '181 è HI, significa che l'operazione non comporta un Carry, la cui assenza sarà propagata al secondo '181, che troverà dunque l'ingresso Cn allo stato HI: entrambi i '181 eseguiranno **A Plus B**.
 
-- Se il primo '181 non genera un prestito ("borrow"), il suo /Cn+4 sarà allo stato logico LO ed anche il secondo '181 eseguirà l'operazione A minus B
-- Se invece il primo '181 genererà un borrow, il suo /Cn+4 sarà allo stato logico HI e dunque il secondo '181 eseguirà A minus B - 1.
+- Se il /Cn+4 del primo '181 è LO, significa che l'operazione genera un Carry, la cui presenza sarà propagata al secondo '181, che troverà dunque l'ingresso Cn allo stato LO: il primo '181 eseguirà dunque l'operazione **A Plus B**, mentre il secondo eseguirà l'operazione **A Plus B plus 1**: il '181 inferiore va sostanzialmente a generare un riporto che viene propagato al '181 superiore.
 
-Questi punti sono spiegati in dettaglio da Tom nella sezione [Carry Flag](https://tomnisbet.github.io/nqsap/docs/74181-alu-notes/#carry-flag) della sua pagina dedicata all'ALU.
+Per eseguire invece una sottrazione **A minus B** dobbiamo attivare il Carry, cioè settare /Cn = LO.
 
-Annotavo che per come funziona il '181 e provando a fare delle addizioni o sottrazioni con e senza Carry, si potrebbe pensare di poter semplicemente eseguire un OR esclusivo (XOR) tra le uscite del Carry /Cn+4 dei due chip per capire se c'è Overflow o no. Tuttavia il meccanismo non funziona in caso di istruzioni INC e DEC (e dunque per la verifica dell'esistenza di un overflow si ricorrerà ad un altro metodo, **come si vedrà in seguito**).
+- Se il primo '181 non genera un prestito ("borrow"), il suo /Cn+4 sarà allo stato logico LO, che sarà propagato al /Cn del secondo '181 e che eseguirà dunque l'operazione **A Minus B**.
+
+- Se invece il primo '181 genererà un borrow, il suo /Cn+4 sarà allo stato logico HI, che sarà propagato al /Cn del secondo '181 e che eseguirà l'operazione **A Minus B - 1**: il '181 inferiore va sostanzialmente a prendere un prestito dal '181 superiore.
+
+Questi ed altri punti sono spiegati molto bene da Tom nella sezione [Carry Flag](https://tomnisbet.github.io/nqsap/docs/74181-alu-notes/#carry-flag) della sua pagina *74181 ALU Notes* dedicata all'ALU.
+
+L'uso del Carry nel '181 è simile a quanto avviene nel 6502, in cui prima di fare una addizione il Carry viene azzerato (CLC), mentre prima di fare una sottrazione il Carry viene settato (SEC):
+
+- se al completamento della sottrazione il Carry viene azzerato, significa che vi è un prestito che si propaga oltre gli 8 bit degli operandi;
+
+- viceversa, se al completamento della addizione  il Carry è settato, significa che vi è un riporto che si propaga oltre gli 8 bit degli operandi.
+
+Trascrivevo anche che, per le caratteristiche di funzionamento del '181 e provando a fare delle addizioni o sottrazioni con e senza Carry, si potrebbe pensare di poter eseguire un semplice OR esclusivo (XOR) tra le uscite del Carry /Cn+4 dei due chip per capire se c'è Overflow o no. Tuttavia il meccanismo non funziona in caso di istruzioni INC e DEC (e dunque per la verifica dell'esistenza di un overflow si ricorrerà ad un altro metodo, **come si vedrà in seguito analizzando in dettaglio il flag Overflow**).
+
+++++++++++++++++++++++++
+spiegare perché si poteva ipotizzare di calcolare l'overflow co una XOR!!!!!!!!!!!!
+++++++++++++++++++++++++
 
 Per quale motivo la verifica suddetta non funziona in tutte le situazioni?
 
-- Eseguendo un'operazione A + 1 (si vedano i segnali da applicare al '181 *Sintesi operazioni dell'ALU dell'NQSAP*) si possono verificare due casi - facciamo due esempi:
-  1) A = 0000 0101 che incrementato diventa 0000 0110; il primo '181 presenta un Carry in ingresso attivo (LO); il suo Carry in uscita (Cn+4) è HI, cioè non attivo;
-  2) A = 0000 1111 che incrementato diventa 0001 0000; il primo '181 presenta un Carry in ingresso attivo (LO); il suo Carry in uscita (Cn+4) è LO, cioè attivo.
-- Nel secondo caso non ho reale Overflow del risultato, ma se andassi a interpretare i Carry in uscita dei due '181 con una funzione XOR incorrerei in un errore.
+- Eseguendo un'operazione **A + 1** (si vedano i segnali da applicare al '181 *Sintesi operazioni dell'ALU dell'NQSAP*) si possono verificare due casi - facciamo due esempi:
 
+  - A = 0000 0101 che, incrementato di un valore 1, diventa 0000 0110; l'incremento avviene iniettando un segnale LO sul Carry In (Cn) del primo '181; il suo Carry Out (Cn+4) è HI, cioè non attivo;
+  - A = 0000 1111 che, incrementato di un valore 1, diventa 0001 0000; l'incremento avviene iniettando un segnale LO sul Carry In (Cn) del primo '181; il suo Carry in uscita (Cn+4) è LO, cioè attivo.
+
+- Nel secondo caso non ho reale Overflow del risultato dell'incremento della word iniziale 0000 1111, ma se andassi a interpretare i Carry Out dei due '181 con una funzione XOR incorrerei in un errore.
+
+Tutto questo è spiegato molto bene da Tom nella stessa pagina citata poche righe più sopra.
 
 Inizialmente complessa 
 
@@ -248,10 +272,6 @@ SONO ARRIVATO QUI
 - complemento di 1
 
 *********************************
-CONTROLLARE LA PAROLA CARRY CON INIZIALE MAIUSCOLA O NO A SECONDA DEI CONTESTI
-*********************************
-
-
 
 ## Aritmetica Binaria
 
@@ -275,21 +295,7 @@ Ne parliamo perché i '161 usati nel MAR e i '181 dell'ALU ne parlano nei datash
 When either are high puts the I/O lines at high impedance.
 When both are low, the RAM outputs data onto the I/O lines.
 
-- **CE** = Chip Enable
-- **OE** = Output Enable
-- **WE** = Write Enable
-
-L'utente segnala che ci sono due modalità di scrittura; quella evidenziata da lui prevede OE HI, CE LO e l'impulso WE LO; l'altra modalità riportata nel datasheet ("WE Controlled") prevede sia OE sia CE allo stato LO e l'impulso WE LO.
-
 ## MUX, Program Mode e Run Mode
-
-A cosa servono i MUX nel modulo RAM (e nel MAR)? All'accensione, il contenuto della memoria RAM è vuoto / casuale, dunque dobbiamo prima avere la possibilità di programmare la RAM ("Program Mode") e  poi di renderla visibile al bus del computer durante la normale esecuzione dei programmi ("Run Mode").
-
-Il funzionamento e la necessità dei transceiver mi erano chiarissimi, in quanto ampiamente utilizzati nel SAP computer per poter at
-
-- Il transceiver di destra è attivo quando si legge *dalla* RAM; i LED mostrano il valore che viene letto dalla RAM e trasferito sul bus del computer.
-
-Un latch per memorizzare lo stato dei LED, come erroneamente ipotizzavo inizialmente, non era necessario.
 
 - Un secondo transceiver '245 che si attiva nel momento in cui si deve leggere *dalla* RAM e trasferirne l'output verso il bus dati (anche in questo caso il pin DIR del '245 settato a LO .
 
@@ -301,19 +307,6 @@ Un latch per memorizzare lo stato dei LED, come erroneamente ipotizzavo inizialm
 
 Tra i post più utili relativi alla comprensione dei segnali di gestione di RAM e MAR per il modulo di memoria con IO comuni, c'è certamente il [Question about RAM replacement](https://www.reddit.com/r/beneater/comments/ut1oud/8bit_question_about_ram_replacement/), nel quale il moderatore The8BitEnthusiast invita a consultare la sua (*eccellente*, aggiungo io) realizzazione, che ho preso ad esempio e ispirazione.
 
-Se da un certo punto di vista lo schema era particolarmente semplificato rispetto a quelli che avevo visto in precedenza, dall'altra, con l'utilizzo di un solo MUX '157 con segnali che ne uscivano per rientrarne in altre porte, mi risultava di difficile comprensione. Avevo pertanto provato a costruirmi i grafici temporali degli schemi dei segnali per questi tre possibili casi:
-
-Per esempio, ipotizzavo che nel primo caso "Scrittura sulla RAM in Run Mode" accadesse quanto segue.
-
-- **Prima del Rising Edge del CLK**:
-
-  - Zc = /(CLK LO * RI HI) = HI, 
-  - Za = //(/RO HI * Zc HI) = HI, dunque il '245 dal/al data bus è disabilitato
-
-- **CLK attivo**:
-
-  - Zc = /(CLK HI * RI HI) = LO, dunque la direzione del '245 dal/al data bus è B-->A (Input)
-
 Legenda:
 
 - **PROG** è il segnale dell'interruttore di selezione della modalità Program Mode (LO) / Run Mode (HI); negli schemi originali del SAP computer si trova nel MAR
@@ -322,23 +315,17 @@ Legenda:
 
 The8BitEnthusiast aveva gentilmente risposto al mio quesito:
 
-> Dovevo assicurarmi che i ‘245 non consegnassero dati alla RAM quando questa non era ancora pronta per accettare dati in Input perché le sue uscite erano ancora attive in output\*\*. Il datasheet segnala che la RAM disabilita l’output ed è pronta per l’input 20 nanosecondi dopo che WE viene portato allo stato LO.
-
 [![Timing RAM 62256](../../assets/ram/20-ram-62256-timing.png "Timing RAM 62256"){:width="66%"}](../../assets/ram/20-ram-62256-timing.png)
 
 \*\* Nello schema del modulo RAM di The8BitEnthusiast si nota che il segnale OE della 
 
 ## Design dei moduli MAR e RAM del BEAM
 
-Il MAR era progettato a 8 bit per pilotare 256 indirizzi di memoria. Inizialmente avevo utilizzato due FF '173 a 4 bit, sostituiti in seguito da un unico FF '273 a 8 bit (sprovvisto di controllo dell'attivazione dell'output, che però non è necessario). Infine ho utilizzato un registro a 8 bit '377, altrettanto adatto al nostro scopo.
-
 [![Memory Address Register](../../assets/ram/20-mar-beam.png "Memory Address Register"){:width="100%"}](../../assets/ram/20-mar-beam.png)
 
 *Memory Address Register (MAR) del BEAM.*
 
 Notare l'interruttore di selezione Program Mode / Run Mode (segnale /PROG, che è connesso anche al modulo RAM):
-
-- alla chiusura dei contatti 2-3 i pin di selezione dei MUX '157 si trovano allo stato logico HI, attivando gli ingressi I1a, I1b, I1c ed I1d, che trasmettono così al bus indirizzi della RAM i valori presenti in output sul '377.
 
 ### Prima versione del modulo RAM
 
@@ -359,18 +346,11 @@ Per leggere dalla RAM si devono soddisfare le seguenti condizioni:
 
 La sequenza degli eventi è dunque la seguente:
 
-- RI è LO, dunque la NOT disabiliterà il transceiver superiore, che non metterà dunque alcunché in output verso la RAM;
 - nel frattempo WE è HI (e dunque la scrittura è inibita) perché:
 
 ### Seconda versione del modulo RAM
 
 Stabilito che una soluzione just-in-time sarebbe stata prematura per le mie competenze, avevo dunque provato a ridisegnare lo schema con un solo transceiver mantenendo i MUX per gestire l'input della RAM, facendolo provenire dal bus o dal dip-switch a seconda della modalità Program o Run-Mode.
-
-I due asterischi in tabella \*\* mi servivano a ricordare che dovevo stare particolarmente attento alla preparazione del microcode e che non dovevo mai avere /WR e /RR attivi contemporaneamente, perché non avevo previsto un controllo di eventuale conflitto. Per evitare conflitti avrei dovuto mettere su /WR una NAND a 3 ingressi che si attiva solo per CLK, RR e /WR, cioè /WE = CLK \* RR \* /WR, in altre parole: posso scrivere sulla RAM *solo* se non la sto leggendo.
-
-[![Terza versione del modulo RAM](../../assets/ram/20-ram-3rd.png "Terza versione del modulo RAM"){:width="100%"}](../../assets/ram/20-ram-3rd.png)
-
-*Terza versione del Modulo di memoria (RAM) del BEAM.*
 
 Riprendendo il datasheet del [62256](https://www.alliancememory.com/wp-content/uploads/pdf/AS6C62256.pdf) a pagina 6 troviamo entrambe le modalità di scrittura: quella indicata come "WRITE CYCLE 2 (CE# Controlled)" era stata utilizzata per le prime due revisioni del modulo RAM; l'altra, "WRITE CYCLE 1 (WE# Controlled)", è quella utilizzata per il disegno definitivo del modulo, perché mantenere /OE e /CE LO fissi sia per le letture sia per le scritture rappresentava una semplificazione importante.
 
