@@ -222,44 +222,38 @@ Alcuni esempi chiariranno il funzionamento del Carry utilizzando due '181 messi 
 
 *Interconnessione di due ALU '181 in cascata.*
 
-Supponiamo di fare un'operazione **A Plus B** con due ALU. Il **/Cn+4** (Carry Out) del primo '181 entra nel **/Cn** (Carry In) del secondo. Mettiamo in ingresso su /Cn del primo '181 un segnale allo stato logico HI, che corrisponde a non avere un Carry (ricordiamo che nella logica "Active-High Data" il Carry è negato):
+Supponiamo di fare un'operazione **A Plus B** con due ALU. Il **/Cn+4** (Carry Out) del primo '181 entra nel **/Cn** (Carry In) del secondo. Mettiamo in ingresso sul /Cn del primo '181 un segnale allo stato logico HI, che corrisponde a non avere un Carry (ricordiamo che nella logica "Active-High Data" il Carry è negato):
 
-- Se il /Cn+4 del primo '181 è HI, significa che l'operazione non comporta un Carry, la cui assenza sarà propagata al secondo '181, che troverà dunque l'ingresso Cn allo stato HI: entrambi i '181 eseguiranno **A Plus B**.
+- Se l'operazione non genera un overflow sul risultato dei primi 4 bit, il /Cn+4 del primo '181 sarà HI ad indicare assenza di Carry; questo segnale viene propagato al secondo '181, che troverà dunque l'ingresso /Cn allo stato HI: entrambi i '181 eseguiranno **A Plus B**.
 
-- Se il /Cn+4 del primo '181 è LO, significa che l'operazione genera un Carry, la cui presenza sarà propagata al secondo '181, che troverà dunque l'ingresso Cn allo stato LO: il primo '181 eseguirà dunque l'operazione **A Plus B**, mentre il secondo eseguirà l'operazione **A Plus B plus 1**: il '181 inferiore va sostanzialmente a generare un riporto che viene propagato al '181 superiore.
+- Viceversa, se l'operazione genera un overflow sul risultato dei primi 4 bit,  il /Cn+4 del primo '181 sarà LO ad indicare presenza di Carry; questo segnale viene propagato al secondo '181, che troverà dunque l'ingresso /Cn allo stato LO: il primo '181 eseguirà dunque l'operazione **A Plus B**, mentre il secondo eseguirà l'operazione **A Plus B plus 1**: il '181 inferiore va sostanzialmente a generare un riporto che viene propagato al '181 superiore.
 
-Per eseguire invece una sottrazione **A minus B** dobbiamo attivare il Carry, cioè settare /Cn = LO.
+Per eseguire invece una sottrazione **A minus B** dobbiamo attivare preventivamente il Carry, cioè settare /Cn = LO.
 
-- Se il primo '181 non genera un prestito ("borrow"), il suo /Cn+4 sarà allo stato logico LO, che sarà propagato al /Cn del secondo '181 e che eseguirà dunque l'operazione **A Minus B**.
-- Se invece il primo '181 genererà un borrow, il suo /Cn+4 sarà allo stato logico HI, che sarà propagato al /Cn del secondo '181 e che eseguirà l'operazione **A Minus B - 1**: il '181 inferiore va sostanzialmente a prendere un prestito dal '181 superiore.
+- Se il primo '181 non genera un prestito ("borrow"), il /Cn+4 sarà allo stato logico LO, che sarà propagato al /Cn del secondo '181 e che eseguirà dunque l'operazione **A Minus B**.
+- Se invece il primo '181 genera un borrow, il /Cn+4 sarà allo stato logico HI, che sarà propagato al /Cn del secondo '181 e che eseguirà l'operazione **A Minus B - 1**: il '181 inferiore va sostanzialmente a prendere un prestito dal '181 superiore.
 
 Questi ed altri punti sono spiegati molto bene da Tom nella sezione [Carry Flag](https://tomnisbet.github.io/nqsap/docs/74181-alu-notes/#carry-flag) della sua pagina *74181 ALU Notes* dedicata all'ALU.
 
 L'uso del Carry nel '181 è simile a quanto avviene nel 6502, in cui prima di fare una addizione il Carry viene azzerato (CLC), mentre prima di fare una sottrazione il Carry viene settato (SEC):
 
-- se al completamento della sottrazione il Carry viene azzerato, significa che vi è un prestito che si propaga oltre gli 8 bit degli operandi;
-- viceversa, se al completamento della addizione  il Carry è settato, significa che vi è un riporto che si propaga oltre gli 8 bit degli operandi.
+- se al completamento della addizione il Carry è settato, significa che vi è un riporto che si propaga oltre gli 8 bit degli operandi;
+- viceversa, se al completamento della sottrazione il Carry è azzerato, significa che vi è un prestito che si propaga oltre gli 8 bit degli operandi.
 
-Trascrivevo anche che, per le caratteristiche di funzionamento del '181 e provando a fare delle addizioni o sottrazioni con e senza Carry, si potrebbe pensare di poter eseguire un semplice OR esclusivo (XOR) tra le uscite del Carry /Cn+4 dei due chip per capire se c'è Overflow o no. Tuttavia il meccanismo non funziona in caso di istruzioni INC e DEC (e dunque per la verifica dell'esistenza di un overflow si ricorrerà ad un altro metodo, **come si vedrà in seguito analizzando in dettaglio il flag Overflow**).
+Dalle interessantissime note di Tom trascrivevo anche che, per le caratteristiche di funzionamento del '181 e provando a fare delle addizioni o sottrazioni con e senza Carry, si potrebbe pensare di poter eseguire un semplice OR esclusivo (XOR) tra le i Carry Out (/Cn+4) dei due chip per capire se c'è Overflow o no. Tuttavia il meccanismo non funziona in caso di istruzioni INC e DEC (e dunque per la verifica dell'esistenza di un overflow si ricorrerà ad un altro metodo, **come si vedrà in seguito analizzando in dettaglio il flag Overflow**).
 
-++++++++++++++++++++++++
-spiegare perché si poteva ipotizzare di calcolare l'overflow co una XOR!!!!!!!!!!!!
-++++++++++++++++++++++++
+Per quale motivo la verifica suddetta non è valida in caso di istruzioni di incremento e decremento?
 
-Per quale motivo la verifica suddetta non funziona in tutte le situazioni?
+- Eseguendo un'operazione **A + 1** (si vedano i segnali da applicare al '181 *Sintesi operazioni dell'ALU dell'NQSAP*) si possono verificare due casi - facciamo i due esempi:
 
-- Eseguendo un'operazione **A + 1** (si vedano i segnali da applicare al '181 *Sintesi operazioni dell'ALU dell'NQSAP*) si possono verificare due casi - facciamo due esempi:
+  - A = 0000.0101 che, incrementato di un valore 1, diventa 0000.0110; l'incremento avviene iniettando un segnale LO sul Carry In (/Cn) del primo '181; il suo Carry Out (/Cn+4) è HI, cioè non attivo; il risultato dell'operazione svolta dal secondo '181 non comporta un Carry, pertanto il suo Carry Out (/Cn+4) è ancora HI.
+  - A = 0000.1111 che, incrementato di un valore 1, diventa 0001.0000; l'incremento avviene iniettando un segnale LO sul Carry In (/Cn) del primo '181; il suo Carry in uscita (/Cn+4) è LO, cioè attivo; il risultato dell'operazione svolta dal secondo '181 non comporta un Carry, pertanto il suo Carry Out (/Cn+4) è HI.
 
-  - A = 0000 0101 che, incrementato di un valore 1, diventa 0000 0110; l'incremento avviene iniettando un segnale LO sul Carry In (Cn) del primo '181; il suo Carry Out (Cn+4) è HI, cioè non attivo;
-  - A = 0000 1111 che, incrementato di un valore 1, diventa 0001 0000; l'incremento avviene iniettando un segnale LO sul Carry In (Cn) del primo '181; il suo Carry in uscita (Cn+4) è LO, cioè attivo.
+- Nel primo caso entrambi i /Cn+4 sono LO e dunque una XOR con gli ingressi connessi a tali uscite non segnalerebbe Overflow.
+- Nel secondo caso non si ha un reale Overflow incrementando la word iniziale da 0000.1111 a 0001.0000, ma se si andassero ad interpretare i Carry Out dei due '181 con una funzione XOR, si incorrerebbe in un errore, in quanto i due segnali sono invertiti e la XOR segnalerebbe Overflow.
 
-- Nel secondo caso non ho reale Overflow del risultato dell'incremento della word iniziale 0000 1111, ma se andassi a interpretare i Carry Out dei due '181 con una funzione XOR incorrerei in un errore.
+Tutto questo è spiegato molto bene da Tom nella stessa pagina citata poche righe più sopra; **come detto poc'anzi, l'argomento dell'Overflow sarà ripreso diffusamente in una sezione dedicata**.
 
-Tutto questo è spiegato molto bene da Tom nella stessa pagina citata poche righe più sopra.
-
-Inizialmente complessa 
-
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 SONO ARRIVATO QUI
 
 *Opcode validi per le operazioni aritmetiche di sottrazione.*
