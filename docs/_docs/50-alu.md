@@ -27,11 +27,25 @@ Tra le caratteristiche che spiccavano nello schema dell'ALU dell'NQSAP, notavo s
 
 Il modulo ALU è sommariamente composto da due registri di input H e B e da una coppia di '181 interconnessi, che permettono di gestire una word di 8 bit: H e B sono i registri di input dei '181.
 
-- Il registro H è in realtà uno Shift Register in grado sia di comportarsi come un normale registro a 8 bit, sia di *shiftare* a destra o a sinistra il valore presente in ingresso (istruzioni di rotazione).
+- Il registro H è in realtà uno Shift Register in grado sia di comportarsi come un normale registro a 8 bit, sia di *shiftare* a destra o a sinistra il valore presente in ingresso.
 - Il registro B è un normale registro a 8 bit. Il chip utilizzato per questo registro non include un ingresso Enable, che Tom ha dunque realizzato in maniera artificiale mettendo una NOR su /Clock e /WB ("Write B"); in questo modo il registro si attiva solo in corrispondenza di /WB (che è attivo LO) e del falling edge del clock negato, equivalente al rising edge del clock non negato, che è il momento in cui si caricano i registri (riferimento: video di Ben Eater [8-bit CPU control logic: Part 2](https://www.youtube.com/watch?v=X7rCxs1ppyY)).
 - Tre transceiver '245 permettono di poter leggere i valori contenuti in H, B ed L (L è l'output dell'A**L**U).
 
-Il registro H  si rivelerùà in seguito fondamentale come registro temporaneo da utilizzare per la realizzazione del microcode delle istruzioni di salto relativo.
+### Il registro H
+
+Sul computer SAP di Ben Eater i registri di input all'ALU erano A e B, mentre nell'NQSAP sono H e B. Come indicato nella sezione precedente, il registro H si può anche comportare come un comune registro a 8 bit in tutti i casi nei quali sia necessario avere due registri standard di input per tutte le operazioni che l'ALU deve eseguire. E' dunque necessario che A ed H siano sempre allineati, così che i '181 ritrovino trasparentemente in H il contenuto di A (ad esempio una somma ADC sarà effettivamente realizzata dando in input ai '181 i registri H e B: essendo H una copia di A, il risultato della somma sarà A + B).
+
+Il registro H sarà anche fondamentale come registro temporaneo di appoggio da utilizzare per la realizzazione del microcode di molte altre istruzioni: anche in tutti questi casi, una delle ultime operazioni eseguite dal microcode sarà la copia di A su H:
+
+[![Microcode dell'istruzione INX](../../assets/alu/50-alu-RAWH.png "Microcode dell'istruzione INX"){:width="33%"}]
+
+Nell'esempio dell'istruzione INX del 6502, dopo le due fasi di fetch comuni a tutte le istruzioni:
+
+- X viene letto (RX) e copiato in H (WH);
+- il risultato dell'operazione **A + 1** viene letto dall'output dei '181 (RL) e copiato in X (WX);
+- si legge il contenuto non modificato di A (RA) e si riallinea H (WH).
+
+(**da fare**: in questo caso, ma anche nel caso delle istruzioni di shift / rotazione e forse anche CPX e CPY, verificare se non potessi usare D invece di H)
 
 ### Funzioni logiche e operazioni aritmetiche
 
@@ -74,7 +88,7 @@ Ritornando alla tabella delle funzioni / operazioni e cercando di seguire le spi
 
 Successivamente capirò che le istruzioni necessarie erano in realtà ancora meno di quelle che ipotizzavo.
 
-## Relazione diretta tra Instruction Register e ALU
+## Relazione diretta (*hardwired*) tra Instruction Register e ALU
 
 Un altro degli aspetti di più difficile comprensione, come anticipato in precedenza, è stata l'associazione diretta tra l'istruzione correntemente contenuta nell'Instruction Register e la funzione logica / operazione aritmetica eseguita dal '181.
 
@@ -284,22 +298,19 @@ Come si può vedere dallo schema del modulo ALU del computer BEAM, questo è qua
 
 Ecco una lista delle differenze:
 
-- Per il registro B ho utilizzato un [74LS377](https://www.ti.com/lit/ds/symlink/sn54ls377.pdf) al posto del [74LS574](https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf). A differenza del '574, il '377 è dotato di ingresso Enable, che solo se attivo permette il trasferimento dell'input sull'output: così facendo si elimina la necessità di un gate in ingresso sul clock per realizzare un Enable artificiale, come descritto nella sezione [L'ALU dell'NQSAP](#L'ALU-dell'NQSAP).
+- Per il registro B ho utilizzato un [74LS377](https://www.ti.com/lit/ds/symlink/sn54ls377.pdf) al posto del [74LS574](https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf). A differenza del '574, il '377 è dotato di ingresso Enable, che solo quando attivo permette il trasferimento dell'input sull'output: così facendo si elimina la necessità di un gate in ingresso sul clock per realizzare un Enable artificiale, come descritto nella sezione [L'ALU dell'NQSAP](#lalu-dellnqsap).
 
-[![74LS377](../../assets/alu/50-alu-377.png "74LS377"){:width="66%"}]
+[![Schema di uno degli 8 Flip Flop del 74LS377](../../assets/alu/50-alu-377.png "Schema di uno degli 8 Flip Flop del 74LS377"){:width="66%"}]
 
+*Schema di uno degli 8 Flip Flop del 74LS377.*
 
- CHIARIRE ANCHE SE ANCHE QUI COSI' FACENDO SI VA A MIGLIORARE IL DISCORSO DEL GLITCH.
+ **Da fare**: Valutare se anche questo ha un riflesso positivo sul discorso del glitch
 
-Altra differenza: NQSAP aveva 8 step, mentre io ne ho fatti 16 sul computer, che però è più architetturare su Control Logic, ma il riflesso è che posso fare istruzioni di salto relativo che usano il registro H.
-
-Spiegare inoltre l'utilizzo Principale del registro: Si potrebbe immaginare che i registri di input della alu siano AEB , come nel computer SAP originale, mentre qui si può dire che sostanzialmente AEH sono sincronizzati , o meglio che alla fine di ogni istruzione h è sincronizzato in modo da contenere lo stesso valore che cè in a, così qualsiasi operazione istruzione che deve utilizzare la alu se ritrova in h il contenuto di a senza doverlo rileggere ; inoltre
+- Altra differenza: il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Con soli 8 step, come si vedrà però in maggior dettaglio nelle sezioni riservate al microcode, non sarebbe stato possibile emulare alcune delle istruzioni del 6502, come quelle di salto relativo e di rotazione. Questa è in realta una differenza più architetturale relativa alla Control Logic, però ho visto il profondo impatto che ha sull'ALU, ha sicramente senso citarla in questa sezione. **da fare** verificare se anche quelle di rotazione o no.
 
 - /WE ↘↗
 
 ## DESCRIVERE COMPORTAMENTO SHIFT REGISTER
-
-
 
 ## Link e approfondimenti
 
