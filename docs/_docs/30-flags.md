@@ -11,59 +11,76 @@ Bisogna dire che più volte, leggendo la documentazione di Tom Nisbet, ho trovat
 
 *Schema logico del modulo Flag di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità.*
 
-Il registro dei Flag dell'NQSAP emula i 4 flag NVZC del 6502:
+Il registro dei Flag dell'NQSAP emula i 4 flag **NVZC** del 6502:
 
 - **N**egative (N)
 - O**V**erflow (V)
 - **Z**ero (Z)
 - **C**arry (C)
 
-E' completamente differente dal semplice registro dei Flag del computer SAP di Tom Nisbet, nel quale un unico FF '173 memorizzava entrambi i 2 flag  nello stesso momento: in conseguenza di questo, la programmazione delle EEPROM veniva ripetuta per 4 volte (2 flag, ognuno con 2 stati possibili = 2^2 = 4) e dunque avevo bisogno di 4 set di microcode, uno per ogni combinazione dei segnali di Flag portati agli indirizzi di ingresso delle EEPROM, in modo che i segnali di uscita agissero corrispondentemente allo stato dei flag stessi.
+E' completamente differente dal semplice registro dei Flag del computer SAP di Tom Nisbet, nel quale un unico FF '173 memorizzava i soli 2 flag esistenti C e Z nello stesso momento; in conseguenza di questo, la gestione delle istruzioni necessitava di 4 set di microcode, uno per ogni combinazione dei segnali di Flag portati agli ingressi delle EEPROM, in modo che i segnali di uscita corrispondessero allo stato dei flag stessi attivando gli opportuni altri moduli del computer.
+
+la programmazione delle EEPROM veniva ripetuta per 4 volte (2 flag, ognuno con 2 stati possibili = 2^2 = 4)
 
 Nella realizzazione di Tom il microcode delle istruzioni non varia a seconda dello stato dei flag, che non sono più direttamente connessi agli indirizzi delle ROM che poi attivavano diversi loro segnali di output in base all'indirizzo/flag presentato in ingresso!
 
- Prendiamo ad esempio in analisi un'istruzione di salto condizionale legata al flag Z: ad essa corrisponde un segnale "JUMP" in uscita dalle EEPROM (si vedrà in seguito che questo è uguale per tutte le istruzioni) che attiva con /E il Selector 151 in bassoo a destra nello schema; la selezione del flag da mettere in uscita dipende dal microcode (i 3 bit Select S0, S1 ed S2 del 151 sono direttamente collegati all'Instruction Register, anche questi *hardwired* in maniera similare a quanto succede per la ALU) perciò se per esempio l'istruzione di Jump on Zero è codificata come 010 sui 3 segnali comuni tra IR e registro dei Flag, questa andrà ad attivare il pin I2 di ingresso del 151 che, se troverà 1 al suo ingresso (cioè output FF del flag Z = 1), andrà ad abilitare il PC-LOAD e permettere il caricamento del nuovo indirizzo nel Program Counter.
+Prendiamo ad esempio in analisi un'istruzione di salto condizionale legata al flag Z:
+
+- il microcode dell'istruzione attiverà un segnale "JUMP" in output sulle EEPROM andando ad attivare (vedi segnale /E) il Selector [74LS151](https://www.ti.com/lit/ds/symlink/sn54s151.pdf) in basso a destra nello schema;
+- la selezione del flag da mettere in uscita dipende dal microcode
+  - i 3 bit Select S0, S1 ed S2 del 151 sono direttamente collegati all'Instruction Register, anche questi *hardwired* in maniera similare a quanto succede per la ALU
+  - se per esempio l'istruzione *Jump on Zero* è codificata come 010 sui 3 segnali comuni tra IR e registro dei Flag, questa andrà ad attivare il pin I2 di ingresso del '151 che, se troverà 1 al suo ingresso (vale a dire che il Flip Flop del flag Zero ha valore logico HI), andrà ad abilitare il segnale PC-LOAD sul Program Counter, attivando il caricamento del nuovo indirizzo operando dell'istruzione di salto.
+
+(si vedrà in seguito che questo è uguale per tutte le istruzioni) 
 
  ![Output dell'Instruction Register verso il modulo Flag con evidenza dei 3 bit di selezione dell'istruzione di salto condizionale](../../assets/flags/30-flag-cl-ir-out.png)
 
 *Output dell'Instruction Register verso il modulo Flag con evidenza dei 3 bit di selezione dell'istruzione di salto condizionale.*
 
-Detto in altre parole
+Detto in altre parole: la logica del salto condizionale del SAP era implementata nel microcode, utilizzando linee di indirizzamento delle ROM. Poiché i flag dell'NQSAP sono invece implementati in hardware, non c'è bisogno di consumare preziose linee di indirizzamento delle EEPROM. I miglioramenti derivanti sono:
 
-- La logica del salto condizionale del SAP-1 era implementata nel microcode, utilizzando linee di indirizzamento delle ROM. Poiché i flag dell'NQSAP sono implementati in hardware, non c'è bisogno di usare linee preziose linee di indirizzamento delle ROM. Miglioramenti derivanti:
-  - è possibile settare i flag anche singolarmente
-  - risparmio delle linee di indirizzamento ROM
-  - non si modifica l'output della ROM durante l'esecuzione della singola istruzione (ma nel SAP-1 come si comportava? 04/10/2022 l'ho compreso andando a rileggere gli appunti del BE 8 bit computer). Teoricamente, e l'avevo letto anche altrove, questo potrebbe essere un problema perché causa "glitching".
+- possibilità di settare i flag anche singolarmente;
+- risparmio delle linee di indirizzamento delle EEPROM;
+- l'output delle EEPROM non si modifica durante l'esecuzione della singola istruzione (ma nel SAP-1 come si comportava? 04/10/2022 l'ho compreso andando a rileggere gli appunti del BE 8 bit computer). Teoricamente, e l'avevo letto anche altrove, questo potrebbe essere un problema perché causa "glitching".
 
-FLAG e gestione	• Un multiplexer '157 permette di copiare i valori dei flag dalla memoria (tipo istruzione Pull Processor Status PLP). Questi FF non vengono mai pre-settati dunque /Preset resta sempre collegato a Vcc (e dunque mai attivo), mentre hanno invece collegamento al reset generale del sistema /RST.
-	• I FF '74 hanno come ingresso le uscite del MUX '157, che prende 4 segnali scegliendone la provenienza:
-	        1. dal bus (tranne il flag Negative, che viene sempre preso direttamente dalla linea D7 del bus, perché i numeri negativi Signed hanno l'uno iniziale sull'MSB 😁)
-	                a. 24/10/2022 ma… questo significa allora che NQSAP lavora in complemento di due? Devo chiedere a Tom… no, la domanda giusta è se il computer lavora con i numeri Signed o Unsigned!
-	                b. 09/01/2023 in realtà il 74181 lavora in 2C
-	                c. 06/01/2024 meglio dire, che sono io a decidere come lavorare, col programma che faccio girare.
-	        2. dai segnali C, Z e V
-	                a. C con il Data Selector / Multiplexer /151
-	                b. Z col comparatore '588:
-	                c. V con il Data Selector / Multiplexer /151
-	• I 4 flag FC, FV, FZ, FN sono attivati grazie a segnali dedicati che vengono ANDati col CLK (caricamento registri al Rising Edge del clock). Si segnala che in questo modo una singola istruzione può settare più di un flag alla volta, ad esempio ADC potrebbe settarli tutti (in effetti l'istruzione ADC impatta tutti i flag contemporaneamente).
-	• Le istruzioni CLC, CLV e SEC possono settare o pulire i flag senza usare linee ROM; infatti la ALU può mettere in uscita tutti 0 o tutti 1 e così possiamo pulire o settare il bus e caricare solo il flag che ci interessa mandando il flag apposito.
-	• Un '245 permette di esportare i Flag su bus per salvarli in una location di memoria con Push Processor Status (PHP).
-	
-	
-Salto condizionale	• Quando un flag veniva variato nel SP-1, venivano cambiati gli indirizzi delle ROM per presentare una logica opportunamente diversa in uscita. In questo modo, ad ogni flag corrispondevano anche delle linee di indirizzamento "rubate" alle ROM.
-	• Nell'NQSAP i valori dei flag presenti nei 74LS74, sia Q sia /Q, vengono passati al Data Selector / Multiplexer '151, che funge da selettore delle uscite dei FF (seleziona il flag e ne seleziona anche "il genere", ad esempio l'istruzione di salto del Carry potrebbe essere BCC o BCS), dunque grazie ai segnali di selezione in ingresso nel '151 IR-Q5, IR-Q6 e IR-Q7 prendo direttamente dal FF il Flag che mi interessa, normale o invertito.
-	IR-Q5, IR-Q6 e IR-Q7 arrivano infatti dall'Instruction Register, dunque una determinata istruzione di Branch predetermina il flag da esporre e sul quale effettuare il salto o no a seconda che il test sia vero o falso.
-	• Mi stavo domandando… come faccio a far stare tutto (le istruzioni di branch (3 bit), le istruzioni dell'ALU (5 bit) e tutte le altre istruzioni in soli 8 bit? Come faccio a gestire tutte le combinazioni e a costruire una matrice di istruzioni funzionante?
-	        • Poi ho notato che nel '151 dei flag c'è un segnale di controllo JE; questo è sicuramente "acceso" dalle istruzioni di salto condizionale, dunque
-	                ○ se JE è HI, attivo l'uscita del '151 e dunque attivo il segnale di caricamento del Program Counter se l'input dal FF del flag di interesse è positivo;
-	                ○ se JE è LO, disattivo l'uscita del '151 e dunque ignoro lo stato dei selettori S0, S1 ed S2 e non vado ad attivare il segnale di caricamento del Program Counter;
-	                ○ mi aspetto ad esempio che l'istruzione BCS/JCS (Jump on Carry Set)
-	                        § configuri S0, S1 ed S2 in modo da portare in output Z il valore del pin 4, che è collegato all'FF del C
-	                        § dunque S0 = LO, S1 = LO ed S2 = LO portano in Z il flag C
-	                        § se C = 1 l'output della NOR è LO (/(1+x) = 0) e dunque il valore presente nel bus viene caricato nel PC.
-	• Si dice anche che "questo semplifica il microcode perché tutte le operazioni di Jump utilizzeranno lo stesso microcode" similarmente a quanto accade coi 5 bit di gestione delle istruzioni ALU… e qui mi sfugge qualcosa, devo capire bene
-	        • come si costruisce la matrice delle istruzioni 20/06/2023 capito
-	        • perché tutte le istruzioni dovrebbero essere "uguali"… 04/10/2022 forse ho capito perché… in effetti la scelta del flag dipende dal codice dell'istruzione stessa, che essendo in output dall'Instruction Register viene applicata agli ingressi Select del '151… e dunque è sufficiente che nell'istruzione venga abilitato il JE 😁, tutte le istruzioni sono dunque uguali.
+![Ingressi di selezione dell'istruzione di salto condizionale del registro dei Flag e connessione "hardwired" con l'IR](../../assets/flags/30-flag-select-in.png)
+
+*Ingressi di selezione dell'istruzione di salto condizionale del registro dei Flag e connessione "hardwired" con l'IR.*
+
+## FLAG e gestione
+
+Un multiplexer '157 permette di copiare i valori dei flag dalla memoria (tipo istruzione Pull Processor Status PLP). Questi FF non vengono mai pre-settati dunque /Preset resta sempre collegato a Vcc (e dunque mai attivo), mentre hanno invece collegamento al reset generale del sistema /RST.
+
+- I FF '74 hanno come ingresso le uscite del MUX '157, che prende 4 segnali scegliendone la provenienza:
+
+  - 1. dal bus (tranne il flag Negative, che viene sempre preso direttamente dalla linea D7 del bus, perché i numeri negativi Signed hanno l'uno iniziale sull'MSB 😁)
+    - 24/10/2022 ma… questo significa allora che NQSAP lavora in complemento di due? Devo chiedere a Tom… no, la domanda giusta è se il computer lavora con i numeri Signed o Unsigned!
+    - b. 09/01/2023 in realtà il 74181 lavora in 2C
+    - c. 06/01/2024 meglio dire, che sono io a decidere come lavorare, col programma che faccio girare.
+  - 2. dai segnali C, Z e V
+    - a. C con il Data Selector / Multiplexer /151
+    - b. Z col comparatore '588:
+    - c. V con il Data Selector / Multiplexer /151
+- I 4 flag FC, FV, FZ, FN sono attivati grazie a segnali dedicati che vengono ANDati col CLK (caricamento registri al Rising Edge del clock). Si segnala che in questo modo una singola istruzione può settare più di un flag alla volta, ad esempio ADC potrebbe settarli tutti (in effetti l'istruzione ADC impatta tutti i flag contemporaneamente).
+- Le istruzioni CLC, CLV e SEC possono settare o pulire i flag senza usare linee ROM; infatti la ALU può mettere in uscita tutti 0 o tutti 1 e così possiamo pulire o settare il bus e caricare solo il flag che ci interessa mandando il flag apposito.
+- Un '245 permette di esportare i Flag su bus per salvarli in una location di memoria con Push Processor Status (PHP).
+
+## Salto condizionale
+
+Quando un flag veniva variato nel SP-1, venivano cambiati gli indirizzi delle ROM per presentare una logica opportunamente diversa in uscita. In questo modo, ad ogni flag corrispondevano anche delle linee di indirizzamento "rubate" alle ROM.
+• Nell'NQSAP i valori dei flag presenti nei 74LS74, sia Q sia /Q, vengono passati al Data Selector / Multiplexer '151, che funge da selettore delle uscite dei FF (seleziona il flag e ne seleziona anche "il genere", ad esempio l'istruzione di salto del Carry potrebbe essere BCC o BCS), dunque grazie ai segnali di selezione in ingresso nel '151 IR-Q5, IR-Q6 e IR-Q7 prendo direttamente dal FF il Flag che mi interessa, normale o invertito.
+IR-Q5, IR-Q6 e IR-Q7 arrivano infatti dall'Instruction Register, dunque una determinata istruzione di Branch predetermina il flag da esporre e sul quale effettuare il salto o no a seconda che il test sia vero o falso.
+• Mi stavo domandando… come faccio a far stare tutto (le istruzioni di branch (3 bit), le istruzioni dell'ALU (5 bit) e tutte le altre istruzioni in soli 8 bit? Come faccio a gestire tutte le combinazioni e a costruire una matrice di istruzioni funzionante?
+   • Poi ho notato che nel '151 dei flag c'è un segnale di controllo JE; questo è sicuramente "acceso" dalle istruzioni di salto condizionale, dunque
+      ○ se JE è HI, attivo l'uscita del '151 e dunque attivo il segnale di caricamento del Program Counter se l'input dal FF del flag di interesse è positivo;
+      ○ se JE è LO, disattivo l'uscita del '151 e dunque ignoro lo stato dei selettori S0, S1 ed S2 e non vado ad attivare il segnale di caricamento del Program Counter;
+      ○ mi aspetto ad esempio che l'istruzione BCS/JCS (Jump on Carry Set)
+         § configuri S0, S1 ed S2 in modo da portare in output Z il valore del pin 4, che è collegato all'FF del C
+         § dunque S0 = LO, S1 = LO ed S2 = LO portano in Z il flag C
+         § se C = 1 l'output della NOR è LO (/(1+x) = 0) e dunque il valore presente nel bus viene caricato nel PC.
+• Si dice anche che "questo semplifica il microcode perché tutte le operazioni di Jump utilizzeranno lo stesso microcode" similarmente a quanto accade coi 5 bit di gestione delle istruzioni ALU… e qui mi sfugge qualcosa, devo capire bene
+    • come si costruisce la matrice delle istruzioni 20/06/2023 capito
+    • perché tutte le istruzioni dovrebbero essere "uguali"… 04/10/2022 forse ho capito perché… in effetti la scelta del flag dipende dal codice dell'istruzione stessa, che essendo in output dall'Instruction Register viene applicata agli ingressi Select del '151… e dunque è sufficiente che nell'istruzione venga abilitato il JE 😁, tutte le istruzioni sono dunque uguali.
 	Incrocio l'uscita del '151 con una NOR:
 	        • Se parlo di un salto condizionato, il flag selezionato normale o invertito mi genera un'uscita HI sul '151 --> il NOR presenta output LO che (da verificare, ma credo sia così) mi attiva il caricamento sul Program Counter del valore presente sul bus (che altri non è l'operando dell'istruzione di branch condizionale tipo BCC, BCS, BVC etc.).
 	                ○ 20/06/2023 Attenzione: l'operando è un valore relativo, dunque dovrò fare un po' di microistruzioni per calcolare il valore corretto da mettere sul PC… 31/01/2024 in realtà si usa D e X: in D metto il PC attuale, mentre in X metto il valore del Branch relativo, che è calcolato a partire dal byte successivo all'operando dell'istruzione Branch.
@@ -72,10 +89,9 @@ Salto condizionale	• Quando un flag veniva variato nel SP-1, venivano cambiati
 	        • Downside: "le istruzioni di salto condizionato non eseguite sprecano cicli di clock"… non si potrebbe semplicemente usare N per terminare anticipatamente l'istruzione? Lui sembra renderla un po' complicata
 	        • 29/01/2023 leggendo bene dice che dovrebbe essere possibile fare in modo che la logica elettronica dell'istruzione Jump vada ad attivare N se il salto non deve esserci… da verificare
 	
-	
-	
-	
-• Calcolo dei Flag	• Il flag Negative è semplicemente il MSB del bus 😁 (06/01/2023 direi perché sto ragionando con numeri Signed). Interessante che essendo mappato sul bus e non direttamente sull'ALU, potrei rilevare un Negative anche in contesti esterni all'ALU, ad esempio uno shift del shift-register o un trasferimento di dato da un registro a un altro.
+## Calcolo dei Flag
+
+	• Il flag Negative è semplicemente il MSB del bus 😁 (06/01/2023 direi perché sto ragionando con numeri Signed). Interessante che essendo mappato sul bus e non direttamente sull'ALU, potrei rilevare un Negative anche in contesti esterni all'ALU, ad esempio uno shift del shift-register o un trasferimento di dato da un registro a un altro.
 • Utilizzo del Carry da ALU e H	
 	• Il flag Zero si attiva se il valore presente nel bus è zero; invece di usare una serie di AND (come nel SAP-1) per verificare se tutte le linee fossero LO, ecco che il comparatore 74HCT688 può svolgere lo stesso lavoro. Anche questo opera sul bus e non sulla sola ALU.
 	
