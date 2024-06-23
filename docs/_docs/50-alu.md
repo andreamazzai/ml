@@ -33,17 +33,21 @@ Il modulo ALU è sommariamente composto da due registri di input H e B e da una 
 
 ### Il registro H
 
-Sul computer SAP di Ben Eater i registri di input all'ALU erano A e B, mentre nell'NQSAP sono H e B. Come indicato nella sezione precedente, il registro H si può anche comportare come un comune registro a 8 bit in tutti i casi nei quali sia necessario avere due registri standard di input per tutte le operazioni che l'ALU deve eseguire. E' dunque necessario che A ed H siano sempre allineati, così che i '181 ritrovino trasparentemente in H il contenuto di A (ad esempio una somma ADC sarà effettivamente realizzata dando in input ai '181 i registri H e B: essendo H una copia di A, il risultato della somma sarà A + B).
+Sul computer SAP di Ben Eater i registri di input all'ALU erano A e B, mentre nell'NQSAP sono H e B. Come indicato nella sezione precedente, il registro H si può anche comportare come un comune registro a 8 bit in tutti quei casi nei quali sia necessario avere due registri standard di input per tutte le operazioni che l'ALU deve eseguire. E' dunque necessario che A ed H siano sempre allineati, così che i '181 ritrovino trasparentemente in H il contenuto di A (ad esempio una somma ADC sarà effettivamente realizzata dando in input ai '181 i registri H e B: essendo H una copia di A, il risultato della somma sarà A + B).
 
 Il registro H sarà anche fondamentale come registro temporaneo di appoggio da utilizzare per la realizzazione del microcode di molte altre istruzioni: anche in tutti questi casi, una delle ultime operazioni eseguite dal microcode sarà la copia di A su H:
 
-[![Microcode dell'istruzione INX](../../assets/alu/50-alu-RAWH.png "Microcode dell'istruzione INX"){:width="33%"}]
+![Microcode dell'istruzione INX](../../assets/alu/50-alu-RAWH.png "Microcode dell'istruzione INX"){:width="50%"}
 
-Nell'esempio dell'istruzione INX del 6502, dopo le due fasi di fetch comuni a tutte le istruzioni:
+*Microcode per l'emulazione dell'istruzione INX del 6502.*
+
+Nell'esempio dell'istruzione INX del 6502, dopo le due fasi di fetch comuni a tutte le istruzioni e non evidenziate qui:
 
 - X viene letto (RX) e copiato in H (WH);
 - il risultato dell'operazione **A + 1** viene letto dall'output dei '181 (RL) e copiato in X (WX);
 - si legge il contenuto non modificato di A (RA) e si riallinea H (WH).
+
+Nella sezione dedicata alle istruzioni e al microcode si analizzeranno in dettaglio le microistruzioni di tutte le istruzioni del computer.
 
 (**da fare**: in questo caso, ma anche nel caso delle istruzioni di shift / rotazione e forse anche CPX e CPY, verificare se non potessi usare D invece di H)
 
