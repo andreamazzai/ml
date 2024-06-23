@@ -194,7 +194,7 @@ Partendo da questo ragionamento diventava possibile definire gli opcode di ogni 
 
 Abbiamo evidenziato in precedenza che le istruzioni di modificano lo stato dei flag sono molte e che tra queste ci sono anche quelle di comparazione.
 
-Per approfondirle, partiamo ad esempio da una istruzione che fa uso dei flag risultanti da una comparazione: l'istruzione di salto relativo BMI (**B**ranch on **MI**nus). Questa istruzione viene eseguita solo in presenza del flag N, che indica che il numero risultante dalla comparazione *con segno*\* è **N**egativo, cioè compreso tra -128 e -1 (0x80 e 0xFF in esadecimale).
+Per approfondirle, partiamo ad esempio da una istruzione che fa uso dei flag risultanti da una comparazione: l'istruzione di salto condizionale BMI (**B**ranch on **MI**nus). Questa istruzione viene eseguita solo in presenza del flag N, che indica che il numero risultante dalla comparazione *con segno*\* è **N**egativo, cioè compreso tra -128 e -1 (0x80 e 0xFF in esadecimale).
 
 \* = si veda in seguito la sezione riservata all'aritmetica binaria.
 
@@ -318,6 +318,10 @@ Ecco una lista delle differenze:
 - /WE ↘↗
 - Descrivere comportamento HW **shift register** per le rotazioni
 - Parlare del bench di test sulla base di quanto appreso da David Courtney.
+
+**Sistemare:**
+
+- \* = si veda in seguito la sezione riservata all'aritmetica binaria |||||| devo fare una sezione apposita
 
 ## Link e approfondimenti
 

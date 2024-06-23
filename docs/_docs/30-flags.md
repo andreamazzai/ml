@@ -11,20 +11,30 @@ Bisogna dire che più volte, leggendo la documentazione di Tom Nisbet, ho trovat
 
 *Schema logico del modulo Flag di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità.*
 
-Il Flags Register emula quello del 6502 con questi flag:
-• Zero
-• Carry
-• OVerflow che non mi è chiarissimo cosa sia
-• Negative
+Il registro dei Flag dell'NQSAP emula i 4 flag NVZC del 6502:
 
-E' differente dall'8-bit computer originario, dove un unico FF '173 memorizzava entrambi i flag nello stesso momento - e dunque, ricordo qualcosa, si era ripetuta per 4 volte la programmazione delle EEPROM perché avendo due flag C ed F le combinazioni possibili sono 4 (00, 01, 10, 11) e dunque avevo bisogno di 4 set di microcode, uno per ogni combinazione degli indirizzi in ingresso C ed F. Da verificare.
-		23/10/2022 In questo nuovo caso le istruzioni non variano a seconda dello stato dei flag, che non sono più Input alle ROM che poi variavano l'output in base all'indirizzo/flag presentato in ingresso! Nella configurazione sviluppata da Tom, a un certo punto nel codice si trova un'istruzione di salto condizionale legata a un flag, magari JZ: ad essa corrisponde un segnale in uscita di JUMP (uguale per tutte le istruzioni) che attiva con /E il Selector 151; la selezione del flag da mettere in uscita dipende dal microcode (i 3 bit Select del 151 sono direttamente collegati all'Instruction Register) perciò se per esempio l'istruzione di JZ Jump on Zero è 010 questo andrà a selezionare il pin I2 di ingresso del 151 che, se attivo (cioè output FF del flag Z = 1), andrà ad abilitare il PC-LOAD e permettere il caricamento del nuovo indirizzo nel PC 😎
-	
-	La logica del salto condizionale del SAP-1 era implementata nel microcode, utilizzando linee di indirizzamento delle ROM. Poiché i flag dell'NQSAP sono implementati in hardware, non c'è bisogno di usare linee preziose linee di indirizzamento delle ROM. Miglioramenti derivanti:
-	        • è possibile settare i flag anche singolarmente
-	        • risparmio delle linee di indirizzamento ROM
-	        • non si modifica l'output della ROM durante l'esecuzione della singola istruzione (ma nel SAP-1 come si comportava? 04/10/2022 l'ho compreso andando a rileggere gli appunti del BE 8 bit computer). Teoricamente, e l'avevo letto anche altrove, questo potrebbe essere un problema perché causa "glitching".
-	
+- **N**egative (N)
+- O**V**erflow (V)
+- **Z**ero (Z)
+- **C**arry (C)
+
+E' completamente differente dal semplice registro dei Flag del computer SAP di Tom Nisbet, nel quale un unico FF '173 memorizzava entrambi i 2 flag  nello stesso momento: in conseguenza di questo, la programmazione delle EEPROM veniva ripetuta per 4 volte (2 flag, ognuno con 2 stati possibili = 2^2 = 4) e dunque avevo bisogno di 4 set di microcode, uno per ogni combinazione dei segnali di Flag portati agli indirizzi di ingresso delle EEPROM, in modo che i segnali di uscita agissero corrispondentemente allo stato dei flag stessi.
+
+Nella realizzazione di Tom il microcode delle istruzioni non varia a seconda dello stato dei flag, che non sono più direttamente connessi agli indirizzi delle ROM che poi attivavano diversi loro segnali di output in base all'indirizzo/flag presentato in ingresso!
+
+ Prendiamo ad esempio in analisi un'istruzione di salto condizionale legata al flag Z: ad essa corrisponde un segnale "JUMP" in uscita dalle EEPROM (si vedrà in seguito che questo è uguale per tutte le istruzioni) che attiva con /E il Selector 151 in bassoo a destra nello schema; la selezione del flag da mettere in uscita dipende dal microcode (i 3 bit Select S0, S1 ed S2 del 151 sono direttamente collegati all'Instruction Register, anche questi *hardwired* in maniera similare a quanto succede per la ALU) perciò se per esempio l'istruzione di Jump on Zero è codificata come 010 sui 3 segnali comuni tra IR e registro dei Flag, questa andrà ad attivare il pin I2 di ingresso del 151 che, se troverà 1 al suo ingresso (cioè output FF del flag Z = 1), andrà ad abilitare il PC-LOAD e permettere il caricamento del nuovo indirizzo nel Program Counter.
+
+ ![Output dell'Instruction Register verso il modulo Flag con evidenza dei 3 bit di selezione dell'istruzione di salto condizionale](../../assets/flags/30-flag-cl-ir-out.png)
+
+*Output dell'Instruction Register verso il modulo Flag con evidenza dei 3 bit di selezione dell'istruzione di salto condizionale.*
+
+Detto in altre parole
+
+- La logica del salto condizionale del SAP-1 era implementata nel microcode, utilizzando linee di indirizzamento delle ROM. Poiché i flag dell'NQSAP sono implementati in hardware, non c'è bisogno di usare linee preziose linee di indirizzamento delle ROM. Miglioramenti derivanti:
+  - è possibile settare i flag anche singolarmente
+  - risparmio delle linee di indirizzamento ROM
+  - non si modifica l'output della ROM durante l'esecuzione della singola istruzione (ma nel SAP-1 come si comportava? 04/10/2022 l'ho compreso andando a rileggere gli appunti del BE 8 bit computer). Teoricamente, e l'avevo letto anche altrove, questo potrebbe essere un problema perché causa "glitching".
+
 FLAG e gestione	• Un multiplexer '157 permette di copiare i valori dei flag dalla memoria (tipo istruzione Pull Processor Status PLP). Questi FF non vengono mai pre-settati dunque /Preset resta sempre collegato a Vcc (e dunque mai attivo), mentre hanno invece collegamento al reset generale del sistema /RST.
 	• I FF '74 hanno come ingresso le uscite del MUX '157, che prende 4 segnali scegliendone la provenienza:
 	        1. dal bus (tranne il flag Negative, che viene sempre preso direttamente dalla linea D7 del bus, perché i numeri negativi Signed hanno l'uno iniziale sull'MSB 😁)
