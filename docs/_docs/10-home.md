@@ -87,6 +87,7 @@ Crediti e ringraziamenti e link utili:
 - Il subreddit [r/beneater](https://www.reddit.com/r/beneater/) - in particolar modo [The8BitEnthusiast](https://www.reddit.com/user/The8BitEnthusiast/) e [Tom Nisbet](https://www.reddit.com/user/nib85/) - grazie!
 - Un valido riferimento per l'analisi della relazione tra Control Logic ("CL") ed IR è stata la pagina [6502 Instruction Set](https://www.masswerk.at/6502/6502_instruction_set.html) di Norbert Landsteiner, che invito a consultare anche per il [6502 Assembler](https://www.masswerk.at/6502/assembler.html) e il [Virtual 6502](https://www.masswerk.at/6502/) che ho utilizzato in fase di debug del microcode.
 
+**da fare**
 
 - 6502.org
 - Il blog di Ken Shirrif per una eccellente spiegazione dell'overflow nel 6502
@@ -98,5 +99,4 @@ Includere appunti su acquisto dei materiali, cavi utilizzati
 problemi di alimentazione
 lkink al video dell'ALU
 
-- non ho utilizzato HC perché...
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+- non ho utilizzato HC perché... bla bla bla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla bla
