@@ -25,11 +25,13 @@ Tra le caratteristiche che spiccavano nello schema dell'ALU dell'NQSAP, notavo s
 
 *Schema logico dell'ALU di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità. Nell'originale manca il segnale H-Q0, che qui non ho corretto.*
 
-Il modulo ALU è sommariamente composto da due registri di input H e B e da una coppia di '181 interconnessi, che permettono di gestire una word di 8 bit.
+Il modulo ALU è sommariamente composto da due registri di input H e B e da una coppia di '181 interconnessi, che permettono di gestire una word di 8 bit: H e B sono i registri di input dei '181.
 
 - Il registro H è in realtà uno Shift Register in grado sia di comportarsi come un normale registro a 8 bit, sia di *shiftare* a destra o a sinistra il valore presente in ingresso (istruzioni di rotazione).
-- Il registro B è un normale registro a 8 bit. Il chip utilizzato per questo registro non include un ingresso Enable, che è dunque stato realizzato in maniera artificiale mettendo una NOR su /Clock e /WB ("Write B"); in questo modo il registro si attiva solo in corrispondenza di /WB (che è attivo LO) e del falling edge del clock negato, equivalente al rising edge del clock non negato, che è il momento in cui si caricano i registri (riferimento: video di Ben Eater [8-bit CPU control logic: Part 2](https://www.youtube.com/watch?v=X7rCxs1ppyY)).
+- Il registro B è un normale registro a 8 bit. Il chip utilizzato per questo registro non include un ingresso Enable, che Tom ha dunque realizzato in maniera artificiale mettendo una NOR su /Clock e /WB ("Write B"); in questo modo il registro si attiva solo in corrispondenza di /WB (che è attivo LO) e del falling edge del clock negato, equivalente al rising edge del clock non negato, che è il momento in cui si caricano i registri (riferimento: video di Ben Eater [8-bit CPU control logic: Part 2](https://www.youtube.com/watch?v=X7rCxs1ppyY)).
 - Tre transceiver '245 permettono di poter leggere i valori contenuti in H, B ed L (L è l'output dell'A**L**U).
+
+Il registro H  si rivelerùà in seguito fondamentale come registro temporaneo da utilizzare per la realizzazione del microcode delle istruzioni di salto relativo.
 
 ### Funzioni logiche e operazioni aritmetiche
 
@@ -41,7 +43,7 @@ Avevo intanto deciso di comprendere le operazioni messe a disposizione dal '181 
 
 *Funzioni logiche e operazioni aritmetiche del 74LS181.*
 
-Il datasheet del '181 era abbastanza criptico e dunque ho avevo fatto ricorso anche alle molte risorse disponibili in rete riportate a fondo pagina. Dal datasheet si comprende che vi sono 4 segnali S0, S1, S2 ed S3 per la selezione della funzione / operazione e un segnale di controllo della modalità M (M = HI per le funzioni logiche; M = LO per le operazioni aritmetiche); A e B sono gli input dei dati. Nel datasheet venivano menzionati anche il Carry Look-Ahead e il Ripple-Carry, che approfondirò in seguito nella sezione dedicata all'Aritmetica Binaria.
+Il datasheet del '181 era abbastanza criptico e dunque ho avevo fatto ricorso anche alle molte risorse disponibili in rete riportate a fondo pagina. Dal datasheet si comprende che vi sono 4 segnali S0, S1, S2 ed S3 ("*Select*) per la selezione della funzione / operazione e un segnale di controllo della modalità M ("*Mode*", M = HI per le funzioni logiche; M = LO per le operazioni aritmetiche); A e B sono gli input dei dati. Nel datasheet venivano menzionati anche il Carry Look-Ahead e il Ripple-Carry, che approfondirò in seguito nella sezione dedicata all'Aritmetica Binaria.
 
 Inizialmente avevo trascritto la tabella delle funzioni / operazioni in un foglio Excel per poter lavorare più agevolmente:
 
@@ -181,6 +183,8 @@ Come anticipato, i flag delle istruzioni di comparazione sono calcolati eseguend
 
 - Tutti i segnali che pilotano i '181 derivano direttamente dall'Instruction Register (IR), eccetto per il Carry In. Si può dire che l'ALU è *hardwired* all'IR e che pertanto il microcode del computer deve essere scritto in modo tale che le istruzioni che utilizzano l'ALU rispecchino i segnali in ingresso del '181: ad esempio, osservando la tabella *Esempio della relazione tra IR ed ALU per tutte le modalità di indirizzamento delle istruzioni ADC e SBC del 6502*, l'istruzione di somma **A Plus B** dovrà avere i bit comuni tra IR ed ALU codificati come **01001**, mentre l'istruzione di sottrazione **A Minus B** dovrà averli codificati come **00110**.
 
+Effetto benefico collaterale molto iomportante del collegamento hardwired tra IR e ALU è che non è necessario dedicare preziose uscite delle ROM per le linee di controllo delle funzioni / operazioni dei '181.
+
 ![Ingressi di selezione della funzione logica / operazione aritmetica dell'ALU e connessione "hardwired" con l'IR](../../assets/alu/50-alu-select-in.png)
 
 *Ingressi di selezione della funzione logica / operazione aritmetica dell'ALU e connessione "hardwired" con l'IR.*
@@ -247,10 +251,10 @@ Possiamo dire che il Carry In del '181 inferiore è utilizzato, insieme ai bit M
 
 Questi ed altri punti sono spiegati molto bene da Tom nella sezione [Carry Flag](https://tomnisbet.github.io/nqsap/docs/74181-alu-notes/#carry-flag) della sua pagina *74181 ALU Notes* dedicata all'ALU.
 
-L'uso del Carry nel '181 (e di conseguenza nell'NQSAP) è simile a quanto avviene nel 6502, con il Carry viene normalmente azzerato (CLC) prima di fare una addizione, mentre viene settato (SEC) prima di fare una sottrazione:
+L'uso del Carry nel '181 (e di conseguenza nell'NQSAP) è simile a quanto avviene nel 6502, con il Carry che viene normalmente azzerato (CLC) prima di fare una addizione e settato (SEC) prima di fare una sottrazione:
 
-- se al completamento della addizione il Carry è settato, significa che vi è un riporto che si propaga oltre gli 8 bit degli operandi;
-- viceversa, se al completamento della sottrazione il Carry è azzerato, significa che è stato chiesto un prestito che si propaga oltre gli 8 bit degli operandi.
+- se al completamento della addizione il Carry risultante in uscita dal '181 superiore è settato, significa che vi è un riporto che si propaga oltre gli 8 bit degli operandi;
+- viceversa, se al completamento della sottrazione il Carry risultante in uscita dal '181 superiore è azzerato, significa che è stato chiesto un prestito che si propaga oltre gli 8 bit degli operandi.
 
 ### L'Overflow
 
@@ -264,23 +268,38 @@ Per quale motivo la verifica suddetta non è valida in caso di istruzioni di inc
 
   - A = 0000.1111 che, incrementato di un valore 1, diventa 0001.0000; l'incremento avviene iniettando un segnale LO sul Carry In (/Cn) del primo '181; il suo Carry in uscita (/Cn+4) è LO, cioè attivo; il risultato dell'operazione svolta dal secondo '181 non comporta un Carry, pertanto il suo Carry Out (/Cn+4) è HI.
 
-- Nel primo caso entrambi i /Cn+4 sono LO e dunque una XOR con gli ingressi connessi a tali uscite non segnalerebbe Overflow.
+- Nel primo caso entrambi i /Cn+4 sono LO e dunque una XOR con gli ingressi connessi a tali uscite non segnalerebbe uno stato di Overflow, correttamente.
 
-- Nel secondo caso non si ha un reale Overflow incrementando la word iniziale da 0000.1111 a 0001.0000, ma se si andassero ad interpretare i Carry Out dei due '181 con una funzione XOR, si incorrerebbe in un errore, in quanto i due segnali sono invertiti e la XOR segnalerebbe Overflow.
+- Nel secondo caso non si ha un reale Overflow incrementando la word iniziale da 0000.1111 a 0001.0000, ma se si andassero ad interpretare i Carry Out dei due '181 con una funzione XOR, si incorrerebbe in un errore, in quanto i due segnali sono invertiti e la XOR segnalerebbe Overflow, sbagliando.
 
-Tutto questo è spiegato molto bene da Tom nella stessa pagina citata poche righe più sopra; **come detto poc'anzi, l'argomento dell'Overflow sarà ripreso diffusamente in una sezione dedicata**.
+Tutto questo è spiegato molto bene da Tom nella stessa pagina citata poche righe più sopra; **come detto poc'anzi, l'argomento dell'Overflow sarà comunque ripreso diffusamente in una sezione dedicata**.
+
+## Differenza tra ALU dell'NQSAP e del BEAM
+
+Come si può vedere dallo schema del modulo ALU del computer BEAM, questo è quasi una copia 1:1 del modulo ALU del computer NQSAP: non avevo certamente la capacità di sviluppare autonomamente un modulo ALU così complesso e legato a doppio filo con altri moduli del computer, ma la comprensione completa del funzionamento dell'ALU sviluppata da Tom ha rappresentato un risultato molto importante.
 
 [![Schema logico dell'ALU del computer BEAM](../../assets/alu/50-alu-beam-schematics.png "Schema logico dell'ALU del computer BEAM"){:width="100%"}](../../assets/alu/50-alu-beam-schematics.png)
 
 *Schema logico dell'ALU del computer BEAM.*
 
-Come si può vedere dallo schema del modulo ALU del computer BEAM, questo è praticamente una copia del modulo ALU del computer NQSAP: non avevo certamente la capacità di sviluppare autonomamente un modulo ALU così complesso e legato a doppio filo con altri moduli del computer, ma la comprensione completa del funzionamento dell'ALU sviluppata da TOM è stato un risultato molto importante.
+Ecco una lista delle differenze:
 
-Ho utilizzato un '377 al posto del '574, semplificando e non necessitando di una NOR per costruire un segnale di Enable "virtuale". CHIARIRE ANCHE SE ANCHE QUI COSI' FACENDO SI VA A MIGLIORARE IL DISCORSO DEL GLITCH.
+- Per il registro B ho utilizzato un [74LS377](https://www.ti.com/lit/ds/symlink/sn54ls377.pdf) al posto del [74LS574](https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf). A differenza del '574, il '377 è dotato di ingresso Enable, che solo se attivo permette il trasferimento dell'input sull'output: così facendo si elimina la necessità di un gate in ingresso sul clock per realizzare un Enable artificiale, come descritto nella sezione [L'ALU dell'NQSAP](#L'ALU-dell'NQSAP).
+
+[![74LS377](../../assets/alu/50-alu-377.png "74LS377"){:width="66%"}]
+
+
+ CHIARIRE ANCHE SE ANCHE QUI COSI' FACENDO SI VA A MIGLIORARE IL DISCORSO DEL GLITCH.
+
+Altra differenza: NQSAP aveva 8 step, mentre io ne ho fatti 16 sul computer, che però è più architetturare su Control Logic, ma il riflesso è che posso fare istruzioni di salto relativo che usano il registro H.
+
+Spiegare inoltre l'utilizzo Principale del registro: Si potrebbe immaginare che i registri di input della alu siano AEB , come nel computer SAP originale, mentre qui si può dire che sostanzialmente AEH sono sincronizzati , o meglio che alla fine di ogni istruzione h è sincronizzato in modo da contenere lo stesso valore che cè in a, così qualsiasi operazione istruzione che deve utilizzare la alu se ritrova in h il contenuto di a senza doverlo rileggere ; inoltre
 
 - /WE ↘↗
 
 ## DESCRIVERE COMPORTAMENTO SHIFT REGISTER
+
+
 
 ## Link e approfondimenti
 
