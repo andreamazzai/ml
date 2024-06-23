@@ -41,10 +41,11 @@ Il registro H sarà anche fondamentale come registro temporaneo di appoggio da u
 
 *Microcode per l'emulazione dell'istruzione INX del 6502.*
 
-Nell'esempio dell'istruzione INX del 6502, dopo le due fasi di fetch comuni a tutte le istruzioni e non evidenziate qui:
+Nell'esempio dell'istruzione INX del 6502, dopo le due fasi di fetch comuni a tutte le istruzioni (non evidenziate qui):
 
 - X viene letto (RX) e copiato in H (WH);
-- il risultato dell'operazione **A + 1** viene letto dall'output dei '181 (RL) e copiato in X (WX);
+- H presenta il suo contenuto agli ingressi "A" dei '181;
+- i '181 eseguono l'operazione **A Plus 1**, il cui risultato viene letto dall'output (RL) e copiato in X (WX);
 - si legge il contenuto non modificato di A (RA) e si riallinea H (WH).
 
 Nella sezione dedicata alle istruzioni e al microcode si analizzeranno in dettaglio le microistruzioni di tutte le istruzioni del computer.
@@ -304,13 +305,13 @@ Ecco una lista delle differenze:
 
 - Per il registro B ho utilizzato un [74LS377](https://www.ti.com/lit/ds/symlink/sn54ls377.pdf) al posto del [74LS574](https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf). A differenza del '574, il '377 è dotato di ingresso Enable, che solo quando attivo permette il trasferimento dell'input sull'output: così facendo si elimina la necessità di un gate in ingresso sul clock per realizzare un Enable artificiale, come descritto nella sezione [L'ALU dell'NQSAP](#lalu-dellnqsap).
 
-[![Schema di uno degli 8 Flip Flop del 74LS377](../../assets/alu/50-alu-377.png "Schema di uno degli 8 Flip Flop del 74LS377"){:width="66%"}]
+![Schema di uno degli 8 Flip Flop del 74LS377](../../assets/alu/50-alu-377.png "Schema di uno degli 8 Flip Flop del 74LS377"){:width="66%"}
 
 *Schema di uno degli 8 Flip Flop del 74LS377.*
 
  **Da fare**: Valutare se anche questo ha un riflesso positivo sul discorso del glitch
 
-- Altra differenza: il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Con soli 8 step, come si vedrà però in maggior dettaglio nelle sezioni riservate al microcode, non sarebbe stato possibile emulare alcune delle istruzioni del 6502, come quelle di salto relativo e di rotazione. Questa è in realta una differenza più architetturale relativa alla Control Logic, però ho visto il profondo impatto che ha sull'ALU, ha sicramente senso citarla in questa sezione. **da fare** verificare se anche quelle di rotazione o no.
+- Il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Con soli 8 step, come si vedrà però in maggior dettaglio nelle sezioni riservate al microcode, non sarebbe stato possibile emulare alcune delle istruzioni del 6502, come quelle di salto relativo ed altre. Questa è in realtà una differenza architetturale più legata alla Control Logic, però l'impatto principale sul numero di step disponibili si riflette in particolar modo sull'ALU ed ha dunque sicuramente senso citarla in questa sezione.
 
 - /WE ↘↗
 
@@ -326,6 +327,10 @@ Ecco una lista delle differenze:
 Ne parliamo perché i '161 usati nel MAR e i '181 dell'ALU ne parlano nei datasheet.
 
 ### Link utili
+
+https://bread80.com/2019/09/02/adding-adc-sbc-inc-dec-operations-to-ben-eaters-alu/#easy-footnote-4-43 da leggere per capire se buono
+
+https://www.reddit.com/r/beneater/comments/jwxke0/how_to_add_a_decremental_and_incremental_circuit/ Interessante , da mettere nella sezione dei Flag , è l'ispirazione che Tom ha preso per utilizzare un'altro sistema per la gestione dei Flage dei salti relativi anziché inviare i Flag alle eprom , risparmiando così i famosi preziosi linee di input
 
 - [Inside the vintage 74181 ALU chip: how it works and why it's so strange](https://www.righto.com/2017/03/inside-vintage-74181-alu-chip-how-it.html) di Ken Shirriff. Fondamentale per capire il perché dell'implementazione apparentemente così strana del chip.
 - David Courtney
