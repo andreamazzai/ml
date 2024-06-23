@@ -5,7 +5,7 @@ excerpt: "Costruzione dell'Unità Aritmetica e Logica del BEAM computer"
 ---
 [![Unità Aritmetica e Logica del BEAM](../../assets/alu/50-alu-beam-small.png "Unità Aritmetica e Logica del BEAM"){:width="100%"}](../../assets/alu/50-alu-beam.png)
 
-L'Unità Aritmetica e Logica (ALU) del SAP computer di Ben Eater era limitata a addizioni e sotttrazioni. L'NQSAP di Tom Nisbet aggiungeva operazioni logiche e di rotazione (shift) e avevo iniziato a studiarla in dettaglio.
+L'Unità Aritmetica e Logica (ALU) del SAP computer di Ben Eater era limitata a addizioni e sottrazioni. L'NQSAP di Tom Nisbet aggiungeva operazioni logiche e di rotazione (shift) e avevo iniziato a studiarla in dettaglio.
 
 ### Il 74LS181
 
@@ -23,12 +23,12 @@ Tra le caratteristiche che spiccavano nello schema dell'ALU dell'NQSAP, notavo s
 
 [![Schema logico dell'ALU di Tom Nisbet](../../assets/alu/50-alu-nqsap.png "Schema logico dell'ALU di Tom Nisbet"){:width="100%"}](../../assets/alu/50-alu-nqsap.png)
 
-*Schema logico dell'ALU di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità. Nell'originale manca il segnale H-Q0, che qui non ho corretto.*
+*Schema logico dell'ALU di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità. Manca il segnale H-Q0, probabile dimenticanza di Tom.*
 
 Il modulo ALU è sommariamente composto da due registri di input H e B e da una coppia di '181 interconnessi, che permettono di gestire una word di 8 bit: H e B sono i registri di input dei '181.
 
 - Il registro H è in realtà uno Shift Register in grado sia di comportarsi come un normale registro a 8 bit, sia di *shiftare* a destra o a sinistra il valore presente in ingresso.
-- Il registro B è un normale registro a 8 bit. Il chip utilizzato per questo registro non include un ingresso Enable, che Tom ha dunque realizzato in maniera artificiale mettendo una NOR su /Clock e /WB ("Write B"); in questo modo il registro si attiva solo in corrispondenza di /WB (che è attivo LO) e del falling edge del clock negato, equivalente al rising edge del clock non negato, che è il momento in cui si caricano i registri (riferimento: video di Ben Eater [8-bit CPU control logic: Part 2](https://www.youtube.com/watch?v=X7rCxs1ppyY)).
+- Il registro B è un normale registro a 8 bit. Il chip utilizzato per questo registro non include un ingresso Enable, che Tom ha dunque realizzato in maniera artificiale mettendo una NOR su /Clock e /WB ("Write B"); in questo modo il registro si attiva solo in corrispondenza di /WB (che è attivo LO) e del Falling Edge del clock negato, equivalente al Rising Edge del clock non negato, che è il momento in cui si caricano i registri (riferimento: video di Ben Eater [8-bit CPU control logic: Part 2](https://www.youtube.com/watch?v=X7rCxs1ppyY)).
 - Tre transceiver '245 permettono di poter leggere i valori contenuti in H, B ed L (L è l'output dell'A**L**U).
 
 ### Il registro H
@@ -295,7 +295,7 @@ Tutto questo è spiegato molto bene da Tom nella stessa pagina citata poche righ
 
 ## Differenza tra ALU dell'NQSAP e del BEAM
 
-Come si può vedere dallo schema del modulo ALU del computer BEAM, questo è quasi una copia 1:1 del modulo ALU del computer NQSAP: non avevo certamente la capacità di sviluppare autonomamente un modulo ALU così complesso e legato a doppio filo con altri moduli del computer, ma la comprensione completa del funzionamento dell'ALU sviluppata da Tom ha rappresentato un risultato molto importante.
+Come si può vedere dallo schema del modulo ALU del computer BEAM, questo è quasi una copia 1:1 del modulo ALU del computer NQSAP: non avevo certamente la capacità di sviluppare autonomamente un modulo ALU così complesso e legato a doppio filo con altri moduli del computer, ma la comprensione completa del funzionamento dell'ALU sviluppata da Tom ha rappresentato comunque un traguardo molto importante.
 
 [![Schema logico dell'ALU del computer BEAM](../../assets/alu/50-alu-beam-schematics.png "Schema logico dell'ALU del computer BEAM"){:width="100%"}](../../assets/alu/50-alu-beam-schematics.png)
 
@@ -303,7 +303,7 @@ Come si può vedere dallo schema del modulo ALU del computer BEAM, questo è qua
 
 Ecco una lista delle differenze:
 
-- Per il registro B ho utilizzato un [74LS377](https://www.ti.com/lit/ds/symlink/sn54ls377.pdf) al posto del [74LS574](https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf). A differenza del '574, il '377 è dotato di ingresso Enable, che solo quando attivo permette il trasferimento dell'input sull'output: così facendo si elimina la necessità di un gate in ingresso sul clock per realizzare un Enable artificiale, come descritto nella sezione [L'ALU dell'NQSAP](#lalu-dellnqsap).
+- Per il registro B ho utilizzato un [74LS377](https://www.ti.com/lit/ds/symlink/sn54ls377.pdf) al posto del [74LS574](https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf). A differenza del '574, il '377 è dotato di ingresso Enable, che solo quando attivo permette il caricamento del registro in corrispondenza del Rising Edge del clock: così facendo si elimina la necessità di un gate in ingresso sul clock per realizzare un Enable artificiale, come descritto nella sezione [L'ALU dell'NQSAP](#lalu-dellnqsap).
 
 ![Schema di uno degli 8 Flip Flop del 74LS377](../../assets/alu/50-alu-377.png "Schema di uno degli 8 Flip Flop del 74LS377"){:width="66%"}
 
@@ -311,11 +311,13 @@ Ecco una lista delle differenze:
 
  **Da fare**: Valutare se anche questo ha un riflesso positivo sul discorso del glitch
 
-- Il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Con soli 8 step, come si vedrà però in maggior dettaglio nelle sezioni riservate al microcode, non sarebbe stato possibile emulare alcune delle istruzioni del 6502, come quelle di salto relativo ed altre. Questa è in realtà una differenza architetturale più legata alla Control Logic, però l'impatto principale sul numero di step disponibili si riflette in particolar modo sull'ALU ed ha dunque sicuramente senso citarla in questa sezione.
+- Il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Come si vedrà però in maggior dettaglio nelle sezioni riservate al microcode, con soli 8 step non sarebbe stato possibile emulare alcune delle istruzioni del 6502, come quelle di salto relativo ed altre. Questa è in realtà una differenza architetturale più legata alla Control Logic, però l'impatto principale sul numero di step disponibili si riflette in particolar modo sull'ALU ed ha dunque sicuramente senso citarla in questa sezione.
+
+**Da fare**:
 
 - /WE ↘↗
-
-## DESCRIVERE COMPORTAMENTO SHIFT REGISTER
+- Descrivere comportamento HW **shift register** per le rotazioni
+- Parlare del bench di test sulla base di quanto appreso da David Courtney.
 
 ## Link e approfondimenti
 
@@ -326,7 +328,9 @@ Ecco una lista delle differenze:
 
 Ne parliamo perché i '161 usati nel MAR e i '181 dell'ALU ne parlano nei datasheet.
 
-### Link utili
+## Link utili
+
+https://www.reddit.com/r/beneater/comments/kmuuex/question_for_all_74ls181_alu_people/ come trovare l'oveflow, Tom si è ispirato qui
 
 https://bread80.com/2019/09/02/adding-adc-sbc-inc-dec-operations-to-ben-eaters-alu/#easy-footnote-4-43 da leggere per capire se buono
 
@@ -338,9 +342,3 @@ https://www.reddit.com/r/beneater/comments/jwxke0/how_to_add_a_decremental_and_i
 Un valido riferimento per l’analisi della relazione tra IR ed ALU è stata la pagina 6502 Instruction Set di Norbert Landsteiner, che invito a consultare anche per il 6502 Assembler e il Virtual 6502 che avrei utilizzato in seguito in fase di debug del microcode che stavo sviluppando.
 
 ## Note
-
-Invece dei più comuni dip-switch, ho utilizzato dei comodissimi Rocker Switch ("a bilanciere") come quelli in figura; si trovano facilmente presso i distributori di [materiale elettronico](https://us.rs-online.com/product/te-connectivity/5435640-5/70156004/). Notare che i pin originali sono piuttosto corti e non fissano correttamente lo switch alla breadboard, pertanto ho aggiunto uno zoccolo per circuiti integrati.
-
-[![Rocker Switch](../../assets/ram/20-ram-rocker.png "Rocker Switch"){:width="33%"}](../../assets/ram/20-ram-rocker.png)
-
-*Rocker Switch.*

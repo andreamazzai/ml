@@ -22,7 +22,7 @@ Verso la fine dell'anno ho scoperto casualmente il blog di [Ben Eater](https://e
 
 ### Computer a 8 bit in logica TTL: SAP
 
-Nei primi mesi del 2022, dopo aver completato i primi moduli base del computer 6502, ho seguito la [playlist](https://www.youtube.com/playlist?list=PLowKtXNTBypGqImE405J2565dvjafglHU) del computer **SAP** (Simple As Possible) in logica TTL a 8-bit, al quale mi sono appassionato ancora di più. Durante la costruzione ho appreso moltissimo - sia per l'eccellente stile di esposizione di Ben, sia per l'impegno profuso nell'approfondimento della materia su altri siti e libri.
+Nei primi mesi del 2022, dopo aver completato i primi moduli base del computer 6502, ho seguito la [playlist](https://www.youtube.com/playlist?list=PLowKtXNTBypGqImE405J2565dvjafglHU) del computer **SAP** (Simple As Possible) in logica TTL a 8-bit, al quale mi sono appassionato ancora di più. Durante la costruzione ho appreso moltissimo - sia per l'eccellente stile di esposizione di Ben, sia per il grande impegno che ho profuso nell'approfondimento della materia su altri siti e libri.
 
 ### Evoluzione del computer a 8 bit: BEAM
 

@@ -3,11 +3,13 @@ title: "Flags"
 permalink: /docs/flags/
 excerpt: "Costruzione del registro dei flag del BEAM computer"
 ---
-21/09/2022 - Flags and Conditional Jumps NQSAP	https://tomnisbet.github.io/nqsap/docs/flags/
-Bisogna dire che più volte, leggendo il blog di Tom Nisbet, ho trovato delle idee molto clever.
+[![Registro dei Flag del BEAM](../../assets/alu/30-flag-beam.png "Registro dei Flag del BEAM"){:width="100%"}](../../assets/alu/30-flag-beam.png)
 
-Questo non è il disegno originale dell'autore, ma il mio rivisto.
-		• 04/10/2022 Ho spostato le porte di collegamento tra IR e ALU-S0 nel foglio della Control Logic.
+Bisogna dire che più volte, leggendo la documentazione di Tom Nisbet, ho trovato delle idee molto clever; alcune di queste si trovano nel modulo dei Flag. Cercherò di riportare anche alcune fonti utilizzate da Tom indicandone i collegamenti alla fine della pagina.
+
+[![Schema logico del modulo Flag di Tom Nisbet](../../assets/alu/30-flag-nqsap-schematics.png "Schema logico del modulo Flag di Tom Nisbet"){:width="100%"}](../../assets/alu/30-flag-nqsap-schematics.png)
+
+*Schema logico del modulo Flag di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità.*
 
 Il Flags Register emula quello del 6502 con questi flag:
 • Zero
