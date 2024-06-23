@@ -1,13 +1,13 @@
 ---
-title: "Flags"
+title: "Flag"
 permalink: /docs/flags/
 excerpt: "Costruzione del registro dei flag del BEAM computer"
 ---
-[![Registro dei Flag del BEAM](../../assets/flag/30-flag-beam.png "Registro dei Flag del BEAM"){:width="100%"}](../../assets/flag/30-flag-beam.png)
+[![Registro dei Flag del BEAM](../../assets/flags/30-flag-beam.png "Registro dei Flag del BEAM"){:width="100%"}](../../assets/flags/30-flag-beam.png)
 
 Bisogna dire che più volte, leggendo la documentazione di Tom Nisbet, ho trovato delle idee molto clever; alcune di queste si trovano nel modulo dei Flag. Cercherò di riportare anche alcune fonti utilizzate da Tom indicandone i collegamenti alla fine della pagina.
 
-[![Schema logico del modulo Flag di Tom Nisbet](../../assets/flag/30-flag-nqsap-schematics.png "Schema logico del modulo Flag di Tom Nisbet"){:width="100%"}](../../assets/flag/30-flag-nqsap-schematics.png)
+[![Schema logico del modulo Flag di Tom Nisbet](../../assets/flags/30-flag-nqsap-schematics.png "Schema logico del modulo Flag di Tom Nisbet"){:width="100%"}](../../assets/flags/30-flag-nqsap-schematics.png)
 
 *Schema logico del modulo Flag di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità.*
 
