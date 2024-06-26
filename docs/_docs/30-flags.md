@@ -18,18 +18,20 @@ Il registro dei Flag dell'NQSAP emula i 4 flag **NVZC** del 6502:
 - **Z**ero (Z)
 - **C**arry (C)
 
-E' completamente differente dal semplice registro dei Flag del computer SAP di Tom Nisbet, nel quale un unico FF '173 memorizzava i soli 2 flag esistenti C e Z nello stesso momento; in conseguenza di questo, la gestione delle istruzioni necessitava di 4 set di microcode, uno per ogni combinazione dei segnali di Flag portati agli ingressi delle EEPROM, in modo che i segnali di uscita corrispondessero allo stato dei flag stessi attivando gli opportuni altri moduli del computer.
+E' completamente differente dal semplice registro dei Flag del computer SAP di Tom Nisbet, nel quale un unico Flip-Flop [74LS173](https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf) memorizzava i soli 2 flag C e Z nello stesso momento: la gestione delle istruzioni necessitava di 4 set di microcode, cioè uno per ogni combinazione dei segnali di Flag portati agli ingressi delle EEPROM; ogni set di microcode era personalizzato per attivare in output i corretti segnali per la gestione di C e/o Z. Questo è ben spiegato nel video di Ben [Conditional jump instructions](https://www.youtube.com/watch?v=Zg1NdPKoosU).
 
-la programmazione delle EEPROM veniva ripetuta per 4 volte (2 flag, ognuno con 2 stati possibili = 2^2 = 4)
+Nella realizzazione di Tom il microcode delle istruzioni non varia a seconda dello stato dei flag, che non sono più direttamente connessi agli indirizzi delle ROM che poi attivano diversi segnali di output in base all'indirizzo/flag presentato in ingresso!
 
-Nella realizzazione di Tom il microcode delle istruzioni non varia a seconda dello stato dei flag, che non sono più direttamente connessi agli indirizzi delle ROM che poi attivavano diversi loro segnali di output in base all'indirizzo/flag presentato in ingresso!
+Prendiamo in analisi un'istruzione di salto condizionale legata al flag Z:
 
-Prendiamo ad esempio in analisi un'istruzione di salto condizionale legata al flag Z:
+- il microcode dell'istruzione attiverà un segnale "JUMP" in output sulle EEPROM andando ad attivare (vedi segnale /E) il Selector/Multiplexer [74LS151](https://www.ti.com/lit/ds/symlink/sn54s151.pdf) visibile in basso a destra nello schema;
+- importantissimo comprendere che la selezione del flag da mettere in uscita dipende dalla codifica dell'istruzione in esecuzione, poiché i 3 bit Select S2, S1 ed S0 del '151 sono direttamente collegati all'Instruction Register, cioè *hardwired* in maniera similare a quanto succede per la ALU;
 
-- il microcode dell'istruzione attiverà un segnale "JUMP" in output sulle EEPROM andando ad attivare (vedi segnale /E) il Selector [74LS151](https://www.ti.com/lit/ds/symlink/sn54s151.pdf) in basso a destra nello schema;
-- la selezione del flag da mettere in uscita dipende dal microcode
-  - i 3 bit Select S0, S1 ed S2 del 151 sono direttamente collegati all'Instruction Register, anche questi *hardwired* in maniera similare a quanto succede per la ALU
-  - se per esempio l'istruzione *Jump on Zero* è codificata come 010 sui 3 segnali comuni tra IR e registro dei Flag, questa andrà ad attivare il pin I2 di ingresso del '151 che, se troverà 1 al suo ingresso (vale a dire che il Flip Flop del flag Zero ha valore logico HI), andrà ad abilitare il segnale PC-LOAD sul Program Counter, attivando il caricamento del nuovo indirizzo operando dell'istruzione di salto.
+![Selector/Multiplexer 74LS151(../../assets/flags/30-flag-151-table.png]("Schema logico del modulo Flag di Tom Nisbet"){:width="50%"}
+
+*Selector/Multiplexer 74LS151.*
+
+- se per esempio l'istruzione *Jump on Zero* è codificata come 010 sui 3 segnali S2, S1 ed S0 comuni tra IR e registro dei Flag, questa andrà ad attivare il pin I2 di ingresso del '151 che, se troverà 1 al suo ingresso (vale a dire che il Flip-Flop del flag Zero ha valore logico HI), andrà ad abilitare il segnale PC-LOAD sul Program Counter, attivando il caricamento del nuovo indirizzo operando dell'istruzione di salto.
 
 (si vedrà in seguito che questo è uguale per tutte le istruzioni) 
 

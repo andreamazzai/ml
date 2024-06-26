@@ -305,9 +305,9 @@ Ecco una lista delle differenze:
 
 - Per il registro B ho utilizzato un [74LS377](https://www.ti.com/lit/ds/symlink/sn54ls377.pdf) al posto del [74LS574](https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf). A differenza del '574, il '377 è dotato di ingresso Enable, che solo quando attivo permette il caricamento del registro in corrispondenza del Rising Edge del clock: così facendo si elimina la necessità di un gate in ingresso sul clock per realizzare un Enable artificiale, come descritto nella sezione [L'ALU dell'NQSAP](#lalu-dellnqsap).
 
-![Schema di uno degli 8 Flip Flop del 74LS377](../../assets/alu/50-alu-377.png "Schema di uno degli 8 Flip Flop del 74LS377"){:width="66%"}
+![Schema di uno degli 8 Flip-Flop del 74LS377](../../assets/alu/50-alu-377.png "Schema di uno degli 8 Flip-Flop del 74LS377"){:width="66%"}
 
-*Schema di uno degli 8 Flip Flop del 74LS377.*
+*Schema di uno degli 8 Flip-Flop del 74LS377.*
 
  **Da fare**: Valutare se anche questo ha un riflesso positivo sul discorso del glitch
 
