@@ -86,11 +86,11 @@ Interessante notare che le istruzioni CLC, CLV e SEC non hanno bisogno di segnal
 
 ## I salti condizionali
 
-Nel computer SAP di Ben Eater, al cambio di un flag corrispondeva una variazione degli indirizzi delle EEPROM, così da poter presentare una logica opportunamente diversa in uscita in conseguenza delle diverse combinazioni degli stati dei flag. *Così facendo, ad ogni flag corrispondevano dunque  delle linee di indirizzamento "rubate" alle ROM.*
+Nel computer SAP di Ben Eater, al cambio di un flag corrispondeva una variazione degli indirizzi delle EEPROM, così da poter presentare una logica opportunamente diversa in uscita in conseguenza delle diverse combinazioni degli stati dei flag.
 
-L'approccio dell'NQSAP è molto diverso, in quanto tutti i segnali dei flag (presenti sulle uscite Q e /Q dei FF '74) vengono presentati al '151; la sua funzione è quella di selezionare uno dei flag da mettere sulla sua uscita per eventualmente permettere l'attivazione del segnale PC-LOAD, che abilita il caricamento del contenuto del bus sul PC (e dunque i salti). E' sufficiente caricare un nuovo valore nel PC perché questo diventi il nuovo indirizzo a partire dal quale saranno caricate ed eseguite (fetch/execute) le successive istruzioni del programma caricato nella memoria del computer.  
+L'approccio dell'NQSAP è molto diverso, in quanto tutti i segnali dei flag (presenti sulle uscite Q e /Q dei FF '74) vengono presentati a un '151; la sua funzione è quella di selezionare uno dei flag da mettere sulla sua uscita per eventualmente permettere l'attivazione del segnale PC-LOAD, che abilita il caricamento del contenuto del bus sul PC (e dunque i salti). E' sufficiente caricare un nuovo valore nel PC perché questo diventi il nuovo indirizzo a partire dal quale saranno caricate ed eseguite (fetch/execute) le successive istruzioni del programma caricato nella memoria del computer.  
 
-Come avviene la selezione di quale flag portare all'uscita Z del '151? I segnali IR-Q5 (S0), IR-Q6 (S1) ed IR-Q7 (S2) provenienti dall'IR selezionano  quale tra gli input del '151 (I0-I7) si debba portare sull'output Z, come anticipato precedentemente nella *Tabella funzioni Selector/Multiplexer 74LS151*: IR-Q5, Q6 e Q7 sono infatti *hardwired* con l'IR: le istruzioni di branch, ognuna con la sua codifica specifica, determinano quale ingresso Ix de '151 sarà attivato ed esposto in output; a seconda dello stato del flag, PC-LOAD sarà eventualmente attivo e l'istruzione di salto relativo potrà essere eseguita.
+Come avviene la selezione di quale flag portare all'uscita Z del '151? I segnali IR-Q5 (S0), IR-Q6 (S1) ed IR-Q7 (S2) provenienti dall'IR selezionano  quale tra gli input del '151 (I0-I7) si debba portare sull'output Z, come anticipato precedentemente nella *Tabella funzioni Selector/Multiplexer 74LS151*: IR-Q5, Q6 e Q7 sono infatti *hardwired* con l'IR: le istruzioni di branch, ognuna con la sua codifica specifica, determinano quale ingresso Ix del '151 sarà attivato ed esposto in output; a seconda dello stato del flag, PC-LOAD sarà eventualmente attivo e l'istruzione di salto relativo potrà essere eseguita.
 
 Prendiamo come esempio l'istruzione BCS (Branch on Carry Set) ipotizzando che il Carry sia attivo:
 
@@ -104,23 +104,23 @@ Prendiamo come esempio l'istruzione BCS (Branch on Carry Set) ipotizzando che il
   - S1 = LO
   - S2 = LO
 
-- poiché il Carry è attivo, l'output della NOR connessa all'uscita Z è certamente LO (PC-LOAD = NOT (1+x) = 0) e dunque il valore presente nel bus viene caricato nel PC (il segnale PC-LOAD è attivo LO).
+- poiché il Carry è attivo, l'output della NOR connessa all'uscita Z è certamente LO (PC-LOAD = NOT (1+x) = 0), pertanto il valore presente nel bus viene caricato nel PC (il segnale PC-LOAD è attivo LO).
 
-Un aspetto che inizialmente sfuggiva alla mia comprensione era come poter includere le istruzioni di branch (8 combinazioni = 3 bit), le istruzioni dell'ALU (5 bit) e tutte le altre istruzioni (ad esempio caricamento, trasferimento) in soli 8 bit? Come era possibile gestire tutte le combinazioni e costruire una matrice di istruzioni? Nel momento un cui eseguivo una qualsiasi altra istruzione, cosa sarebbe successo nella gestione dei salti relativi, visto che erano direttamente funzione della codifica dell'istruzione correntemente in esecuzione? Non rischiavo di eseguire un salto condizionale non voluto se mi fossi trovato in una situazione in cui (coe descritto poco fa) IR-Q5, Q6 e Q7 fossero LO e il Carry fosse attivo?
+Un aspetto che inizialmente sfuggiva alla mia comprensione era come poter includere le istruzioni di branch (8 combinazioni = 3 bit), le istruzioni dell'ALU (5 bit) e tutte le altre istruzioni (ad esempio caricamento, trasferimento) in soli 8 bit? Come era possibile gestire tutte le combinazioni e costruire una matrice di istruzioni? Nel momento un cui eseguivo una qualsiasi altra istruzione, cosa sarebbe successo nella gestione dei salti relativi, visto che erano direttamente funzione della codifica dell'istruzione correntemente in esecuzione? Non rischiavo di eseguire un salto condizionale non voluto se mi fossi trovato in una situazione in cui (come descritto poco sopra) IR-Q5, Q6 e Q7 fossero LO e il Carry fosse attivo?
 
-In seguito ho notato che nel '151 addetto alla selezione dei flag c'è un segnale di controllo JE, che viene attivato solo dalle istruzioni di salto condizionale, pertanto:
+In seguito avevo notato che nel '151 addetto alla selezione dei flag c'è un segnale di controllo JE, che viene attivato solo dalle istruzioni di salto condizionale, pertanto:
 
-- se JE è HI e se l'output del FF selezionato sono attivi, l'uscita del '151  sarà essa stessa attiva, permettendo il caricamento del Program Counter;
+- se JE è HI **e** se l'output del FF selezionato è HI, l'uscita del '151 sarà essa stessa HI, permettendo il caricamento del Program Counter;
 
-- se JE è LO, l'uscita del '151 è disattivata, pertanto nessun segnale di caricamento viene inviato al Program Counter.
+- se JE è LO, l'uscita del '151 sarà disattivata, pertanto nessun segnale di caricamento verrà inviato al Program Counter.
 
 Dunque le istruzioni - e solo quelle - il cui microcode comprendeva il segnale JE erano considerate istruzioni di salto condizionale; tutte le altre ignoravano il salto, in quanto il segnale PC-LOAD non sarebbe mai stato attivato.
 
 Tom evidenziava che "*questo metodo semplifica il microcode, perché tutte le operazioni di salto utilizzeranno lo stesso microcode*".
 
-Perché tutte le istruzioni di salto dovrebbero essere "uguali"? La spiegazione, semplice solo dopo averla ben compresa, sta nel fatto che la scelta del flag da utilizzare per il salto condizionale non dipende dal microcode dell'istruzione, ma dalla codifica dell'istruzione: essendo *hardwired* con l'IR, i segnali IR-Q5, Q6 e Q7 vengono automaticamente applicati agli ingressi Select del '151 ed è nella realizzazione del set di istruzioni che si deve tenere conto di quale codifica associare alle varie istruzioni BCS, BCC, BNE, BPL eccetera; nessuna variazione è richiesta nel microcode.
+Perché tutte le istruzioni di salto dovrebbero essere "uguali"? La spiegazione, semplice solo dopo averla ben compresa, sta nel fatto che la scelta del flag da utilizzare per il salto condizionale non dipende dal microcode dell'istruzione, ma dalla codifica dell'istruzione stessa: essendo *hardwired* con l'IR, i segnali IR-Q5, Q6 e Q7 vengono automaticamente applicati agli ingressi Select del '151; è nella realizzazione del set di istruzioni che si deve tenere conto di quale codifica associare alle varie istruzioni BCS, BCC, BNE, BPL eccetera. Nessuna variazione è richiesta nel microcode.
 
-Prendiamo come ulteriore esempio l'istruzione BVC (Branch on OVerflow Clear) ipotizzando che non ci sia Overflow e che dunque il segnale /Q sia attivo: Carry sia attivo:
+Prendiamo come ulteriore esempio l'istruzione BVC (Branch on OVerflow Clear) ipotizzando che non ci sia Overflow e che dunque il segnale /Q sia attivo:
 
 [![Esempio istruzione Branch on OVerflow Clear](../../assets/flags/30-flag-bvc.png "Esempio istruzione Branch on OVerflow Clear"){:width="50%"}](../../assets/flags/30-flag-bvc.png)
 
