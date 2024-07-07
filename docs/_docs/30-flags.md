@@ -3,6 +3,9 @@ title: "Flag"
 permalink: /docs/flags/
 excerpt: "Costruzione del registro dei flag del BEAM computer"
 ---
+
+# VERIFICARE LA PAROLA FLAG ANCHE IN ALU E RAM COME è SCRITTA
+
 [![Registro dei Flag del BEAM](../../assets/flags/30-flag-beam.png "Registro dei Flag del BEAM"){:width="100%"}](../../assets/flags/30-flag-beam.png)
 
 Bisogna dire che più volte, leggendo la documentazione di Tom Nisbet, ho trovato delle idee molto clever; alcune di queste si trovano nel modulo dei Flag. Cercherò di riportare anche alcune fonti utilizzate da Tom indicandone i collegamenti alla fine della pagina.
@@ -18,9 +21,9 @@ Il registro dei Flag dell'NQSAP emula i 4 flag **NVZC** del 6502:
 - **Z**ero (Z)
 - **C**arry (C)
 
-E' completamente differente dal semplice registro dei Flag del computer SAP di Tom Nisbet, nel quale un unico Flip-Flop [74LS173](https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf) memorizzava i soli 2 flag C e Z nello stesso momento: la gestione delle istruzioni necessitava di 4 set di microcode, cioè uno per ogni combinazione dei segnali di Flag portati agli ingressi delle EEPROM; ogni set di microcode era personalizzato per attivare in output i corretti segnali per la gestione di C e/o Z. Questo è ben spiegato nel video di Ben [Conditional jump instructions](https://www.youtube.com/watch?v=Zg1NdPKoosU).
+E' completamente differente dal semplice registro dei Flag del computer SAP di Ben Eater, nel quale un unico Flip-Flop [74LS173](https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf) memorizzava i soli 2 flag C e Z nello stesso momento: la gestione delle istruzioni necessitava di 4 set di microcode, cioè uno per ogni combinazione dei segnali di Flag portati agli ingressi delle EEPROM; ogni set di microcode era infatti sviluppato su misura per attivare in output i corretti segnali per la gestione di C e/o Z. Questo è ben spiegato nel video di Ben Eater [Conditional jump instructions](https://www.youtube.com/watch?v=Zg1NdPKoosU).
 
-Nella realizzazione di Tom il microcode delle istruzioni non varia a seconda dello stato dei flag, che non sono più direttamente connessi agli indirizzi delle ROM che poi attivano diversi segnali di output in base all'indirizzo/flag presentato in ingresso!
+Nell'approccio di Tom il microcode delle istruzioni non varia a seconda dello stato dei flag, che non sono più direttamente connessi agli indirizzi delle ROM che poi attivano diversi segnali di output in base all'indirizzo/flag presentato in ingresso!
 
 Prendiamo in analisi un'istruzione di salto condizionale legata al flag Z:
 
