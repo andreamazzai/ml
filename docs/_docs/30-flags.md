@@ -59,26 +59,26 @@ Detto in altre parole: la logica del salto condizionale del SAP era implementata
 
 Un multiplexer (MUX) [74LS157](https://www.ti.com/lit/ds/symlink/sn74ls157.pdf) prende in input i valori dei flag VZC selezionandone la provenienza:
 
-1. dal bus; quando il '157 legge dal bus, posè possibile caricare i registri dei flag leggendo valori arbitrari dalla memoria del computer (similarmente al funzionamento dell'istruzione Pull Processor Status **PLP** del 6502; inoltre, come nell'architettura del 6502, una parte della memoria del computer è dedicata allo **Stack**);
+1. dal bus; quando il '157 legge dal bus, è possibile caricare i registri dei flag leggendo valori arbitrari dalla memoria del computer (similarmente al funzionamento dell'istruzione Pull Processor Status **PLP** del 6502; inoltre, come nell'architettura del 6502, una parte della memoria del computer è dedicata allo **Stack**);
 
 2. computandoli opportunamente:
     - C attraverso un Data Selector / Multiplexer '151 che permette di selezionare la sorgente del Carry;
     - Z come risultato del comparatore [74LS688](https://www.ti.com/lit/ds/symlink/sn74ls688.pdf);
     - V attraverso un altro '151 che permette di ricreare la funzione logica dell'Overflow verificando un eventuale cambio di segno nel risultato delle operazioni di somma o sottrazione con segno; **questo aspetto verrà ulteriormente evidenziato** nella sezione apposita dedicato alla comprensione dell'Overflow.
 
-Il flag **N**egative viene letto direttamente dalla linea D7 del bus e caricato sul relativo FF; si utilizza la linea D7 in quanto i numeri Signed utilizzano l'MSB per indicare il proprio segno.
+Il flag **N**egative viene letto direttamente dalla linea D7 del bus e caricato sul relativo FF; si utilizza la linea D7 in quanto i numeri Signed utilizzano proprio l'MSB per indicare il proprio segno.
 
 Gli altri 3 flag escono dal MUX '157 e sono presentati ad altrettanti Flip-Flop [74LS74](https://www.ti.com/lit/ds/symlink/sn54ls74a.pdf).
 
-- Una porta AND permette il caricamento dei FF con la presenza del segnale di clock e la contemporanea attivazione degli opportuni segnali F**N**, **FV**, **FZ** ed **FC** provenienti dalla CL (il caricamento dei registri viene sempre effettuato durante il Rising Edge del Clock). Ogni istruzione, grazie alla personalizzazione del microcode, può settare anche più di un flag alla volta (come accade ad esempio per l'operazione ADC, che sul 6502 influisce contemporaneamente su tutti i 4 flag **NVZC**).
+- Una porta AND permette il caricamento dei FF in presenza del segnale di clock e con la contemporanea attivazione degli opportuni segnali F**N**, F**V**, F**Z** ed F**C** provenienti dalla CL (il caricamento dei registri viene sempre effettuato durante il Rising Edge del Clock). Ogni istruzione, grazie alla personalizzazione del microcode, può settare anche più di un flag alla volta (come accade ad esempio per l'operazione ADC, che sul 6502 influisce contemporaneamente su tutti i 4 flag **NVZC**).
 
 - Si noti che i FF non vengono mai pre-settati, pertanto /Preset resta fisso a Vcc (e dunque mai attivo), mentre presentano invece una connessione al segnale di reset generale del sistema (/RST).
 
 - Le uscite dei FF sono connesse a un '151 per poter gestire, come si vedrà in seguito in questa pagina, i salti condizionali.
 
-- Il flag C viene esportato anche verso i 74LS181 e il registro H del modulo ALU.
+- Il flag C viene esportato anche verso i 74LS181 e il registro H del modulo ALU. **Ulteriori dettagli a seguire**.
 
-Un transceiver 74LS245 permette infine di esportare i 4 flag NVZC sul bus per salvarli in memoria, o più precisamente nello Stack Pointer, similarmente a quanto accade nel 6502 con l'istruzione Push Processor Status (PHP).
+Un transceiver 74LS245 permette infine di esportare i 4 flag NVZC sul bus per salvarli in memoria, o più precisamente nello Stack, similarmente a quanto accade nel 6502 con l'istruzione Push Processor Status (PHP).
 
 Interessante notare che le istruzioni CLC, CLV e SEC non hanno bisogno di segnali dedicati della CL per settare od azzerare i flag C e V: si utilizza la ALU per mettere 0 o 1 sul bus e si modifica il solo flag di interesse attivando opportunamente il segnale di controllo FC o FV.
 
@@ -86,7 +86,9 @@ Interessante notare che le istruzioni CLC, CLV e SEC non hanno bisogno di segnal
 
 Nel computer SAP di Ben Eater, al cambio di un flag corrispondeva una variazione degli indirizzi delle EEPROM, così da poter presentare una logica opportunamente diversa in uscita in conseguenza delle diverse combinazioni degli stati dei flag. *Così facendo, ad ogni flag corrispondevano dunque  delle linee di indirizzamento "rubate" alle ROM.*
 
-L'approccio dell'NQSAP è molto diverso, in quanto tutti i segnali dei flag (presenti sulle uscite Q e /Q dei FF '74) vengono presentati al '151; la funzione del '151 è di selezionare solo uno dei flag da mettere sulla sua uscita per eventualmente attivare il segnale di caricamento PC-LOAD sul PC: i segnali di selezione IR-Q5, IR-Q6 ed IR-Q7 provenienti dall'IR selezionano infatti quale tra gli input del '151 I0-I7 si debba portare sull'output Z, come anticipato precedentemente nella *Tabella funzioni Selector/Multiplexer 74LS151*.
+L'approccio dell'NQSAP è molto diverso, in quanto tutti i segnali dei flag (presenti sulle uscite Q e /Q dei FF '74) vengono presentati al '151; la sua funzione è di selezionare uno dei flag da mettere sulla sua uscita per eventualmente permettere l'attivazione del segnale PC-LOAD: il segnale PC-LOAD abilita il caricamento del contenuto del bus sul PC ed è utilizzato per gestire i salti; è sufficiente infatti caricare un nuovo valore nel PC perché questo diventi il nuovo indirizzo a partire dal quale saranno caricate ed eseguite (fetch/execute) le successive istruzioni del programma caricato nel computer.  
+
+ i segnali di selezione IR-Q5 (S0), IR-Q6 (S1) ed IR-Q7 (S2) provenienti dall'IR selezionano infatti quale tra gli input del '151 (I0-I7) si debba portare sull'output Z, come anticipato precedentemente nella *Tabella funzioni Selector/Multiplexer 74LS151*.
 
 - IR-Q5, IR-Q6 ed IR-Q7 sono infatti *hardwired* con l'IR: le istruzioni di branch, ognuna con la loro codifica specifica, determinano quale ingresso Ix de '151 sarà attivato ed esposto in output; a seconda dello stato del flag, l'output attiverà o no il segnale PC-LOAD.
 
