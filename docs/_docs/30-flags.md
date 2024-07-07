@@ -4,7 +4,7 @@ permalink: /docs/flags/
 excerpt: "Costruzione del registro dei flag del BEAM computer"
 ---
 
-# Tassonomia: Flag per parlare di registro o modulo, flag per parlare del singolo flag
+## Tassonomia: Flag per parlare di registro o modulo, flag per parlare del singolo flag
 
 [![Registro dei Flag del BEAM](../../assets/flags/30-flag-beam.png "Registro dei Flag del BEAM"){:width="100%"}](../../assets/flags/30-flag-beam.png)
 
@@ -46,25 +46,25 @@ Analizziamo ad esempio un'istruzione di salto condizionale legata al flag Z:
 
 **si vedrà in seguito che** questo è uguale per tutte le istruzioni
 
-Detto in altre parole: la logica del salto condizionale del SAP era implementata nel microcode, utilizzando linee di indirizzamento delle ROM. Poiché i flag dell'NQSAP sono invece implementati in hardware, non c'è bisogno di consumare preziose linee di indirizzamento delle EEPROM. I miglioramenti derivanti sono:
+Detto in altre parole: la logica del salto condizionale del SAP era implementata nel microcode, utilizzando linee di indirizzamento delle ROM. Poiché i flag dell'NQSAP sono invece implementati in hardware, non c'è bisogno di consumare preziose linee di indirizzamento delle EEPROM. I miglioramenti derivanti da questa architettura sono:
 
 - possibilità di settare i flag anche singolarmente;
-- risparmio delle linee di indirizzamento delle EEPROM;
+- risparmio di linee di indirizzamento delle EEPROM;
 - l'output delle EEPROM non si modifica durante l'esecuzione della singola istruzione (**ma nel SAP-1 come si comportava? 04/10/2022 l'ho compreso andando a rileggere gli appunti** del BE 8 bit computer). Teoricamente, e l'avevo letto anche altrove, questo potrebbe essere un problema perché causa "glitching".
 
 ## Componenti e funzionamento
 
 - Un multiplexer (MUX) [74LS157](https://www.ti.com/lit/ds/symlink/sn74ls157.pdf) prende in input i valori dei 4 flag NVZC selezionandone la provenienza:
 
-  1. dal bus (tranne il flag **N**egative, che viene sempre preso direttamente dalla linea D7 del bus, in quanto i numeri negativi Signed presentano il bit più significativo a 1); quando il '157 legge dal bus, possiamo caricare i registri dei flag leggendo valori arbitrari dalla memoria del computer (similarmente al funzionamento l'istruzione Pull Processor Status PLP del 6502; inoltre, come nell'architettura 6502, una parte della memoria del computer è dedicata allo **Stack**)
+  1. dal bus (tranne il flag **N**egative, che viene sempre preso direttamente dalla linea D7 del bus (D7 in quanto i numeri negativi Signed presentano il bit più significativo a 1); quando il '157 legge dal bus, possiamo caricare i registri dei flag leggendo valori arbitrari dalla memoria del computer (similarmente al funzionamento dell'istruzione Pull Processor Status **PLP** del 6502; inoltre, come nell'architettura del 6502, una parte della memoria del computer è dedicata allo **Stack**);
   2. computandoli opportunamente (ancora una volta, tranne N):
       - C attraverso un Data Selector / Multiplexer '151 che permette di selezionare la sorgente del Carry;
       - Z come risultato del comparatore [74LS688](https://www.ti.com/lit/ds/symlink/sn74ls688.pdf);
-      - V attraverso un Data Selector / Multiplexer '151 che permette di ricreare la funzione logica dell'overflow in caso di cambio di segno nel risultato di una operazione di somma o sottrazione; **questo aspetto verrà ulteriormente evidenziato** nella sezione apposita dedicato alla comprensione del flag Overflow.
+      - V attraverso un altro '151 che permette di ricreare la funzione logica dell'overflow de terminando un eventuale cambio di segno nel risultato di una operazione di somma o sottrazione; **questo aspetto verrà ulteriormente evidenziato** nella sezione apposita dedicato alla comprensione dell'Overflow.
 
 - Le 4 uscite del MUX '157 sono presentate a 4 Flip-flop [74LS74](https://www.ti.com/lit/ds/symlink/sn54ls74a.pdf).
 
-- I flag sono attivati grazie a segnali della Control Logic (CL) fatti transitare su porte AND per poter effettuare il caricamento dei registri al Rising Edge del clock. Ogni istruzione, grazie alla personalizzazione del microcode, può settare anche più di un flag alla volta (come accade ad esempio per l'operazione ADC, che sul 6502 influisce contemporaneamente su tutti i 4 flag **NVZC**). Si noti che i FF non vengono mai pre-settati, pertanto /Preset resta fisso a Vcc (e dunque mai attivo), mentre presentano invece una connessione al segnale di reset generale del sistema (/RST).
+- Una porta AND permette il caricamento dei FF con la presenza del segnale di clock e l'attivazione degli opportuni segnali FN, FV, FZ ed FC provenienti dalla CL (il caricamento dei registri viene sempre effettuato durante il Rising Edge del Clock). Ogni istruzione, grazie alla personalizzazione del microcode, può settare anche più di un flag alla volta (come accade ad esempio per l'operazione ADC, che sul 6502 influisce contemporaneamente su tutti i 4 flag **NVZC**). Si noti che i FF non vengono mai pre-settati, pertanto /Preset resta fisso a Vcc (e dunque mai attivo), mentre presentano invece una connessione al segnale di reset generale del sistema (/RST).
 
 - Le uscite dei registri dei flag sono connesse a un '151 per poter gestire, come si vedrà in seguito in questa pagina, i salti condizionali.
 
