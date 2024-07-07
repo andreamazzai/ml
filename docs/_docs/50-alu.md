@@ -119,6 +119,7 @@ Provando a sintetizzare quando disegnato nell'NQSAP, avevo costruito questa tabe
 Legenda tabella *Sintesi operazioni dell'ALU dell'NQSAP*:
 
 - \* Avevo evidenziato queste righe per ricordare che su queste tre istruzioni si doveva "iniettare" un Carry artificiale (che è invertito, dunque il segnale effettivamente applicato sul Carry In del primo '181 doveva essere LO).
+
 - \*\* = Le istruzioni che modificano lo stato dei flag sono molte: aritmetiche, logiche, incremento/decremento, rotazione, stack, flag, caricamento/trasferimento registri e *comparazione*. Queste ultime (CMP, CPX e CPY) hanno effetto solo sui flag N, Z e C, che vengono computati effettuando una sottrazione (SBC nella terminologia del 6502) fittizia tra due valori, scartandone il risultato e tenendo in considerazione solo i flag risultanti dalla sottrazione (non avevo mai realmente approfondito come i flag fossero generati e questo esercizio è stato fondamentale). Funzionamento di e differenze tra sottrazioni e comparazioni sono dunque piuttosto semplici da comprendere:
 
   - nelle sottrazioni il valore risultante dalla sottrazione viene calcolato e *mantenuto*;
@@ -128,6 +129,7 @@ Legenda tabella *Sintesi operazioni dell'ALU dell'NQSAP*:
   Per eseguire le comparazioni si eseguono dunque delle sottrazioni scartando il risultato, tuttavia le operazioni di sottrazione del '181 sono già utilizzate per eseguire le sottrazioni vere e proprie (SBC) e sono codificate nella terza riga della tabella con M/S3-S0 = **00110**: come è possibile eseguire altre operazioni di sottrazione utilizzando un opcode diverso da **00110** pur sapendo che i '181 eseguono le sottrazioni solo con questa codifica in ingresso? Approfondimenti a seguire in questa stessa pagina.
 
 - \*\*\* L'operazione A+A veniva usata nell'NQSAP per fare lo shift verso sinistra dei bit; vista la presenza dello Shift Register H, ho preferito riversare su di esso tutte le operazioni di rotazione (a destra e a sinistra, sia con Carry sia senza Carry).
+
 - \*\*\*\* Il Carry è ininfluente in quanto si tratta di funzione logica e non di operazione aritmetica.
 
 ### Un esempio pratico
@@ -215,11 +217,17 @@ In altre parole, il microcode delle istruzioni di comparazione (che nella mnemon
 Detto in altre parole ancora:
 
 - Le istruzioni di comparazione del 6502 sono eseguite simulando una sottrazione.
+
 - L'operazione di sottrazione è codificata nel '181 come M/S3-S0 = **00110** (e non è modificabile).
+
 - Come è possibile gestire sia le sottrazioni reali sia le comparazioni, considerando che entrambe necessitano di mettere in input sui '181 la stessa codifica **01110**, la quale deve però essere assegnata sia alle istruzioni di sottrazione sia a quelle di comparazione, che devono in realtà avere opcode diversi - e dunque anche codifiche diverse?
+
 - Si identifica un opcode arbitrario per le operazioni di comparazione utilizzandone uno che è assegnato a un'operazione inutilizzata , ad esempio **A And Not B**, che ha come codice M/S3-S0 = **00111**.
+
 - La differenza tra l'operazione A Minus B e l'operazione A And Not B sta nell'ultimo bit: la prima si attiva con M/S3-S0 = 0011**0**, la seconda con M/S3-S0 = 0011**1**.
+
 - Quando l'IR carica una istruzione 00111 di comparazione, metterà tale codifica in output verso le ROM e verso l'ALU, ma l'ultimo bit di tale codifica raggiungerà l'ALU solo dopo aver attraversato la NOR.
+
 - Una delle EEPROM ospitanti il microcode, quando troverà in ingresso xxx00111, attiverà il segnale LF sul pin 8 della NOR: la NOR invertirà l'ultimo bit 0011**1** e i '181 troveranno in realtà in ingresso 0011**0**, configurandosi dunque in Subtract Mode ed effettuando la sottrazione.
 
 ### Sottrazioni, comparazioni e indirizzamenti
@@ -263,7 +271,6 @@ Supponiamo di fare un'operazione **A Plus B** con due ALU. Si deve inviare in in
 Per eseguire invece una sottrazione **A minus B** dobbiamo attivare preventivamente il Carry, cioè settare /Cn = LO.
 
 - Se il primo '181 non genera un prestito ("borrow"), il /Cn+4 sarà allo stato logico LO, che sarà propagato al /Cn del secondo '181 e che eseguirà dunque l'operazione **A Minus B**.
-
 - Se invece il primo '181 genera un borrow, il /Cn+4 sarà allo stato logico HI, che sarà propagato al /Cn del secondo '181 e che eseguirà l'operazione **A Minus B - 1**: il '181 inferiore va sostanzialmente a prendere un prestito dal '181 superiore.
 
 Possiamo dire che il Carry In del '181 inferiore è utilizzato, insieme ai bit M/S3-S0, per selezionare l'operazione che il modulo ALU dovrà eseguire.
@@ -284,7 +291,6 @@ Per quale motivo la verifica suddetta non è valida in caso di istruzioni di inc
 - Eseguendo un'operazione **A + 1** (si vedano i segnali da applicare al '181 *Sintesi operazioni dell'ALU dell'NQSAP*) si possono verificare due casi - facciamo due esempi:
 
   - A = 0000.0101 che, incrementato di un valore 1, diventa 0000.0110; l'incremento avviene iniettando un segnale LO sul Carry In (/Cn) del primo '181; il suo Carry Out (/Cn+4) è HI, cioè non attivo; il risultato dell'operazione svolta dal secondo '181 non comporta un Carry, pertanto il suo Carry Out (/Cn+4) è ancora HI.
-
   - A = 0000.1111 che, incrementato di un valore 1, diventa 0001.0000; l'incremento avviene iniettando un segnale LO sul Carry In (/Cn) del primo '181; il suo Carry in uscita (/Cn+4) è LO, cioè attivo; il risultato dell'operazione svolta dal secondo '181 non comporta un Carry, pertanto il suo Carry Out (/Cn+4) è HI.
 
 - Nel primo caso entrambi i /Cn+4 sono LO e dunque una XOR con gli ingressi connessi a tali uscite non segnalerebbe uno stato di Overflow, correttamente.
@@ -303,7 +309,7 @@ Come si può vedere dallo schema del modulo ALU del computer BEAM, questo è qua
 
 Ecco una lista delle differenze:
 
-- Per il registro B ho utilizzato un [74LS377](https://www.ti.com/lit/ds/symlink/sn54ls377.pdf) al posto del [74LS574](https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf). A differenza del '574, il '377 è dotato di ingresso Enable, che solo quando attivo permette il caricamento del registro in corrispondenza del Rising Edge del clock: così facendo si elimina la necessità di un gate in ingresso sul clock per realizzare un Enable artificiale, come descritto nella sezione [L'ALU dell'NQSAP](#lalu-dellnqsap).
+- Per il registro B ho utilizzato un Flip-Flop tipo D [74LS377](https://www.ti.com/lit/ds/symlink/sn54ls377.pdf) al posto del [74LS574](https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf). A differenza del '574, il '377 è dotato di ingresso Enable, che solo quando attivo permette il caricamento del registro in corrispondenza del Rising Edge del clock: così facendo si elimina la necessità di un gate in ingresso sul clock per realizzare un Enable artificiale, come descritto nella sezione [L'ALU dell'NQSAP](#lalu-dellnqsap).
 
 ![Schema di uno degli 8 Flip-Flop del 74LS377](../../assets/alu/50-alu-377.png "Schema di uno degli 8 Flip-Flop del 74LS377"){:width="66%"}
 
