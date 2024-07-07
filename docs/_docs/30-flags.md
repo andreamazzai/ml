@@ -68,13 +68,13 @@ Il flag **N**egative viene letto direttamente dalla linea D7 del bus e caricato 
 
 Gli altri 3 flag escono dal MUX '157 e sono presentati ad altrettanti Flip-Flop.
 
-- Una porta AND permette il caricamento dei FF in presenza del segnale di clock e con la contemporanea attivazione degli opportuni segnali F**N**, F**V**, F**Z** ed F**C** provenienti dalla CL (il caricamento dei registri viene sempre effettuato durante il Rising Edge del Clock). Ogni istruzione, grazie alla personalizzazione del microcode, può settare anche più di un flag alla volta (come accade ad esempio per l'operazione ADC, che sul 6502 influisce contemporaneamente su tutti i 4 flag **NVZC**).
+- Quattro porte AND permettono il caricamento dei FF in presenza del segnale di clock e con la contemporanea attivazione degli opportuni segnali F**N**, F**V**, F**Z** ed F**C** provenienti dalla CL (il caricamento dei registri viene sempre effettuato durante il Rising Edge del Clock). Ogni istruzione, grazie alla personalizzazione del microcode, può settare anche più di un flag alla volta (come accade ad esempio per l'operazione ADC, che sul 6502 influisce contemporaneamente su tutti i 4 flag **NVZC**).
 
-[Caricamento dei Flip-Flop C e Z con segnali Clock AND FC / FZ](../../assets/flags/30-flag-ff-cz.png){:width="50%"}
+![Caricamento dei Flip-Flop C e Z con segnali Clock AND FC / FZ](../../assets/flags/30-flag-ff-cz.png){:width="50%"}
 
 *Caricamento dei Flip-Flop C e Z con segnali Clock AND FC / FZ.*
 
-- Si noti che i FF non vengono mai pre-settati, pertanto /Preset resta fisso a Vcc (e dunque mai attivo), mentre presentano invece una connessione al segnale di reset generale del sistema (/RST).
+- Si noti che i FF non vengono mai pre-settati, pertanto /Preset resta fisso a Vcc (e dunque mai attivo), mentre presentano invece una connessione al segnale di reset generale del computer (/RST).
 
 - Le uscite dei FF sono connesse a un '151 per poter gestire, come si vedrà in seguito in questa pagina, i salti condizionali.
 
