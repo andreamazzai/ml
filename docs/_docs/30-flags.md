@@ -30,9 +30,9 @@ Prendiamo in analisi un'istruzione di salto condizionale legata al flag Z:
 - il microcode dell'istruzione attiverà un segnale "JUMP" in output sulle EEPROM andando ad attivare (vedi segnale /E) il Selector/Multiplexer [74LS151](https://www.ti.com/lit/ds/symlink/sn54s151.pdf) visibile in basso a destra nello schema;
 - importantissimo comprendere che la selezione del flag da mettere in uscita dipende dalla codifica dell'istruzione in esecuzione, poiché i 3 bit Select S2, S1 ed S0 del '151 sono direttamente collegati all'Instruction Register, cioè *hardwired* in maniera similare a quanto succede per la ALU;
 
-![Selector/Multiplexer 74LS151(../../assets/flags/30-flag-151-table.png]("Schema logico del modulo Flag di Tom Nisbet"){:width="50%"}
+ ![Selector/Multiplexer 74LS151](../../assets/flags/0-flag-151-table.png){:width="50%"}
 
-*Selector/Multiplexer 74LS151.*
+*Tabella stati Selector/Multiplexer 74LS151.*
 
 - se per esempio l'istruzione *Jump on Zero* è codificata come 010 sui 3 segnali S2, S1 ed S0 comuni tra IR e registro dei Flag, questa andrà ad attivare il pin I2 di ingresso del '151 che, se troverà 1 al suo ingresso (vale a dire che il Flip-Flop del flag Zero ha valore logico HI), andrà ad abilitare il segnale PC-LOAD sul Program Counter, attivando il caricamento del nuovo indirizzo operando dell'istruzione di salto.
 
