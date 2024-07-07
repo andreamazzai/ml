@@ -120,7 +120,7 @@ Tom evidenziava che "*questo metodo semplifica il microcode, perché tutte le op
 
 Perché tutte le istruzioni di salto dovrebbero essere "uguali"? La spiegazione, semplice solo dopo averla ben compresa, sta nel fatto che la scelta del flag da utilizzare per il salto condizionale non dipende dal microcode dell'istruzione, ma dalla codifica dell'istruzione stessa: essendo *hardwired* con l'IR, i segnali IR-Q5, Q6 e Q7 vengono automaticamente applicati agli ingressi Select del '151; è nella realizzazione del set di istruzioni che si deve tenere conto di quale codifica associare alle varie istruzioni BCS, BCC, BNE, BPL eccetera. Nessuna variazione è richiesta nel microcode.
 
-Prendiamo come ulteriore esempio l'istruzione BVC (Branch on OVerflow Clear) ipotizzando che non ci sia Overflow e che dunque il segnale /Q sia attivo:
+Prendiamo come ulteriore esempio l'istruzione BVC (Branch on OVerflow Clear) ipotizzando che non ci sia Overflow e che dunque il segnale /V sia attivo:
 
 [![Esempio istruzione Branch on OVerflow Clear](../../assets/flags/30-flag-bvc.png "Esempio istruzione Branch on OVerflow Clear"){:width="50%"}](../../assets/flags/30-flag-bvc.png)
 
@@ -132,7 +132,10 @@ Prendiamo come ulteriore esempio l'istruzione BVC (Branch on OVerflow Clear) ipo
   - S1 = LO
   - S2 = HI
 
-Tenendo ora in considerazione l'esistenza del segnale Jump Enable, evidenziato in giallo nello schema precedente, risulta chiaro che solo un'istruzione la cui codifica porti ad avere questi segnali agli ingressi di selezione del '151 **e** il cui microcode attivi il segnale JE, permetterà l'attivazione di PC-LOAD e l'esecuzione del salto condizionale.
+Tenendo ora in considerazione l'esistenza del segnale Jump Enable, evidenziato in giallo nello schema precedente, si evince che l'attivazione di PC-LOAD e l'esecuzione condizionale di un salto determinata dalla eventuale assenza di Overflow richiedono un'istruzione:
+
+1. la cui codifica porti ad avere S2/S1/S0 = 101 agli ingressi di selezione del '151, **e**
+2. il cui microcode attivi il segnale JE.
 
 A questo punto della spiegazione si sarà notato che i flag vengono registrati sia nel loro stato normale, sia in quello invertito, con lo scopo di poter facilmente determinare se quel determinato flag sia attivo o no; se ad esempio il Carry non fosse presente e si desiderasse eseguire un salto verificando la condizione "Carry non presente (Branch oOn Carry Clear, BCC)", sarebbe più semplice verificare se l'inverso del Carry fosse presente, così da attivare opportunamente il segnale di salto PC-LOAD.
 
