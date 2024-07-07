@@ -27,7 +27,7 @@ Nell'approccio di Tom il microcode delle istruzioni non varia a seconda dello st
 
 Analizziamo ad esempio un'istruzione di salto condizionale legata al flag Z:
 
-- il microcode dell'istruzione di salto attiva un segnale "Jump Enable" connesso al pin 7 del Selector/Multiplexer [74LS151](https://www.ti.com/lit/ds/symlink/sn54s151.pdf) visibile in basso a destra nello schema;
+- il microcode dell'istruzione di salto attiva un segnale "Jump Enable" connesso al pin 7 del Selector/Multiplexer [74LS151](https://www.ti.com/lit/ds/symlink/sn54s151.pdf) visibile in basso a destra nello schema generale;
 - importantissimo comprendere che la selezione del flag da mettere in uscita dipende dalla codifica dell'istruzione in esecuzione, poiché i 3 bit Select S2, S1 ed S0 del '151 sono direttamente collegati all'Instruction Register, cioè *hardwired* in maniera similare a quanto succede per la ALU;
 
  [![Output dell'IR verso il modulo Flag con evidenza dei 3 bit di selezione dell'istruzione di salto condizionale](../../assets/flags/30-flag-cl-ir-out.png "Output dell'Instruction Register verso il modulo Flag con evidenza dei 3 bit di selezione dell'istruzione di salto condizionale"){:width="50%"}](../../assets/flags/30-flag-cl-ir-out.png)
@@ -40,7 +40,7 @@ Analizziamo ad esempio un'istruzione di salto condizionale legata al flag Z:
 
 - se per esempio l'istruzione *Jump on Zero* è codificata come 010 sui 3 segnali S2, S1 ed S0 comuni tra IR e registro dei Flag, questa andrà ad attivare il pin I2 di ingresso del '151 che, se troverà 1 al suo ingresso (vale a dire che l'uscita Q del Flip-Flop del flag Zero ha valore logico HI), andrà ad abilitare il segnale PC-LOAD sul Program Counter, attivando il caricamento del nuovo indirizzo calcolato a partire dal valore dell'operando dell'istruzione di salto.
 
-![Selector/Multiplexer 74LS151](../../assets/flags/30-flag-151-table.png){:width="50%"}
+![Selector/Multiplexer 74LS151](../../assets/flags/30-flag-151-table.png){:width="33%"}
 
 *Tabella funzioni Selector/Multiplexer 74LS151.*
 
