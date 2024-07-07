@@ -30,17 +30,21 @@ Prendiamo in analisi un'istruzione di salto condizionale legata al flag Z:
 - il microcode dell'istruzione attiverà un segnale "JUMP" in output sulle EEPROM andando ad attivare (vedi segnale /E) il Selector/Multiplexer [74LS151](https://www.ti.com/lit/ds/symlink/sn54s151.pdf) visibile in basso a destra nello schema;
 - importantissimo comprendere che la selezione del flag da mettere in uscita dipende dalla codifica dell'istruzione in esecuzione, poiché i 3 bit Select S2, S1 ed S0 del '151 sono direttamente collegati all'Instruction Register, cioè *hardwired* in maniera similare a quanto succede per la ALU;
 
- ![Selector/Multiplexer 74LS151](../../assets/flags/0-flag-151-table.png){:width="50%"}
+ [![Output dell'Instruction Register verso il modulo Flag con evidenza dei 3 bit di selezione dell'istruzione di salto condizionale](../../assets/flags/30-flag-cl-ir-out.png)"Output dell'Instruction Register verso il modulo Flag con evidenza dei 3 bit di selezione dell'istruzione di salto condizionale"{:width="50%"}](../../assets/flags/30-flag-cl-ir-out.png)
 
-*Tabella stati Selector/Multiplexer 74LS151.*
+*Output dell'Instruction Register verso il modulo Flag con evidenza dei 3 bit di selezione dell'istruzione di salto condizionale.*
+
+[![Ingressi di selezione dell'istruzione di salto condizionale del registro dei Flag e connessione "hardwired" con l'IR](../../assets/flags/30-flag-select-in.png){:width="50%"}](../../assets/flags/30-flag-select-in.png)
+
+*Ingressi di selezione dell'istruzione di salto condizionale del registro dei Flag e connessione "hardwired" con l'IR.*
 
 - se per esempio l'istruzione *Jump on Zero* è codificata come 010 sui 3 segnali S2, S1 ed S0 comuni tra IR e registro dei Flag, questa andrà ad attivare il pin I2 di ingresso del '151 che, se troverà 1 al suo ingresso (vale a dire che il Flip-Flop del flag Zero ha valore logico HI), andrà ad abilitare il segnale PC-LOAD sul Program Counter, attivando il caricamento del nuovo indirizzo operando dell'istruzione di salto.
 
+![Selector/Multiplexer 74LS151](../../assets/flags/30-flag-151-table.png){:width="50%"}
+
+*Tabella stati Selector/Multiplexer 74LS151.*
+
 (si vedrà in seguito che questo è uguale per tutte le istruzioni) 
-
- ![Output dell'Instruction Register verso il modulo Flag con evidenza dei 3 bit di selezione dell'istruzione di salto condizionale](../../assets/flags/30-flag-cl-ir-out.png)
-
-*Output dell'Instruction Register verso il modulo Flag con evidenza dei 3 bit di selezione dell'istruzione di salto condizionale.*
 
 Detto in altre parole: la logica del salto condizionale del SAP era implementata nel microcode, utilizzando linee di indirizzamento delle ROM. Poiché i flag dell'NQSAP sono invece implementati in hardware, non c'è bisogno di consumare preziose linee di indirizzamento delle EEPROM. I miglioramenti derivanti sono:
 
@@ -48,9 +52,6 @@ Detto in altre parole: la logica del salto condizionale del SAP era implementata
 - risparmio delle linee di indirizzamento delle EEPROM;
 - l'output delle EEPROM non si modifica durante l'esecuzione della singola istruzione (ma nel SAP-1 come si comportava? 04/10/2022 l'ho compreso andando a rileggere gli appunti del BE 8 bit computer). Teoricamente, e l'avevo letto anche altrove, questo potrebbe essere un problema perché causa "glitching".
 
-![Ingressi di selezione dell'istruzione di salto condizionale del registro dei Flag e connessione "hardwired" con l'IR](../../assets/flags/30-flag-select-in.png)
-
-*Ingressi di selezione dell'istruzione di salto condizionale del registro dei Flag e connessione "hardwired" con l'IR.*
 
 ## FLAG e gestione
 
