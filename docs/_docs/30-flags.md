@@ -45,9 +45,9 @@ Analizziamo ad esempio un'istruzione di salto condizionale legata al flag Z:
 
 *Tabella funzioni Selector/Multiplexer 74LS151.*
 
-**si vedrà in seguito che** questo è uguale per tutte le istruzioni
+Detto in altre parole: la logica del salto condizionale del SAP era implementata nel microcode, utilizzando linee di indirizzamento delle ROM. Poiché i flag dell'NQSAP sono invece implementati in hardware, non c'è bisogno di consumare preziose linee di indirizzamento delle EEPROM (e di raddoppiare la dimensione del microcode ad ogni aggiunta di un flag). 
 
-Detto in altre parole: la logica del salto condizionale del SAP era implementata nel microcode, utilizzando linee di indirizzamento delle ROM. Poiché i flag dell'NQSAP sono invece implementati in hardware, non c'è bisogno di consumare preziose linee di indirizzamento delle EEPROM. I miglioramenti derivanti da questa architettura sono:
+I miglioramenti derivanti da questa architettura sono:
 
 - possibilità di settare i flag anche singolarmente;
 
