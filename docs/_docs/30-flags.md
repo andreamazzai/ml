@@ -134,10 +134,12 @@ Prendiamo come ulteriore esempio l'istruzione BVC (Branch on OVerflow Clear) ipo
 
 Tenendo ora in considerazione l'esistenza del segnale Jump Enable, evidenziato in giallo nello schema precedente, si evince che l'attivazione di PC-LOAD e l'esecuzione condizionale di un salto determinata dalla eventuale assenza di Overflow richiedono un'istruzione:
 
-1. la cui codifica porti ad avere S2/S1/S0 = 101 agli ingressi di selezione del '151, **e**
-2. il cui microcode attivi il segnale JE.
+- la cui codifica porti ad avere S2/S1/S0 = 101 agli ingressi di selezione del '151, **e**
+- il cui microcode attivi il segnale JE
 
-A questo punto della spiegazione si sarà notato che i flag vengono registrati sia nel loro stato normale, sia in quello invertito, con lo scopo di poter facilmente determinare se quel determinato flag sia attivo o no; se ad esempio il Carry non fosse presente e si desiderasse eseguire un salto verificando la condizione "Carry non presente (Branch oOn Carry Clear, BCC)", sarebbe più semplice verificare se l'inverso del Carry fosse presente, così da attivare opportunamente il segnale di salto PC-LOAD.
+A questo punto della spiegazione si sarà notato che i flag vengono registrati sia nel loro stato normale, sia in quello invertito, con lo scopo di poter facilmente determinare se quel determinato flag sia attivo o no; se ad esempio il Carry non fosse presente e si desiderasse eseguire un salto verificando la condizione "Carry non presente (Branch On Carry Clear, BCC)", sarebbe più semplice verificare se l'inverso del Carry fosse presente, così da attivare opportunamente il segnale di salto PC-LOAD.
+
+** DICIAMO CHE SONO ARRIVATO QUI**
 
 L'utilizzo di una NOR all'uscita Z del '151 permette di gestire sia i salti condizionali (dunque da validare con una apposita verifica logica, cioè quella dei flag) sia i salti incondizionati:
 
