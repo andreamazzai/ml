@@ -147,6 +147,10 @@ L'utilizzo di una NOR all'uscita Z del '151 permette di gestire sia i salti cond
 
 - In caso di salto incondizionato (JMP, JSR), il segnale proveniente dalla CL /WP (attivo LO) sarà LO ed attiverà il caricamento sul PC del valore presente sul bus: (/PC-LOAD = NOT (x+1) = 0), pertanto il valore presente nel bus viene caricato nel PC.
 
+![NOR per l'attivazione di /PC-LOAD con salti condizionali ed incondizionati](../../assets/flags/30-flag-je-wp.png){:width="50%"}
+
+*NOR per l'attivazione di /PC-LOAD con salti condizionali ed incondizionati.*
+
 In definitiva, il microcode delle istruzioni di salto condizionato e di salto incondizionato sono molto simili e differiscono per i segnali di controllo: JE per attivare il '151 di selezione del flag del quale verificare presenza / assenza, WP per caricare senza altri controlli un determinato indirizzo sul PC.
 
 Vi è un effetto non desiderato: "le istruzioni di salto condizionato non eseguite sprecano cicli di clock"… non si potrebbe semplicemente usare N per terminare anticipatamente l'istruzione? Lui sembra renderla un po' complicata
