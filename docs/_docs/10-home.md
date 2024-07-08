@@ -4,7 +4,7 @@ permalink: /
 excerpt: "Il mio breadboard computer TTL a 8 bit basato sulla realizzazione di Ben Eater e sui miglioramenti di Tom Nisbet"
 header:
 #   image: /assets/beam.jpg
-  overlay_image: /assets/beam.jpg
+  overlay_image: /assets/beam.png
   overlay_filter: 0.5
 ---
 
@@ -69,7 +69,7 @@ La fase costruttiva è iniziata a ottobre 2023 e si è conclusa nei primi giorni
 
 In queste pagine si trova la documentazione dettagliata dei moduli, corredata da una serie di note e appunti.
 
-[![BEAM Breadboard Computer](assets/beam.jpg "BEAM breadboard computer"){:width="50%"}](assets/beam.jpg)
+[![BEAM Breadboard Computer](assets/beam.png "BEAM breadboard computer"){:width="50%"}](assets/beam.png)
 
 Benefici:
 

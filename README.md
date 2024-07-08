@@ -21,7 +21,7 @@ Questo repository contiene:
 * Software per il programmatore di EEPROM basato su Arduino Nano
 * Software per il bootloader basato su Arduino Nano
 
-[![BEAM Breadboard Computer](/docs/assets/beam.jpg "BEAM breadboard computer")](docs/assets/beam.jpg)
+[![BEAM Breadboard Computer](/docs/assets/beam.png "BEAM breadboard computer")](docs/assets/beam.png)
 
 | Left side       |  8-bit bus |      Right side |
 |:---             |:----------:|             ---:|
