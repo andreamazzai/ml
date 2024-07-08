@@ -161,6 +161,7 @@ Vi è un effetto non desiderato: "le istruzioni di salto condizionato non esegui
 
 ![Comparatore 74LS688 per verifica dello stato zero del bus](../../assets/flags/30-flag-688.png){:width="50%"}
 
+*Comparatore 74LS688 per verifica dello stato zero del bus.*
 
 	        • The Overflow flag is calculated using a 74LS151 8-to-1 selector as described in "74181 with V_Flag" on 6502.org http://6502.org/users/dieter/v_flag/v_4.htm.
 	        • The MSB of the ALU operands in H and B, as well as the MSB of the ALU result, are used as inputs.
