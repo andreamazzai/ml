@@ -28,12 +28,12 @@
         url: /docs/ram/
       - title: "ALU"
         url: /docs/alu/
+      - title: "Flag"
+        url: /docs/flags/
       - title: "Control Logic"
         url: /docs/control/
       - title: "Program Counter"
         url: /docs/programcounter/
-      - title: "Flag"
-        url: /docs/flags/
       - title: "Registri DXY"
         url: /docs/dxy/
       - title: "Stack Pointer"
