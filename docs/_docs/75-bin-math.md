@@ -1,7 +1,7 @@
 ---
-title: "Flag"
-permalink: /docs/flags/
-excerpt: "Costruzione del registro dei flag del BEAM computer"
+title: "Aritmetica binaria"
+permalink: /docs/math/
+excerpt: "Aritmetica binaria"
 ---
 
 ## Tassonomia: Flag per parlare di registro o modulo, flag per parlare del singolo flag
@@ -160,7 +160,7 @@ Vi è un effetto non desiderato: "le istruzioni di salto condizionato non esegui
 
 **29/01/2023 leggendo bene dice che dovrebbe essere possibile fare in modo che la logica elettronica dell'istruzione Jump vada ad attivare N se il salto non deve esserci… da verificare**
 
-## Calcolo dei Flag N, V, Z e C
+## Calcolo dei Flag - Utilizzo del Carry da ALU e H
 
 ### Negative
 
@@ -176,100 +176,100 @@ Il flag **Z**ero si attiva se il valore presente nel bus è zero; invece di usar
 
 ### Overflow
 
-Il flag Overflow flag è calcolato utilizzando un '151 nella modalità descritta in ["74181 with V_Flag"](http://6502.org/users/dieter/v_flag/v_4.htm) sul sito 6502.org.
+- The Overflow flag is calculated using a 74LS151 8-to-1 selector as described in "74181 with V_Flag" on 6502.org http://6502.org/users/dieter/v_flag/v_4.htm.
+- The MSB of the ALU operands in H and B, as well as the MSB of the ALU result, are used as inputs.
+  - 30/10/2022 Dunque, come sto iniziando a capire un pochino, l'overflow è un calcolo molto semplice e preciso di bit… 
+- Two of the ALU operation select lines are used to differentiate between addition and subtraction. 06/01/2023 ho capito il riferimento:
+  - IR-Q1 HI e IR-Q3 LO = addizione
+  - IR-Q1 LO e IR-Q3 HI = sottrazione
+  - 20/06/2023 attenzione anche qui alla congruenza tra istruzioni e collegamenti
 
-Avevo trovato la spiegazione criptica, o forse non propriamente adatta ai profani, tanto da impiegare diverse decine di ore per comprendere a fondo quanto enunciato.
+  - 23/10/2022 oggi ho approfondito l'Overflow: se nella somma di due numeri signed noto un cambiamento di segno, allora ho un overflow
+  - però l'NQSAP non lavora in complemento di due, dunque attenzione a cosa diciamo… qui non mi sembra di poter applicare il caso precedente… 27/11/2022 e in effetti rileggendo la questione è che stiamo lavorando non in complemento di due, ma con numeri signed… 06/01/2023 rileggendo ulteriormente direi che non è proprio corretto. Il complemento di 2 è semplicemente il modo di rappresentare i numeri signed, dove MSB = LO indica numero positivo e MSB = HI indica numero negativo.
 
-Si evidenzia che gli MSB degli operandi dell'ALU H e B, insieme all'MSB risultante dall'operazione dell'ALU, sono utilizzati come input per verificare la condizione di overflow
+Overflow
 
-Iniziavo a realizzare che l'overflow è in realtà un calcolo molto semplice e preciso di bit.
+- Nel Flags Register ho un Carry Input che scrivo nel registro C e che può derivare da diverse  operazioni:
+  - per i calcoli matematici corrisponde al Carry Output dell'ALU '181.
+  - per le operazioni Shift, si tratta dell'LSB (pin H-Q0) o MSB (pin H-Q7) del registro H.
+    - Verificare se MSB = risultato di Shift Left o Right
+    - Un Multiplexer / Data Selector '151, a seconda dei suoi input C0 e C1, determina la sorgente del Carry:
+    - ALU (sia normale sia invertito), oppure
+      - MSB del registro H, oppure
+      - LSB del registro H.
 
-Si utilizzano due delle linee di selezione dell'operazione dell'ALU per identificare l'esecuzione di un'operazione di addizione o di sottrazione; in particolar modo:
-
-- IR-Q1 HI e IR-Q3 LO = addizione
-- IR-Q1 LO e IR-Q3 HI = sottrazione
-
-NOTA BENE verificare **la congruenza tra istruzioni e collegamenti**
-
-- In una delle innumerevoli sessioni di approfondimento e studio dell'overflow, ero arrivato a comprendere che se nella somma di due numeri con segno si nota un cambiamento di segno del risultato, si ha una situazione di overflow.
-
-Chiaramente questa discussione è legata al fatto che si sta lavorando con numeri con segno: questi numeri vengono rappresentati con il complemento di 2 e un MSB = LO indica numero positivo, mentre un MSB = HI indica numero negativo. 
-
-Ad esempio : in un byte sono possibili 256 combinazioni; se si ragiona senza segno , è possibile contare da zero a 255. se si ha ragione invece in un'ottica consegno, l'approfondimento nell'apposita sezione dell'aritmetica binario spiegherà come i numeri positivi da zero a 127 abbiano un riferimento paritetico con i numeri senza segno da 0 a 127, mentre i numeri con segno da -128 a -1 facciano il paio con i numeri senza segno da 128 a 255. aggiungere note con HEX.
-
-**vedere approfondimento** nella sezione apposita
-
-## Utilizzo del Carry con ALU ed H
-
-Come ormai noto, il registro dei Flag include un registro dedicato al flag C; il calcolo della presenza del Carry può derivare da diverse operazioni:
-
-- per i calcoli aritmetici corrisponde al Carry Output dell'ALU '181
-- per le operazioni di shift / rotazione, il Carry è tratto dall'LSB (pin H-Q0) o dal MSB (pin H-Q7) del registro H.
-
-L'utilizzo di un '151 rappresenta il sistema più efficiente per selezionare la sorgente del Carry a seconda dell'istruzione in esecuzione, il cui microcode attiverà i segnali C0 e C1:
-
-- C0 = 0 e C1 = 0: selezione del Carry Output dell'ALU **(sia normale sia invertito)**;
-- C0 = 1 e C1 = 0: selezione dell'MSB del registro H;
-- C0 = 0 e C1 = 1: selezione dell'LSB del registro H.
-
-Il valore in input del registro Carry Input dipende anche dall'istruzione che è stata eseguita: può arrivare da ALU o da H, CLC e SEC. Vedi tabella per l'uso del Carry nelle varie situazioni:
+- Il valore in input del registro Carry Input dipende anche dall'istruzione che è stata eseguita: può arrivare da ALU o da H, CLC e SEC. Vedi tabella per l'uso del Carry nelle varie situazioni:
 
 - Suppongo che il significato sia:
   - Se il registro sorgente dell'operazione è l'ALU
-    - per istruzioni somma/sottrazione passo il Carry esistente negato
-    - per istruzioni INC o DEC passo il Carry "normale"
-  - Se il registro sorgente dell'operazione è H (usato per le varie rotazioni) prendo MSB per rotazione a sinistra e LSB per rotazione a destra… ma questo non mi convince… 26/09/2022 ma ora che ci penso mi pare ok: prendo il MSB  e poi faccio shift a sinistra, dunque "salvo" il MSB e viceversa quando faccio shift a destra
-
-L'ultimo caso perché noi pensiamo in logica positiva col Carry che, se presente come conseguenza del risultato dell'operazione, è HI per l'addizione e LO per il prestito, come nel 6502, mentre la ALU '181 lavora in logica negativa, con LO che indica che il Carry  è presente nell'addizione e con HI che indica che c'è un prestito nella sottrazione.
-
-- ma non mi è chiaro… mi pare che lavori in entrambi i modi a seconda degli input che le vengono passati. 06/10/2022 credo di aver capito. Praticamente il 181 nella modalità High-Active Data utilizza HI per indicare un Carry assente e LO per indicare il Carry presente, come vedo nel datasheet…
-- Però poi non mi è chiaro davvero cosa significa che la ALU lavora in logica positiva o negativa… perché anche gli input sono in logica negativa, ma un semplice esercizio sul quaderno cercando di invertire tutto non mi ha dato risultato…
-- Dunque bisogna provare a fare un circuito 😊 per capire
-
-- Come già detto, i flag possono essere anche letti (PLP) e scritti (PSP) dal / verso il bus.
-
-*questa sarebbe di una didascalia* 
-Il '151 opera così, cioè a seconda degli input S0, S1 ed S2 seleziono cosa portare in uscita da I0 a I7:
-
-**Carry Input**
-
-Oltre a essere usato dal '151 per i salti condizionali, il registro Carry Output è anche utilizzato come dell'ALU '181 e del registro H.
-
-Nel caso specifico di utilizzo del Carry come input di H, l'opportuna programmazione del microcode dei segnali **CC** (**C**arry **C**lear) e **CS** (**C**arry **S**et) dell'istruzione in esecuzione può passare al Carry Input di H:
-
-- un valore *hard-coded* 0
-- un valore *hard-coded* 1
-- il valore realmente presente nel registro C
-
-Ecco come settare il Carry Output fixed HI o LO oppure semplicemente lasciarlo passare (riferimento ai segnali dell'NQSAP).
-
-- CS LO, CC LO: Flag-In passa normale
-- CS HI, CC LO: Flag-Out HI
-- CS LO, CC HI: Flag-Out LO
-
-L'output del Carry a ALU e H è controllato da LC ed LS CC e CS (01/10/2022 l'autore ha aggiornato i nomi sul blog, ma non sullo schema). Questi due segnali possono semplicemente passare il Carry attuale presente in C, oppure passare HI o LO.
-
-Per il motivo già descritto sopra, nel caso di uso del Carry da parte dell'ALU (che lavora in logica "negativa", ma ancora da chiarire il senso, 27/11/2022) usiamo il valore invertito.
-
-| Segnale | Descrizione         |
-|  - | -                        |
-| FC | write Carry flag         |
-| FZ | write Zero flag          |
-| FV | write oVerflow flag      |
-| FN | write Negative flag      |
-| FB | load flags from the bus  |
-| JC | jump conditional         |
-| C0 | carry source select 0    |  
-| C1 | carry source select 1    |
-| CC | ALU carry input clear    |
-| CS | ALU carry input set      |
-
-Normale:
-
-De Morgan (l'ho capito 😁):
-
-## ALTRO
- Flag e Microcode	Molte delle istruzioni modificano i flag.
+  - per istruzioni somma/sottrazione passo il Carry esistente negato
+	                ○ per istruzioni INC o DEC passo il Carry "normale"
+	        • Se il registro sorgente dell'operazione è H (usato per le varie rotazioni) prendo MSB per rotazione a sinistra e LSB per rotazione a destra… ma questo non mi convince… 26/09/2022 ma ora che ci penso mi pare ok: prendo il MSB  e poi faccio shift a sinistra, dunque "salvo" il MSB e viceversa quando faccio shift a destra
+	
+	L'ultimo caso perché noi pensiamo in logica positiva col Carry che, se presente come conseguenza del risultato dell'operazione, è HI per l'addizione e LO per il prestito, come nel 6502, mentre la ALU '181 lavora in logica negativa, con LO che indica che il Carry  è presente nell'addizione e con HI che indica che c'è un prestito nella sottrazione.
+	        • ma non mi è chiaro… mi pare che lavori in entrambi i modi a seconda degli input che le vengono passati. 06/10/2022 credo di aver capito. Praticamente il 181 nella modalità High-Active Data utilizza HI per indicare un Carry assente e LO per indicare il Carry presente, come vedo nel datasheet…
+	        • Però poi non mi è chiaro davvero cosa significa che la ALU lavora in logica positiva o negativa… perché anche gli input sono in logica negativa, ma un semplice esercizio sul quaderno cercando di invertire tutto non mi ha dato risultato…
+	        • Dunque bisogna provare a fare un circuito 😊 per capire
+	
+	• Come già detto, i flag possono essere anche letti (PLP) e scritti (PSP) dal / verso il bus.
+	
+	Carry Input
+	
+	
+	Il '151 opera così, cioè a seconda degli input S0, S1 ed S2 seleziono cosa portare in uscita da I0 a I7:
+	
+	
+	
+	• Oltre a essere usato dal 151 per i salti condizionali, il Carry in uscita, cioè Carry Output, è anche input dell'ALU e di H; in questo ultimo caso, a seconda dell'istruzione, utilizzando CC e CS può:
+	        • essere hard-coded 0
+	        • essere hard-coded 1
+	        • essere il valore presente nel registro C
+	
+	Ecco come settare il Carry Output fixed HI o LO oppure semplicemente lasciarlo passare (riferimento ai segnali dell'NQSAP).
+	        • Set LO, Clear LO: Flag-In passa normale
+	        • SET HI, Clear LO: Flag-Out HI
+	        • SET LO, Clear HI: Flag-Out LO
+	        
+	Nota:
+	        • Clear è LC (ALU Clear)
+	        • Set è LS (ALU Set)
+	        • 05/10/2022 nei vecchi schemi li chiamava LC e LS, ma questi sono diventati CC e CS perché avevo chiesto spiegazioni in quanto non mi trovavo e Tom mi ha risposto
+	
+	L'output del Carry a ALU e H è controllato da LC ed LS CC e CS (01/10/2022 l'autore ha aggiornato i nomi sul blog, ma non sullo schema). Questi due segnali possono semplicemente passare il Carry attuale presente in C, oppure passare HI o LO.
+	Per il motivo già descritto sopra, nel caso di uso del Carry da parte dell'ALU (che lavora in logica "negativa", ma ancora da chiarire il senso, 27/11/2022) usiamo il valore invertito.
+	
+	
+	
+	Signal
+	Description
+	FC
+	write Carry flag
+	FZ
+	write Zero flag
+	FV
+	write oVerflow flag
+	FN
+	write Negative flag
+	FB
+	load flags from the bus
+	JC
+	jump conditional
+	C0
+	carry source select 0
+	C1
+	carry source select 1
+	LC -> CC
+	ALU carry input clear
+	LS -> CS
+	ALU carry input set
+	
+	Normale:
+	
+	De Morgan (l'ho capito 😁):
+	
+	
+	
+• Flag e Microcode	Molte delle istruzioni modificano i flag.
 	
 	Per fare il microcode sto usando:
 	        • https://www.masswerk.at/6502/6502_instruction_set.html
