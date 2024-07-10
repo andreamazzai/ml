@@ -8,7 +8,7 @@ excerpt: "Costruzione del registro dei flag del BEAM computer"
 
 [![Registro dei Flag del BEAM](../../assets/flags/30-flag-beam.png "Registro dei Flag del BEAM"){:width="100%"}](../../assets/flags/30-flag-beam.png)
 
-Bisogna dire che più volte, leggendo la documentazione di Tom Nisbet, ho trovato delle idee molto clever; alcune di queste si trovano nel modulo dei Flag. Cercherò di riportare anche alcune fonti utilizzate da Tom indicandone i collegamenti alla fine della pagina.
+Bisogna dire che più volte, leggendo la documentazione di Tom Nisbet, avevo trovato delle idee molto clever; alcune di queste si trovano nel modulo dei Flag. Cercherò di riportare anche alcune fonti utilizzate da Tom indicandone i collegamenti a fondo pagina.
 
 [![Schema logico del modulo Flag di Tom Nisbet](../../assets/flags/30-flag-nqsap-schematics.png "Schema logico del modulo Flag di Tom Nisbet"){:width="100%"}](../../assets/flags/30-flag-nqsap-schematics.png)
 
@@ -21,17 +21,17 @@ Il registro dei Flag dell'NQSAP emula i 4 flag **NVZC** del 6502:
 - **Z**ero (Z)
 - **C**arry (C)
 
-E' completamente differente dal semplice registro dei Flag del computer SAP di Ben Eater, nel quale un unico Flip-Flop [74LS173](https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf) memorizzava i soli 2 flag C e Z nello stesso momento: la gestione delle istruzioni necessitava di 4 set di microcode, cioè uno per ogni combinazione dei segnali di flag portati agli ingressi delle EEPROM; ogni set di microcode era infatti sviluppato su misura per attivare in output i corretti segnali per la gestione di C e/o Z. Questo è ben spiegato nel video di Ben Eater [Conditional jump instructions](https://www.youtube.com/watch?v=Zg1NdPKoosU).
+E' completamente differente dal semplice registro dei Flag del computer SAP di Ben Eater, nel quale un unico Flip-Flop [74LS173](https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf) memorizzava i soli 2 flag C e Z nello stesso momento: la gestione delle istruzioni necessitava di 4 set di microcode, cioè uno per ogni combinazione dei segnali di flag portati agli ingressi delle EEPROM; ogni set di microcode era infatti sviluppato "su misura" per attivare in output i corretti segnali per la gestione di C e/o Z. Questo è ben spiegato nel video di Ben Eater [Conditional jump instructions](https://www.youtube.com/watch?v=Zg1NdPKoosU).
 
-Nell'approccio di Tom il microcode delle istruzioni non varia a seconda dello stato dei flag, che non sono più direttamente connessi agli indirizzi delle ROM che poi attivano diversi segnali di output in base all'indirizzo/flag presentato in ingresso!
+Nell'approccio di Tom il microcode delle istruzioni non variava a seconda dello stato dei flag, che non erano più direttamente connessi agli indirizzi delle ROM che attivano poi a loro volta diversi segnali di output in base all'indirizzo/flag presentato in ingresso!
 
 Analizziamo ad esempio un'istruzione di salto condizionale legata al flag Z:
 
-- il microcode dell'istruzione di salto attiva un segnale "Jump Enable" connesso al pin 7 del Selector/Multiplexer [74LS151](https://www.ti.com/lit/ds/symlink/sn54s151.pdf) visibile in basso a destra nello schema generale;
+- il microcode dell'istruzione di salto attiva un segnale "Jump Enable" connesso al pin 7 del Data Selector/Multiplexer [74LS151](https://www.ti.com/lit/ds/symlink/sn54s151.pdf) visibile in basso a destra nello schema generale;
 
-- importantissimo comprendere che la selezione del flag da mettere in uscita dipende dalla codifica dell'istruzione in esecuzione, poiché i 3 bit Select S2, S1 ed S0 del '151 sono direttamente collegati all'Instruction Register, cioè *hardwired* in maniera similare a quanto succede per la ALU;
+- la selezione del flag da mettere in uscita sul '151 dipende dalla codifica dell'istruzione in esecuzione, poiché i 3 bit Select S2, S1 ed S0 sono direttamente collegati all'Instruction Register, cioè *hardwired* in maniera similare a quanto succede per la ALU;
 
- [![Output dell'IR verso il modulo Flag con evidenza dei 3 bit di selezione dell'istruzione di salto condizionale](../../assets/flags/30-flag-cl-ir-out.png "Output dell'Instruction Register verso il modulo Flag con evidenza dei 3 bit di selezione dell'istruzione di salto condizionale"){:width="50%"}](../../assets/flags/30-flag-cl-ir-out.png)
+ [![Output dell'Instruction Register (IR) verso il modulo Flag con evidenza dei 3 bit di selezione dell'istruzione di salto condizionale](../../assets/flags/30-flag-cl-ir-out.png "Output dell'Instruction Register (IR) verso il modulo Flag con evidenza dei 3 bit di selezione dell'istruzione di salto condizionale"){:width="50%"}](../../assets/flags/30-flag-cl-ir-out.png)
 
 *Output dell'Instruction Register (IR) verso il modulo Flag con evidenza dei 3 bit di selezione dell'istruzione di salto condizionale.*
 
@@ -39,13 +39,13 @@ Analizziamo ad esempio un'istruzione di salto condizionale legata al flag Z:
 
 *Ingressi di selezione dell'istruzione di salto condizionale del registro dei Flag e connessione "hardwired" con l'IR.*
 
-- se per esempio l'istruzione *Jump on Zero* è codificata come 010 sui 3 segnali S2, S1 ed S0 comuni tra IR e registro dei Flag, questa andrà ad attivare il pin I2 di ingresso del '151 che, se troverà 1 al suo ingresso (vale a dire che l'uscita Q del Flip-Flop del flag Zero ha valore logico HI), andrà ad abilitare il segnale /PC-LOAD sul Program Counter (**PC**), attivando il caricamento del nuovo indirizzo calcolato a partire dal valore dell'operando dell'istruzione di salto.
+- se per esempio una generica istruzione *Jump on Zero* fosse codificata come 010 sui 3 segnali S2, S1 ed S0 comuni tra IR e registro dei Flag, questa andrebbe ad attivare il pin I2 di ingresso del '151 che, se trovasse 1 al suo ingresso (vale a dire che l'uscita Q del Flip-Flop del flag Zero ha valore logico HI), andrebbe ad abilitare il segnale /PC-LOAD sul Program Counter (**PC**), attivando il caricamento del nuovo indirizzo (che dovrà essere calcolato a partire dal valore dell'operando dell'istruzione di salto).
 
 ![Selector/Multiplexer 74LS151](../../assets/flags/30-flag-151-table.png){:width="33%"}
 
 *Tabella funzioni Selector/Multiplexer 74LS151.*
 
-Detto in altre parole: la logica del salto condizionale del SAP era implementata nel microcode, utilizzando linee di indirizzamento delle ROM. Poiché i flag dell'NQSAP sono invece implementati in hardware, non c'è bisogno di consumare preziose linee di indirizzamento delle EEPROM (e di raddoppiare la dimensione del microcode ad ogni aggiunta di un flag). 
+Detto in altre parole: la logica del salto condizionale del SAP era implementata nel microcode, utilizzando linee di indirizzamento delle ROM. Poiché i flag dell'NQSAP erano invece implementati in hardware, non c'era bisogno di consumare preziose linee di indirizzamento delle EEPROM (e di raddoppiare la dimensione del microcode ad ogni aggiunta di un flag).
 
 I miglioramenti derivanti da questa architettura sono:
 
@@ -57,14 +57,14 @@ I miglioramenti derivanti da questa architettura sono:
 
 Un multiplexer (MUX) [74LS157](https://www.ti.com/lit/ds/symlink/sn74ls157.pdf) prende in input i valori dei flag V, Z e C selezionandone la provenienza:
 
-1. dal bus; quando il '157 legge dal bus, è possibile caricare i registri dei flag leggendo valori arbitrari dalla memoria del computer (similarmente al funzionamento dell'istruzione Pull Processor Status **PLP** del 6502; inoltre, come nell'architettura del 6502, una parte della memoria del computer è dedicata allo **Stack**);
+1. dal bus; quando il '157 legge dal bus, è possibile caricare i registri dei flag leggendo valori arbitrari dalla memoria del computer (o, più precisamente, dalla zona di memoria adibita allo Stack) similarmente a quanto svolto dall'istruzione Pull Processor Status **PLP** del 6502;
 
 2. computandoli opportunamente:
-    - **C** attraverso un Data Selector / Multiplexer '151 che permette di selezionare la sorgente del Carry;
+    - **C** attraverso un Data Selector/Multiplexer '151 che permette di selezionare la sorgente del Carry;
     - **Z** come risultato del comparatore [74LS688](https://www.ti.com/lit/ds/symlink/sn74ls688.pdf);
     - **V** attraverso un altro '151 che permette di ricreare la funzione logica dell'Overflow per verificare un eventuale cambio di segno nel risultato delle operazioni di somma o sottrazione con segno; **questo aspetto verrà ulteriormente evidenziato** nella sezione apposita dedicato alla comprensione dell'Overflow.
 
-Il flag **N**egative viene letto direttamente dalla linea D7 del bus e caricato su uno dei due Flip-Flop disponibili in un [74LS74](https://www.ti.com/lit/ds/symlink/sn54ls74a.pdf). NB: il flag viene gestito sulla linea D7 del bus in quanto i numeri Signed utilizzano proprio l'MSB per indicare il proprio segno.
+Il flag **N**egative viene letto direttamente dalla linea D7 del bus e caricato su uno dei due Flip-Flop disponibili in un [74LS74](https://www.ti.com/lit/ds/symlink/sn54ls74a.pdf).
 
 V, Z e C escono dal MUX '157 e sono presentati ad altrettanti Flip-Flop.
 
@@ -139,9 +139,9 @@ Tenendo ora in considerazione l'esistenza del segnale Jump Enable, evidenziato i
 
 A questo punto della spiegazione si sarà notato che i FF '74 espongono i flag sia in logica normale, sia in logica invertita, con lo scopo di poter più facilmente determinare se un determinato flag sia attivo o no; se ad esempio il Carry non fosse presente e si desiderasse eseguire un salto verificando la condizione "Carry non presente" (Branch on Carry Clear, BCC), sarebbe più semplice verificare se l'inverso del Carry fosse presente, così da attivare opportunamente il segnale di salto /PC-LOAD.
 
-L'utilizzo di una NOR all'uscita Z del '151 permette di gestire sia i salti condizionali (dunque da validare con una apposita verifica logica, cioè quella della presenza / assenza di un determinato flag), sia i salti incondizionati:
+L'utilizzo di una NOR all'uscita Z del '151 permette di gestire sia i salti condizionali (dunque da validare con una apposita verifica logica, cioè quella della presenza/assenza di un determinato flag), sia i salti incondizionati:
 
-- In caso di salto condizionale (BCS, BVC, BEQ eccetera), una verifica positiva di presenza / assenza del flag selezionato (normale o invertito) genera un'uscita HI sul '151 --> la NOR presenta dunque output LO ed attiva il caricamento sul Program Counter del valore presente sul bus (che altri non è che l'operando dell'istruzione di branch condizionale).
+- In caso di salto condizionale (BCS, BVC, BEQ eccetera), una verifica positiva di presenza/assenza del flag selezionato (normale o invertito) genera un'uscita HI sul '151 --> la NOR presenta dunque output LO ed attiva il caricamento sul Program Counter del valore presente sul bus (che altri non è che l'operando dell'istruzione di branch condizionale).
 
   - Notare che l'operando delle istruzioni di salto condizionale è un valore relativo, che viene addizionato al valore attuale del PC. **Long Story Short: carico in D il PC attuale, mentre carico in X l'operando dell'istruzione di salto; il nuovo valore da caricare nel PC corissponde all'indirizzo del byte successivo a quello dell'operando dell'istruzione Branch + l'operando stesso**, ad esempio:
 
@@ -153,7 +153,7 @@ L'utilizzo di una NOR all'uscita Z del '151 permette di gestire sia i salti cond
 
 In definitiva, il microcode delle istruzioni di salto condizionato e di salto incondizionato sono molto simili e differiscono per i segnali di controllo:
 
-- JE per attivare il '151 di selezione del flag del quale verificare presenza / assenza;
+- JE per attivare il '151 di selezione del flag del quale verificare presenza/assenza;
 - WP per caricare senza altri controlli un determinato indirizzo sul PC.
 
 Vi è un effetto non desiderato: "le istruzioni di salto condizionato non eseguite sprecano cicli di clock"… non si potrebbe semplicemente usare N per terminare anticipatamente l'istruzione? Lui sembra renderla un po' complicata
@@ -164,11 +164,11 @@ Vi è un effetto non desiderato: "le istruzioni di salto condizionato non esegui
 
 ### Negative
 
-Come detto precedentemente, il flag **N**egative è semplicemente il MSB del bus 😁. Interessante notare che essendo N mappato sul bus e non direttamente sull'ALU, è possibile rilevare un numero Negative anche in contesti esterni ai '181, ad esempio nel risultato di una rotazione fatta con lo Shift-Register o in un trasferimento di dato da un registro a un altro: tutto ciò che transita sul bus può essere oggetto di verifica del suo stato di numero Signed.
+Come detto precedentemente, il flag **N**egative è uguale al 7° bit del bus, cioè l'MSB: il flag viene gestito sulla linea D7 del bus in quanto i numeri Signed utilizzano proprio il **M**ost **S**ignificant **B**it (MSB) per indicare il proprio segno. Interessante notare che, essendo N mappato sul bus e non direttamente sull'ALU, è possibile rilevare un numero Negative anche in contesti esterni ai '181, ad esempio nel risultato di una rotazione fatta con lo Shift-Register o in un trasferimento di dato da un registro a un altro: tutto ciò che transita sul bus può essere oggetto di verifica del suo stato di numero Signed positivo o negativo.
 
 ### Zero
 
-Il flag **Z**ero si attiva se il valore presente nel bus è zero; invece di usare una serie di AND per verificare se tutte le linee siano LO (come nel SAP), un singolo comparatore '688 può svolgere lo stesso lavoro. Anche questo opera sul bus e non sulla sola ALU.
+Il flag **Z**ero è funzione del fatto che il valore presente nel bus sia zero; invece di usare una serie di AND per verificare se tutte le linee sono LO (come accadeva nel SAP), un singolo comparatore '688 può svolgere la stessa funzione. Notare che anche questo flag opera sul bus e non sui risultati della sola ALU.
 
 ![Comparatore 74LS688 per verifica dello stato zero del bus](../../assets/flags/30-flag-688.png){:width="50%"}
 
@@ -178,39 +178,41 @@ Il flag **Z**ero si attiva se il valore presente nel bus è zero; invece di usar
 
 Il flag Overflow flag è calcolato utilizzando un '151 nella modalità descritta in ["74181 with V_Flag"](http://6502.org/users/dieter/v_flag/v_4.htm) sul sito 6502.org.
 
-Avevo trovato la spiegazione criptica, o forse non propriamente adatta ai profani, tanto da impiegare diverse decine di ore per comprendere a fondo quanto enunciato.
+Avevo trovato la spiegazione molto criptica, o forse non propriamente adatta ai profani, tanto da impiegare alcune *decine* di ore per comprendere a fondo quanto enunciato rileggendo, cercando altre fonti, facendo esercizi su carta e su uno spreadsheet.
 
-Si evidenzia che gli MSB degli operandi dell'ALU H e B, insieme all'MSB risultante dall'operazione dell'ALU, sono utilizzati come input per verificare la condizione di overflow
+Tom evidenziava che gli MSB degli operandi dell'ALU H e B, insieme all'MSB risultante dall'operazione dell'ALU, erano utilizzati come input per verificare la condizione di overflow: iniziavo a realizzare che l'overflow è in realtà un calcolo molto semplice e preciso di bit.
 
-Iniziavo a realizzare che l'overflow è in realtà un calcolo molto semplice e preciso di bit.
+Per identificare l'esecuzione di un'operazione di addizione o di sottrazione e dunque selezionare quale dovesse essere l'ingreso del '151 da attivare, si utilizzano due delle linee di selezione dell'operazione dell'ALU, in particolar modo:
 
-Si utilizzano due delle linee di selezione dell'operazione dell'ALU per identificare l'esecuzione di un'operazione di addizione o di sottrazione; in particolar modo:
-
-- IR-Q1 HI e IR-Q3 LO = addizione
-- IR-Q1 LO e IR-Q3 HI = sottrazione
+| IR-Q1 | IR-Q3 | Operazione  |
+| -     | -     | -           |
+| HI    | LO    | Addizione   |
+| LO    | HI    | Sottrazione |
 
 NOTA BENE verificare **la congruenza tra istruzioni e collegamenti**
 
-- In una delle innumerevoli sessioni di approfondimento e studio dell'overflow, ero arrivato a comprendere che se nella somma di due numeri con segno si nota un cambiamento di segno del risultato, si ha una situazione di overflow.
+- In una delle innumerevoli sessioni di approfondimento e studio dell'overflow, ero finalmente arrivato a comprendere che se nella somma di due numeri con segno si nota un cambiamento di segno del risultato, si ha una situazione di overflow.
 
-Chiaramente questa discussione è legata al fatto che si sta lavorando con numeri con segno: questi numeri vengono rappresentati con il complemento di 2 e un MSB = LO indica numero positivo, mentre un MSB = HI indica numero negativo. 
+Chiaramente questa discussione è legata al fatto che si sta lavorando con numeri con segno: questi numeri vengono rappresentati con il complemento di 2 e un MSB = LO indica un numero positivo, mentre un MSB = HI indica un numero negativo.
 
-Ad esempio : in un byte sono possibili 256 combinazioni; se si ragiona senza segno , è possibile contare da zero a 255. se si ha ragione invece in un'ottica consegno, l'approfondimento nell'apposita sezione dell'aritmetica binario spiegherà come i numeri positivi da zero a 127 abbiano un riferimento paritetico con i numeri senza segno da 0 a 127, mentre i numeri con segno da -128 a -1 facciano il paio con i numeri senza segno da 128 a 255. aggiungere note con HEX.
+In altre parole: in un byte sono possibili 256 combinazioni; se si ragiona senza segno, è possibile contare da zero a 255. Se si ragiona invece in un'ottica con segno, l'approfondimento nell'apposita sezione sull'aritmetica binaria spiegherà come i numeri positivi da zero a 127 abbiano un riferimento paritetico con i numeri senza segno da 0 a 127, mentre i numeri con segno da -128 a -1 facciano il paio con i numeri senza segno da 128 a 255. aggiungere note con HEX.
 
 **vedere approfondimento** nella sezione apposita
 
-## Utilizzo del Carry con ALU ed H
+## Carry
 
-Come ormai noto, il registro dei Flag include un registro dedicato al flag C; il calcolo della presenza del Carry può derivare da diverse operazioni:
+Il registro dei Flag include un registro dedicato al flag C; diverse sono le operazioni dell'NQSAP che possono generare un Carry:
 
-- per i calcoli aritmetici corrisponde al Carry Output dell'ALU '181
-- per le operazioni di shift / rotazione, il Carry è tratto dall'LSB (pin H-Q0) o dal MSB (pin H-Q7) del registro H.
+- per i calcoli aritmetici il Carry corrisponde al Carry Output dell'ALU '181
+- per le operazioni di shift / rotazione, il Carry è tratto dal **L**east **S**ignificant **B**it (LSB) (pin H-Q0) o dal MSB (pin H-Q7) del registro H.
 
-L'utilizzo di un '151 rappresenta il sistema più efficiente per selezionare la sorgente del Carry a seconda dell'istruzione in esecuzione, il cui microcode attiverà i segnali C0 e C1:
+L'utilizzo di un '151 rappresenta il sistema più efficiente per selezionare la sorgente del Carry. A seconda dell'istruzione in esecuzione, il microcode di quella istruzione provvederà infatti ad attivare opportunamente i segnali C0 e C1:
 
-- C0 = 0 e C1 = 0: selezione del Carry Output dell'ALU **(sia normale sia invertito)**;
-- C0 = 1 e C1 = 0: selezione dell'MSB del registro H;
-- C0 = 0 e C1 = 1: selezione dell'LSB del registro H.
+| C0 | C1 | Provenienza del Carry |
+| -  | -  | -                     |
+| LO | LO | selezione del Carry Output dell'ALU **(sia normale sia invertito)** |
+| HI | LO | selezione dell'MSB del registro H                                   |
+| LO | HI | selezione dell'LSB del registro H                                   |
 
 Il valore in input del registro Carry Input dipende anche dall'istruzione che è stata eseguita: può arrivare da ALU o da H, CLC e SEC. Vedi tabella per l'uso del Carry nelle varie situazioni:
 
