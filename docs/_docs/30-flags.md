@@ -176,7 +176,7 @@ Il flag **Z**ero è funzione del fatto che il valore presente nel bus sia zero; 
 
 ### Overflow
 
-Il flag Overflow flag è calcolato utilizzando un '151 nella modalità descritta in ["74181 with V_Flag"](http://6502.org/users/dieter/v_flag/v_4.htm) sul sito 6502.org.
+Il flag O**V**erflow è calcolato utilizzando un '151 nella modalità descritta in ["74181 with V_Flag"](http://6502.org/users/dieter/v_flag/v_4.htm) sul sito 6502.org.
 
 Avevo trovato la spiegazione molto criptica, o forse non propriamente adatta ai profani, tanto da impiegare alcune *decine* di ore per comprendere a fondo quanto enunciato rileggendo, cercando altre fonti, facendo esercizi su carta e su uno spreadsheet.
 
@@ -210,12 +210,14 @@ L'utilizzo di un '151 rappresenta il sistema più efficiente per selezionare la 
 
 ![Utilizzo di un 74LS151 per la selezione del Carry da memorizzare nel Carry flag](../../assets/flags/30-flag-c-151.png){:width="50%"}
 
-| C1 | C0 | Provenienza del Carry                                      |
+*Utilizzo di un 74LS151 per la selezione del Carry da memorizzare nel Carry flag.*
+
+| C1 | C0 | Selezione del Carry                                      |
 | -  | -  | -                                                          |
-| LO | LO | selezione del Carry Output dell'ALU **(non invertito \*)** |
-| LO | HI | selezione del Carry Output dell'ALU **(invertito \*\*)**   |
-| HI | LO | selezione dell'MSB (H-Q7) del registro H\*\*\*             |
-| HI | HI | selezione dell'LSB (H-Q0) del registro H\*\*\*             |
+| LO | LO | Provenienza dal Carry Output dell'ALU **(non invertito \*)** |
+| LO | HI | Provenienza dal Carry Output dell'ALU **(invertito \*\*)**   |
+| HI | LO | Provenienza dall'MSB (H-Q7) del registro H\*\*\*             |
+| HI | HI | Provenienza dall'LSB (H-Q0) del registro H\*\*\*             |
 
 - \* questa configurazione non viene utilizzata
 
