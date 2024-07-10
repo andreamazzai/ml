@@ -39,7 +39,7 @@ Analizziamo ad esempio un'istruzione di salto condizionale legata al flag Z:
 
 *Ingressi di selezione dell'istruzione di salto condizionale del registro dei Flag e connessione "hardwired" con l'IR.*
 
-- se per esempio una generica istruzione *Jump on Zero* fosse codificata come 010 sui 3 segnali S2, S1 ed S0 comuni tra IR e registro dei Flag, questa andrebbe ad attivare il pin I2 di ingresso del '151 che, se trovasse 1 al suo ingresso (vale a dire che l'uscita Q del Flip-Flop del flag Zero ha valore logico HI), andrebbe ad abilitare il segnale /PC-LOAD sul Program Counter (**PC**), attivando il caricamento del nuovo indirizzo (che dovrà essere calcolato a partire dal valore dell'operando dell'istruzione di salto).
+- se per esempio una generica istruzione *Jump on Zero* fosse codificata come 010 sui 3 segnali S2, S1 ed S0 comuni tra IR e registro dei Flag, questa andrebbe ad attivare il pin I2 di ingresso del '151 che, se trovasse 1 al suo ingresso (vale a dire che l'uscita Q del Flip-Flop del flag Zero ha valore logico HI), andrebbe ad abilitare il segnale /PC-LOAD sul Program Counter (**PC**), attivando il caricamento del nuovo indirizzo (calcolato a partire dal valore dell'operando dell'istruzione di salto).
 
 ![Selector/Multiplexer 74LS151](../../assets/flags/30-flag-151-table.png){:width="33%"}
 
@@ -82,7 +82,7 @@ Quattro porte AND permettono il caricamento dei FF in presenza del segnale di cl
 
 Un transceiver 74LS245 permette infine di esportare i 4 flag NVZC sul bus per salvarli in memoria, o più precisamente nello Stack, similarmente a quanto accade nel 6502 con l'istruzione Push Processor Status (PHP).
 
-Interessante notare che le istruzioni CLC, CLV e SEC non hanno bisogno di segnali dedicati della CL per settare od azzerare i flag C e V: si utilizza la ALU per mettere 0 o 1 sul bus e si modifica il solo flag di interesse attivando opportunamente il segnale di controllo FC o FV.
+Interessante notare che le istruzioni CLC, CLV e SEC non hanno bisogno di segnali dedicati della CL per azzerare o settare i flag C e V: si utilizza la ALU per mettere 0x00 o 0xFF sul bus e si modifica il solo flag di interesse attivando opportunamente il segnale di controllo FC o FV.
 
 ## I salti condizionali
 
@@ -199,26 +199,38 @@ In altre parole: in un byte sono possibili 256 combinazioni; se si ragiona senza
 
 **vedere approfondimento** nella sezione apposita
 
-## Carry
+### Carry
 
-Il registro dei Flag include un registro dedicato al flag C; diverse sono le operazioni dell'NQSAP che possono generare un Carry:
+Il registro dei Flag include un registro dedicato al flag C. L'NQSAP include diverse  operazioni che possono generare un Carry:
 
 - per i calcoli aritmetici il Carry corrisponde al Carry Output dell'ALU '181
-- per le operazioni di shift / rotazione, il Carry è tratto dal **L**east **S**ignificant **B**it (LSB) (pin H-Q0) o dal MSB (pin H-Q7) del registro H.
+- per le operazioni di shift/rotazione, il Carry è tratto dal **L**east **S**ignificant **B**it (LSB) (pin H-Q0) o dal MSB (pin H-Q7) del registro H.
 
 L'utilizzo di un '151 rappresenta il sistema più efficiente per selezionare la sorgente del Carry. A seconda dell'istruzione in esecuzione, il microcode di quella istruzione provvederà infatti ad attivare opportunamente i segnali C0 e C1:
 
-| C0 | C1 | Provenienza del Carry |
-| -  | -  | -                     |
-| LO | LO | selezione del Carry Output dell'ALU **(sia normale sia invertito)** |
-| HI | LO | selezione dell'MSB del registro H                                   |
-| LO | HI | selezione dell'LSB del registro H                                   |
+![Utilizzo di un 74LS151 per la selezione del Carry da memorizzare nel Carry flag](../../assets/flags/30-flag-c-151.png){:width="50%"}
 
-Il valore in input del registro Carry Input dipende anche dall'istruzione che è stata eseguita: può arrivare da ALU o da H, CLC e SEC. Vedi tabella per l'uso del Carry nelle varie situazioni:
+| C1 | C0 | Provenienza del Carry                                      |
+| -  | -  | -                                                          |
+| LO | LO | selezione del Carry Output dell'ALU **(non invertito \*)** |
+| LO | HI | selezione del Carry Output dell'ALU **(invertito \*\*)**   |
+| HI | LO | selezione dell'MSB (H-Q7) del registro H\*\*\*             |
+| HI | HI | selezione dell'LSB (H-Q0) del registro H\*\*\*             |
+
+- \* questa configurazione non viene utilizzata
+
+Come già discusso nella pagina dell'ALU:
+
+- \*\* il Carry del '181 lavora in logica negativa, pertanto un segnale C = LO in uscita significa che il Carry è presente; va da sé che per registrare lo stato del Carry in logica positiva sul registro del flag C devo invertire il segnale attraverso una NOT;
+- \*\*\* all'inizio di ogni istruzione il contenuto di H corrisponde esattamente a quello di A.
+
+## Il Carry e i registri H e ALU
+
+Dunque, il valore memorizzato nel registro C può essere originato dall'ALU o da H.
 
 - Suppongo che il significato sia:
   - Se il registro sorgente dell'operazione è l'ALU
-    - per istruzioni somma/sottrazione passo il Carry esistente negato
+    - per operazioni di somma/sottrazione passo il Carry esistente negato (come spiegato nella pagina dell'ALU, il Carry In e in Carry Out dei '181 lavorano in logica invertita, dunque ingresso = LO significa presenza del Carry)
     - per istruzioni INC o DEC passo il Carry "normale"
   - Se il registro sorgente dell'operazione è H (usato per le varie rotazioni) prendo MSB per rotazione a sinistra e LSB per rotazione a destra… ma questo non mi convince… 26/09/2022 ma ora che ci penso mi pare ok: prendo il MSB  e poi faccio shift a sinistra, dunque "salvo" il MSB e viceversa quando faccio shift a destra
 
@@ -334,3 +346,7 @@ SBC NUM
 Altre referenze Tom Nisbet per Flags	• Question for all 74ls181 alu people on reddit led to the design of the oVerflow flag.
 	• How to add a decremental and incremental circuit to the ALU ? on reddit inspired the idea to drive the PC load line from the flags instead of running the flags through the microcode.
 	• Opcodes and Flag decoding circuit on reddit has a different approach to conditional jumps using hardware. Instead of driving the LOAD line of the PC, the circuit sits between the Instruction Register and the ROM and conditionally jams a NOP or JMP instruction to the microcode depending on the state of the flags. One interesting part of the design is that the opcodes of the jump instructions are arranged so that the flag of interest can be determined by bits from the IR. NQSAP already did something similar with the ALU select lines, so the concept was used again for the conditional jump select lines.
+
+
+
+LINK: il PDF di MICR LOGIC come compendio a istruzioni ,indirizzamenti flag etc
