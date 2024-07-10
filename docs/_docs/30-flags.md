@@ -41,7 +41,7 @@ Analizziamo ad esempio un'istruzione di salto condizionale legata al flag Z:
 
 - se per esempio una generica istruzione *Jump on Zero* fosse codificata come 010 sui 3 segnali S2, S1 ed S0 comuni tra IR e registro dei Flag, questa andrebbe ad attivare il pin I2 di ingresso del '151 che, se trovasse 1 al suo ingresso (vale a dire che l'uscita Q del Flip-Flop del flag Zero ha valore logico HI), andrebbe ad abilitare il segnale /PC-LOAD sul Program Counter (**PC**), attivando il caricamento del nuovo indirizzo (calcolato a partire dal valore dell'operando dell'istruzione di salto).
 
-![Selector/Multiplexer 74LS151](../../assets/flags/30-flag-151-table.png){:width="33%"}
+![Selector/Multiplexer 74LS151](../../assets/flags/30-flag-151-table.png){:width="40%"}
 
 *Tabella funzioni Selector/Multiplexer 74LS151.*
 
@@ -182,7 +182,7 @@ Avevo trovato la spiegazione molto criptica, o forse non propriamente adatta ai 
 
 Tom evidenziava che gli MSB degli operandi dell'ALU H e B, insieme all'MSB risultante dall'operazione dell'ALU, erano utilizzati come input per verificare la condizione di overflow: iniziavo a realizzare che l'overflow è in realtà un calcolo molto semplice e preciso di bit.
 
-Per identificare l'esecuzione di un'operazione di addizione o di sottrazione e dunque selezionare quale dovesse essere l'ingreso del '151 da attivare, si utilizzano due delle linee di selezione dell'operazione dell'ALU, in particolar modo:
+Per identificare l'esecuzione di un'operazione di addizione o di sottrazione e dunque selezionare quale dovesse essere l'ingresso del '151 da attivare, si utilizzano due delle linee di selezione dell'operazione dell'ALU, in particolar modo:
 
 | IR-Q1 | IR-Q3 | Operazione  |
 | -     | -     | -           |
@@ -191,7 +191,7 @@ Per identificare l'esecuzione di un'operazione di addizione o di sottrazione e d
 
 NOTA BENE verificare **la congruenza tra istruzioni e collegamenti**
 
-- In una delle innumerevoli sessioni di approfondimento e studio dell'overflow, ero finalmente arrivato a comprendere che se nella somma di due numeri con segno si nota un cambiamento di segno del risultato, si ha una situazione di overflow.
+In una delle innumerevoli sessioni di approfondimento e studio dell'overflow, ero finalmente arrivato a comprendere che se nella somma di due numeri con segno si nota un cambiamento di segno del risultato, si ha una situazione di overflow.
 
 Chiaramente questa discussione è legata al fatto che si sta lavorando con numeri con segno: questi numeri vengono rappresentati con il complemento di 2 e un MSB = LO indica un numero positivo, mentre un MSB = HI indica un numero negativo.
 
@@ -201,7 +201,7 @@ In altre parole: in un byte sono possibili 256 combinazioni; se si ragiona senza
 
 ### Carry
 
-Il registro dei Flag include un registro dedicato al flag C. L'NQSAP include diverse  operazioni che possono generare un Carry:
+Il registro dei Flag include un registro dedicato al **C**arry. L'NQSAP include diverse  operazioni che possono generare un Carry:
 
 - per i calcoli aritmetici il Carry corrisponde al Carry Output dell'ALU '181
 - per le operazioni di shift/rotazione, il Carry è tratto dal **L**east **S**ignificant **B**it (LSB) (pin H-Q0) o dal MSB (pin H-Q7) del registro H.
@@ -214,8 +214,8 @@ L'utilizzo di un '151 rappresenta il sistema più efficiente per selezionare la 
 
 | C1 | C0 | Selezione del Carry                                      |
 | -  | -  | -                                                          |
-| LO | LO | Provenienza dal Carry Output dell'ALU **(non invertito \*)** |
-| LO | HI | Provenienza dal Carry Output dell'ALU **(invertito \*\*)**   |
+| LO | LO | Provenienza dal Carry Output dell'ALU **(non invertito\*)** |
+| LO | HI | Provenienza dal Carry Output dell'ALU **(invertito\*\*)**   |
 | HI | LO | Provenienza dall'MSB (H-Q7) del registro H\*\*\*             |
 | HI | HI | Provenienza dall'LSB (H-Q0) del registro H\*\*\*             |
 
@@ -223,33 +223,14 @@ L'utilizzo di un '151 rappresenta il sistema più efficiente per selezionare la 
 
 Come già discusso nella pagina dell'ALU:
 
-- \*\* il Carry del '181 lavora in logica negativa, pertanto un segnale C = LO in uscita significa che il Carry è presente; va da sé che per registrare lo stato del Carry in logica positiva sul registro del flag C devo invertire il segnale attraverso una NOT;
+- \*\* il Carry del '181 lavora in logica negativa, pertanto un segnale C = LO in uscita significa che il Carry è presente; va da sé che per registrare lo stato del Carry in logica positiva sul registro del flag C devo invertire il segnale in ingresso;
 - \*\*\* all'inizio di ogni istruzione il contenuto di H corrisponde esattamente a quello di A.
 
 ## Il Carry e i registri H e ALU
 
-Dunque, il valore memorizzato nel registro C può essere originato dall'ALU o da H.
-
-- Suppongo che il significato sia:
-  - Se il registro sorgente dell'operazione è l'ALU
-    - per operazioni di somma/sottrazione passo il Carry esistente negato (come spiegato nella pagina dell'ALU, il Carry In e in Carry Out dei '181 lavorano in logica invertita, dunque ingresso = LO significa presenza del Carry)
-    - per istruzioni INC o DEC passo il Carry "normale"
-  - Se il registro sorgente dell'operazione è H (usato per le varie rotazioni) prendo MSB per rotazione a sinistra e LSB per rotazione a destra… ma questo non mi convince… 26/09/2022 ma ora che ci penso mi pare ok: prendo il MSB  e poi faccio shift a sinistra, dunque "salvo" il MSB e viceversa quando faccio shift a destra
-
-L'ultimo caso perché noi pensiamo in logica positiva col Carry che, se presente come conseguenza del risultato dell'operazione, è HI per l'addizione e LO per il prestito, come nel 6502, mentre la ALU '181 lavora in logica negativa, con LO che indica che il Carry  è presente nell'addizione e con HI che indica che c'è un prestito nella sottrazione.
-
-- ma non mi è chiaro… mi pare che lavori in entrambi i modi a seconda degli input che le vengono passati. 06/10/2022 credo di aver capito. Praticamente il 181 nella modalità High-Active Data utilizza HI per indicare un Carry assente e LO per indicare il Carry presente, come vedo nel datasheet…
-- Però poi non mi è chiaro davvero cosa significa che la ALU lavora in logica positiva o negativa… perché anche gli input sono in logica negativa, ma un semplice esercizio sul quaderno cercando di invertire tutto non mi ha dato risultato…
-- Dunque bisogna provare a fare un circuito 😊 per capire
-
-- Come già detto, i flag possono essere anche letti (PLP) e scritti (PSP) dal / verso il bus.
-
-*questa sarebbe di una didascalia* 
-Il '151 opera così, cioè a seconda degli input S0, S1 ed S2 seleziono cosa portare in uscita da I0 a I7:
-
 **Carry Input**
 
-Oltre a essere usato dal '151 per i salti condizionali, il registro Carry Output è anche utilizzato come dell'ALU '181 e del registro H.
+Oltre all'utilizzo con un '151 per eseguire salti condizionali basati sulla presenza / assenza del Carry, questo viene chiaramente utilizzato anche come ingresso per il [modulo ALU](../alu/#lalu-dellnqsap) per eseguire operazioni aritmetiche ('181) e di shift/rotazione ('194).
 
 Nel caso specifico di utilizzo del Carry come input di H, l'opportuna programmazione del microcode dei segnali **CC** (**C**arry **C**lear) e **CS** (**C**arry **S**et) dell'istruzione in esecuzione può passare al Carry Input di H:
 
@@ -285,70 +266,15 @@ Normale:
 De Morgan (l'ho capito 😁):
 
 ## ALTRO
- Flag e Microcode	Molte delle istruzioni modificano i flag.
-	
-	Per fare il microcode sto usando:
-	        • https://www.masswerk.at/6502/6502_instruction_set.html
-	        • https://www.masswerk.at/6502/ che è utile per simulare le istruzioni e capire quali Flag esse modifichino durante la loro esecuzione.
-	        • Ad esempio inizialmente ho trovato difficoltà a capire quali Flag fossero modificati da CPY, che viene indicata come:
-	                
-	        • In quali combinazioni si attivano i vari flag N, Z e C?
-	        • Ho trovato supporto su http://www.6502.org/tutorials/compare_beyond.html nel quale si spiega che fare un confronto equivale a settare il carry e fare la differenza, ma senza effettivamente scrivere il risultato nel registro di partenza:
-	                CMP NUM
-	                        is very similar to:
-	                SEC
-SBC NUM
-	                
-	        • If the Z flag is 0, then A <> NUM and BNE will branch
-	        • If the Z flag is 1, then A = NUM and BEQ will branch
-	        • If the C flag is 0, then A (unsigned) < NUM (unsigned) and BCC will branch
-	        • If the C flag is 1, then A (unsigned) >= NUM (unsigned) and BCS will branch
-	
-	Facciamo le prove:
-	Codice:
-	        LDY #$40
-	        CPY #$30
-	Viene attivato il C, coerentemente con quanto spiegato sopra… direi perché nell'equivalenza si fa il SEC prima di SBC; essendo il numero da comparare inferiore, non faccio "il prestito" (borrow) del Carry e dunque alla fine dell'istruzione me lo ritrovo attivo come in partenza.
-	
-	
-	Codice:
-	        LDY #$40
-	        CPY #$40
-	Vengono attivati sia Z sia C: Z perché 40 - 40 = 0 e dunque il risultato è Zero e il contenuto del registro e del confronto numeri sono uguali; essendo il numero da comparare inferiore, non faccio "il prestito" (borrow) del Carry.
-	
-	
-	
-	Codice:
-	        LDY #$40
-	        CPY #$50
-	No Z e C, coerentemente con quanto spiegato sopra, ma N, perché il numero risultante è negativo: in 2C il primo bit è 1 ☺️. C è diventato Zero perché l'ho "preso in prestito".
-	
-	
-	
-	
-	Su BEAM: LDY #$40; CPY #$30 e ottengo nessun Flag, mentre dovrei avere C.
-	 La ALU presenta il COUT acceso, dunque la sua uscita è a livello logico basso. DA CAPIRE!!! Cosa volevo dire?
-	
-	Teoricamente dunque dovrei attivare l’ingresso di uno del 151 di Carry Input settando opportunamente i segnali C0 e C1.
-	
-	In conseguenza di questo, verifico sul BEAM il comportamento del Carry Out dell'ALU nei 3 casi descritti e poi modifico il microcode di conseguenza. In effetti, il comportamento non era quello desiderato da teoria e ho fatto le modifiche necessarie:
-	
-	        • Aggiunti i segnali C0 e C1, che non avevo ancora cablato, che permettono al 151 di scelta del Carry Input di selezionare cosa prendere in ingresso. L'ALU emette un Carry invertito (0 = Attivo), dunque, per poter settare a 1 il Flag del Carry Input, lo devo prendere in ingresso dall'ALU attraverso una NOT su uno dei 4 ingressi attivi del 151, che seleziono appunto con i segnali C0 e C1 attivando il solo C0.
-	        • Ho poi incluso nel microcode anche LF, in quanto ho definito l'utilizzo di LF su tutte le istruzioni di comparazione, tranne CPX abs.
-	        • Considerare anche che tipo di Carry devo iniettare nella ALU… In realtà, poiché per fare il confronto utilizzo l’istruzione SBC, devo utilizzare il normale LHHL con Carry, cioè CIN = LO, che nel microcode corrisponde ad attivare il segnale CS.
-	
-	Ho posizionato in uscita sul Carry dell'ALU un LED (ricordare che l'uscita è negata, dunque anodo a Vcc e catodo verso il pin del chip). Anche l’ingresso Carry è negato e dunque attivo a zero, pertanto anche qui ho un LED con anodo a Vcc e catodo sul Pin.
-	
-	Dopo queste modifiche, le istruzioni di comparazione sembrano funzionare correttamente.
-	
-	TO DO: finire http://www.6502.org/tutorials/compare_beyond.html da "In fact, many 6502 assemblers will allow BLT (Branch on Less Than) "
-	
-	        • Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
-	
-Altre referenze Tom Nisbet per Flags	• Question for all 74ls181 alu people on reddit led to the design of the oVerflow flag.
-	• How to add a decremental and incremental circuit to the ALU ? on reddit inspired the idea to drive the PC load line from the flags instead of running the flags through the microcode.
-	• Opcodes and Flag decoding circuit on reddit has a different approach to conditional jumps using hardware. Instead of driving the LOAD line of the PC, the circuit sits between the Instruction Register and the ROM and conditionally jams a NOP or JMP instruction to the microcode depending on the state of the flags. One interesting part of the design is that the opcodes of the jump instructions are arranged so that the flag of interest can be determined by bits from the IR. NQSAP already did something similar with the ALU select lines, so the concept was used again for the conditional jump select lines.
+Flag e Microcode
+Molte delle istruzioni modificano i flag.
 
+- Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
 
+Altre referenze Tom Nisbet per Flags
+
+- Question for all 74ls181 alu people on reddit led to the design of the oVerflow flag.
+- How to add a decremental and incremental circuit to the ALU ? on reddit inspired the idea to drive the PC load line from the flags instead of running the flags through the microcode.
+- Opcodes and Flag decoding circuit on reddit has a different approach to conditional jumps using hardware. Instead of driving the LOAD line of the PC, the circuit sits between the Instruction Register and the ROM and conditionally jams a NOP or JMP instruction to the microcode depending on the state of the flags. One interesting part of the design is that the opcodes of the jump instructions are arranged so that the flag of interest can be determined by bits from the IR. NQSAP already did something similar with the ALU select lines, so the concept was used again for the conditional jump select lines.
 
 LINK: il PDF di MICR LOGIC come compendio a istruzioni ,indirizzamenti flag etc
