@@ -31,19 +31,25 @@ Analizzando ad esempio un'istruzione di salto condizionale legata al flag Z risc
 
 - la selezione del flag da mettere in uscita sul '151 dipendeva dalla codifica dell'istruzione in esecuzione, poiché i 3 bit Select S2, S1 ed S0 erano direttamente collegati all'Instruction Register, cioè *hardwired*, in maniera similare a quanto realizzato anche nel modulo ALU;
 
- [![Output dell'Instruction Register (IR) verso il modulo Flag con evidenza dei 3 bit di selezione dell'istruzione di salto condizionale](../../assets/flags/30-flag-cl-ir-out.png "Output dell'Instruction Register (IR) verso il modulo Flag con evidenza dei 3 bit di selezione dell'istruzione di salto condizionale"){:width="50%"}](../../assets/flags/30-flag-cl-ir-out.png)
+ [![Output dell'Instruction Register verso il modulo Flag con evidenza dei 3 bit di selezione dell'istruzione di salto condizionale](../../assets/flags/30-flag-cl-ir-out.png "Output dell'Instruction Register verso il modulo Flag con evidenza dei 3 bit di selezione dell'istruzione di salto condizionale"){:width="50%"}](../../assets/flags/30-flag-cl-ir-out.png)
 
-*Output dell'Instruction Register (IR) verso il modulo Flag con evidenza dei 3 bit di selezione dell'istruzione di salto condizionale.*
+*Output dell'Instruction Register verso il modulo Flag con evidenza dei 3 bit di selezione dell'istruzione di salto condizionale.*
 
 [![Ingressi di selezione dell'istruzione di salto condizionale del registro dei Flag e connessione "hardwired" con l'IR](../../assets/flags/30-flag-select-in.png "Ingressi di selezione dell'istruzione di salto condizionale del registro dei Flag e connessione "hardwired" con l'IR"){:width="50%"}](../../assets/flags/30-flag-select-in.png)
 
 *Ingressi di selezione dell'istruzione di salto condizionale del registro dei Flag e connessione "hardwired" con l'IR.*
 
-- se per esempio una generica istruzione *Jump on Zero* fosse codificata come 010 sui 3 segnali S2, S1 ed S0 comuni tra IR e registro dei Flag, questa andrebbe ad attivare il pin I2 di ingresso del '151 che, se trovasse 1 al suo ingresso (vale a dire che l'uscita Q del Flip-Flop del flag Zero ha valore logico HI), andrebbe ad abilitare il segnale /PC-LOAD sul Program Counter (**PC**), attivando il caricamento del nuovo indirizzo (**calcolato a partire dal valore dell'operando dell'istruzione di salto, come si vedrà nella pagina descrittiva dei registri D, X e Y**).
+Se ad esempio una generica istruzione *Jump on Zero* fosse codificata come 010 sui 3 segnali S2, S1 ed S0 comuni tra Instruction Register (IR) e registro dei Flag, si verificherebbe la seguente sequenza:
 
-![Selector/Multiplexer 74LS151](../../assets/flags/30-flag-151-table.png){:width="40%"}
+- il pin I2 di ingresso del '151 sarebbe attivato
+- cioè in presenza del flag Z, l'uscita Q del Flip-Flop avrebbe valore logico HI
+- l'uscita del '151 andrebbe ad abilitare il segnale /PC-LOAD sul Program Counter (**PC**)
 
-*Tabella funzioni Selector/Multiplexer 74LS151.*
+La pagina dei registri [D, X e Y](../dxy) descrive il calcolo del valore da inserire nel PC.
+
+![Tabella funzioni Selector/Multiplexer 74LS151 con evidenza della ipotetica istruzione Jump on Zero](../../assets/flags/30-flag-151-table.png){:width="40%"}
+
+*Tabella funzioni Selector/Multiplexer 74LS151 con evidenza della ipotetica istruzione Jump on Zero.*
 
 Detto in altre parole: la logica del salto condizionale del SAP era implementata nel microcode, utilizzando linee di indirizzamento delle ROM. Poiché i flag dell'NQSAP erano invece implementati in hardware, non c'era bisogno di consumare preziose linee di indirizzamento delle EEPROM (e di raddoppiare la dimensione del microcode ad ogni aggiunta di un flag).
 
@@ -60,7 +66,7 @@ Un multiplexer (MUX) [74LS157](https://www.ti.com/lit/ds/symlink/sn74ls157.pdf) 
 1. **dal bus**; quando il '157 legge dal bus, è possibile caricare i registri dei flag leggendo valori arbitrari dalla memoria del computer (o, più precisamente, dalla zona di memoria adibita allo Stack) similarmente a quanto svolto dall'istruzione Pull Processor Status **PLP** del 6502;
 
 2. **computandoli** opportunamente:
-    - **V** attraverso un Data Selector/Multiplexer '151 che ricrea la funzione logica dell'Overflow verificando un eventuale cambio di segno nel risultato delle operazioni di somma o sottrazione con segno; **questo aspetto verrà ulteriormente evidenziato** nella sezione apposita dedicato alla comprensione dell'Overflow.
+    - **V** attraverso un Data Selector/Multiplexer '151 che ricrea la funzione logica dell'Overflow verificando un eventuale cambio di segno nel risultato delle operazioni di somma o sottrazione dei numeri con segno (Signed); **questo aspetto verrà ulteriormente evidenziato** nella sezione apposita dedicato alla comprensione dell'Overflow.
     - **Z** come risultato del comparatore [74LS688](https://www.ti.com/lit/ds/symlink/sn74ls688.pdf);
     - **C** attraverso un altro '151 che seleziona la sorgente del Carry;
 
@@ -88,7 +94,7 @@ Interessante notare che le istruzioni CLC, CLV e SEC non hanno bisogno di segnal
 
 Ogni variazione di un flag nel computer SAP di Ben Eater generava una variazione degli indirizzi delle EEPROM, così da poter presentare una logica opportunamente diversa in uscita in conseguenza delle diverse combinazioni degli stati dei flag.
 
-L'approccio dell'NQSAP è molto diverso, in quanto tutti i segnali dei flag (presenti sulle uscite Q e /Q dei FF '74) vengono presentati a un '151; la sua funzione è quella di selezionare uno dei flag da mettere sulla sua uscita per eventualmente permettere l'attivazione del segnale /PC-LOAD, che abilita il caricamento del contenuto del bus sul PC (e dunque i salti). E' sufficiente infatti caricare un nuovo valore nel PC perché questo diventi il nuovo indirizzo a partire dal quale saranno caricate ed eseguite (fetch/execute) le successive istruzioni del programma caricato nella memoria del computer.  
+L'approccio dell'NQSAP è molto diverso, in quanto tutti i segnali dei flag (presenti sulle uscite Q e /Q dei FF '74) vengono presentati a un '151; la sua funzione è quella di selezionare uno dei flag da mettere sulla sua uscita per eventualmente permettere l'attivazione del segnale /PC-LOAD, che abilita il caricamento del contenuto del bus sul Program Counter (e dunque i salti). E' sufficiente infatti caricare un nuovo valore nel Program Counter (PC) perché questo diventi il nuovo indirizzo a partire dal quale saranno caricate ed eseguite (fetch/execute) le successive istruzioni del programma caricato nella memoria del computer.  
 
 Come avviene la selezione del flag da portare all'uscita Z del '151? I segnali IR-Q5 (S0), IR-Q6 (S1) ed IR-Q7 (S2) provenienti dall'IR selezionano quale tra gli input del '151 (I0-I7) si debba portare sull'output Z, come anticipato precedentemente nella *Tabella funzioni Selector/Multiplexer 74LS151*. IR-Q5, Q6 e Q7 sono infatti *hardwired* con l'IR: le istruzioni di branch, ognuna con la sua codifica specifica, determinano quale ingresso Ix del '151 sarà attivato ed esposto in output; a seconda dello stato del flag, /PC-LOAD sarà eventualmente attivo e l'istruzione di salto relativo potrà essere eseguita.
 
