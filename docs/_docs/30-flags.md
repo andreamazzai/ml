@@ -242,15 +242,19 @@ Come già discusso nella pagina dell'ALU:
 
 Oltre ad essere utilizzato per eseguire salti condizionali, il Carry trova chiaramente uso nel [modulo ALU](../alu/#lalu-dellnqsap) per eseguire operazioni aritmetiche ('181) e di shift/rotazione ('194).
 
+![Selezione del Carry da passare al Carry Input di H e dei '181 del modulo ALU](../../assets/flags/30-flag-c-h-alu.png){:width="50%"}
+
+*Selezione del Carry da passare al Carry Input di H e dei '181 del modulo ALU.*
+
 Nel caso specifico di utilizzo del Carry come input di H, l'opportuna programmazione del microcode dei segnali **CC** (**C**arry **C**lear) e **CS** (**C**arry **S**et) dell'istruzione in esecuzione può passare al Carry Input di H:
 
 - un valore *hard-coded* 0
 - un valore *hard-coded* 1
 - il valore realmente presente nel registro del flag C
 
-![Selezione del Carry da passare al Carry Input di H e dei '181 del modulo ALU](../../assets/flags/30-flag-c-h-alu.png){:width="50%"}
+La necessità di inviare all'ALU non solo il valore reale del flag C, ma anche anche valori predefiniti 0 o 1, dipende da due fattori:
 
-*Selezione del Carry da passare al Carry Input di H e dei '181 del modulo ALU.*
+- alcune operazioni aritmetiche del '181 richiedono uno specifico stato del carry: ad esempio le operazioni A Minus 1 e A Plus B richiedono assenza del carry in ingresso, mentre le operazioni A Plus 1 e A Minus B richiedono presenza del carry in ingresso.
 
 | CS | CC | Selezione del Carry                                      |
 | -  | -  | -                                                          |
@@ -259,11 +263,13 @@ Nel caso specifico di utilizzo del Carry come input di H, l'opportuna programmaz
 | HI | LO | Output HI |
 | HI | HI | Non usato |
 
-La negazione del segnale inviato in ingresso al Carry Input del '181 deriva dal fatto che la configurazione utilizzata (logica active-Hi) richiede un carry negato
+La negazione del segnale inviato in ingresso al Carry Input del '181 deriva dal fatto che la configurazione utilizzata (logica attiva alta, “Active-High data”) richiede un segnale Carry In invertito.
 
-Normale:
+Si noti che la Truth Table della tabella precedente richiederebbe i componenti evidenziati nello schema seguente, ma l'applicazione del teorema di De Morgan permette la semplificazione utilizzata poi nello schema adottato nell'NQSAP.
 
-De Morgan (l'ho capito 😁):
+![Schema originale per realizzazione della Truth Table](../../assets/flags/30-flag-c-h-alu-de-morgan.png){:width="50%"}
+
+*Schema originale per realizzazione della Truth Table.*
 
 ## Differenza tra Modulo Flag dell'NQSAP e del BEAM
 
