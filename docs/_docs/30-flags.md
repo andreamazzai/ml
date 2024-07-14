@@ -64,7 +64,7 @@ Un multiplexer (MUX) [74LS157](https://www.ti.com/lit/ds/symlink/sn74ls157.pdf) 
 1. **dal bus**; quando il '157 legge dal bus, è possibile caricare i registri dei flag leggendo valori arbitrari dalla memoria del computer (o, più precisamente, dalla zona di memoria adibita allo Stack) similarmente a quanto svolto dall'istruzione Pull Processor Status **PLP** del 6502;
 
 2. **da un computo**:
-    - **V** attraverso un Data Selector/Multiplexer '151 che ricrea la funzione logica dell'Overflow verificando un eventuale cambio di segno nel risultato delle operazioni di somma o sottrazione dei numeri con segno (Signed); **questo aspetto verrà ulteriormente evidenziato** nella sezione apposita dedicato alla comprensione dell'Overflow.
+    - **V** attraverso un Data Selector/Multiplexer '151 che ricrea la funzione logica dell'overflow verificando un eventuale cambio di segno nel risultato delle operazioni di somma o sottrazione dei numeri con segno (Signed); **questo aspetto verrà ulteriormente evidenziato** nella sezione apposita dedicato alla comprensione dell'overflow.
     - **Z** come risultato del comparatore [74LS688](https://www.ti.com/lit/ds/symlink/sn74ls688.pdf);
     - **C** attraverso un altro '151 che seleziona la sorgente del Carry;
 
@@ -184,11 +184,11 @@ Il flag O**V**erflow è calcolato utilizzando un '151 nella modalità descritta 
 
 Avevo trovato la spiegazione molto criptica, o forse non propriamente adatta ai profani, tanto da impiegare alcune *decine* di ore per comprendere a fondo quanto enunciato rileggendo, cercando altre fonti, seguendo video di aritmetica binaria, facendo esercizi su carta e su uno spreadsheet.
 
-Tom evidenziava che gli MSB degli operandi dell'ALU H e B, insieme all'MSB risultante dall'operazione dell'ALU, erano utilizzati come input per verificare la condizione di overflow: iniziavo a realizzare che l'overflow era in realtà un calcolo molto semplice e preciso di bit.
+Tom evidenziava che gli MSB degli operandi dell'ALU H e B, insieme all'MSB risultante dall'operazione dell'ALU, erano utilizzati come input per verificare la condizione di overflow: iniziavo a realizzare che quello dell'overflow era in realtà un calcolo molto semplice e preciso di bit.
 
 In seguito avevo capito che il calcolo dell'overflow è legato al fatto che si stia lavorando con numeri Signed: questi numeri vengono rappresentati con il **Complemento di 2** (Two's Complement, o anche 2C), nel quale un MSB = LO indica un numero positivo, mentre un MSB = HI indica un numero negativo.
 
-In una delle innumerevoli sessioni di approfondimento e studio dell'overflow, ero finalmente arrivato a comprendere che se nella somma di due numeri con segno si nota un cambiamento di segno del risultato, si ha una situazione di overflow: il cambiamento di segno è rappresentato da una variazione dell'MSB del risultato, cosa che un '151 opportunamente connesso permette di identificare.
+In una delle innumerevoli sessioni di approfondimento e studio, ero finalmente arrivato a comprendere che se nella somma di due numeri con segno si nota un cambiamento di segno del risultato, si ha una situazione di overflow: il cambiamento di segno è rappresentato da una variazione dell'MSB del risultato, cosa che un '151 opportunamente connesso permette di identificare.
 
 ![Utilizzo di un 74LS151 per il calcolo dell'Overflow con evidenza degli MSB di H, B e dell'ALU e degli ingressi di selezione dell'operazione IR-Q1 e IR-Q3.](../../assets/flags/30-flag-v-151.png){:width="50%"}
 
@@ -246,15 +246,16 @@ Oltre ad essere utilizzato per eseguire salti condizionali, il Carry trova chiar
 
 *Selezione del Carry da passare al Carry Input di H e dei '181 del modulo ALU.*
 
-Nel caso specifico di utilizzo del Carry come input di H, l'opportuna programmazione del microcode dei segnali **CC** (**C**arry **C**lear) e **CS** (**C**arry **S**et) dell'istruzione in esecuzione può passare al Carry Input di H:
+L'opportuna programmazione del microcode dei segnali **CC** (**C**arry **C**lear) e **CS** (**C**arry **S**et) dell'istruzione in esecuzione può passare al Carry Input di H e dei '181:
 
 - un valore *hard-coded* 0
 - un valore *hard-coded* 1
 - il valore realmente presente nel registro del flag C
 
-La necessità di inviare all'ALU non solo il valore reale del flag C, ma anche anche valori predefiniti 0 o 1, dipende da due fattori:
+La necessità di inviare all'ALU non solo il valore reale del flag C, ma anche di valori predefiniti 0 o 1, dipende da due fattori:
 
-- alcune operazioni aritmetiche del '181 richiedono uno specifico stato del carry: ad esempio le operazioni A Minus 1 e A Plus B richiedono assenza del carry in ingresso, mentre le operazioni A Plus 1 e A Minus B richiedono presenza del carry in ingresso.
+- alcune operazioni aritmetiche del '181 richiedono uno specifico stato del Carry: ad esempio le operazioni A Minus 1 e A Plus B richiedono assenza del Carry in ingresso, mentre le operazioni A Plus 1 e A Minus B richiedono la sua presenza;
+- le istruzioni ASL ed LSR (Arithmetic Shift Left e Logical Shift Right) richiedono uno 0 rispettivamente nell'LSB e nell'MSB.
 
 | CS | CC | Selezione del Carry                                      |
 | -  | -  | -                                                          |
