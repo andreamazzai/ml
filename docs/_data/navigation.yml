@@ -53,7 +53,7 @@
   - title: "APPROFONDIMENTI"
     children:
       - title: "Aritmetica Binaria"
-        url: /docs/bin-math/
+        url: /docs/math/
       - title: "Instruction Summary"
         url: /docs/in-summary/
   #     - title: "Opcode Table"
