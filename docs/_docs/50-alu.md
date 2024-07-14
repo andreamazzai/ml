@@ -118,7 +118,7 @@ Provando a sintetizzare quando disegnato nell'NQSAP, avevo costruito questa tabe
 
 Legenda tabella *Sintesi operazioni dell'ALU dell'NQSAP*:
 
-- \* Avevo evidenziato queste righe per ricordare che su queste tre istruzioni si doveva "iniettare" un Carry artificiale (che è invertito, dunque il segnale effettivamente applicato sul Carry In del primo '181 doveva essere LO).
+- \* Avevo evidenziato queste righe per ricordare che su queste tre istruzioni si doveva "iniettare" un Carry artificiale (invertito, dunque il segnale effettivamente applicato sul Carry In del primo '181 doveva essere LO).
 
 - \*\* = Le istruzioni che modificano lo stato dei flag sono molte: aritmetiche, logiche, incremento/decremento, rotazione, stack, flag, caricamento/trasferimento registri e *comparazione*. Queste ultime (CMP, CPX e CPY) hanno effetto solo sui flag N, Z e C, che vengono computati effettuando una sottrazione (SBC nella terminologia del 6502) fittizia tra due valori, scartandone il risultato e tenendo in considerazione solo i flag risultanti dalla sottrazione (non avevo mai realmente approfondito come i flag fossero generati e questo esercizio è stato fondamentale). Funzionamento di e differenze tra sottrazioni e comparazioni sono dunque piuttosto semplici da comprendere:
 
@@ -134,7 +134,7 @@ Legenda tabella *Sintesi operazioni dell'ALU dell'NQSAP*:
 
 ### Un esempio pratico
 
-Si stava sostanzialmente dicendo che per eseguire una somma ("**A Plus B**", vedi sesta riga; "**ADC**" nella terminologia del 6502) era necessario avere:
+Si stava sostanzialmente dicendo che per eseguire una somma ("**A Plus B**", vedi sesta riga; "ADC" nella terminologia del 6502) era necessario avere:
 
 - Cn = 1 (che, ricordiamo, è gestito con stato logico invertito, dunque in questo caso l'ALU considera il Carry non presente)
 - M = **0**
@@ -212,7 +212,7 @@ Effetto benefico collaterale molto iomportante del collegamento hardwired tra IR
 
 - Come si nota nell'estratto dello schema *Output dell’Instruction Register verso il modulo ALU con evidenza dei 5 bit di selezione della funzione / operazione dei ‘181*, il segnale S0 è in realtà solo "parzialmente diretto" verso i '181, perché transita prima attraverso una NOR che viene pilotata da una ROM (pin 8) ed attivata solo in corrispondenza delle istruzioni di comparazione, cosicché la codifica **0011*1***, da noi arbitrariamente designata per indicare le istruzioni di comparazione, venga presentata ai '181 come **0011*****0***, che è nuovamente il codice per l'istruzione di sottrazione (Subtract Mode)!
 
-In altre parole, il microcode delle istruzioni di comparazione (che nella mnemonica del 6502 sono CMP, CPX o CPY) dovrà attivare un segnale ("*LF*") in una delle EEPROM: questo segnale attiverà la porta NOR per trasmettere ai '181 il codice 0011**0** della sottrazione anziché 0011**1**, che corrisponde originariamente al codice dell'operazione **A AND NOT B**, non necessario per simulare le istruzioni del 6502 e dunque inutilizzato. LF è l'abbreviazione di A**L**U **F**orce.
+In altre parole, il microcode delle istruzioni di comparazione (che nella mnemonica del 6502 sono CMP, CPX o CPY) dovrà attivare un segnale ("*LF*") in una delle EEPROM: questo segnale attiverà la porta NOR per trasmettere ai '181 il codice 0011**0** della sottrazione anziché 0011**1**, che corrisponde originariamente al codice dell'operazione **A And Not B**, non necessario per simulare le istruzioni del 6502 e dunque inutilizzato. LF è l'abbreviazione di A**L**U **F**orce.
 
 Detto in altre parole ancora:
 
@@ -222,7 +222,7 @@ Detto in altre parole ancora:
 
 - Come è possibile gestire sia le sottrazioni reali sia le comparazioni, considerando che entrambe necessitano di mettere in input sui '181 la stessa codifica **01110**, la quale deve però essere assegnata sia alle istruzioni di sottrazione sia a quelle di comparazione, che devono in realtà avere opcode diversi - e dunque anche codifiche diverse?
 
-- Si identifica un opcode arbitrario per le operazioni di comparazione utilizzandone uno che è assegnato a un'operazione inutilizzata , ad esempio **A And Not B**, che ha come codice M/S3-S0 = **00111**.
+- Si identifica un opcode arbitrario per le operazioni di comparazione utilizzandone uno che è assegnato a un'operazione inutilizzata, ad esempio **A And Not B**, che ha come codice M/S3-S0 = **00111**.
 
 - La differenza tra l'operazione A Minus B e l'operazione A And Not B sta nell'ultimo bit: la prima si attiva con M/S3-S0 = 0011**0**, la seconda con M/S3-S0 = 0011**1**.
 
@@ -299,7 +299,7 @@ Per quale motivo la verifica suddetta non è valida in caso di istruzioni di inc
 
 Tutto questo è spiegato molto bene da Tom nella stessa pagina citata poche righe più sopra; **come detto poc'anzi, l'argomento dell'Overflow sarà comunque ripreso diffusamente in una sezione dedicata**.
 
-## Differenza tra ALU dell'NQSAP e del BEAM
+## Differenze tra Moduli ALU dell'NQSAP e del BEAM
 
 Come si può vedere dallo schema del modulo ALU del computer BEAM, questo è quasi una copia 1:1 del modulo ALU del computer NQSAP: non avevo certamente la capacità di sviluppare autonomamente un modulo ALU così complesso e legato a doppio filo con altri moduli del computer, ma la comprensione completa del funzionamento dell'ALU sviluppata da Tom ha rappresentato comunque un traguardo molto importante.
 
@@ -337,6 +337,9 @@ Ecco una lista delle differenze:
 ## Ripple Mode Carry e Carry Look Ahead
 
 Ne parliamo perché i '161 usati nel MAR e i '181 dell'ALU ne parlano nei datasheet.
+
+**FARE SPIEGAZIONE FUNZIONAMENTO H PER ROTAZIONE**
+**FARE SPIEGAZIONE FUNZIONAMENTO H PER ROTAZIONE**
 
 ## Link utili
 

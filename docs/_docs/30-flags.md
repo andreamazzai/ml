@@ -266,13 +266,13 @@ La necessità di inviare all'ALU non solo il valore reale del flag C, ma anche d
 
 La negazione del segnale inviato in ingresso al Carry Input del '181 deriva dal fatto che la configurazione utilizzata dall'ALU (logica attiva alta, “Active-High data”) richiede un segnale Carry In invertito.
 
-Si noti che la Truth Table della tabella precedente richiederebbe i componenti evidenziati nello schema seguente, ma l'applicazione del teorema di De Morgan permette la semplificazione utilizzata poi nello schema adottato nell'NQSAP.
+Si noti che la Truth Table della tabella richiederebbe i componenti evidenziati nello schema seguente, ma l'applicazione del teorema di De Morgan permette la semplificazione utilizzata poi nello schema adottato nell'NQSAP.
 
 ![Schema originale per realizzazione della Truth Table di selezione del Carry](../../assets/flags/30-flag-c-h-alu-de-morgan.png){:width="50%"}
 
 *Schema originale per realizzazione della Truth Table di selezione del Carry.*
 
-## Differenza tra Modulo Flag dell'NQSAP e del BEAM
+## Differenze tra Moduli Flag dell'NQSAP e del BEAM
 
 Come si può vedere dallo schema del registro dei Flag del computer BEAM, questo è quasi una copia 1:1 del modulo registro dei Flag del computer NQSAP: non avevo certamente la capacità di sviluppare autonomamente un modulo ALU così complesso e legato a doppio filo con altri moduli del computer, ma la comprensione completa del funzionamento dell'ALU sviluppata da Tom ha rappresentato comunque un traguardo molto importante.
 

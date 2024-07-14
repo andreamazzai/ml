@@ -50,12 +50,12 @@
   #       url: /docs/tips/
   #     - title: "Build History"
   #       url: /docs/build-history/
-  - title: "Set di Istruzioni"
+  - title: "APPROFONDIMENTI"
     children:
+      - title: "Aritmetica Binaria"
+        url: /docs/bin-math/
       - title: "Instruction Summary"
         url: /docs/in-summary/
-  #     - title: "Instruction Details"
-  #       url: /docs/in-details/
   #     - title: "Opcode Table"
   #       url: /docs/in-by-opcode/
   #     - title: "Mode Group Table"
@@ -66,7 +66,7 @@
   #       url: /docs/74181-alu-notes/
   #     - title: "Further Reading"
   #       url: /docs/further-reading/
-  - title: "Riferimenti"
+  - title: "RIFERIMENTI"
     children:
       - title: "BEAM su GitHub"
         url: "https://github.com/andreamazzai/beam"

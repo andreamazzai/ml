@@ -6,6 +6,31 @@ excerpt: "Aritmetica binaria"
 
 ## Tassonomia: Flag per parlare di registro o modulo, flag per parlare del singolo flag
 
+Per comprendere appieno i meccanismi dei Flag e dell'ALU, è stato necessario approfondire anche alcuni concetti dell'aritmetica binaria.
+
+Cercando di assimilare il concetto di overflow, 
+
+I concetti utili da comprendere sono:
+
+1. Numeri binari senza segno (Unsigned)
+2. Numeri binari con segno (Signed)
+3. Modalità di rappresentazione dei numeri binari con segno: Magnitudo + Segno, Complemento di 1, Complemento di 2
+4. Somma e sottrazione di numeri binari
+
+
+
+
+Un video che spiega addizioni di numeri Unsigned, Carry ed eventuale Overflow: https://www.youtube.com/watch?v=nKxjLM6ePcI
+Numeri negativi in binario dello stesso autore: https://www.youtube.com/watch?v=dHB7jFjESLY
+Binary Addition and Subtraction With Negative Numbers, 2's Complements & Signed Magnitude: https://www.youtube.com/watch?v=sJXTo3EZoxM
+
+
+Nel caso 1 delle operazioni con numeri senza segno. ipotizziamo di avere un computer a 8 bit, in grado di sommare due numeri a 8 bit: sia gli addendi sia la somma sono numeri a 8 bit che possono dunque andare da 0 a 255. Sommando ad esempio 73 + 114 si ottiene 187, che è un numero rappresentabile con 8 bit; sommando invece ad esempio 175 + 92 si ottiene 267, che non è rappresentabile con un numero a 8 bit: abbiamo un errore di overflow, perché i bit a nostra disposizione (8) non ci consentono di rappresentare il risultato della somma. Abbiamo in pratica un riporto che dovremmo portare al 9° bit del nostro computer, che però ne ha solo 8. In questo caso il segnale di Carry in uscita dall'ALU ci segnalerebbe che il nuero risultante dalla somma dei due addendi è più grande del numero calcolabile dall'ALU.
+
+
+
+
+
 [![Registro dei Flag del BEAM](../../assets/flags/30-flag-beam.png "Registro dei Flag del BEAM"){:width="100%"}](../../assets/flags/30-flag-beam.png)
 
 Bisogna dire che più volte, leggendo la documentazione di Tom Nisbet, ho trovato delle idee molto clever; alcune di queste si trovano nel modulo dei Flag. Cercherò di riportare anche alcune fonti utilizzate da Tom indicandone i collegamenti alla fine della pagina.
