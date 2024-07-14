@@ -170,9 +170,9 @@ Come detto precedentemente, il flag **N**egative è uguale al 7° bit del bus, c
 
 Il flag **Z**ero è attivo quando il valore presente nel bus è zero; invece di usare una serie di AND per verificare se tutte le linee sono LO (come accadeva nel SAP), un singolo comparatore '688 può svolgere la stessa funzione. Notare che anche questo flag opera sul bus e non sui risultati della sola ALU.
 
-![Comparatore 74LS688 per verifica dello stato zero del bus](../../assets/flags/30-flag-688.png){:width="50%"}
+![Comparatore 74LS688 per verifica dello stato zero sul bus](../../assets/flags/30-flag-688.png){:width="50%"}
 
-*Comparatore 74LS688 per verifica dello stato zero del bus.*
+*Comparatore 74LS688 per verifica dello stato zero sul bus.*
 
 ### Overflow
 
@@ -180,33 +180,29 @@ Il flag O**V**erflow è calcolato utilizzando un '151 nella modalità descritta 
 
 Avevo trovato la spiegazione molto criptica, o forse non propriamente adatta ai profani, tanto da impiegare alcune *decine* di ore per comprendere a fondo quanto enunciato rileggendo, cercando altre fonti, seguendo qualche video di aritmetica binaria, facendo esercizi su carta e su uno spreadsheet.
 
-Tom evidenziava che gli MSB degli operandi dell'ALU H e B, insieme all'MSB risultante dall'operazione dell'ALU, erano utilizzati come input per verificare la condizione di overflow: iniziavo a realizzare che l'overflow è in realtà un calcolo molto semplice e preciso di bit.
+Tom evidenziava che gli MSB degli operandi dell'ALU H e B, insieme all'MSB risultante dall'operazione dell'ALU, erano utilizzati come input per verificare la condizione di overflow: iniziavo a realizzare che l'overflow era in realtà un calcolo molto semplice e preciso di bit.
 
-![Utilizzo di un 74LS151 per il calcolo dell'Overflow con evidenza degli MSB H, B e ALU e degli ingressi di selezione dell'operazione IR-Q1 e IR-Q3.](../../assets/flags/30-flag-v-151.png){:width="50%"}
+In seguito capirò che il calcolo dell'overflow è legato al fatto che si stia lavorando con numeri Signed: questi numeri vengono rappresentati con il **Complemento di 2** (Two's Complement, o anche 2C), nel quale un MSB = LO indica un numero positivo, mentre un MSB = HI indica un numero negativo.
 
-*Utilizzo di un 74LS151 per il calcolo dell'Overflow con evidenza degli MSB H, B e ALU e degli ingressi di selezione dell'operazione IR-Q1 e IR-Q3.*
+![Utilizzo di un 74LS151 per il calcolo dell'Overflow con evidenza degli MSB di H, B e dell'ALU e degli ingressi di selezione dell'operazione IR-Q1 e IR-Q3.](../../assets/flags/30-flag-v-151.png){:width="50%"}
 
-Per identificare l'esecuzione di un'operazione di addizione o di sottrazione e dunque selezionare quale dovesse essere l'ingresso corretto del '151 da attivare, si utilizzano due delle linee di selezione dell'operazione dell'ALU, in particolar modo:
+*Utilizzo di un 74LS151 per il calcolo dell'Overflow con evidenza degli MSB di H, B e dell'ALU e degli ingressi di selezione dell'operazione IR-Q1 e IR-Q3.*
+
+Per identificare l'esecuzione di un'operazione di addizione o di sottrazione e dunque selezionare quale debba essere l'ingresso corretto del '151 da attivare, si utilizzano due delle linee di selezione dell'operazione dell'ALU, in particolar modo:
 
 | IR-Q1 | IR-Q3 | Operazione  |
 | -     | -     | -           |
 | HI    | LO    | Addizione   |
 | LO    | HI    | Sottrazione |
 
-![Utilizzo di un 74LS151 per il calcolo dell'Overflow](../../assets/flags/30-flag-v-151.png){:width="50%"}
+NOTA BENE verificare **la congruenza tra istruzioni e collegamenti**; mi pare che lo schema di Tom sia errato.
 
-*Utilizzo di un 74LS151 per il calcolo dell'Overflow.*
+In una delle innumerevoli sessioni di approfondimento e studio dell'overflow, ero finalmente arrivato a comprendere che se nella somma di due numeri con segno si nota un cambiamento di segno del risultato, si ha una situazione di overflow: il cambiamento di segno è rappresentato da una variazione inaspettata dell'MSB del risultato, cosa che un '151 opportunamente connesso permette di identificare.
 
-
-NOTA BENE verificare **la congruenza tra istruzioni e collegamenti**
-
-In una delle innumerevoli sessioni di approfondimento e studio dell'overflow, ero finalmente arrivato a comprendere che se nella somma di due numeri con segno si nota un cambiamento di segno del risultato, si ha una situazione di overflow.
-
-Chiaramente questa discussione è legata al fatto che si sta lavorando con numeri con segno: questi numeri vengono rappresentati con il complemento di 2 e un MSB = LO indica un numero positivo, mentre un MSB = HI indica un numero negativo.
-
-In altre parole: in un byte sono possibili 256 combinazioni; se si ragiona senza segno, è possibile contare da zero a 255. Se si ragiona invece in un'ottica con segno, l'approfondimento nell'apposita sezione sull'aritmetica binaria spiegherà come i numeri positivi da zero a 127 abbiano un riferimento paritetico con i numeri senza segno da 0 a 127, mentre i numeri con segno da -128 a -1 facciano il paio con i numeri senza segno da 128 a 255. aggiungere note con HEX.
+In altre parole: in un byte sono possibili 256 combinazioni; in caso di numeri senza segno (Unsigned) è possibile contare da 0 a 255. Nel caso di numeri Signed, l'approfondimento nell'apposita sezione sull'aritmetica binaria spiegherà come i numeri positivi da 0 a 127 abbiano un riferimento paritetico con i numeri senza segno da 0 a 127, mentre i numeri con segno da -128 a -1 facciano il paio con i numeri senza segno da 128 a 255.
 
 **vedere approfondimento** nella sezione apposita
+aggiungere note con HEX.
 
 ### Carry
 
