@@ -216,7 +216,7 @@ Il registro dei Flag include un registro dedicato al **C**arry. L'NQSAP include 
 - per i calcoli aritmetici il Carry corrisponde al Carry Output dell'ALU '181
 - per le operazioni di shift/rotazione, il Carry è tratto dal **L**east **S**ignificant **B**it (LSB) (pin H-Q0) o dal MSB (pin H-Q7) del registro H.
 
-L'utilizzo di un '151 rappresenta il sistema più efficiente per selezionare la sorgente del Carry. A seconda dell'istruzione in esecuzione, il microcode di quella istruzione provvederà infatti ad attivare opportunamente i segnali C0 e C1:
+L'utilizzo di un altro '151 rappresenta il sistema più efficiente per selezionare la sorgente del Carry. A seconda dell'istruzione in esecuzione, il microcode di quella istruzione provvederà infatti ad attivare opportunamente i segnali C0 e C1:
 
 ![Utilizzo di un 74LS151 per la selezione del Carry da memorizzare nel Carry flag](../../assets/flags/30-flag-c-151.png){:width="50%"}
 
@@ -233,14 +233,14 @@ L'utilizzo di un '151 rappresenta il sistema più efficiente per selezionare la 
 
 Come già discusso nella pagina dell'ALU:
 
-- \*\* il Carry del '181 lavora in logica negativa, pertanto un segnale C = LO in uscita significa che il Carry è presente; va da sé che per registrare lo stato del Carry in logica positiva sul registro del flag C devo invertire il segnale in ingresso;
-- \*\*\* all'inizio di ogni istruzione il contenuto di H corrisponde esattamente a quello di A.
+- \*\* il Carry del '181 lavora in logica negativa, pertanto un segnale C = LO indica che il Carry è presente; va da sé che per registrare lo stato del Carry in logica positiva sul registro del flag C è necessario il segnale in ingresso;
+- \*\*\* all'inizio di ogni istruzione il contenuto di H corrisponde esattamente a quello di A (sezione [Il registro H](../alu/#il-registro-h) nella pagina dedicata all'ALU).
 
 ## Il Carry e i registri H e ALU
 
 **Carry Input**
 
-Oltre all'utilizzo con un '151 per eseguire salti condizionali basati sulla presenza / assenza del Carry, questo viene chiaramente utilizzato anche come ingresso per il [modulo ALU](../alu/#lalu-dellnqsap) per eseguire operazioni aritmetiche ('181) e di shift/rotazione ('194).
+Oltre ad essere utilizzato per eseguire salti condizionali, il Carry trova chiaramente uso nel [modulo ALU](../alu/#lalu-dellnqsap) per eseguire operazioni aritmetiche ('181) e di shift/rotazione ('194).
 
 Nel caso specifico di utilizzo del Carry come input di H, l'opportuna programmazione del microcode dei segnali **CC** (**C**arry **C**lear) e **CS** (**C**arry **S**et) dell'istruzione in esecuzione può passare al Carry Input di H:
 
