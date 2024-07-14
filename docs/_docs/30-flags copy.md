@@ -184,7 +184,7 @@ Tom evidenziava che gli MSB degli operandi dell'ALU H e B, insieme all'MSB risul
 
 ![Utilizzo di un 74LS151 per il calcolo dell'Overflow con evidenza degli MSB H, B e ALU e degli ingressi di selezione dell'operazione IR-Q1 e IR-Q3.](../../assets/flags/30-flag-v-151.png){:width="50%"}
 
-*Utilizzo di un 74LS151 per il calcolo dell'Overflow con evidenza degli MSB H, B e ALU e degli ingressi di selezione dell'operazione IR-Q1 e IR-Q3.*
+*Utilizzo di un 74LS151 per il calcolo dell'Overflow.*
 
 Per identificare l'esecuzione di un'operazione di addizione o di sottrazione e dunque selezionare quale dovesse essere l'ingresso corretto del '151 da attivare, si utilizzano due delle linee di selezione dell'operazione dell'ALU, in particolar modo:
 
@@ -192,11 +192,6 @@ Per identificare l'esecuzione di un'operazione di addizione o di sottrazione e d
 | -     | -     | -           |
 | HI    | LO    | Addizione   |
 | LO    | HI    | Sottrazione |
-
-![Utilizzo di un 74LS151 per il calcolo dell'Overflow](../../assets/flags/30-flag-v-151.png){:width="50%"}
-
-*Utilizzo di un 74LS151 per il calcolo dell'Overflow.*
-
 
 NOTA BENE verificare **la congruenza tra istruzioni e collegamenti**
 
