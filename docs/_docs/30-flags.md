@@ -41,13 +41,13 @@ Analizzando ad esempio un'istruzione di salto condizionale legata al flag Z risc
 
 Se ad esempio una generica istruzione *Jump on Zero* fosse codificata come 010 sui 3 segnali S2, S1 ed S0 comuni tra Instruction Register (IR) e registro dei Flag, si verificherebbe la seguente sequenza:
 
-- il pin I2 di ingresso del '151 sarebbe attivato
-- cioè in presenza del flag Z, l'uscita Q del Flip-Flop avrebbe valore logico HI
-- l'uscita del '151 andrebbe ad abilitare il segnale /PC-LOAD sul Program Counter (**PC**)
+- il pin I2 di ingresso del '151 sarebbe attivato;
+- in presenza del flag Z, l'uscita Q del Flip-Flop connessa al pin I2 avrebbe valore logico HI;
+- l'uscita del '151 andrebbe ad abilitare il segnale /PC-LOAD sul Program Counter (**PC**).
 
 La pagina dei registri [D, X e Y](../dxy) descrive il calcolo del valore da inserire nel PC.
 
-![Tabella funzioni Selector/Multiplexer 74LS151 con evidenza della ipotetica istruzione Jump on Zero](../../assets/flags/30-flag-151-table.png){:width="40%"}
+![Tabella funzioni Selector/Multiplexer 74LS151 con evidenza della ipotetica istruzione Jump on Zero](../../assets/flags/30-flag-151-table.png){:width="33%"}
 
 *Tabella funzioni Selector/Multiplexer 74LS151 con evidenza della ipotetica istruzione Jump on Zero.*
 
@@ -65,7 +65,7 @@ Un multiplexer (MUX) [74LS157](https://www.ti.com/lit/ds/symlink/sn74ls157.pdf) 
 
 1. **dal bus**; quando il '157 legge dal bus, è possibile caricare i registri dei flag leggendo valori arbitrari dalla memoria del computer (o, più precisamente, dalla zona di memoria adibita allo Stack) similarmente a quanto svolto dall'istruzione Pull Processor Status **PLP** del 6502;
 
-2. **computandoli** opportunamente:
+2. **da un computo**:
     - **V** attraverso un Data Selector/Multiplexer '151 che ricrea la funzione logica dell'Overflow verificando un eventuale cambio di segno nel risultato delle operazioni di somma o sottrazione dei numeri con segno (Signed); **questo aspetto verrà ulteriormente evidenziato** nella sezione apposita dedicato alla comprensione dell'Overflow.
     - **Z** come risultato del comparatore [74LS688](https://www.ti.com/lit/ds/symlink/sn74ls688.pdf);
     - **C** attraverso un altro '151 che seleziona la sorgente del Carry;
@@ -82,9 +82,9 @@ Quattro porte AND permettono il caricamento dei FF in presenza del segnale di cl
 
 - Si noti che i FF non vengono mai pre-settati, pertanto /Preset resta fisso a Vcc (e dunque mai attivo); è presente invece una connessione al segnale di reset generale del computer (/RST).
 
-- Le uscite dei FF sono connesse a un '151 per poter gestire, come si vedrà in seguito in questa pagina, i salti condizionali.
+- Le uscite dei FF sono connesse a un '151 per gestire i salti condizionali.
 
-- Il flag C viene esportato anche verso i 74LS181 e il registro H del modulo ALU. **Ulteriori dettagli a seguire**.
+- Il flag C viene esportato anche verso i '181 e il registro H del modulo ALU; si veda la sezione [Il Carry e i registri H e ALU](#il-carry-e-i-registri-h-e-alu) in questa stessa pagina.
 
 Un transceiver 74LS245 permette infine di esportare i 4 flag NVZC sul bus per salvarli in memoria, o più precisamente nello Stack, similarmente a quanto accade nel 6502 con l'istruzione Push Processor Status (PHP).
 
