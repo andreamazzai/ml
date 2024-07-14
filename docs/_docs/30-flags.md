@@ -246,38 +246,28 @@ Nel caso specifico di utilizzo del Carry come input di H, l'opportuna programmaz
 
 - un valore *hard-coded* 0
 - un valore *hard-coded* 1
-- il valore realmente presente nel registro C
+- il valore realmente presente nel registro del flag C
 
-Ecco come settare il Carry Output fixed HI o LO oppure semplicemente lasciarlo passare (riferimento ai segnali dell'NQSAP).
+![Selezione del Carry da passare al Carry Input di H e dei '181 del modulo ALU](../../assets/flags/30-flag-c-h-alu.png){:width="50%"}
 
-- CS LO, CC LO: Flag-In passa normale
-- CS HI, CC LO: Flag-Out HI
-- CS LO, CC HI: Flag-Out LO
+*Selezione del Carry da passare al Carry Input di H e dei '181 del modulo ALU.*
 
-L'output del Carry a ALU e H è controllato da LC ed LS CC e CS (01/10/2022 l'autore ha aggiornato i nomi sul blog, ma non sullo schema). Questi due segnali possono semplicemente passare il Carry attuale presente in C, oppure passare HI o LO.
+| CS | CC | Selezione del Carry                                      |
+| -  | -  | -                                                          |
+| LO | LO | Valore presente nel registro Flag C |
+| LO | HI | Output LO |
+| HI | LO | Output HI |
+| HI | HI | Non usato |
 
-Per il motivo già descritto sopra, nel caso di uso del Carry da parte dell'ALU (che lavora in logica "negativa", ma ancora da chiarire il senso, 27/11/2022) usiamo il valore invertito.
-
-| Segnale | Descrizione         |
-|  - | -                        |
-| FC | write Carry flag         |
-| FZ | write Zero flag          |
-| FV | write oVerflow flag      |
-| FN | write Negative flag      |
-| FB | load flags from the bus  |
-| JC | jump conditional         |
-| C0 | carry source select 0    |  
-| C1 | carry source select 1    |
-| CC | ALU carry input clear    |
-| CS | ALU carry input set      |
+La negazione del segnale inviato in ingresso al Carry Input del '181 deriva dal fatto che la configurazione utilizzata (logica active-Hi) richiede un carry negato
 
 Normale:
 
 De Morgan (l'ho capito 😁):
 
-## Differenza tra ALU dell'NQSAP e del BEAM
+## Differenza tra Modulo Flag dell'NQSAP e del BEAM
 
-Come si può vedere dallo schema del modulo ALU del computer BEAM, questo è quasi una copia 1:1 del modulo ALU del computer NQSAP: non avevo certamente la capacità di sviluppare autonomamente un modulo ALU così complesso e legato a doppio filo con altri moduli del computer, ma la comprensione completa del funzionamento dell'ALU sviluppata da Tom ha rappresentato comunque un traguardo molto importante.
+Come si può vedere dallo schema del registro dei Flag del computer BEAM, questo è quasi una copia 1:1 del modulo registro dei Flag del computer NQSAP: non avevo certamente la capacità di sviluppare autonomamente un modulo ALU così complesso e legato a doppio filo con altri moduli del computer, ma la comprensione completa del funzionamento dell'ALU sviluppata da Tom ha rappresentato comunque un traguardo molto importante.
 
 [![Schema logico dell'ALU del computer BEAM](../../assets/alu/50-alu-beam-schematics.png "Schema logico dell'ALU del computer BEAM"){:width="100%"}](../../assets/alu/50-alu-beam-schematics.png)
 
