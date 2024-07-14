@@ -168,7 +168,7 @@ Come detto precedentemente, il flag **N**egative è uguale al 7° bit del bus, c
 
 ### Zero
 
-Il flag **Z**ero è funzione del fatto che il valore presente nel bus sia zero; invece di usare una serie di AND per verificare se tutte le linee sono LO (come accadeva nel SAP), un singolo comparatore '688 può svolgere la stessa funzione. Notare che anche questo flag opera sul bus e non sui risultati della sola ALU.
+Il flag **Z**ero è attivo quando il valore presente nel bus è zero; invece di usare una serie di AND per verificare se tutte le linee sono LO (come accadeva nel SAP), un singolo comparatore '688 può svolgere la stessa funzione. Notare che anche questo flag opera sul bus e non sui risultati della sola ALU.
 
 ![Comparatore 74LS688 per verifica dello stato zero del bus](../../assets/flags/30-flag-688.png){:width="50%"}
 
@@ -178,16 +178,21 @@ Il flag **Z**ero è funzione del fatto che il valore presente nel bus sia zero; 
 
 Il flag O**V**erflow è calcolato utilizzando un '151 nella modalità descritta in ["74181 with V_Flag"](http://6502.org/users/dieter/v_flag/v_4.htm) sul sito 6502.org.
 
-Avevo trovato la spiegazione molto criptica, o forse non propriamente adatta ai profani, tanto da impiegare alcune *decine* di ore per comprendere a fondo quanto enunciato rileggendo, cercando altre fonti, facendo esercizi su carta e su uno spreadsheet.
+Avevo trovato la spiegazione molto criptica, o forse non propriamente adatta ai profani, tanto da impiegare alcune *decine* di ore per comprendere a fondo quanto enunciato rileggendo, cercando altre fonti, seguendo qualche video di aritmetica binaria, facendo esercizi su carta e su uno spreadsheet.
 
 Tom evidenziava che gli MSB degli operandi dell'ALU H e B, insieme all'MSB risultante dall'operazione dell'ALU, erano utilizzati come input per verificare la condizione di overflow: iniziavo a realizzare che l'overflow è in realtà un calcolo molto semplice e preciso di bit.
 
-Per identificare l'esecuzione di un'operazione di addizione o di sottrazione e dunque selezionare quale dovesse essere l'ingresso del '151 da attivare, si utilizzano due delle linee di selezione dell'operazione dell'ALU, in particolar modo:
+Per identificare l'esecuzione di un'operazione di addizione o di sottrazione e dunque selezionare quale dovesse essere l'ingresso corretto del '151 da attivare, si utilizzano due delle linee di selezione dell'operazione dell'ALU, in particolar modo:
 
 | IR-Q1 | IR-Q3 | Operazione  |
 | -     | -     | -           |
 | HI    | LO    | Addizione   |
 | LO    | HI    | Sottrazione |
+
+![Utilizzo di un 74LS151 per il calcolo dell'Overflow](../../assets/flags/30-flag-v-151.png){:width="50%"}
+
+*Utilizzo di un 74LS151 per il calcolo dell'Overflow.*
+
 
 NOTA BENE verificare **la congruenza tra istruzioni e collegamenti**
 
@@ -265,6 +270,28 @@ Normale:
 
 De Morgan (l'ho capito 😁):
 
+## Differenza tra ALU dell'NQSAP e del BEAM
+
+Come si può vedere dallo schema del modulo ALU del computer BEAM, questo è quasi una copia 1:1 del modulo ALU del computer NQSAP: non avevo certamente la capacità di sviluppare autonomamente un modulo ALU così complesso e legato a doppio filo con altri moduli del computer, ma la comprensione completa del funzionamento dell'ALU sviluppata da Tom ha rappresentato comunque un traguardo molto importante.
+
+[![Schema logico dell'ALU del computer BEAM](../../assets/alu/50-alu-beam-schematics.png "Schema logico dell'ALU del computer BEAM"){:width="100%"}](../../assets/alu/50-alu-beam-schematics.png)
+
+*Schema logico dell'ALU del computer BEAM.*
+
+Ecco una lista delle differenze:
+
+- Per il registro B ho utilizzato un Flip-Flop tipo D [74LS377](https://www.ti.com/lit/ds/symlink/sn54ls377.pdf) al posto del [74LS574](https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf). A differenza del '574, il '377 è dotato di ingresso Enable, che solo quando attivo permette il caricamento del registro in corrispondenza del Rising Edge del clock: così facendo si elimina la necessità di un gate in ingresso sul clock per realizzare un Enable artificiale, come descritto nella sezione [L'ALU dell'NQSAP](#lalu-dellnqsap).
+
+![Schema di uno degli 8 Flip-Flop del 74LS377](../../assets/alu/50-alu-377.png "Schema di uno degli 8 Flip-Flop del 74LS377"){:width="66%"}
+
+*Schema di uno degli 8 Flip-Flop del 74LS377.*
+
+ **Da fare**: Valutare se anche questo ha un riflesso positivo sul discorso del glitch
+
+- Il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Come si vedrà però in maggior dettaglio nelle sezioni riservate al microcode, con soli 8 step non sarebbe stato possibile emulare alcune delle istruzioni del 6502, come quelle di salto relativo ed altre. Questa è in realtà una differenza architetturale più legata alla Control Logic, però l'impatto principale sul numero di step disponibili si riflette in particolar modo sull'ALU ed ha dunque sicuramente senso citarla in questa sezione.
+
+
+
 ## ALTRO
 Flag e Microcode
 Molte delle istruzioni modificano i flag.
@@ -278,3 +305,11 @@ Altre referenze Tom Nisbet per Flags
 - Opcodes and Flag decoding circuit on reddit has a different approach to conditional jumps using hardware. Instead of driving the LOAD line of the PC, the circuit sits between the Instruction Register and the ROM and conditionally jams a NOP or JMP instruction to the microcode depending on the state of the flags. One interesting part of the design is that the opcodes of the jump instructions are arranged so that the flag of interest can be determined by bits from the IR. NQSAP already did something similar with the ALU select lines, so the concept was used again for the conditional jump select lines.
 
 LINK: il PDF di MICR LOGIC come compendio a istruzioni ,indirizzamenti flag etc
+
+http://www.6502.org/tutorials/vflag.html per V sezione 2.4.2.1
+
+interessante la definizione di come rappresentare un numero in complemento di 2 (2C): quel numero che sommato al numero in oggetto dà zero come risultato: -1 = $FF; -2 = $FE
+
+2.4.2.2 per esempi somme e sottrazioni
+
+V indica se il risultato di somma o sottrazione è fuori dal range 
