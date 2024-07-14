@@ -64,7 +64,7 @@ Un multiplexer (MUX) [74LS157](https://www.ti.com/lit/ds/symlink/sn74ls157.pdf) 
 1. **dal bus**; quando il '157 legge dal bus, è possibile caricare i registri dei flag leggendo valori arbitrari dalla memoria del computer (o, più precisamente, dalla zona di memoria adibita allo Stack) similarmente a quanto svolto dall'istruzione Pull Processor Status **PLP** del 6502;
 
 2. **da un computo**:
-    - **V** attraverso un Data Selector/Multiplexer '151 che ricrea la funzione logica dell'overflow verificando un eventuale cambio di segno nel risultato delle operazioni di somma o sottrazione dei numeri con segno (Signed); **questo aspetto verrà ulteriormente evidenziato** nella sezione apposita dedicato alla comprensione dell'overflow.
+    - **V** attraverso un Data Selector/Multiplexer '151 che ricrea la funzione logica dell'overflow verificando un eventuale cambio di segno nel risultato delle operazioni di somma o sottrazione dei numeri con segno (Signed);
     - **Z** come risultato del comparatore [74LS688](https://www.ti.com/lit/ds/symlink/sn74ls688.pdf);
     - **C** attraverso un altro '151 che seleziona la sorgente del Carry;
 
@@ -72,7 +72,7 @@ V, Z e C escono dal MUX '157 e sono presentati a 3 dei 4 Flip-Flop disponibili i
 
 Il flag **N**egative viene letto direttamente dalla linea D7 del bus e caricato sul 4° Flip-Flop.
 
-Quattro porte AND permettono il caricamento dei FF in presenza del segnale di clock e della contemporanea attivazione degli opportuni segnali F**N**, F**V**, F**Z** ed F**C** provenienti dalla Control Logic (CL); è opportuno ricordare che il caricamento dei registri viene sempre effettuato in corrispondenza del Rising Edge del Clock.
+Quattro porte AND permettono il caricamento dei FF in presenza del segnale di clock e della contemporanea attivazione degli opportuni segnali **FN**, **FV**, **FZ** ed **FC** provenienti dalla Control Logic (CL); è opportuno ricordare che il caricamento dei registri viene sempre effettuato in corrispondenza del Rising Edge del Clock.
 
 Ogni istruzione del computer, grazie alla personalizzazione del microcode, può settare anche più di un flag alla volta (come accade ad esempio per le operazioni ADC e SBC, che sul 6502 influiscono contemporaneamente su tutti i 4 flag **NVZC**).
 
@@ -143,7 +143,7 @@ Tenendo ora in considerazione l'esistenza del segnale Jump Enable, evidenziato i
 - la cui codifica porti ad avere S2/S1/S0 = 101 agli ingressi di selezione del '151, **e**
 - il cui microcode attivi il segnale JE.
 
-A questo punto della spiegazione si sarà notato che i FF '74 espongono i flag sia in logica normale (Q), sia in logica invertita (/Q): questo risulta molto comodo per determinare se un determinato flag sia presente o assente ed attivare il segnale JE quando si desidera verificare l'assenza di quel flag. Se ad esempio il Carry non fosse presente e si desiderasse eseguire un salto verificando la condizione "Carry non presente" (Branch on Carry Clear, BCC), si può verificare se /Q sia HI, così da attivare opportunamente il segnale di salto /PC-LOAD.
+A questo punto della spiegazione si sarà notato che i FF '74 espongono i flag sia in logica normale (Q), sia in logica invertita (/Q): questo risulta molto comodo per determinare la presenza o assenza di un determinato flag. Ricorrendo a un altro esempio, se il Carry non fosse presente e si desiderasse eseguire un salto verificando la condizione "Carry non presente" (Branch on Carry Clear, BCC), si può verificare se /Q sia HI, così da attivare opportunamente il segnale di salto /PC-LOAD.
 
 L'utilizzo di una NOR all'uscita Z del '151 permette di gestire sia i salti condizionali (dunque da validare con una apposita verifica logica, cioè quella della presenza/assenza di un determinato flag), sia i salti incondizionati:
 
@@ -155,10 +155,10 @@ L'utilizzo di una NOR all'uscita Z del '151 permette di gestire sia i salti cond
 
 *NOR per l'attivazione di /PC-LOAD con salti condizionali ed incondizionati.*
 
-In definitiva, il microcode prevede:
+In definitiva, il microcode delle istruzioni di salto prevede:
 
 - l'attivazione di JE per eseguire i salti condizionali;
-- l'attivazione di WP per caricare senza altri controlli un determinato indirizzo sul PC.
+- l'attivazione di WP per eseguire i salti incondizionati.
 
 Vi è un effetto non desiderato: "le istruzioni di salto condizionato non eseguite sprecano cicli di clock"… non si potrebbe semplicemente usare N per terminare anticipatamente l'istruzione? Lui sembra renderla un po' complicata
 
@@ -168,7 +168,7 @@ Vi è un effetto non desiderato: "le istruzioni di salto condizionato non esegui
 
 ### Negative
 
-Come detto precedentemente, il flag **N**egative è ricavato dal 7° bit del bus, cioè l'MSB: il flag viene gestito sulla linea D7 del bus in quanto i numeri Signed utilizzano proprio il **M**ost **S**ignificant **B**it (MSB) per indicare il proprio segno. Interessante notare che, essendo N mappato sul bus e non direttamente sull'ALU, è possibile rilevare un numero Negative anche in contesti esterni ai '181, ad esempio nel risultato di una rotazione fatta con lo Shift-Register o in un trasferimento di dato da un registro a un altro: tutto ciò che transita sul bus può essere oggetto di verifica del suo stato di numero Signed positivo o negativo.
+Come detto precedentemente, il flag **N**egative è ricavato dal 7° bit del bus, cioè l'MSB: il flag viene gestito sulla linea D7 del bus in quanto i numeri Signed utilizzano proprio il Most Significant Bit (MSB) per indicare il proprio segno. Interessante notare che, essendo N mappato sul bus e non direttamente sull'ALU, è possibile rilevare un numero Negative anche in contesti esterni ai '181, ad esempio nel risultato di una rotazione fatta con lo Shift-Register o in un trasferimento di dato da un registro a un altro: tutto ciò che transita sul bus può essere oggetto di verifica del suo stato di numero Signed positivo o negativo.
 
 ### Zero
 
@@ -214,7 +214,7 @@ Anticipo una comprensione che approfondirò nella apposita sezione dedicata all'
 Il registro dei Flag include un registro dedicato al **C**arry. L'NQSAP include diverse  operazioni che possono generare un Carry:
 
 - per i calcoli aritmetici il Carry corrisponde al Carry Output dell'ALU '181
-- per le operazioni di shift/rotazione, il Carry è tratto dal **L**east **S**ignificant **B**it (LSB) (pin H-Q0) o dal MSB (pin H-Q7) del registro H.
+- per le operazioni di shift/rotazione, il Carry è tratto dal Least Significant Bit (LSB) (pin H-Q0) o dal MSB (pin H-Q7) del registro H.
 
 L'utilizzo di un altro '151 rappresenta il sistema più efficiente per selezionare la sorgente del Carry. A seconda dell'istruzione in esecuzione, il microcode di quella istruzione provvederà infatti ad attivare opportunamente i segnali C0 e C1:
 
