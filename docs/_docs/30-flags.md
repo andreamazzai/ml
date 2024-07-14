@@ -43,7 +43,7 @@ Se ad esempio una generica istruzione *Jump on Zero* fosse codificata come 010 s
 
 - il pin I2 di ingresso del '151 sarebbe attivato;
 - in presenza del flag Z, l'uscita Q del Flip-Flop connessa al pin I2 avrebbe valore logico HI;
-- l'uscita del '151 andrebbe ad abilitare il segnale /PC-LOAD sul Program Counter (**PC**) per saltare al nuovo indirizzo.
+- l'uscita del '151 andrebbe ad abilitare il segnale /PC-LOAD sul Program Counter (PC) per saltare al nuovo indirizzo.
 
 ![Tabella funzioni Selector/Multiplexer 74LS151 con evidenza della ipotetica istruzione Jump on Zero](../../assets/flags/30-flag-151-table.png){:width="33%"}
 
@@ -198,15 +198,15 @@ Per identificare l'esecuzione di un'operazione di addizione o di sottrazione e d
 
 | IR-Q1 | IR-Q3 | Operazione  |
 | -     | -     | -           |
-| HI    | LO    | Addizione   |
-| LO    | HI    | Sottrazione |
-
-NOTA BENE verificare **la congruenza tra istruzioni e collegamenti**; mi pare che lo schema di Tom sia errato.
+| HI    | LO    | Sottrazione |
+| LO    | HI    | Addizione   |
 
 Anticipo una comprensione che approfondirò nella apposita sezione dedicata all'aritmetica binaria apposita: in un byte sono possibili 256 combinazioni; in caso di numeri senza segno (Unsigned) è possibile contare da 0 a 255. Nel caso di numeri Signed, l'approfondimento nell'apposita sezione sull'aritmetica binaria spiegherà come i numeri positivi da 0 a 127 abbiano un riferimento paritetico con i numeri senza segno da 0 a 127, mentre i numeri con segno da -128 a -1 facciano il paio con i numeri senza segno da 128 a 255.
 
 **aggiungere note con HEX.**
+
 **aggiungere note con HEX.**
+
 **aggiungere note con HEX.**
 
 ### Carry
@@ -222,10 +222,10 @@ L'utilizzo di un altro '151 rappresenta il sistema più efficiente per seleziona
 
 *Utilizzo di un 74LS151 per la selezione del Carry da memorizzare nel Carry flag.*
 
-| C1 | C0 | Selezione del Carry                                      |
-| -  | -  | -                                                          |
-| LO | LO | Provenienza dal Carry Output dell'ALU **(non invertito\*)** |
-| LO | HI | Provenienza dal Carry Output dell'ALU **(invertito\*\*)**   |
+| C1 | C0 | Selezione del Carry                                          |
+| -  | -  | -                                                            |
+| LO | LO | Provenienza dal Carry Output dell'ALU (non invertito\*)      |
+| LO | HI | Provenienza dal Carry Output dell'ALU (invertito\*\*)        |
 | HI | LO | Provenienza dall'MSB (H-Q7) del registro H\*\*\*             |
 | HI | HI | Provenienza dall'LSB (H-Q0) del registro H\*\*\*             |
 
@@ -233,7 +233,7 @@ L'utilizzo di un altro '151 rappresenta il sistema più efficiente per seleziona
 
 Come già discusso nella pagina dell'ALU:
 
-- \*\* il Carry del '181 lavora in logica negativa, pertanto un segnale C = LO indica che il Carry è presente; va da sé che per registrare lo stato del Carry in logica positiva sul registro del flag C è necessario il segnale in ingresso;
+- \*\* il Carry del '181 lavora in logica negativa, pertanto un segnale C = LO indica che il Carry è presente; va da sé che per registrare lo stato del Carry in logica positiva sul registro del flag C è necessario invertire il segnale in ingresso;
 - \*\*\* all'inizio di ogni istruzione il contenuto di H corrisponde esattamente a quello di A (sezione [Il registro H](../alu/#il-registro-h) nella pagina dedicata all'ALU).
 
 ## Il Carry e i registri H e ALU
@@ -255,7 +255,7 @@ L'opportuna programmazione del microcode dei segnali **CC** (**C**arry **C**lear
 La necessità di inviare all'ALU non solo il valore reale del flag C, ma anche di valori predefiniti 0 o 1, dipende da due fattori:
 
 - alcune operazioni aritmetiche del '181 richiedono uno specifico stato del Carry: ad esempio le operazioni A Minus 1 e A Plus B richiedono assenza del Carry in ingresso, mentre le operazioni A Plus 1 e A Minus B richiedono la sua presenza;
-- le istruzioni ASL ed LSR (Arithmetic Shift Left e Logical Shift Right) richiedono uno 0 rispettivamente nell'LSB e nell'MSB.
+- le istruzioni ASL ed LSR (Arithmetic Shift Left e Logical Shift Right) richiedono l'inserimento di uno 0 rispettivamente nell'LSB e nell'MSB.
 
 | CS | CC | Selezione del Carry                                      |
 | -  | -  | -                                                          |
@@ -264,13 +264,13 @@ La necessità di inviare all'ALU non solo il valore reale del flag C, ma anche d
 | HI | LO | Output HI |
 | HI | HI | Non usato |
 
-La negazione del segnale inviato in ingresso al Carry Input del '181 deriva dal fatto che la configurazione utilizzata (logica attiva alta, “Active-High data”) richiede un segnale Carry In invertito.
+La negazione del segnale inviato in ingresso al Carry Input del '181 deriva dal fatto che la configurazione utilizzata dall'ALU (logica attiva alta, “Active-High data”) richiede un segnale Carry In invertito.
 
 Si noti che la Truth Table della tabella precedente richiederebbe i componenti evidenziati nello schema seguente, ma l'applicazione del teorema di De Morgan permette la semplificazione utilizzata poi nello schema adottato nell'NQSAP.
 
-![Schema originale per realizzazione della Truth Table](../../assets/flags/30-flag-c-h-alu-de-morgan.png){:width="50%"}
+![Schema originale per realizzazione della Truth Table di selezione del Carry](../../assets/flags/30-flag-c-h-alu-de-morgan.png){:width="50%"}
 
-*Schema originale per realizzazione della Truth Table.*
+*Schema originale per realizzazione della Truth Table di selezione del Carry.*
 
 ## Differenza tra Modulo Flag dell'NQSAP e del BEAM
 
