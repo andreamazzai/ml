@@ -14,7 +14,7 @@
   docs:
   - title: "OVERVIEW"
     children:
-      - title: "BEAM?"
+      - title: "Il computer BEAM"
         url: /
       # - title: "Why?"
       #   url: /docs/why/
