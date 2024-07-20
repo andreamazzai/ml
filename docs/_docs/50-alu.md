@@ -128,7 +128,7 @@ Legenda tabella *Sintesi operazioni dell'ALU dell'NQSAP*:
   - nelle comparazioni il valore risultante dalla sottrazione viene calcolato e *scartato*;
   - per entrambe le istruzioni i flag sono mantenuti.
 
-  Per eseguire le comparazioni si eseguono dunque delle sottrazioni scartando il risultato, tuttavia le operazioni di sottrazione del '181 sono già utilizzate per eseguire le sottrazioni vere e proprie (SBC) e sono codificate nella terza riga della tabella con M/S3-S0 = **00110**: come è possibile eseguire altre operazioni di sottrazione utilizzando un opcode diverso da **00110** pur sapendo che i '181 eseguono le sottrazioni solo con questa codifica in ingresso? Lo vedremo tra poco in questa stessa pagina.
+  Per eseguire le comparazioni si eseguono dunque delle sottrazioni scartando il risultato, tuttavia le operazioni di sottrazione del '181 sono già utilizzate per eseguire le sottrazioni vere e proprie (SBC) e sono codificate nella terza riga della tabella con M/S3-S0 = **00110**: come è possibile eseguire altre operazioni di sottrazione utilizzando un opcode diverso da **00110** pur sapendo che i '181 eseguono le sottrazioni solo con questa codifica in ingresso? Lo vedremo tra poco nella sezione [Istruzioni di comparazione](#istruzioni-di-comparazione).
 
 - \*\*\* L'operazione A+A veniva usata nell'NQSAP per fare lo shift verso sinistra dei bit; vista la presenza dello Shift Register H, ho preferito riversare su di esso tutte le operazioni di rotazione (a destra e a sinistra, sia con Carry sia senza Carry).
 
@@ -154,7 +154,7 @@ In pratica, poiché gli ingressi M ed S3-S0 dei '181 sono direttamente connessi 
 
 *Output dell'Instruction Register verso il modulo ALU con evidenza dei 5 bit di selezione della funzione / operazione dei '181.*
 
-Attivando questa istruzione, il risultato esposto in output dai '181 sarebbe stato esattamente **A Plus B**, proprio come indicato nella decima riga / colonna Cn = HI della tabella estratta dal datasheet "*Funzioni logiche e operazioni aritmetiche del 74LS181.*"; se avessimo invece avuto un Carry in ingresso, il risultato esposto sarebbe stato A + B + 1, come indicato nella decima riga / colonna Cn = LO. La somma (almeno in teoria) funzionava e iniziavo anche a far luce sul legame tra le due colonne Cn = LO / Cn = HI: il risultato in output era sempre lo stesso e variava solo in conseguenza del fatto che in ingresso ci fosse un Carry o meno.
+Attivando questa istruzione, il risultato esposto in output dai '181 sarebbe stato esattamente **A Plus B**, proprio come indicato nella decima riga / colonna Cn = HI della tabella estratta dal datasheet "*Funzioni logiche e operazioni aritmetiche del 74LS181.*"; se avessimo invece avuto un Carry in ingresso, il risultato esposto sarebbe stato A + B + 1, come indicato nella decima riga / colonna Cn = LO. La somma (almeno in teoria) funzionava e iniziavo anche a vedere in pratica il legame tra le due colonne Cn = LO / Cn = HI: il risultato in output era sempre lo stesso e variava solo in conseguenza del fatto che in ingresso ci fosse un Carry o meno.
 
 Gli altri 3 bit di output dell'IR venivano scelti arbitrariamente, pur se con qualche accorgimento strutturato, per gestire le diverse modalità di indirizzamento disponibili sul 6502 e che dovevano essere emulate dal computer NQSAP.
 
@@ -162,15 +162,15 @@ Gli altri 3 bit di output dell'IR venivano scelti arbitrariamente, pur se con qu
 
 Ogni istruzione del 6502, come ad esempio la succitata ADC, offre infatti un certo numero di indirizzamenti tra le 13 modalità totali disponibili (Accumulatore, Assoluto, Assoluto Indicizzato X o Y, Immediato, Implicito, Indiretto, Indiretto Indicizzato X, Indicizzato Y Indiretto, Relativo, Pagina Zero, Pagina Zero Indicizzato X o Y).
 
-Un valido riferimento per l'analisi della relazione tra IR ed ALU è stata la pagina [6502 Instruction Set](https://www.masswerk.at/6502/6502_instruction_set.html) di Norbert Landsteiner, che invito a consultare anche per il [6502 Assembler](https://www.masswerk.at/6502/assembler.html) e il [Virtual 6502](https://www.masswerk.at/6502/) che avrei utilizzato in seguito in fase di debug del microcode che stavo sviluppando.
+Un valido riferimento per l'analisi della relazione tra IR ed ALU è stata la pagina [6502 Instruction Set](https://www.masswerk.at/6502/6502_instruction_set.html) di Norbert Landsteiner, che invito a consultare anche per il [6502 Assembler](https://www.masswerk.at/6502/assembler.html) e il [Virtual 6502](https://www.masswerk.at/6502/) che avrei utilizzato in seguito in fase di debug del microcode.
 
 Dalla tabella HTML delle istruzioni avevo ricavato una tabella Excel a partire dalla quale ho ragionato sugli indirizzamenti, notando che ogni istruzione del 6502 non presentava mai più di 8 diverse modalità di indirizzamento: ecco che gli altri 3 bit di output dell'IR permettevano dunque di costruire un set di istruzioni basato sulle funzioni logiche / operazioni aritmetiche del '181 incrociandole con le (non più di) 8 modalità di indirizzamento usate da ogni istruzione (2^3 = 8 modalità di indirizzamento sfruttabili da ogni istruzione).
 
 Lo spreadsheet Excel citato nel paragrafo precedente è [scaricabile qui](../../assets/BEAM_computer.xlsx); le tabelle appena menzionate sono presenti nel foglio "6502 Inst. Set".
 
-Vale anche la pena di notare che in un computer con soli 256 byte di RAM i 3 indirizzamenti Zero Page e i 3 indirizzamenti Assoluti sono ridondanti, in quanto entrambi utilizzano gli stessi 256 byte di memoria: ne consegue che le 3 modalità di indirizzamento Pagina Zero (ZP, "Zero Page" in inglese) non verranno dunque implementate in quanto speculari alle Assolute.
+Vale anche la pena di notare che in un computer con soli 256 byte di RAM i 3 indirizzamenti Zero Page e i 3 indirizzamenti Assoluti sono ridondanti, in quanto entrambi indirizzano gli stessi 256 byte di memoria: ne consegue che le 3 modalità di indirizzamento Pagina Zero (ZP, "Zero Page" in inglese) non verranno dunque implementate in quanto speculari alle Assolute.
 
-Riprendendo l'operazione ADC / A Plus B ed integrandola con i 3 bit utilizzati per gestire le modalità di indirizzamento si costruisce - ad esempio - questa tabella degli opcode:
+Riprendendo le operazioni ADC / A Plus B e SBC / A Minus B ed integrandole con i 3 bit utilizzati per gestire le modalità di indirizzamento si costruisce - ad esempio - questa tabella degli opcode:
 
 | Cn | I3    | I2     | I1     | M      | S3     | S2     | S1     | S0     | Operazione | Indirizzamento          | Hex   |
 |  - | -     | -      | -      | -      | -      | -      | -      | -      | -          | -                       | -     |
