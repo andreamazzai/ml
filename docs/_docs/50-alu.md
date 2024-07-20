@@ -13,13 +13,13 @@ Sviluppata attorno ai chip [74LS181](https://www.ti.com/lit/ds/symlink/sn54ls181
 
 Il '181 è un'ALU a 4 bit sviluppata negli anni '70 che può eseguire 16 operazioni aritmetiche e 16 funzioni logiche. E' possibile concatenare più chip per elaborare word di dimensioni maggiori.
 
-**Utilizzo dei termini '181 e ALU come Sinonimi**: in questa pagina, troveremo i termini ALU e '181 che vengono spesso utilizzati come sinonimi. Notare che ALU potrebbe indicare sia il modulo Unità Aritmetica e Logica nella sua interezza, sia il solo chip '181. Il contesto aiuterà a comprendere se per ALU si intenda il modulo, oppure il solo chip.
+**Utilizzo dei termini '181 e ALU come equivalenti**: in questa pagina, troveremo i termini ALU e '181 che vengono spesso utilizzati come equivalenti. Notare che ALU potrebbe indicare sia il modulo Unità Aritmetica e Logica nella sua interezza, sia il solo chip '181. Il contesto aiuterà a comprendere se per ALU si intenda il modulo, oppure il solo chip.
 
-Inoltre, poiché nel modulo si utilizzano due '181 per poter comporre una word di 8 bit, in determinate situazioni si definiscono primo e secondo '181 rispettivamente quello che contiene i 4 bit meno significativi (LSB) e quello che contiene i 4 bit più significativi (MSB).
+Inoltre, poiché nel modulo si utilizzano due '181 per poter comporre una word di 8 bit, in determinate situazioni si definiscono primo e secondo '181 oppure '181 inferiore e superiore rispettivamente quello che contiene i 4 bit meno significativi (LSB) e quello che contiene i 4 bit più significativi (MSB).
 
 ## L'ALU dell'NQSAP
 
-Tra le caratteristiche che spiccavano nello schema dell'ALU dell'NQSAP, notavo soprattutto un numero elevato di chip - tra i quali gli Shift Register 74LS194 - e un modo particolare di indirizzare i '181, che erano "strettamente legati" all'istruzione presente nell'Instruction Register della [Control Logic](../control). Il legame con la Control Logic è stato tra i più complessi da analizzare e comprendere, ma quello con il modulo dei Flag è altrettanto importante e la sua comprensione non è stata meno complessa (ad ogni operazione dell'ALU - e non solo - corrisponde infatti un'azione sul registro dei Flag).
+Tra le caratteristiche che spiccavano nello schema dell'ALU dell'NQSAP, notavo soprattutto un numero elevato di chip - tra i quali gli Shift Register 74LS194 - e un modo particolare di indirizzare i '181, che erano "strettamente legati" all'istruzione presente nell'Instruction Register della [Control Logic](../control). Anche il legame con la Control Logic è stato tra i più complessi da analizzare e comprendere, ma quello con il modulo dei Flag non è meno importante e la sua comprensione è stata altrettanto difficile: ad ogni operazione dell'ALU (e non solo) corrisponde infatti un'azione sul registro dei Flag.
 
 [![Schema logico dell'ALU di Tom Nisbet](../../assets/alu/50-alu-nqsap.png "Schema logico dell'ALU di Tom Nisbet"){:width="100%"}](../../assets/alu/50-alu-nqsap.png)
 
@@ -35,7 +35,7 @@ Il modulo ALU è sommariamente composto da due registri di input H e B e da una 
 
 Sul computer SAP di Ben Eater i registri di input all'ALU erano A e B, mentre nell'NQSAP sono H e B. Come indicato nella sezione precedente, il registro H si può anche comportare come un comune registro a 8 bit in tutti quei casi nei quali sia necessario avere due registri standard di input per tutte le operazioni che l'ALU deve eseguire. E' dunque necessario che A ed H siano sempre allineati, così che i '181 ritrovino trasparentemente in H il contenuto di A (ad esempio una somma ADC sarà effettivamente realizzata dando in input ai '181 i registri H e B: essendo H una copia di A, il risultato della somma sarà A + B).
 
-Il registro H sarà anche fondamentale come registro temporaneo di appoggio da utilizzare per la realizzazione del microcode di molte altre istruzioni: anche in tutti questi casi, una delle ultime operazioni eseguite dal microcode sarà la copia di A su H:
+Il registro H sarà anche fondamentale come registro temporaneo di appoggio da utilizzare per la realizzazione del microcode di molte altre istruzioni: anche in tutti questi casi una delle operazioni eseguite dal microcode sarà la copia di A su H:
 
 ![Microcode dell'istruzione INX](../../assets/alu/50-alu-RAWH.png "Microcode dell'istruzione INX"){:width="50%"}
 
@@ -50,6 +50,8 @@ Nell'esempio dell'istruzione INX del 6502, dopo le due fasi di fetch comuni a tu
 
 Nella sezione dedicata alle istruzioni e al microcode si analizzeranno in dettaglio le microistruzioni di tutte le istruzioni del computer.
 
+## DA FARE
+
 (**da fare**: in questo caso, ma anche nel caso delle istruzioni di shift / rotazione e forse anche CPX e CPY, verificare se non potessi usare D invece di H)
 
 ### Funzioni logiche e operazioni aritmetiche
@@ -62,7 +64,7 @@ Avevo intanto deciso di comprendere le operazioni messe a disposizione dal '181 
 
 *Funzioni logiche e operazioni aritmetiche del 74LS181.*
 
-Il datasheet del '181 era abbastanza criptico e dunque ho avevo fatto ricorso anche alle molte risorse disponibili in rete riportate a fondo pagina. Dal datasheet si comprende che vi sono 4 segnali S0, S1, S2 ed S3 ("*Select*) per la selezione della funzione / operazione e un segnale di controllo della modalità M ("*Mode*", M = HI per le funzioni logiche; M = LO per le operazioni aritmetiche); A e B sono gli input dei dati. Nel datasheet venivano menzionati anche il Carry Look-Ahead e il Ripple-Carry, che approfondirò in seguito nella sezione dedicata all'Aritmetica Binaria.
+Il datasheet del '181 era abbastanza criptico e dunque ho avevo fatto ricorso anche alle molte risorse disponibili in rete riportate a fondo pagina. Dal datasheet si comprendeva che vi sono 4 segnali S0, S1, S2 ed S3 ("*Select*) per la selezione della funzione / operazione e un segnale di controllo della modalità M ("*Mode*", M = HI per le funzioni logiche; M = LO per le operazioni aritmetiche); A e B sono gli input dei dati. Nel datasheet venivano menzionati anche il Carry Look-Ahead e il Ripple-Carry, approfonditi nella sezione dedicata all'Aritmetica Binaria.
 
 Inizialmente avevo trascritto la tabella delle funzioni / operazioni in un foglio Excel per poter lavorare più agevolmente:
 
@@ -70,7 +72,7 @@ Inizialmente avevo trascritto la tabella delle funzioni / operazioni in un fogli
 
 *Funzioni logiche e operazioni aritmetiche del 74LS181 - su Excel.*
 
-Avevo evidenziato le operazioni ripetute più volte, non trovando però alcun raggruppamento o filo conduttore tra righe e colonne. Cercavo  di capire quale fosse il senso di quella disposizione così apparentemente disordinata, ma non l'avevo trovato. Illuminante è stato l'articolo di [Ken Shirriff](https://www.righto.com/2017/03/inside-vintage-74181-alu-chip-how-it.html) citato in calce.
+Avevo evidenziato le operazioni ripetute più volte, non trovando però alcun raggruppamento o filo conduttore tra righe e colonne. Cercavo  di capire quale fosse il senso di quella disposizione così apparentemente disordinata, ma non l'avevo trovato. Illuminante fu l'articolo di [Ken Shirriff](https://www.righto.com/2017/03/inside-vintage-74181-alu-chip-how-it.html) citato in calce.
 
 L'aspetto più importante che avevo capito è cosa accomunava le due colonne delle operazioni aritmetiche (eseguite in corrispondenza della modalità M = LO):
 
@@ -85,7 +87,7 @@ Lo stesso ragionamento è valido per in tutte le altre operazioni aritmetiche di
 
 A questo punto è anche opportuno segnalare che il '181 mette a disposizione due modalità di utilizzo: una con la logica attiva bassa ("Active-Low data") e una con la logica attiva alta ("Active-High data") che è quella utilizzata nell'NQSAP; quest'ultima, per complicare un po' le cose, si attende in ingresso un *Carry In negato*, nel senso che un segnale Cn (Carry In) = LO viene interpretato come Carry attivo, mentre un segnale Cn = HI viene interpretato come Carry non presente. Allo stesso modo, anche il *Carry Out* è negato: Cn+4 è infatti HI per indicare che non c'è Carry in uscita, mentre è LO per indicare che è presente un Carry.
 
-Ritornando alla tabella delle funzioni / operazioni e cercando di seguire le spiegazioni e logica dell'NQSAP, ritenevo che solo il sottoinsieme visibile di seguito fosse utile per lo scopo prefissato, che era quello di poter emulare le istruzioni del 6502:
+Ritornando alla tabella delle funzioni / operazioni e cercando di seguire le spiegazioni e logica dell'NQSAP, avevo compreso che il sottoinsieme visibile in questa tabella fosse sufficiente per lo scopo prefissato, che era quello di poter emulare le istruzioni del 6502:
 
 ![Operazioni logiche e aritmetiche utili del 74LS181](../../assets/alu/50-alu-operations-xls-subset.png)
 
@@ -99,34 +101,34 @@ Un altro degli aspetti di più difficile comprensione, come anticipato in preced
 
 Provando a sintetizzare quando disegnato nell'NQSAP, avevo costruito questa tabella per avere un riepilogo dei segnali applicati all'ALU, dei loro valori esadecimali corrispondenti e delle operazioni risultanti, estrapolandola dalla tabella completa delle istruzioni visibile in [NQSAP Instructions by Address Mode Group](https://tomnisbet.github.io/nqsap/docs/in-by-mode-group/) e nella quale si notano piuttosto chiaramente i raggruppamenti delle istruzioni dell'NQSAP rispetto alle funzioni logiche / operazioni aritmetiche dei '181:
 
-| Cn | M  | S3 | S2 | S1 | S0 | Operazione  | M-S3/S0 Hex |
-|  - | -  |  - |  - |  - |  - |          -  |   -         |
-| 0  | 0  | 0  | 0  | 0  | 1  | A Plus 1    |  0x00 + C*  |
-| 0  | 0  | 0  | 0  | 1  | 1  | Tutti 0     |  0x03 + C*  |
-| 0  | 0  | 0  | 1  | 1  | 0  | A Minus B   |  0x06 + C*  |
-| 0  | 0  | 0  | 1  | 1  | 1  | CMP         |  0x07**     |
-| 1  | 0  | 0  | 0  | 1  | 1  | Tutti 1     |  0x03       |
-| 1  | 0  | 1  | 0  | 0  | 1  | A Plus B    |  0x09       |
-| 1  | 0  | 1  | 1  | 0  | 0  | A Plus A    |  0x0C***    |
-| 1  | 0  | 1  | 1  | 1  | 1  | A Minus 1   |  0x0F       |
-| x  | 1  | 0  | 0  | 0  | 0  | Not A       |  0x10****   |
-| x  | 1  | 0  | 1  | 1  | 0  | A XOR B     |  0x16****   |
-| x  | 1  | 1  | 0  | 1  | 1  | A AND B     |  0x1B****   |
-| x  | 1  | 1  | 1  | 1  | 0  | A OR B      |  0x1E****   |
+| Cn | M  | S3 | S2 | S1 | S0 | Operazione  | M-S3/S0 Hex     |
+|  - | -  |  - |  - |  - |  - |          -  |   -             |
+| 0  | 0  | 0  | 0  | 0  | 1  | A Plus 1    |  0x00 + C*      |
+| 0  | 0  | 0  | 0  | 1  | 1  | Tutti 0     |  0x03 + C*      |
+| 0  | 0  | 0  | 1  | 1  | 0  | A Minus B   |  0x06 + C*      |
+| 0  | 0  | 0  | 1  | 1  | 1  | CMP         |  0x07**         |
+| 1  | 0  | 0  | 0  | 1  | 1  | Tutti 1     |  0x03           |
+| 1  | 0  | 1  | 0  | 0  | 1  | A Plus B    |  0x09           |
+| 1  | 0  | 1  | 1  | 0  | 0  | A Plus A    |  0x0C***        |
+| 1  | 0  | 1  | 1  | 1  | 1  | A Minus 1   |  0x0F           |
+| x  | 1  | 0  | 0  | 0  | 0  | Not A       |  0x10\*\*\*\*   |
+| x  | 1  | 0  | 1  | 1  | 0  | A XOR B     |  0x16\*\*\*\*   |
+| x  | 1  | 1  | 0  | 1  | 1  | A AND B     |  0x1B\*\*\*\*   |
+| x  | 1  | 1  | 1  | 1  | 0  | A OR B      |  0x1E\*\*\*\*   |
 
 *Sintesi operazioni dell'ALU dell'NQSAP.*
 
 Legenda tabella *Sintesi operazioni dell'ALU dell'NQSAP*:
 
-- \* Avevo evidenziato queste righe per ricordare che su queste tre istruzioni si doveva "iniettare" un Carry artificiale (invertito, dunque il segnale effettivamente applicato sul Carry In del primo '181 doveva essere LO).
+- \* Avevo evidenziato queste righe per ricordare che su queste tre operazioni si doveva "iniettare" un Carry artificiale (invertito, dunque il segnale effettivamente applicato sul Carry In del primo '181 doveva essere LO).
 
-- \*\* = Le istruzioni che modificano lo stato dei flag sono molte: aritmetiche, logiche, incremento/decremento, rotazione, stack, flag, caricamento/trasferimento registri e *comparazione*. Queste ultime (CMP, CPX e CPY) hanno effetto solo sui flag N, Z e C, che vengono computati effettuando una sottrazione (SBC nella terminologia del 6502) fittizia tra due valori, scartandone il risultato e tenendo in considerazione solo i flag risultanti dalla sottrazione (non avevo mai realmente approfondito come i flag fossero generati e questo esercizio è stato fondamentale). Funzionamento di e differenze tra sottrazioni e comparazioni sono dunque piuttosto semplici da comprendere:
+- \*\* = Le istruzioni che modificano lo stato dei flag del 6502 sono molteplici: aritmetiche, logiche, incremento/decremento, rotazione, stack, flag, caricamento/trasferimento registri e *comparazione*. Queste ultime (CMP, CPX e CPY) hanno effetto solo sui flag N, Z e C, che vengono computati effettuando una sottrazione (SBC nella terminologia del 6502) fittizia tra due valori, scartandone il risultato e tenendo in considerazione solo i flag risultanti dalla sottrazione (non avevo mai realmente approfondito come i flag fossero generati e questo esercizio è stato utilissimo). Funzionamento e differenze tra sottrazioni e comparazioni sono piuttosto semplici da comprendere:
 
   - nelle sottrazioni il valore risultante dalla sottrazione viene calcolato e *mantenuto*;
   - nelle comparazioni il valore risultante dalla sottrazione viene calcolato e *scartato*;
   - per entrambe le istruzioni i flag sono mantenuti.
 
-  Per eseguire le comparazioni si eseguono dunque delle sottrazioni scartando il risultato, tuttavia le operazioni di sottrazione del '181 sono già utilizzate per eseguire le sottrazioni vere e proprie (SBC) e sono codificate nella terza riga della tabella con M/S3-S0 = **00110**: come è possibile eseguire altre operazioni di sottrazione utilizzando un opcode diverso da **00110** pur sapendo che i '181 eseguono le sottrazioni solo con questa codifica in ingresso? Approfondimenti a seguire in questa stessa pagina.
+  Per eseguire le comparazioni si eseguono dunque delle sottrazioni scartando il risultato, tuttavia le operazioni di sottrazione del '181 sono già utilizzate per eseguire le sottrazioni vere e proprie (SBC) e sono codificate nella terza riga della tabella con M/S3-S0 = **00110**: come è possibile eseguire altre operazioni di sottrazione utilizzando un opcode diverso da **00110** pur sapendo che i '181 eseguono le sottrazioni solo con questa codifica in ingresso? Lo vedremo tra poco in questa stessa pagina.
 
 - \*\*\* L'operazione A+A veniva usata nell'NQSAP per fare lo shift verso sinistra dei bit; vista la presenza dello Shift Register H, ho preferito riversare su di esso tutte le operazioni di rotazione (a destra e a sinistra, sia con Carry sia senza Carry).
 
