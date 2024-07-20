@@ -37,7 +37,7 @@ Sul computer SAP di Ben Eater i registri di input all'ALU erano A e B, mentre ne
 
 Il registro H sarà anche fondamentale come registro temporaneo di appoggio da utilizzare per la realizzazione del microcode di molte altre istruzioni: anche in tutti questi casi una delle operazioni eseguite dal microcode sarà la copia di A su H:
 
-![Microcode dell'istruzione INX](../../assets/alu/50-alu-RAWH.png "Microcode dell'istruzione INX"){:width="50%"}
+![Microcode dell'istruzione INX](../../assets/alu/50-alu-RAWH.png){:width="50%"}
 
 *Microcode per l'emulazione dell'istruzione INX del 6502.*
 
@@ -224,21 +224,21 @@ Detto in altre parole ancora:
 
 - Come è possibile gestire sia le sottrazioni reali sia le comparazioni, considerando che entrambe necessitano di mettere in input sui '181 la stessa codifica **01110**, la quale deve però essere assegnata sia alle istruzioni di sottrazione sia a quelle di comparazione, che devono in realtà avere opcode diversi - e dunque anche codifiche diverse?
 
-- Si identifica un opcode arbitrario per le operazioni di comparazione utilizzandone uno che è assegnato a un'operazione inutilizzata, ad esempio **A And Not B**, che ha come codice M/S3-S0 = **00111**.
+- Si identifica un opcode arbitrario per le operazioni di comparazione utilizzandone uno che è assegnato a un'operazione non necessaria, ad esempio **A And Not B**, che ha come codice M/S3-S0 = **00111**.
 
 - La differenza tra l'operazione A Minus B e l'operazione A And Not B sta nell'ultimo bit: la prima si attiva con M/S3-S0 = 0011**0**, la seconda con M/S3-S0 = 0011**1**.
 
-- Quando l'IR carica una istruzione 00111 di comparazione, metterà tale codifica in output verso le ROM e verso l'ALU, ma l'ultimo bit di tale codifica raggiungerà l'ALU solo dopo aver attraversato la NOR.
+- Quando l'IR carica una istruzione 00111 di comparazione, metterà tale codifica in output verso le EEPROM e verso l'ALU, ma l'ultimo bit di tale codifica raggiungerà l'ALU solo dopo aver attraversato la NOR.
 
 - Una delle EEPROM ospitanti il microcode, quando troverà in ingresso xxx00111, attiverà il segnale LF sul pin 8 della NOR: la NOR invertirà l'ultimo bit 0011**1** e i '181 troveranno in realtà in ingresso 0011**0**, configurandosi dunque in Subtract Mode ed effettuando la sottrazione.
 
-### Sottrazioni, comparazioni e indirizzamenti
+### Riepilogo: sottrazioni, comparazioni e indirizzamenti
 
 La documentazione dell'NQSAP segnalava che "poiché la ALU è legata all'IR, ci sono solo 8 Opcode disponibili per metterla in Subtract Mode", ma non capivo cosa volesse dire. "Per creare i 16 Opcode necessari per tutte le combinazioni di Subtract e Compare, si mette una NOR su ALU-S0 (IR 0) e l'altro input su LF, così da  riutilizzare la Selection 0111 come se fosse 0110, che è la modalità Subtract".
 
 Importante evidenziare che la modalità **Subtract Mode** del '181 altro non è che la configurazione di Input M/S3-S0 = 00110 che equivale alla operazione aritmetica di sottrazione, come chiarito da David Courtney nel video [Comparator Functions of 74LS181 (74HCT181) ALU](https://www.youtube.com/watch?v=jmROTNtoUGI). Il datasheet non era così chiaro relativamente alla definizione di questa modalità.
 
-La tabella successiva evidenzia come con la disponibilità di 8 bit per la codifica delle istruzioni (256 combinazioni possibili), solo 8 combinazioni (2^3, descritte dai bit I3-I2-I1) siano quelle degli opcode che permettono di avere M e S3-S0 in Subtract Mode, cioè **00110**: tuttavia, la gestione di tutte le operazioni di sottrazione SBC e di comparazione CMP, CPX e CPY richiede ben più di 8 combinazioni, poiché si devono poter gestire anche tutte le combinazioni degli indirizzamenti del 6502. Ecco che il segnale LF (ALU Force) trasforma la codifica 00111 (corrispondente all'operazione inutilizzata A AND NOT B) in 00110, che attiva nuovamente l'operazione aritmetica di sottrazione del '181 e che ci permette di ottenere 16 opcode totali da inserire nel microcode per la gestione di sottrazioni e comparazioni in tutte le [modalità di indirizzamento](https://www.masswerk.at/6502/6502_instruction_set.html#modes) previste nel 6502.
+La tabella successiva evidenzia come con la disponibilità di 8 bit per la codifica delle istruzioni (256 combinazioni possibili), solo 8 combinazioni (2^3, descritte dai bit I2-I1-I0) siano quelle degli opcode che permettono di avere M e S3-S0 in Subtract Mode, cioè **00110**: tuttavia, la gestione di tutte le operazioni di sottrazione SBC e di comparazione CMP, CPX e CPY richiede ben più di 8 combinazioni, poiché si devono poter gestire anche tutte le combinazioni degli indirizzamenti del 6502. Ecco che il segnale LF (ALU Force) trasforma la codifica 00111 (corrispondente all'operazione inutilizzata A AND NOT B) in 00110, che attiva nuovamente l'operazione aritmetica di sottrazione del '181 e che ci permette di ottenere 8 + 8 = 16 opcode totali da inserire nel microcode per la gestione di sottrazioni e comparazioni in tutte le [modalità di indirizzamento](https://www.masswerk.at/6502/6502_instruction_set.html#modes) previste nel 6502.
 
 | Bit IR  | 7      | 6      | 5      | 4  | 3   | 2   | 1   | 0   |
 |  -      | -      | -      | -      | -  | -   | -   | -   | -   |
@@ -266,14 +266,14 @@ Alcuni esempi chiariranno il funzionamento del Carry utilizzando due '181 messi 
 
 Supponiamo di fare un'operazione **A Plus B** con due ALU. Si deve inviare in ingresso sul /Cn del primo '181 un segnale allo stato logico HI, che corrisponde a non avere un Carry (ricordiamo che nella logica "Active-High Data" il Carry è negato). Il **/Cn+4** (Carry Out) del primo '181 entra nel **/Cn** (Carry In) del secondo:
 
-- Se l'operazione eseguita sui primi 4 bit non genera un riporto, il /Cn+4 del primo '181 sarà HI ad indicare assenza di Carry; questo segnale viene propagato al secondo '181, che troverà dunque l'ingresso /Cn allo stato HI: entrambi i '181 eseguiranno **A Plus B**, dunque una normale operazione senza riporto.
+- Se l'operazione eseguita sui primi 4 bit non genera un riporto, il /Cn+4 del primo '181 è HI ad indicare assenza di Carry; questo segnale viene propagato al secondo '181, che trova dunque l'ingresso /Cn allo stato HI: entrambi i '181 eseguono **A Plus B**, dunque una normale operazione senza riporto.
 
-- Viceversa, se l'operazione eseguita sui primi 4 bit genera un riporto, il /Cn+4 del primo '181 sarà LO ad indicare presenza di Carry; questo segnale viene propagato al secondo '181, che troverà dunque l'ingresso /Cn allo stato LO: il primo '181 eseguirà dunque l'operazione **A Plus B**, mentre il secondo eseguirà l'operazione **A Plus B plus 1**: il '181 inferiore va sostanzialmente a generare un riporto che viene propagato al '181 superiore.
+- Viceversa, se l'operazione eseguita sui primi 4 bit genera un riporto, il /Cn+4 del primo '181 è LO ad indicare presenza di Carry; questo segnale viene propagato al secondo '181, che trova dunque l'ingresso /Cn allo stato LO: il primo '181 esegue dunque l'operazione **A Plus B**, mentre il secondo esegue l'operazione **A Plus B plus 1**: il '181 inferiore va sostanzialmente a generare un riporto che viene propagato al '181 superiore.
 
 Per eseguire invece una sottrazione **A minus B** dobbiamo attivare preventivamente il Carry, cioè settare /Cn = LO.
 
-- Se il primo '181 non genera un prestito ("borrow"), il /Cn+4 sarà allo stato logico LO, che sarà propagato al /Cn del secondo '181 e che eseguirà dunque l'operazione **A Minus B**.
-- Se invece il primo '181 genera un borrow, il /Cn+4 sarà allo stato logico HI, che sarà propagato al /Cn del secondo '181 e che eseguirà l'operazione **A Minus B - 1**: il '181 inferiore va sostanzialmente a prendere un prestito dal '181 superiore.
+- Se il primo '181 non genera un prestito ("borrow"), il /Cn+4 è allo stato logico LO, che viene propagato al /Cn del secondo '181 che esegue dunque l'operazione **A Minus B**.
+- Se invece il primo '181 genera un borrow, il /Cn+4 è allo stato logico HI, che viene propagato al /Cn del secondo '181 che esegue l'operazione **A Minus B - 1**: il '181 inferiore va sostanzialmente a prendere un prestito dal '181 superiore.
 
 Possiamo dire che il Carry In del '181 inferiore è utilizzato, insieme ai bit M/S3-S0, per selezionare l'operazione che il modulo ALU dovrà eseguire.
 
@@ -286,7 +286,7 @@ L'uso del Carry nel '181 (e di conseguenza nell'NQSAP) è simile a quanto avvien
 
 ### L'Overflow
 
-Dalle interessantissime note di Tom trascrivevo anche che, per le caratteristiche di funzionamento del '181 e provando a fare delle addizioni o sottrazioni con e senza Carry, si potrebbe pensare di poter eseguire un semplice OR esclusivo (XOR) tra le i Carry Out (/Cn+4) dei due chip per capire se c'è Overflow o no. Tuttavia il meccanismo non funziona in caso di istruzioni **A + 1** e **A - 1** (e dunque per la verifica dell'esistenza di un overflow si ricorrerà ad un altro metodo, **come si vedrà in seguito analizzando in dettaglio il flag Overflow**).
+Dalle interessantissime note di Tom trascrivevo anche che, per le caratteristiche di funzionamento del '181 e provando a fare delle addizioni o sottrazioni con e senza Carry, si potrebbe pensare di poter eseguire un semplice OR esclusivo (XOR) tra i Carry Out (/Cn+4) dei due chip per capire se c'è Overflow o no. Tuttavia il meccanismo non funziona in caso di istruzioni **A + 1** e **A - 1** (e dunque per la verifica dell'esistenza di un overflow si ricorrerà ad un altro metodo, **come si vedrà in seguito analizzando in dettaglio il flag Overflow**).
 
 Per quale motivo la verifica suddetta non è valida in caso di istruzioni di incremento e decremento?
 
@@ -313,23 +313,19 @@ Ecco una lista delle differenze:
 
 - Per il registro B ho utilizzato un Flip-Flop tipo D [74LS377](https://www.ti.com/lit/ds/symlink/sn54ls377.pdf) al posto del [74LS574](https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf). A differenza del '574, il '377 è dotato di ingresso Enable, che solo quando attivo permette il caricamento del registro in corrispondenza del Rising Edge del clock: così facendo si elimina la necessità di un gate in ingresso sul clock per realizzare un Enable artificiale, come descritto nella sezione [L'ALU dell'NQSAP](#lalu-dellnqsap).
 
-![Schema di uno degli 8 Flip-Flop del 74LS377](../../assets/alu/50-alu-377.png "Schema di uno degli 8 Flip-Flop del 74LS377"){:width="66%"}
+![Schema di uno degli 8 Flip-Flop del 74LS377](../../assets/alu/50-alu-377.png){:width="66%"}
 
 *Schema di uno degli 8 Flip-Flop del 74LS377.*
 
  **Da fare**: Valutare se anche questo ha un riflesso positivo sul discorso del glitch
 
-- Il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Come si vedrà però in maggior dettaglio nelle sezioni riservate al microcode, con soli 8 step non sarebbe stato possibile emulare alcune delle istruzioni del 6502, come quelle di salto relativo ed altre. Questa è in realtà una differenza architetturale più legata alla Control Logic, però l'impatto principale sul numero di step disponibili si riflette in particolar modo sull'ALU ed ha dunque sicuramente senso citarla in questa sezione.
+- Il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Come descritto in maggior dettaglio nella sezione riservate al microcode, con soli 8 step non sarebbe stato possibile emulare alcune delle istruzioni del 6502, come quelle di salto relativo ed altre. Questa è in realtà una differenza architetturale più legata alla Control Logic, però l'impatto principale sul numero di step disponibili si riflette in particolar modo sull'ALU ed ha dunque sicuramente senso citarla in questa sezione.
 
 **Da fare**:
 
 - /WE ↘↗
 - Descrivere comportamento HW **shift register** per le rotazioni
 - Parlare del bench di test sulla base di quanto appreso da David Courtney.
-
-**Sistemare:**
-
-- \* = si veda in seguito la sezione riservata all'aritmetica binaria |||||| devo fare una sezione apposita
 
 ## Link e approfondimenti
 
