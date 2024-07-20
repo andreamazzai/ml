@@ -68,7 +68,7 @@ Un multiplexer (MUX) [74LS157](https://www.ti.com/lit/ds/symlink/sn74ls157.pdf) 
 
 V, Z e C escono dal MUX '157 e sono presentati a 3 dei 4 Flip-Flop disponibili in una coppia di [74LS74](https://www.ti.com/lit/ds/symlink/sn54ls74a.pdf).
 
-Il flag **N**egative viene letto direttamente dalla linea D7 del bus e caricato sul 4° Flip-Flop.
+Il flag **N**egative viene invece sempre letto direttamente dalla linea D7 del bus e caricato sul 4° Flip-Flop.
 
 Quattro porte AND permettono il caricamento dei FF in presenza del segnale di clock e della contemporanea attivazione degli opportuni segnali **FN**, **FV**, **FZ** ed **FC** provenienti dalla Control Logic (CL); è opportuno ricordare che il caricamento dei registri viene sempre effettuato in corrispondenza del Rising Edge del Clock.
 
@@ -98,7 +98,7 @@ Come avviene la selezione del flag da portare all'uscita Z del '151? I segnali I
 
 Prendiamo come esempio l'istruzione BCS (Branch on Carry Set) ipotizzando che l'istruzione precedente abbia generato un Carry e che dunque il corrispondente FF presenti lo stato logico HI sull'uscita Q:
 
-[![Esempio istruzione Branch on Carry Set](../../assets/flags/30-flag-bcs.png "Esempio istruzione Branch on Carry Set"){:width="50%"}](../../assets/flags/30-flag-bcs.png)
+[![Esempio istruzione Branch on Carry Set](../../assets/flags/30-flag-bcs.png "Esempio istruzione Branch on Carry Set"){:width="66%"}](../../assets/flags/30-flag-bcs.png)
 
 *Esempio istruzione Branch on Carry Set.*
 
@@ -110,7 +110,7 @@ Prendiamo come esempio l'istruzione BCS (Branch on Carry Set) ipotizzando che l'
 
 - poiché il Carry è attivo, l'output della NOR connessa all'uscita Z è certamente LO (/PC-LOAD = NOT (1+x) = 0), pertanto il valore presente nel bus viene caricato nel PC (il segnale /PC-LOAD è attivo LO).
 
-Un aspetto che inizialmente sfuggiva alla mia comprensione era come poter includere le istruzioni di branch (8 combinazioni = 3 bit), le istruzioni dell'ALU (5 bit) e tutte le altre istruzioni (ad esempio caricamento, trasferimento) in soli 8 bit: come era possibile gestire tutte le combinazioni e costruire una matrice di istruzioni? Nel momento un cui eseguivo una qualsiasi altra istruzione, cosa sarebbe successo nella gestione dei salti relativi, visto che erano direttamente funzione della codifica dell'istruzione correntemente in esecuzione? Non rischiavo di eseguire un salto condizionale non voluto se mi fossi trovato ad esempio in una situazione in cui (come descritto poco sopra) IR-Q5, Q6 e Q7 fossero LO e il Carry fosse attivo?
+Un aspetto che inizialmente sfuggiva alla mia comprensione era come poter includere le istruzioni di branch (8 combinazioni = 3 bit), le istruzioni dell'ALU (5 bit) e tutte le altre istruzioni (ad esempio caricamento, trasferimento) in soli 8 bit: come era possibile gestire tutte le combinazioni e costruire una matrice di istruzioni? Nel momento in cui dovevo eseguire una qualsiasi altra istruzione, cosa sarebbe successo nella gestione dei salti relativi, visto che erano direttamente funzione della codifica dell'istruzione correntemente in esecuzione? Non rischiavo di eseguire un salto condizionale non voluto se mi fossi trovato ad esempio in una situazione in cui (come descritto poco sopra) IR-Q5, Q6 e Q7 fossero LO e il Carry fosse attivo?
 
 In seguito avevo notato che nel '151 addetto alla selezione dei flag era presente anche un segnale di Enable JE, presente nel microcode delle sole istruzioni di salto condizionale, pertanto:
 
@@ -126,7 +126,7 @@ Perché tutte le istruzioni di salto dovrebbero essere "uguali"? La spiegazione,
 
 Prendiamo come ulteriore esempio l'istruzione BVC (Branch on OVerflow Clear) ipotizzando che non ci sia Overflow e che dunque il segnale /V sia attivo:
 
-[![Esempio istruzione Branch on OVerflow Clear](../../assets/flags/30-flag-bvc.png "Esempio istruzione Branch on OVerflow Clear"){:width="50%"}](../../assets/flags/30-flag-bvc.png)
+[![Esempio istruzione Branch on OVerflow Clear](../../assets/flags/30-flag-bvc.png "Esempio istruzione Branch on OVerflow Clear"){:width="66%"}](../../assets/flags/30-flag-bvc.png)
 
 *Esempio istruzione Branch on OVerflow Clear.*
 
@@ -147,7 +147,7 @@ L'utilizzo di una NOR all'uscita Z del '151 permette di gestire sia i salti cond
 
 - In caso di salto condizionale (BCS, BVC, BEQ eccetera), una verifica positiva di presenza/assenza del flag selezionato (normale o invertito) genera un'uscita HI sul '151 --> la NOR presenta dunque output LO ed attiva il caricamento dell'indirizzo del salto sul Program Counter. La pagina dei registri [D, X e Y](../dxy) descrive il calcolo del valore da inserire nel PC.
 
-- In caso di salto incondizionato (JMP, JSR), il microcode dell'istruzione di salto attiverà /WP (in logica invertita) che a sua volta attiverà il caricamento sul PC del valore presente sul bus: (/PC-LOAD = NOT (x+1) = 0), pertanto il PC caricherà dal bus il suo nuovo valore.
+- In caso di salto incondizionato (JMP, JSR), il microcode dell'istruzione di salto attiva /WP (in logica invertita) che a sua volta attiva il caricamento sul PC del valore presente sul bus: (/PC-LOAD = NOT (x+1) = 0), pertanto il PC carica dal bus il suo nuovo valore.
 
 ![NOR per l'attivazione di /PC-LOAD con salti condizionali ed incondizionati](../../assets/flags/30-flag-je-wp.png){:width="50%"}
 
@@ -186,7 +186,7 @@ Tom evidenziava che gli MSB degli operandi dell'ALU H e B, insieme all'MSB risul
 
 In seguito avevo capito che il calcolo dell'overflow è legato al fatto che si stia lavorando con numeri Signed: questi numeri vengono rappresentati con il **Complemento di 2** (Two's Complement, o anche 2C), nel quale un MSB = LO indica un numero positivo, mentre un MSB = HI indica un numero negativo.
 
-In una delle innumerevoli sessioni di approfondimento e studio, ero finalmente arrivato a comprendere che se nella somma di due numeri con segno si nota un cambiamento di segno del risultato, si ha una situazione di overflow: il cambiamento di segno è rappresentato da una variazione dell'MSB del risultato, cosa che un '151 opportunamente connesso permette di identificare.
+In una delle innumerevoli sessioni di approfondimento e studio, ero finalmente arrivato a comprendere che se nella somma di due numeri con segno si nota un imprevisto cambiamento di segno del risultato, si ha una situazione di overflow: il cambiamento di segno è rappresentato da una variazione dell'MSB del risultato, cosa che un '151 opportunamente connesso permette di identificare.
 
 ![Utilizzo di un 74LS151 per il calcolo dell'Overflow con evidenza degli MSB di H, B e dell'ALU e degli ingressi di selezione dell'operazione IR-Q1 e IR-Q3.](../../assets/flags/30-flag-v-151.png){:width="50%"}
 
@@ -199,7 +199,7 @@ Per identificare l'esecuzione di un'operazione di addizione o di sottrazione e d
 | HI    | LO    | Sottrazione |
 | LO    | HI    | Addizione   |
 
-Anticipo una comprensione che approfondirò nella apposita sezione dedicata all'aritmetica binaria apposita: in un byte sono possibili 256 combinazioni; in caso di numeri senza segno (Unsigned) è possibile contare da 0 a 255. Nel caso di numeri Signed, l'approfondimento nell'apposita sezione sull'aritmetica binaria spiegherà come i numeri positivi da 0 a 127 abbiano un riferimento paritetico con i numeri senza segno da 0 a 127, mentre i numeri con segno da -128 a -1 facciano il paio con i numeri senza segno da 128 a 255.
+Evidenzio una comprensione approfondita nella apposita sezione dedicata all'aritmetica binaria: in un byte sono possibili 256 combinazioni; in caso di numeri senza segno (Unsigned) è possibile contare da 0 a 255. Nel caso di numeri Signed, i numeri positivi da 0 a 127 hanno un riferimento paritetico con i numeri senza segno da 0 a 127, mentre i numeri con segno da -128 a -1 fanno il paio con i numeri senza segno da 128 a 255.
 
 **aggiungere note con HEX.**
 
@@ -224,15 +224,12 @@ L'utilizzo di un altro '151 rappresenta il sistema più efficiente per seleziona
 | -  | -  | -                                                            |
 | LO | LO | Provenienza dal Carry Output dell'ALU (non invertito\*)      |
 | LO | HI | Provenienza dal Carry Output dell'ALU (invertito\*\*)        |
-| HI | LO | Provenienza dall'MSB (H-Q7) del registro H\*\*\*             |
-| HI | HI | Provenienza dall'LSB (H-Q0) del registro H\*\*\*             |
+| HI | LO | Provenienza dall'MSB (H-Q7) del registro H                   |
+| HI | HI | Provenienza dall'LSB (H-Q0) del registro H                   |
 
 - \* questa configurazione non viene utilizzata
 
-Come già discusso nella pagina dell'ALU:
-
-- \*\* il Carry del '181 lavora in logica negativa, pertanto un segnale C = LO indica che il Carry è presente; va da sé che per registrare lo stato del Carry in logica positiva sul registro del flag C è necessario invertire il segnale in ingresso;
-- \*\*\* all'inizio di ogni istruzione il contenuto di H corrisponde esattamente a quello di A (sezione [Il registro H](../alu/#il-registro-h) nella pagina dedicata all'ALU).
+- \*\* Come già discusso nella pagina dell'ALU, il Carry del '181 lavora in logica negativa, pertanto un segnale C = LO indica che il Carry è presente; va da sé che per registrare lo stato del Carry in logica positiva sul registro del flag C è necessario invertire il segnale in ingresso.
 
 ## Il Carry e i registri H e ALU
 
@@ -274,9 +271,9 @@ Si noti che la Truth Table della tabella richiederebbe i componenti evidenziati 
 
 Come si può vedere dallo schema del registro dei Flag del computer BEAM, questo è quasi una copia 1:1 del modulo registro dei Flag del computer NQSAP: non avevo certamente la capacità di sviluppare autonomamente un modulo ALU così complesso e legato a doppio filo con altri moduli del computer, ma la comprensione completa del funzionamento dell'ALU sviluppata da Tom ha rappresentato comunque un traguardo molto importante.
 
-[![Schema logico dell'ALU del computer BEAM](../../assets/alu/50-alu-beam-schematics.png "Schema logico dell'ALU del computer BEAM"){:width="100%"}](../../assets/alu/50-alu-beam-schematics.png)
+[![Schema logico del Modulo Flag del computer BEAM](../../assets/flags/30-flag-beam-schematics.png "Schema logico del Modulo Flag del computer BEAM"){:width="100%"}](../../assets/flags/30-flag-beam-schematics.png)
 
-*Schema logico dell'ALU del computer BEAM.*
+*Schema logico del Modulo Flag del computer BEAM.*
 
 Ecco una lista delle differenze:
 
