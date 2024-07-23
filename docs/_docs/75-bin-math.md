@@ -4,9 +4,9 @@ permalink: /docs/math/
 excerpt: "Aritmetica binaria"
 ---
 
-## Tassonomia: Flag per parlare di registro o modulo, flag per parlare del singolo flag
+## Concetti importanti
 
-Per comprendere appieno i meccanismi dei Flag e dell'ALU, è stato necessario approfondire anche alcuni concetti dell'aritmetica binaria.
+Per comprendere appieno il funzionamento dei moduli Flag e ALU, è stato necessario approfondire anche alcuni concetti dell'aritmetica binaria.
 
 Cercando di assimilare il concetto di overflow, 
 

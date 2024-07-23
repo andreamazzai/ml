@@ -267,27 +267,13 @@ Si noti che la Truth Table della tabella richiederebbe i componenti evidenziati 
 
 *Schema originale per realizzazione della Truth Table di selezione del Carry.*
 
-## Differenze tra Moduli Flag dell'NQSAP e del BEAM
+## Moduli Flag dell'NQSAP e del BEAM
 
-Come si può vedere dallo schema del registro dei Flag del computer BEAM, questo è quasi una copia 1:1 del modulo registro dei Flag del computer NQSAP: non avevo certamente la capacità di sviluppare autonomamente un modulo ALU così complesso e legato a doppio filo con altri moduli del computer, ma la comprensione completa del funzionamento dell'ALU sviluppata da Tom ha rappresentato comunque un traguardo molto importante.
+Il modulo Flag del computer BEAM è sostanzialmente una copia del modulo Flag del computer NQSAP; con le mie conoscenze non avrei saputo svilupparne una versione migliore, ma il fatto di averne compreso perfettamente tanto il funzionamento quanto l'integrazione con gli altri moduli del computer è stata una ottima lezione.
 
-[![Schema logico del Modulo Flag del computer BEAM](../../assets/flags/30-flag-beam-schematics.png "Schema logico del Modulo Flag del computer BEAM"){:width="100%"}](../../assets/flags/30-flag-beam-schematics.png)
+[![Schema logico del modulo Flag del computer BEAM](../../assets/flags/30-flag-beam-schematics.png "Schema logico del modulo Flag del computer BEAM"){:width="100%"}](../../assets/flags/30-flag-beam-schematics.png)
 
-*Schema logico del Modulo Flag del computer BEAM.*
-
-Ecco una lista delle differenze:
-
-- Per il registro B ho utilizzato un Flip-Flop tipo D [74LS377](https://www.ti.com/lit/ds/symlink/sn54ls377.pdf) al posto del [74LS574](https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf). A differenza del '574, il '377 è dotato di ingresso Enable, che solo quando attivo permette il caricamento del registro in corrispondenza del Rising Edge del clock: così facendo si elimina la necessità di un gate in ingresso sul clock per realizzare un Enable artificiale, come descritto nella sezione [L'ALU dell'NQSAP](#lalu-dellnqsap).
-
-![Schema di uno degli 8 Flip-Flop del 74LS377](../../assets/alu/50-alu-377.png "Schema di uno degli 8 Flip-Flop del 74LS377"){:width="66%"}
-
-*Schema di uno degli 8 Flip-Flop del 74LS377.*
-
- **Da fare**: Valutare se anche questo ha un riflesso positivo sul discorso del glitch
-
-- Il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Come si vedrà però in maggior dettaglio nelle sezioni riservate al microcode, con soli 8 step non sarebbe stato possibile emulare alcune delle istruzioni del 6502, come quelle di salto relativo ed altre. Questa è in realtà una differenza architetturale più legata alla Control Logic, però l'impatto principale sul numero di step disponibili si riflette in particolar modo sull'ALU ed ha dunque sicuramente senso citarla in questa sezione.
-
-
+*Schema logico del modulo Flag del computer BEAM.*
 
 ## ALTRO
 Flag e Microcode
