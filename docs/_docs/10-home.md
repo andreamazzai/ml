@@ -89,6 +89,8 @@ Crediti e ringraziamenti e link utili:
 
 **da fare**
 
+- qualche idea è stata presa anche da NQSAP-pCB, ad esempio i 74LS377
+
 - 6502.org
 - Il blog di Ken Shirrif per una eccellente spiegazione dell'overflow nel 6502
 - quel professore dell'università del Montana

@@ -62,7 +62,7 @@ Un multiplexer (MUX) [74LS157](https://www.ti.com/lit/ds/symlink/sn74ls157.pdf) 
 1. **dal bus**; quando il '157 legge dal bus, è possibile caricare i registri dei flag leggendo valori arbitrari dalla memoria del computer (o, più precisamente, dalla zona di memoria adibita allo Stack) similarmente a quanto svolto dall'istruzione Pull Processor Status **PLP** del 6502;
 
 2. **da un computo**:
-    - **V** attraverso un Data Selector/Multiplexer '151 che ricrea la funzione logica dell'overflow verificando un eventuale cambio di segno nel risultato delle operazioni di somma o sottrazione dei numeri con segno (Signed);
+    - **V** attraverso un Data Selector/Multiplexer '151 che ricrea la funzione logica dell'Overflow verificando un eventuale cambio di segno nel risultato delle operazioni di somma o sottrazione dei numeri con segno (Signed);
     - **Z** come risultato del comparatore [74LS688](https://www.ti.com/lit/ds/symlink/sn74ls688.pdf);
     - **C** attraverso un altro '151 che seleziona la sorgente del Carry;
 
@@ -182,11 +182,11 @@ Il flag O**V**erflow è calcolato utilizzando un '151 nella modalità descritta 
 
 Avevo trovato la spiegazione molto criptica, o forse non propriamente adatta ai profani, tanto da impiegare alcune *decine* di ore per comprendere a fondo quanto enunciato rileggendo, cercando altre fonti, seguendo video di aritmetica binaria, facendo esercizi su carta e su uno spreadsheet.
 
-Tom evidenziava che gli MSB degli operandi dell'ALU H e B, insieme all'MSB risultante dall'operazione dell'ALU, erano utilizzati come input per verificare la condizione di overflow: iniziavo a realizzare che quello dell'overflow era in realtà un calcolo molto semplice e preciso di bit.
+Tom evidenziava che gli MSB degli operandi dell'ALU H e B, insieme all'MSB risultante dall'operazione dell'ALU, erano utilizzati come input per verificare la condizione di Overflow: iniziavo a realizzare che quello dell'Overflow era in realtà un calcolo molto semplice e preciso di bit.
 
-In seguito avevo capito che il calcolo dell'overflow è legato al fatto che si stia lavorando con numeri Signed: questi numeri vengono rappresentati con il **Complemento di 2** (Two's Complement, o anche 2C), nel quale un MSB = LO indica un numero positivo, mentre un MSB = HI indica un numero negativo.
+In seguito avevo capito che il calcolo dell'Overflow è strettamente legato all'utilizzo di numeri Signed: questi numeri vengono rappresentati con il **Complemento di 2** (Two's Complement, o anche 2C), nel quale un MSB = LO indica un numero positivo, mentre un MSB = HI indica un numero negativo.
 
-In una delle innumerevoli sessioni di approfondimento e studio, ero finalmente arrivato a comprendere che se nella somma di due numeri con segno si nota un imprevisto cambiamento di segno del risultato, si ha una situazione di overflow: il cambiamento di segno è rappresentato da una variazione dell'MSB del risultato, cosa che un '151 opportunamente connesso permette di identificare.
+In una delle innumerevoli sessioni di approfondimento e studio, ero finalmente arrivato a comprendere che se nella somma di due numeri con segno si nota un imprevisto cambiamento di segno del risultato, si ha una situazione di Overflow: il cambiamento di segno è rappresentato da una variazione dell'MSB del risultato, cosa che un '151 opportunamente connesso permette di identificare.
 
 ![Utilizzo di un 74LS151 per il calcolo dell'Overflow con evidenza degli MSB di H, B e dell'ALU e degli ingressi di selezione dell'operazione IR-Q1 e IR-Q3.](../../assets/flags/30-flag-v-151.png){:width="50%"}
 
@@ -199,12 +199,10 @@ Per identificare l'esecuzione di un'operazione di addizione o di sottrazione e d
 | HI    | LO    | Sottrazione |
 | LO    | HI    | Addizione   |
 
-Evidenzio una comprensione approfondita nella apposita sezione dedicata all'aritmetica binaria: in un byte sono possibili 256 combinazioni; in caso di numeri senza segno (Unsigned) è possibile contare da 0 a 255. Nel caso di numeri Signed, i numeri positivi da 0 a 127 hanno un riferimento paritetico con i numeri senza segno da 0 a 127, mentre i numeri con segno da -128 a -1 fanno il paio con i numeri senza segno da 128 a 255.
+Riepilogo brevemente una comprensione che viene dettagliata nella apposita sezione dedicata all'aritmetica binaria: in un byte sono possibili 256 combinazioni; in caso di numeri senza segno (Unsigned) è possibile contare da 0 a 255. Nel caso di numeri Signed, i numeri positivi da 0 a 127 hanno un riferimento paritetico con i numeri senza segno da 0 a 127, mentre i numeri con segno da -128 a -1 fanno il paio con i numeri senza segno da 128 a 255.
 
 **aggiungere note con HEX.**
-
 **aggiungere note con HEX.**
-
 **aggiungere note con HEX.**
 
 ### Carry
