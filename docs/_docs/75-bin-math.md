@@ -40,6 +40,18 @@ Binary Addition and Subtraction With Negative Numbers, 2's Complements & Signed 
 
 Nel caso 1 delle operazioni con numeri senza segno. ipotizziamo di avere un computer a 8 bit, in grado di sommare due numeri a 8 bit: sia gli addendi sia la somma sono numeri a 8 bit che possono dunque andare da 0 a 255. Sommando ad esempio 73 + 114 si ottiene 187, che è un numero rappresentabile con 8 bit; sommando invece ad esempio 175 + 92 si ottiene 267, che non è rappresentabile con un numero a 8 bit: abbiamo un errore di overflow, perché i bit a nostra disposizione (8) non ci consentono di rappresentare il risultato della somma. Abbiamo in pratica un riporto che dovremmo portare al 9° bit del nostro computer, che però ne ha solo 8. In questo caso il segnale di Carry in uscita dall'ALU ci segnalerebbe che il nuero risultante dalla somma dei due addendi è più grande del numero calcolabile dall'ALU.
 
+Prima di tutto, bisogna comprendere bene i numeri Unsigned e quelli Signed.
+
+Non ricordo più da quale sorgente (ricordavo dai video di Mr Powell's Computer Science Channel, ma forse sbaglio) ero giunto in questa [interessantissima pagina](https://sandbox.mc.edu/~bennet/cs110/) dell'Università del Mississippi dedicata alla matematica binaria.
+
+Nella sezione Textbook ==> Module 3: Computer Integer Arithmetic ==> 2. Negative binary numbers avevo perfettamente compreso la rappresentazione binaria dei numeri negativi.
+
+Il metodo Magnitude / Sign è molto facile da comprendere: si sacrifica un bit dedicandolo alla rappresentazione del segno; si è deciso che il bit sacrificabile fosse quello più significativo (MSB), pertanto se un numero Unsigned a 8 bit può andare da 0 a 255 (2^8 = 256 combinazioni), sacrificando un bit per rappresentare un numero Unsigned potremo avere solo 7 bit disponibili (2^7 = 128 combinazioni), dunque il nostro Unsigned può andare da -128 a + 128. 
+
+![Numeri 4 bit](../../assets/math/75-math_00001111.gif
+){:width="100%"}
+
+
 • 23/10/2022 oggi ho approfondito l'Overflow: se nella somma di due numeri signed noto un cambiamento di segno, allora ho un overflow
 però l'NQSAP non lavora in complemento di due, dunque attenzione a cosa diciamo… qui non mi sembra di poter applicare il caso precedente… 27/11/2022 e in effetti rileggendo la questione è che stiamo lavorando non in complemento di due, ma con numeri signed… 06/01/2023 rileggendo ulteriormente direi che non è proprio corretto. Il complemento di 2 è semplicemente il modo di rappresentare i numeri signed, dove MSB = LO indica numero positivo e MSB = HI indica numero negativo.
 
