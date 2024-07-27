@@ -15,7 +15,7 @@ I concetti utili da comprendere sono:
 1. Numeri binari senza segno (Unsigned)
 2. Numeri binari con segno (Signed)
 3. Modalità di rappresentazione dei numeri binari con segno:
-   - Modulo + Segno (Signed Magnitude)
+   - Modulo e Segno (Signed Magnitude)
    - Complemento di 1 (One’s Complement, o anche 1C)
    - Complemento di 2 (Two’s Complement, o anche 2C)
 4. Somma e sottrazione di numeri binari
@@ -43,21 +43,29 @@ Nel caso 1 delle operazioni con numeri senza segno. ipotizziamo di avere un comp
 
 Prima di tutto, bisogna comprendere bene i numeri Unsigned e quelli Signed.
 
-Non ricordo più da quale sorgente (ricordavo dai video di Mr Powell's Computer Science Channel, ma forse sbaglio) ero giunto in questa [interessantissima pagina](https://sandbox.mc.edu/~bennet/cs110/) dell'Università del Mississippi dedicata alla matematica binaria.
+Non ricordo più quale sorgente (ricordavo dai video di Mr Powell's Computer Science Channel, ma forse sbaglio) mi avesse portato in questa [interessantissima pagina](https://sandbox.mc.edu/~bennet/cs110/) dell'Università del Mississippi dedicata alla matematica binaria.
 
 Nella sezione Textbook ==> Module 3: Computer Integer Arithmetic ==> 2. Negative binary numbers avevo perfettamente compreso la rappresentazione binaria dei numeri negativi.
 
-Il metodo Signed Magnitude è molto facile da comprendere: si sacrifica un bit dedicandolo alla rappresentazione del segno; si è deciso che il bit sacrificabile fosse quello più significativo (MSB), pertanto se un numero Unsigned a 8 bit può andare da 0 a 255 (2^8 = 256 combinazioni), sacrificando un bit per rappresentare un numero Unsigned potremo avere solo 7 bit disponibili (2^7 = 128 combinazioni), dunque il nostro Unsigned potrà andare da -128 a + 128.
+Il metodo **Signed Magnitude** è molto facile da comprendere: si sacrifica un bit dedicandolo alla rappresentazione del segno; il bit sacrificabile è quello più significativo (MSB), pertanto se un numero Unsigned a 8 bit può andare da 0 a 255 (2^8 = 256 combinazioni), sacrificando un bit per rappresentare un numero Unsigned potremo avere solo 7 bit disponibili per il Modulo (2^7 = 128 combinazioni), dunque il nostro Unsigned potrà andare da -128 a + 128.
 
-![Rappresentazione Signed Magnitude dei numeri negativi a 4 bit](../../assets/math/75-math_00001111.gif
-){:width="100%"}
+![Rappresentazione Modulo e Segno dei numeri a 4 bit](../../assets/math/75-math_signed_magnitude.gif)
 
-Nell'immagine precedente (semplificata a soli 4 bit per ragioni di spazio) si noterà un problema non secondario: lo zero appare due volte (0000 e 1000), ma noi sappiamo che lo zero non ha segno, pertanto questa rappresentazione non è la migliore possibile.
+*Rappresentazione Modulo e Segno dei numeri a 4 bit.*
+
+Nell'immagine (semplificata a soli 4 bit per ragioni di spazio) si noterà un problema non secondario: lo zero appare due volte (0000 e 1000), ma noi sappiamo che lo zero non ha segno, pertanto questa rappresentazione non è la migliore possibile.
 
 NB: nella pagina citata, vi è un esempio di sottrazione "5 - 2", che credo sia errata. L'immagine di riferimento è quella seguente:
 
-![Possibile errore nella pagina?](../../assets/math/75-mistake.gif
+![Possibile errore nella pagina?](../../assets/math/75-math_mistake.gif
 )
+
+Tralasciando la spiegazione del metodo **Complemento di 1** (1C), anch'esso non ottimale, il **Complemento di 2** risulterà essere invece perfetto per la rappresentazione dei numeri negativi, portando in dote una grandissima semplificazione nell'esecuzione delle sottrazioni: ath_2c
+
+![Rappresentazione in Complemento di 2 dei numeri a 4 bit](../../assets/math/75-math_2c.gif)
+
+*Rappresentazione in Complemento di 2 dei numeri a 4 bit.*
+
 
 {:width="100%"}
 
