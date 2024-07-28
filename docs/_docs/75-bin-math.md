@@ -176,24 +176,24 @@ Nelle due rappresentazioni sottostanti, le combinazioni Colonna/Riga al cui incr
 ~~~text
 Operazione       Sum Colonna + Riga       Sub Colonna - Riga
 Flag:            Carry: no                Carry: sì
-Risultato:       + 0123456789ABCDEF       + 0123456789ABCDEF
-Risultato:       + 0000000000000000       - 0000000000000000
-Risultato:       00................       00................
-Risultato:       10.......*........       10........*.......
-Risultato:       20......**........       20........**......
-Risultato:       30.....***........       30........***.....
-Risultato:       40....****........       40........****....
-Risultato:       50...*****........       50........*****...
-Risultato:       60..******........       60........******..
-Risultato:       70.*******........       70........*******.
-Risultato:       80........********       80********........
-Risultato:       90........*******.       90.*******........
-Risultato:       A0........******..       A0..******........
-Risultato:       B0........*****...       B0...*****........
-Risultato:       C0........****....       C0....****........
-Risultato:       D0........***.....       D0.....***........
-Risultato:       E0........**......       E0......**........
-Risultato:       F0........*.......       F0.......*........
+                 + 0123456789ABCDEF       + 0123456789ABCDEF
+                 + 0000000000000000       - 0000000000000000
+Overflow:        00................       00................
+Overflow:        10.......*........       10........*.......
+Overflow:        20......**........       20........**......
+Overflow:        30.....***........       30........***.....
+Overflow:        40....****........       40........****....
+Overflow:        50...*****........       50........*****...
+Overflow:        60..******........       60........******..
+Overflow:        70.*******........       70........*******.
+Overflow:        80........********       80********........
+Overflow:        90........*******.       90.*******........
+Overflow:        A0........******..       A0..******........
+Overflow:        B0........*****...       B0...*****........
+Overflow:        C0........****....       C0....****........
+Overflow:        D0........***.....       D0.....***........
+Overflow:        E0........**......       E0......**........
+Overflow:        F0........*.......       F0.......*........
 
 Esempio:         0x70 + 0x40 = Overflow   0xA0 - 0x30 = Overflow
 ~~~
@@ -210,19 +210,19 @@ Riprendiamo i due esempi riportati in calce alle tabelle:
 1. 0x70 + 0x40 = 0xB0, cioè 112 + 64 = 176, che però non rientra nel range dei numeri Signed -128 / + 127: il MSB di 0xB0 è 1, che secondo la notazione Signed significa che si tratta di un numero negativo, ma la somma di due Signed positivi non può avere come risultato un Signed negativo --> abbiamo una situazione di Overflow.
 
 ~~~text
-                       1
-    0x70 ==> 112  ==>  0111.0000 +
-    0x40 ==>  64  ==>  0100.0000 = 
+                      1
+  0x70 ==>  112  ==>  0111.0000 +
+  0x40 ==>   64  ==>  0100.0000 = 
             ----     ----------- 
-                       1011.0000 ==> 176 / 0xB0
+                      1011.0000 ==> 176 / 0xB0
 ~~~
 
 2. 0xA0 - 0x30 = 0xB0, cioè -96 - 48 = -144, che però non rientra nel range dei numeri Signed -128 / + 127. In effetti, la sottrazione tra -96 e -48 viene in realtà eseguita sommando i due numeri espressi in Complemento a 2: -96 -48 = -96 +(-48)
 
 ~~~text
                       1
-    0xA0 ==> -96  ==>  1010.0000 +
-    0z30 ==> -48  ==>  1101.0000 = 
+  0xA0 ==>  -96  ==>  1010.0000 +
+  0z30 ==>  -48  ==>  1101.0000 = 
             ----     ----------- 
                       10111.0000 ==> 0111.0000 ==> 112 / 0x70
 ~~~
@@ -289,14 +289,65 @@ Nemmeno il terzo metodo **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)
 
 ![Terzo metodo](../../assets/math/75-overflow-detector-and-or.png)
 
-- Quest'ultimo metodo è *riciclabile* per la verifica dell'overflow nelle somme: il valore B7' che l'ultimo adder troverà in ingresso sarà uguale al valore di B7 messo in input sul '181 (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria dell'adder):
+Quest'ultimo metodo è tuttavi *riciclabile* per la verifica dell'overflow nelle *addizioni*: il valore B7' che l'ultimo adder troverà in ingresso sarà uguale al valore di B7 messo in input sul '181 (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria dell'adder):
 
 ![Overflow somma](../../assets/math/75-overflow-detector-a+b.png)
 
-- Qualche modifica permette di riutilizzare il metodo anche per la verifica dell'overflow nelle sottrazioni: il valore B7' che l'ultimo adder troverà in ingresso sarà invertito rispetto al valore di B7 messo in input sul '181 (in una sottrazione somma A7 - B7, B7' viene invertito dalla circuiteria dell'adder):
+Qualche modifica permette di riutilizzare il metodo anche per la verifica dell'overflow nelle *sottrazioni*: il valore B7' che l'ultimo adder troverà in ingresso sarà invertito rispetto al valore di B7 messo in input sul '181 (in una sottrazione somma A7 - B7, B7' viene invertito dalla circuiteria dell'adder):
 
 ![Overflow sottrazione](../../assets/math/75-overflow-detector-a-b.png)
 
 Giunti a questo punto, avremmo bisogno di 4 porte AND con 3 ingressi e 3 porte OR (la terza per eseguire l'OR tra i due circuiti in modo da avere un unico avviso di overflow tanto in caso di addizione quanto di sottrazione).
 
-Un unico Data Selector/Multiplexer [74LS151](https://www.ti.com/lit/ds/symlink/sn54s151.pdf)
+Un unico 74LS151 può fare al caso nostro: una configurazione dei pin di ingresso di questo tipo potrebbe risolvere le equazioni di overflow sia per le addizioni, sia per le sottrazioni (tanto A - B quanto B - A):
+
+![74ls151](../../assets/math/75-overflow-74151.png)
+
+Facciamo alcuni esempi:
+
+- Somma di 0x20 + 0xC0
+
+~~~text
+                      
+  0x20 ==>   32  ==>  0010.0000 +
+ +0xC0 ==>  -64  ==>  1100.0000 = 
+            ----     ----------- 
+                      1110.0000 ==> -32 / 0xE0, no overflow
+~~~
+
+- Somma di 0x20 + 0x70
+
+~~~text
+                      11                  
+  0x20 ==>   32  ==>  0010.0000 +
+ +0x70 ==>  112  ==>  0111.0000 = 
+            ----     ----------- 
+                      1001.0000 ==> -112 / 0x90, overflow
+~~~
+
+- Sottrazione di 0x50 - 0x30
+
+~~~text
+                     1 
+  0x50 ==>   80  ==>  1000.0000 +
+ -0x30 ==>  -48  ==>  1101.0000 = 
+            ----     ----------- 
+                     10101.0000 ==> 0101.0000 ==> 80 / 0x50, overflow
+~~~
+
+- Somma di 0x60 - 0x30
+
+~~~text
+                     11                 
+  0x60 ==>   96  ==>  0110.0000 +
+ -0x30 ==>  -48  ==>  1101.0000 = 
+            ----     ----------- 
+                     10011.0000 ==> 0011.0000 ==> 48 / 0x30, no overflow
+~~~
+
+
+In realtà il modulo ALU del computer NQSAP - e di conseguenza, del BEAM, utilizza solo A + B e A - B, dunque possiamo semplificare in:
+
+![74ls151](../../assets/math/75-overflow-74151-2.png)
+
+importante notare che somma di + e - non risulta mai in overflow!!!
