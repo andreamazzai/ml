@@ -54,7 +54,7 @@ Se gli argomenti non sono chiari, raccomando di accedere più volte alle fonti i
 
 Prima di tutto, bisogna comprendere bene i numeri Unsigned e quelli Signed.
 
-Non ricordo più quale sorgente (ricordavo un commento di un video di Mr Powell's Computer Science Channel, ma non riesco più a trovarlo) mi avesse portato in questa [interessantissima pagina](https://sandbox.mc.edu/~bennet/cs110/) dell'Università del Mississippi dedicata alla matematica binaria.
+Non ricordo più quale fonte (ricordavo un commento di un video di Mr Powell's Computer Science Channel, ma non riesco più a trovarlo) mi avesse portato in questa [interessantissima pagina](https://sandbox.mc.edu/~bennet/cs110/) dell'Università del Mississippi dedicata alla matematica binaria.
 
 Grazie alla sezione Textbook ==> Module 3: Computer Integer Arithmetic ==> 2. Negative binary numbers avevo perfettamente compreso la rappresentazione binaria dei numeri negativi.
 
@@ -64,66 +64,91 @@ Il metodo **Signed Magnitude** è molto facile da comprendere: si sacrifica un b
 
 *Rappresentazione Modulo e Segno dei numeri a 4 bit.*
 
-Nell'immagine (semplificata a soli 4 bit per ragioni di spazio) si noterà un problema non secondario: lo zero appare due volte (0000 e 1000): noi sappiamo che lo zero non ha segno, pertanto questa rappresentazione non è la migliore possibile.
+Nell'immagine (semplificata a soli 4 bit per ragioni di spazio) si nota un problema non secondario: lo zero appare due volte (0000 e 1000): noi sappiamo che lo zero non ha segno, pertanto questa rappresentazione non è la migliore possibile.
 
 NB: nella pagina citata, vi è un esempio di sottrazione "5 - 2" che non comprendo e suppongo sia errata. L'immagine di riferimento è la seguente:
 
 ![Possibile errore nella pagina?](../../assets/math/75-math_mistake.gif
 ){:width="10%"}
 
-Tralasciando la spiegazione del metodo **Complemento a 1 (1C)**, anch'esso non ottimale, il **Complemento a 2 (2C)** risulterà essere invece perfetto per la rappresentazione dei numeri negativi, portando in dote una grandissima semplificazione nell'esecuzione delle sottrazioni:
+Tralasciando la spiegazione del metodo **Complemento a 1 (1C)**, anch'esso non ottimale, il **Complemento a 2 (2C)** risulta essere invece perfetto per la rappresentazione dei numeri negativi, portando tra l'altro in dote una grandissima semplificazione nell'esecuzione delle sottrazioni:
 
 ![Rappresentazione in Complemento a 2 dei numeri a 4 bit](../../assets/math/75-math_2c.gif){:width="100%"}
 
 *Rappresentazione in Complemento a 2 dei numeri a 4 bit.*
 
-Si nota subito la risoluzione del problema del doppio zero.
+Due sono gli aspetti da evidenziare:
 
-Altro beneficio importantissimo è che le sottrazioni si realizzano sommando il Complemento a 2 del numero da sottrare. Ad esempio, invece di eseguire "15 - 7" si effettua "15 + (-7)".
+- Risoluzione del problema del doppio zero.
+- Le sottrazioni si realizzano sommando il Complemento a 2 del numero da sottrare. Ad esempio, invece di eseguire "15 - 7" si effettua "15 + (-7)": l'addizione è l'operazione più semplice in assoluto da implementare e lo stesso circuito utilizzato per le addizioni può essere utilizzato anche per le sottrazioni.
 
 La regola che sta alla base della teoria del Complemento a 2 è: come posso rappresentare il numero "-1" in modo che, aggiungendovi "1", si ottenga "0"?
 
-Similarmente ai vecchi tachimetri delle automobili, che una volta giunti a 99.999 passavano a 0, il 99.999 dell'aritmetica binaria a 8 bit corrisponde a 11111111, che sommato a 00000001 genera come risultato 00000000.
+Similarmente ai vecchi tachimetri delle automobili, che una volta giunti a 99.999 passavano a 0, il 99.999 dell'aritmetica binaria a 8 bit corrisponde a 11111111, che sommato a 00000001 genera come risultato 00000000 (*tralasciando l'overflow*).
 
-Riprendendo quanto esposto nella pagina dei Flag, in un byte sono possibili 256 combinazioni:
+Approfondimenti sulla sottrazione in 2C ai link evidenziati in precedenza *e in calce a questa pagina*. **davvero?**
 
-- in caso di numeri Unsigned è possibile contare da 0 a 255;
-- nel caso di numeri Signed, i numeri positivi da 0 a 127 hanno un riferimento paritetico con i numeri senza segno da 0 a 127, mentre i numeri con segno da -128 a -1 fanno il paio con le rappresentazioni esadecimali e in Complemento a 2 dei numeri senza segno da 128 a 255.
+Riprendendo quanto esposto nella pagina dei [Flag](../flag/#overflow), in un byte sono possibili 256 combinazioni:
 
+- trattando i numeri come Unsigned, è possibile contare da 0 a 255;
+- trattando invece i numeri come Signed:
+  - i numeri Signed da 0 a 127 sono rappresentati allo stesso modo dei numeri Unsigned da 0 a 127 (da Hex 0x00 in poi);
+  - i numeri Signed da -128 a -1 fanno il paio con le rappresentazioni esadecimali e binarie dei numeri Unsigned da 128 a 255 (da Hex 0x80 a 0xFF).
+  
+Questa tabella dovrebbe chiarire il concetto:
+
+~~~text
+| Hex  | Binary    | Signed | Unsigned | 
+| 0x80 | 1000.0000 |   -128 |      128 | 
+| 0x81 | 1000.0001 |   -127 |      129 | 
+| 0x82 | 1000.0010 |   -126 |      130 | 
+| 0x83 | 1000.0011 |   -125 |      131 | 
+| .... | ......... |    ... |      ... | 
+| .... | ......... |    ... |      ... | 
+| .... | ......... |    ... |      ... | 
+| 0x90 | 1001.0000 |   -112 |      144 | 
+| 0xA0 | 1010.0000 |   - 96 |      160 | 
+| 0xB0 | 1011.0000 |   - 80 |      176 | 
+| 0xC0 | 1100.0000 |   - 64 |      192 | 
+| 0xD0 | 1101.0000 |   - 48 |      208 | 
+| 0xE0 | 1110.0000 |   - 32 |      224 | 
+| 0xF0 | 1111.0000 |   - 16 |      240 | 
+| 0xF1 | 1111.0001 |   - 15 |      241 | 
+| 0xF2 | 1111.0010 |   - 14 |      242 | 
+| 0xF3 | 1111.0011 |   - 13 |      243 | 
+| .... | ......... |    ... |      ... | 
+| .... | ......... |    ... |      ... | 
+| .... | ......... |    ... |      ... | 
+| 0xFD | 1111.1101 |   -  3 |      253 | 
+| 0xFE | 1111.1110 |   -  2 |      254 | 
+| 0xFF | 1111.1111 |   -  1 |      255 | 
+| 0x00 | 0000.0000 |      0 |        0 | 
+| 0x01 | 0000.0001 |      1 |        1 | 
+| 0x02 | 0000.0010 |      2 |        2 | 
+| 0x03 | 0000.0011 |      3 |        3 | 
+| .... | ......... |    ... |      ... | 
+| .... | ......... |    ... |      ... | 
+| .... | ......... |    ... |      ... | 
+| 0x10 | 0001.0000 |     16 |       16 | 
+| 0x20 | 0010.0000 |     32 |       32 | 
+| 0x30 | 0011.0000 |     48 |       48 | 
+| 0x40 | 0100.0000 |     64 |       64 | 
+| 0x50 | 0101.0000 |     80 |       80 | 
+| 0x60 | 0110.0000 |     96 |       96 | 
+| 0x70 | 0111.0000 |    112 |      112 | 
+| 0x71 | 0111.0001 |    113 |      113 | 
+| 0x72 | 0111.0010 |    114 |      114 | 
+| 0x73 | 0111.0011 |    115 |      115 | 
+| .... | ......... |    ... |      ... | 
+| .... | ......... |    ... |      ... | 
+| .... | ......... |    ... |      ... | 
+| 0x7C | 0111.1100 |    124 |      124 | 
+| 0x7D | 0111.1101 |    125 |      125 | 
+| 0x7E | 0111.1110 |    126 |      126 | 
+| 0x7F | 0111.1111 |    127 |      127 | 
 ~~~
-| Hex Signed   | Dec   | Bin 2C    |
-| -       | -     | -         |
-| 0x80    | -128  | 1000.0000 |
-| 0x81    | -127  | 1000.0001 |
-| 0x90    | -112  | 1001.0000 |
-| 0x91    | -111  | 1001.0001 |
-| 0xA0    | - 96  | 1001.0000 |
-| 0xA1    | - 97  | 1001.0010 |
-| 0xA2    | - 98  | 1001.0010 |
-| 0xA3    | - 99  | 1001.0011 |
-| 0xB0    | - 80  | 1001.0000 |
-| 0xC0    | - 64  | 1001.0000 |
-| 0xD0    | - 48  | 1001.0000 |
-| 0xE0    | - 32  | 1001.0000 |
-| 0xF0    | - 16  | 1001.0000 |
-| 0x00    |    0  | 0000.0000 |
-| 0x10    |   16  | 0000.0001 |
-| 0x20    |   32  | 0000.0001 |
-| 0x30    |   48  | 0000.0001 |
-| 0x40    |   64  | 0000.0001 |
-| 0x50    |   80  | 0000.0010 |
-| 0x60    |   96  | 0000.0011 |
-| 0x70    |  112  | 0000.0100 |
-| 0x71    |  113  | 0000.0100 |
-| 0x72    |  114  | 0000.0100 |
-| 0x73    |  115  | 0000.0100 |
-~~~
 
-FINIRE QUESTA TABELLA
-
-0x7F = +127
-
-Estendo quanto visto nella rappresentazione grafica con 4 bit, nella quale si passa 
+Riprendendo quanto visto nella rappresentazione grafica con 4 bit, è importante notare il passaggio dei numeri Signed da -1 a 0 in corrispondenza del passaggio binario da 11111111 a 00000000.
 
 Il Complemento a 2 è dunque un modo molto pratico per rappresentare i numeri Signed, nei quali un MSB = LO indica un numero positivo e un MSB = HI indica un numero negativo.
 
@@ -137,7 +162,7 @@ Ricordiamo che l'overflow indica un errore nel processo di somma o sottrazione d
 
 Nelle due rappresentazioni sottostanti le combinazioni Colonna/Riga al cui incrocio vi è un asterisco "\*" indicano situazioni di overflow, cioè di un risultato che non può essere correttamente rappresentato con gli 8 bit a disposizione.
 
-~~~
+~~~text
 Operazione       Sum Colonna + Riga       Sub Colonna - Riga
 Flag:            Carry: no                Carry: sì
 Risultato:       + 0123456789ABCDEF       + 0123456789ABCDEF
