@@ -285,12 +285,16 @@ Nemmeno il terzo metodo sembra utilizzabile, perché non abbiamo visibilità di 
 
 ![Terzo metodo](../../assets/math/75-overflow-detector-and-or.png)
 
-{:width="25%"}
+*Terzo metodo.*
+
+Quest'ultimo metodo è *riciclabile* per la verifica dell'overflow nelle somme: il valore B7' che l'ultimo adder troverà in ingresso sarà uguale al valore di B7 messo in input sul '181 (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria dell'adder):
+
+![Overflow somma](../../assets/math/75-overflow-detector-a+b.png)
+
+Qualche modifica permette di riutilizzare il metodo anche per la verifica dell'overflow nelle sottrazioni: il valore B7' che l'ultimo adder troverà in ingresso sarà invertito rispetto al valore di B7 messo in input sul '181 (in una sottrazione somma A7 - B7, B7' viene invertito dalla circuiteria dell'adder):
+
+![Overflow sottrazione](../../assets/math/75-overflow-detector-a-b.png)
 
 *Terzo metodo.*
 
 
-
- a 
-
-Poichè abbiamo detto che un numero Signed 
