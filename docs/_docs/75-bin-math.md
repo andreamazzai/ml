@@ -88,7 +88,7 @@ La regola che sta alla base della teoria del Complemento a 2 è: come posso rapp
 
 Similarmente ai vecchi tachimetri delle automobili, che una volta giunti a 99.999 passavano a 0, il 99.999 dell'aritmetica binaria a 8 bit corrisponde a 11111111, che sommato a 00000001 genera come risultato 00000000 (*tralasciando l'overflow*).
 
-Approfondimenti sulla sottrazione in 2C ai link evidenziati in precedenza *e in calce a questa pagina*. **davvero?**
+Per i dovuti approfondimenti sulla sottrazione in 2C, si vedano i link evidenziati in precedenza in questa pagina.
 
 Riprendendo anche quanto esposto nella pagina dei [Flag](../flags/#overflow), in un byte sono possibili 256 combinazioni:
 
@@ -121,11 +121,11 @@ Questa tabella dovrebbe chiarire il concetto:
 | .... | ......... |    ... |      ... | 
 | .... | ......... |    ... |      ... | 
 | .... | ......... |    ... |      ... | 
+
+| Hex  | Binary    | Signed | Unsigned | 
 | 0xFD | 1111.1101 |   -  3 |      253 | 
 | 0xFE | 1111.1110 |   -  2 |      254 | 
 | 0xFF | 1111.1111 |   -  1 |      255 | 
-
-| Hex  | Binary    | Signed | Unsigned | 
 | 0x00 | 0000.0000 |      0 |        0 | 
 | 0x01 | 0000.0001 |      1 |        1 | 
 | 0x02 | 0000.0010 |      2 |        2 | 
@@ -152,7 +152,7 @@ Questa tabella dovrebbe chiarire il concetto:
 | 0x7F | 0111.1111 |    127 |      127 | 
 ~~~
 
-Riprendendo quanto visto nella rappresentazione grafica con 4 bit, è importante notare il passaggio dei numeri Signed da -1 a 0 in corrispondenza del passaggio binario da 11111111 a 00000000.
+Come visto nella *Rappresentazione in Complemento a 2 dei numeri a 4 bit*, è importante notare il passaggio dei numeri Signed da -1 a 0 in corrispondenza del passaggio binario da 11111111 a 00000000.
 
 Il Complemento a 2 è dunque un modo molto pratico per rappresentare i numeri Signed, nei quali un MSB = LO indica un numero positivo e un MSB = HI indica un numero negativo.
 
