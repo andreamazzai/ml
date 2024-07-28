@@ -94,8 +94,8 @@ Riprendendo anche quanto esposto nella pagina dei [Flag](../flags/#overflow), in
 
 - trattando i numeri come Unsigned, è possibile contare da 0 a 255;
 - trattando invece i numeri come Signed:
-  - i numeri Signed da 0 a 127 sono rappresentati allo stesso modo dei numeri Unsigned da 0 a 127 (da Hex 0x00 in poi);
-  - i numeri Signed da -128 a -1 fanno il paio con le rappresentazioni esadecimali e binarie dei numeri Unsigned da 128 a 255 (da Hex 0x80 a 0xFF).
+  - i valori da 0 a 127 sono rappresentati allo stesso modo dei numeri Unsigned da 0 a 127 (da Hex 0x00 in poi);
+  - i valori da -128 a -1 fanno il paio con le rappresentazioni esadecimali e binarie dei numeri Unsigned da 128 a 255 (da Hex 0x80 a 0xFF).
   
 Questa tabella dovrebbe chiarire il concetto:
 
@@ -124,6 +124,8 @@ Questa tabella dovrebbe chiarire il concetto:
 | 0xFD | 1111.1101 |   -  3 |      253 | 
 | 0xFE | 1111.1110 |   -  2 |      254 | 
 | 0xFF | 1111.1111 |   -  1 |      255 | 
+
+| Hex  | Binary    | Signed | Unsigned | 
 | 0x00 | 0000.0000 |      0 |        0 | 
 | 0x01 | 0000.0001 |      1 |        1 | 
 | 0x02 | 0000.0010 |      2 |        2 | 
