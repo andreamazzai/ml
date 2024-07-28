@@ -297,52 +297,62 @@ Qualche modifica permette di riutilizzare il metodo anche per la verifica dell'o
 
 ![Overflow sottrazione](../../assets/math/75-overflow-detector-a-b.png)
 
-Giunti a questo punto, avremmo bisogno di 4 porte AND con 3 ingressi e 3 porte OR (la terza per eseguire l'OR tra i due circuiti in modo da avere un unico avviso di overflow tanto in caso di addizione quanto di sottrazione).
+Giunti a questo punto, per realizzare un circuito in grado di identificare l'overflow avremmo bisogno di 4 porte AND con 3 ingressi e 3 porte OR con 2 ingressi (la terza OR servirebbe ad eseguire l'OR logico tra i due circuiti precedenti per creare un'unica segnalazione di overflow tanto in caso di addizione quanto di sottrazione).
 
-Un unico 74LS151 può fare al caso nostro: una configurazione dei pin di ingresso di questo tipo potrebbe risolvere le equazioni di overflow sia per le addizioni, sia per le sottrazioni (tanto A - B quanto B - A):
+Al posto di AND e OR, un unico 74LS151 può fare al caso nostro: una configurazione dei pin di ingresso di questo tipo potrebbe risolvere le equazioni di overflow sia per le addizioni, sia per le sottrazioni (tanto A - B quanto B - A):
 
 ![74ls151](../../assets/math/75-overflow-74151.png)
 
+Gli ingressi A, B e C connessi agli MSB dei registri A e B e dell'uscita dell'ALU selezionerebbero quale tra gli ingressi I0-I7 attivare per portare in uscita una eventuale segnalazione di Overflow.
+
+Gli ingressi I0-I7 sarebbero opportunamente connessi "Hardwired" all'Instruction Register per capire quale sia l'operazione correntemente in esecuzione.
+
 Facciamo alcuni esempi:
 
-- Somma di 0x20 + 0xC0
+- Esempio 1: somma di 0x20 + 0xC0; istruzione: Somma A + B
 
 ~~~text
-                      
-  0x20 ==>   32  ==>  0010.0000 +
- +0xC0 ==>  -64  ==>  1100.0000 = 
-            ----     ----------- 
-                      1110.0000 ==> -32 / 0xE0, no overflow
+
+A   0x20 ==>   32  ==>  0010.0000 +
+B  +0xC0 ==>  -64  ==>  1100.0000 = 
+              ----     ----------- 
+Q                       1110.0000 ==> -32 / 0xE0, no overflow
 ~~~
 
-- Somma di 0x20 + 0x70
+L'istruzione A + B porterebbe a 1 gli ingressi I3 e I4 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione porterebbe agli ingressi A, B e C rispettivamente A=0, B=1 e Q=1, dunque si attiverebbe l'ingresso I6, che risulta a 0, pertanto l'uscita del '151 sarebbe a 0, indicando che non vi è overflow.
+
+- Esempio 2: somma di 0x20 + 0x70
 
 ~~~text
-                      11                  
-  0x20 ==>   32  ==>  0010.0000 +
- +0x70 ==>  112  ==>  0111.0000 = 
-            ----     ----------- 
-                      1001.0000 ==> -112 / 0x90, overflow
+                        11
+A   0x20 ==>   32  ==>  0010.0000 +
+B  +0x70 ==>  112  ==>  0111.0000 = 
+             ----     ----------- 
+Q                       1001.0000 ==> -112 / 0x90, overflow
 ~~~
 
-- Sottrazione di 0x50 - 0x30
+L'istruzione A + B porterebbe a 1 gli ingressi I3 e I4 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione porterebbe agli ingressi A, B e C rispettivamente A=0, B=0 e Q=1, dunque si attiverebbe l'ingresso I4, che risulta a 1, pertanto l'uscita del '151 sarebbe a 1, indicando che vi è overflow.
+
+- Esempio 3: Sottrazione di 0x50 - 0x30
 
 ~~~text
-                     1 
-  0x50 ==>   80  ==>  1000.0000 +
- -0x30 ==>  -48  ==>  1101.0000 = 
-            ----     ----------- 
-                     10101.0000 ==> 0101.0000 ==> 80 / 0x50, overflow
+                      1 
+A    0x50 ==>   80  ==>  1000.0000 +
+B   -0x30 ==>  -48  ==>  1101.0000 = 
+              ----     ----------- 
+Q                       10101.0000 ==> 0101.0000 ==> 80 / 0x50, overflow
 ~~~
 
-- Somma di 0x60 - 0x30
+L'istruzione A - B porterebbe a 1 gli ingressi I1 e I6 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione porterebbe agli ingressi A, B e C rispettivamente A=1, B=1 e Q=0, dunque si attiverebbe l'ingresso I3, che risulta a 0, pertanto l'uscita del '151 sarebbe a 0, indicando che non vi è overflow.
+
+- Esempio 4: Sottrazione di 0x60 - 0x30
 
 ~~~text
-                     11                 
-  0x60 ==>   96  ==>  0110.0000 +
- -0x30 ==>  -48  ==>  1101.0000 = 
-            ----     ----------- 
-                     10011.0000 ==> 0011.0000 ==> 48 / 0x30, no overflow
+                        11                 
+A    0x60 ==>   96  ==>  0110.0000 +
+B   -0x30 ==>  -48  ==>  1101.0000 = 
+              ----     ----------- 
+Q                       10011.0000 ==> 0011.0000 ==> 48 / 0x30, no overflow
 ~~~
 
 
