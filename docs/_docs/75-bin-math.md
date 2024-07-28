@@ -21,7 +21,7 @@ I concetti utili da comprendere sono:
 
 Lungi da me dal voler (e dal poter) spiegare tutto, suggerisco una serie di fonti che mi hanno permesso di arrivare a comprendere i temi esposti.
 
-Se gli argomenti non sono chiari, raccomando di accedere alle fonti più volte in tempi diversi e in sequenze diverse; il rivedere le spiegazioni in modalità *brainstorming* mi avevno permesso di riempire piano piano i buchi fino a colmarli; con letture ed approfondimenti ripetuti avevo raggiunto lo scopo prefissato.
+Se gli argomenti non sono chiari, raccomando di accedere più volte alle fonti in tempi diversi e in sequenze diverse: il rivedere le spiegazioni in modalità *brainstorming* mi avevano permesso di riempire i buchi fino a colmarli; con letture ed approfondimenti ripetuti avevo raggiunto lo scopo prefissato.
 
 1. **Binary Overflow** - Mr Powell's Computer Science Channel - [link](https://www.youtube.com/watch?v=Q7t9-Sq_4Ww&lc=Ugy04nCzuiaOJIqK_5J4AaABAg): concetto generico di overflow.
 
@@ -58,13 +58,13 @@ Non ricordo più quale sorgente (ricordavo un commento di un video di Mr Powell'
 
 Grazie alla sezione Textbook ==> Module 3: Computer Integer Arithmetic ==> 2. Negative binary numbers avevo perfettamente compreso la rappresentazione binaria dei numeri negativi.
 
-Il metodo **Signed Magnitude** è molto facile da comprendere: si sacrifica un bit dedicandolo alla rappresentazione del segno; il bit sacrificabile è quello più significativo (MSB), pertanto se un numero Unsigned a 8 bit può andare da 0 a 255 (2^8 = 256 combinazioni), sacrificando un bit per rappresentare un numero Unsigned potremo avere solo 7 bit disponibili per il Modulo (2^7 = 128 combinazioni), dunque il nostro Unsigned potrà andare da -128 a + 128.
+Il metodo **Signed Magnitude** è molto facile da comprendere: si sacrifica un bit dedicandolo alla rappresentazione del segno; il bit sacrificabile è quello più significativo (MSB), pertanto se un numero Unsigned a 8 bit può andare da 0 a 255 (2^8 = 256 combinazioni rappresentabili), sacrificando un bit per rappresentare un numero Unsigned potremo avere solo 7 bit disponibili per il Modulo (2^7 = 128 combinazioni), dunque il nostro Unsigned potrà andare da -128 a + 128 (sempre 256 numeri rappresentabili - metà negativi, metà positivi).
 
 ![Rappresentazione Modulo e Segno dei numeri a 4 bit](../../assets/math/75-math_signed_magnitude.gif){:width="100%"}
 
 *Rappresentazione Modulo e Segno dei numeri a 4 bit.*
 
-Nell'immagine (semplificata a soli 4 bit per ragioni di spazio) si noterà un problema non secondario: lo zero appare due volte (0000 e 1000), ma noi sappiamo che lo zero non ha segno, pertanto questa rappresentazione non è la migliore possibile.
+Nell'immagine (semplificata a soli 4 bit per ragioni di spazio) si noterà un problema non secondario: lo zero appare due volte (0000 e 1000): noi sappiamo che lo zero non ha segno, pertanto questa rappresentazione non è la migliore possibile.
 
 NB: nella pagina citata, vi è un esempio di sottrazione "5 - 2" che non comprendo e suppongo sia errata. L'immagine di riferimento è la seguente:
 
@@ -79,14 +79,51 @@ Tralasciando la spiegazione del metodo **Complemento a 1 (1C)**, anch'esso non o
 
 Si nota subito la risoluzione del problema del doppio zero.
 
-Altro beneficio importantissimo è che la sottrazione si realizza sommando il Complemento a 2 del numero da sottrare. Ad esempio, invece di eseguire "15 - 7" si effettua "15 + (-7)".
+Altro beneficio importantissimo è che le sottrazioni si realizzano sommando il Complemento a 2 del numero da sottrare. Ad esempio, invece di eseguire "15 - 7" si effettua "15 + (-7)".
 
 La regola che sta alla base della teoria del Complemento a 2 è: come posso rappresentare il numero "-1" di modo che aggiungendovi "1" possa ottenere "0"?
 
 Similarmente ai vecchi tachimetri delle automobili, che una volta giunti a 99.999 passavano a 0, il 99.999 dell'aritmetica binaria a 8 bit corrisponde a 11111111, che sommato a 00000001 genera come risultato 00000000.
 
-• 23/10/2022 oggi ho approfondito l'Overflow: se nella somma di due numeri signed noto un cambiamento di segno, allora ho un overflow
-però l'NQSAP non lavora in Complemento a 2, dunque attenzione a cosa diciamo… qui non mi sembra di poter applicare il caso precedente… 27/11/2022 e in effetti rileggendo la questione è che stiamo lavorando non in Complemento a due, ma con numeri signed… 06/01/2023 rileggendo ulteriormente direi che non è proprio corretto. Il Complemento a 2 è semplicemente il modo di rappresentare i numeri signed, dove MSB = LO indica numero positivo e MSB = HI indica numero negativo.
+Riprendendo quanto esposto nella pagina dei Flag, in un byte sono possibili 256 combinazioni:
+
+- in caso di numeri senza segno (Unsigned) è possibile contare da 0 a 255;
+- nel caso di numeri Signed, i numeri positivi da 0 a 127 hanno un riferimento paritetico con i numeri senza segno da 0 a 127, mentre i numeri con segno da -128 a -1 fanno il paio con le rappresentazioni esadecimali e in Complemento a 2 dei numeri senza segno da 128 a 255.
+
+| Hex Signed   | Dec   | Bin 2C    |
+| -       | -     | -         |
+| 0x80    | -128  | 1000.0000 |
+| 0x81    | -127  | 1000.0001 |
+| 0x90    | -112  | 1001.0000 |
+| 0x91    | -111  | 1001.0001 |
+| 0xA0    | - 96  | 1001.0000 |
+| 0xA1    | - 97  | 1001.0010 |
+| 0xA2    | - 98  | 1001.0010 |
+| 0xA3    | - 99  | 1001.0011 |
+| 0xB0    | - 80  | 1001.0000 |
+| 0xC0    | - 64  | 1001.0000 |
+| 0xD0    | - 48  | 1001.0000 |
+| 0xE0    | - 32  | 1001.0000 |
+| 0xF0    | - 16  | 1001.0000 |
+| 0x00    |    0  | 0000.0000 |
+| 0x10    |   16  | 0000.0001 |
+| 0x20    |   32  | 0000.0001 |
+| 0x30    |   48  | 0000.0001 |
+| 0x40    |   64  | 0000.0001 |
+| 0x50    |   80  | 0000.0010 |
+| 0x60    |   96  | 0000.0011 |
+| 0x70    |  112  | 0000.0100 |
+| 0x71    |  113  | 0000.0100 |
+| 0x72    |  114  | 0000.0100 |
+| 0x73    |  115  | 0000.0100 |
+
+FINIRE QUESTA TABELLA
+
+0x7F = +127
+
+Estendo quanto visto nella rappresentazione grafica con 4 bit, nella quale si passa 
+
+Il Complemento a 2 è dunque un modo molto pratico per rappresentare i numeri Signed, nei quali un MSB = LO indica un numero positivo e un MSB = HI indica un numero negativo.
 
 ## Approfondimento Overflow
 
@@ -96,7 +133,7 @@ Il link di riferimento è [http://6502.org/users/dieter/v_flag/v_0.htm](http://6
 
 Ricordiamo che l'overflow indica un errore nel processo di somma o sottrazione di due numeri Signed: se il numero risultante ha un segno errato rispetto al previsto, si ha un overflow.
 
-Nelle due rappresentazioni sottostanti le combinazioni Colonna/Riga al cui incrocio vi è un asterisco "\*" indicano situazioni di overflow, cioè di un risultato che non può essere correttamente rappresentato con i bit a disposizione.
+Nelle due rappresentazioni sottostanti le combinazioni Colonna/Riga al cui incrocio vi è un asterisco "\*" indicano situazioni di overflow, cioè di un risultato che non può essere correttamente rappresentato con gli 8 bit a disposizione.
 
 ~~~
 Operazione       Sum Colonna + Riga       Sub Colonna - Riga
@@ -129,3 +166,4 @@ Definizioni
 - Si stanno utilizzando numeri Signed a 8 bit, dunque 0x20 rappresenta 32 decimale, mentre 0xA0 rappresenta 
 - Per la somma **non c'è** un Carry in ingresso; per la sottrazione **c'è** un Carry in ingresso: come spiegato in [modulo ALU](../alu/#carry-addizioni-e-sottrazioni), prima di eseguire una somma il Carry è normalmente settato, mentre è normalmente settato prima di eseguire una sottrazione.
 
+Poichè abbiamo detto che un numero Signed 
