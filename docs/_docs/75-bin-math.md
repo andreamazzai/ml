@@ -227,9 +227,7 @@ Tom Nisbet segnalava che l'ispirazione per l'uso dei 74LS151 per determinare sit
 
 *Adder hardware per somme A+B e sottrazioni A-B.*
 
-Dieter esponeva una rappresentazione logica di un Adder in grado di effettuare sia somme sia sottrazioni, evidenziando che le somme A+B sono *facili* e che per eseguire le sottrazioni il metodo più semplice è quello di invertire B e procedere poi esattamente come per le somme: A+(-B).
-
-In quali situazioni si ha un overflow? Quando il bit del segno (MSB) viene corrotto, che è anche il caso in cui il risultato dell'operazione sfocia in un 9° bit.
+Dieter esponeva una rappresentazione logica di un Adder in grado di effettuare sia somme sia sottrazioni, segnalando che "le somme A+B sono facili; per eseguire le sottrazioni il metodo più semplice è quello di invertire B e procedere poi esattamente come per le somme: A+(-B)".
 
 ![Ultimo stadio di un adder a 8 bit](../../assets/math/75-dieter-8th-adder.png){:width="25%"}
 
@@ -254,18 +252,18 @@ Andando a mettere in tabella le varie combinazioni di A, B e C, ricaviamo:
 |  0  |  0  |  0  |  0  |  0  |  0   |
 |  0  |  0  |  1  |  1  |  0  |  0   |
 |  0  |  1  |  0  |  1  |  0  |  0   |
-|  0  |  1  |  1  |  0  |  1  |  1\*  |
-|  1  |  0  |  0  |  1  |  0  |  1\*\*|
+|  **0**  |  **1**  |  **1**  |  **0**  |  **1**  |  **1**\*  |
+|  **1**  |  **0**  |  **0**  |  **1**  |  **0**  |  **1**\*\*|
 |  1  |  0  |  1  |  0  |  1  |  0   |
 |  1  |  1  |  0  |  0  |  1  |  0   |
 |  1  |  1  |  1  |  1  |  1  |  0   |
 
-Abbiamo detto che la somma di due Signed negativi non può avere come risultato un Signed positivo - e viceversa. Nei casi evidenziati da \* e \*\* troviamo rispettivamente:
+Abbiamo detto che la somma di due Signed negativi non può avere come risultato un Signed positivo - e viceversa. Nei casi evidenziati da \* e \*\* troviamo invece rispettivamente:
 
-- \* due Signed negativi (A7 = B7 = 1) che generano un risultato positivo (Q7 = 0) --> sappiamo che è una situazione di overflow.
-- \*\* due Signed positivi (A7 = B7 = 0) che generano un risultato negativo (Q7 = 1) --> sappiamo che è una situazione di overflow.
+- \* due Signed negativi (A7 = B7' = 1) che generano un risultato positivo (Q7 = 0) --> sappiamo che è una situazione di overflow.
+- \*\* due Signed positivi (A7 = B7' = 0) che generano un risultato negativo (Q7 = 1) --> sappiamo che è una situazione di overflow.
 
-Siamo in possesso ora di tutti i dati per determinare l'equazione che  identifica uno stato di overflow. Possiamo trovare tre diversi casi:
+Mettendo a fattor comune quanto abbiamo visto fino ad ora, possiamo identificare gli stati che determinano una situazione di overflow. Possiamo trovare tre diversi casi:
 
 1) A7 e B7' sono dello stesso segno e Q è invertito rispetto ad A e B, cioè **(A == B) AND (Q <> A)**; questo punto non specifica il valore dei bit, ma li mette in una comparazione relativa tra di loro;
 2) C7 e C8 sono invertiti tra loro, cioè **C7 <> C8**;
