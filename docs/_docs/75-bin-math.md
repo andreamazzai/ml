@@ -263,13 +263,13 @@ Abbiamo detto che la somma di due Signed negativi non può avere come risultato 
 - \* due Signed negativi (A7 = B7' = 1) che generano un risultato positivo (Q7 = 0) --> sappiamo che è una situazione di overflow.
 - \*\* due Signed positivi (A7 = B7' = 0) che generano un risultato negativo (Q7 = 1) --> sappiamo che è una situazione di overflow.
 
-Mettendo a fattor comune quanto abbiamo visto fino ad ora, possiamo identificare gli stati che determinano una situazione di overflow. Possiamo trovare tre diversi casi:
+Mettendo a fattor comune quanto abbiamo visto fino ad ora, siamo in grado di identificare gli stati che determinano una situazione di overflow. Possiamo trovare tre diversi casi:
 
-1) A7 e B7' sono dello stesso segno e Q è invertito rispetto ad A e B, cioè **(A == B) AND (Q <> A)**; questo punto non specifica il valore dei bit, ma li mette in una comparazione relativa tra di loro;
-2) C7 e C8 sono invertiti tra loro, cioè **C7 <> C8**;
-3) **(A7 = B7 = 1 AND Q7 = 0) OR (A7 = B7 = 0 AND Q7 = 1)** è simile al punto 1, ma si specifica il valore assoluto dei bit dei valori in ingresso al circuito.
+1. A7 e B7' sono dello stesso segno e Q è invertito rispetto ad A e B, cioè **(A == B) AND (Q <> A)**; questo punto non specifica il valore dei bit, ma li mette in una comparazione relativa tra di loro;
+2. C7 e C8 sono invertiti tra loro, cioè **C7 <> C8**;
+3. **(A7 = B7 = 1 AND Q7 = 0) OR (A7 = B7 = 0 AND Q7 = 1)** è simile al punto 1, ma si specifica il valore assoluto dei bit dei valori in ingresso all'adder a 8 bit.
 
-Per quanto riguarda il primo caso, il nostro circuito basato sulle ALU 74LS181 non ci offre visibilità del valore di B7', che viene invece computato internamente al chip.
+Per quanto riguarda il primo caso, il nostro circuito basato sulle ALU 74LS181 non ci offre visibilità del valore di B7', che è computato internamente al chip e non esposto.
 
 Stesso ragionamento per C7: non ne abbiamo visibilità.
 
