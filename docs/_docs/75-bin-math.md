@@ -262,8 +262,8 @@ Andando a mettere in tabella le varie combinazioni di A, B e C, ricaviamo:
 
 Abbiamo detto che la somma di due Signed negativi non può avere come risultato un Signed positivo - e viceversa. Nei casi evidenziati da \* e \*\* troviamo rispettivamente:
 
-- \* due Signed negativi (A7 = B7 = 1) che generano un risultato positivo (Q7 = 0)
-- \*\* due Signed positivi (A7 = B7 = 0) che generano un risultato negativo (Q7 = 1)
+- \* due Signed negativi (A7 = B7 = 1) che generano un risultato positivo (Q7 = 0) --> sappiamo che è una situazione di overflow.
+- \*\* due Signed positivi (A7 = B7 = 0) che generano un risultato negativo (Q7 = 1) --> sappiamo che è una situazione di overflow.
 
 Siamo in possesso ora di tutti i dati per determinare l'equazione che  identifica uno stato di overflow. Possiamo trovare tre diversi casi:
 
