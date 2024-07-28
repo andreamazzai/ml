@@ -19,9 +19,13 @@ I concetti utili da comprendere sono:
    - Complemento a 2 (Two’s Complement, o anche 2C)
 3. Somma e sottrazione di numeri binari
 
-Lungi da me dal voler (e dal poter) spiegare tutto, suggerisco una serie di fonti che mi hanno permesso di arrivare a comprendere i temi esposti.
+## Fonti
 
-Se gli argomenti non sono chiari, raccomando di accedere più volte alle fonti in tempi diversi e in sequenze diverse: il rivedere le spiegazioni in modalità *brainstorming* mi avevano permesso di riempire i buchi fino a colmarli; con letture ed approfondimenti ripetuti avevo raggiunto lo scopo prefissato.
+Lungi dal voler (e poter) spiegare tutto, riporto alcuni concetti di base e suggerisco una serie di fonti che mi hanno permesso di arrivare a comprendere appieno i temi esposti.
+
+Per una compresione completa dei temi trattati, raccomando di accedere più volte alle fonti, anche in tempi diversi e in sequenze diverse: con letture ed approfondimenti ripetuti avevo raggiunto lo scopo prefissato, mentre più visualizzazioni dei video in modalità *brainstorming* mi avevano permesso di riempire i buchi fino a colmarli.
+
+Ecco una serie di video su YouTube:
 
 1. **Binary Overflow** - Mr Powell's Computer Science Channel - [link](https://www.youtube.com/watch?v=Q7t9-Sq_4Ww&lc=Ugy04nCzuiaOJIqK_5J4AaABAg): concetto generico di overflow.
 
@@ -31,7 +35,7 @@ Se gli argomenti non sono chiari, raccomando di accedere più volte alle fonti i
 
     Abbiamo in pratica un riporto che dovremmo portare al 9° bit del nostro computer, che però ne ha solo 8. In questo caso il segnale di Carry in uscita dall'ALU ci segnalerebbe che il numero risultante dalla somma dei due addendi è più grande del numero calcolabile dall'ALU.
 
-2. Video che illustra **Somme di numeri Unsigned, il concetto di Carry ed eventuale Overflow** - Mr Dimmick's Computing Channel - [link](https://www.youtube.com/watch?v=nKxjLM6ePcI): molto ben fatto; spiega anche le regole di base applicabili a tutte le somme di numeri binari.
+2. **Somme di numeri Unsigned, il concetto di Carry ed eventuale Overflow** - Mr Dimmick's Computing Channel - [link](https://www.youtube.com/watch?v=nKxjLM6ePcI): molto ben fatto; spiega anche le regole di base applicabili a tutte le somme di numeri binari.
 
 3. **Numeri negativi in binario** dello stesso autore del video 1 - [link](https://www.youtube.com/watch?v=dHB7jFjESLY): un ottimo video che spiega come rappresentare i numeri negativi in Complemento a 2 e come convertire un numero positivo in negativo e viceversa.
 
@@ -46,19 +50,17 @@ Se gli argomenti non sono chiari, raccomando di accedere più volte alle fonti i
       1) partire da destra e non modificare nulla fino al primo bit a 1 incluso;
       2) invertire tutti i bit rimanenti.
 
-      Esempio: per invertire il numero 01010100 (84 decimale) lascio invariati i primi 3 bit partendo da destra (01010**100**) ed inverto poi tutti gli altri da **01010**100 a **10101**100 ottenendo come risultato finale 10101100 (-84).
-
-# Un breve riepilogo
+      Esempio: per invertire il numero 01010100 (84 decimale) si lasciano invariati i primi 3 bit partendo da destra (01010**100**) e si invertono poi tutti gli altri da **01010**100 a **10101**100, ottenendo come risultato finale 10101100 (-84).
 
 ## Numeri Unsigned e numeri Signed
 
-Prima di tutto, bisogna comprendere bene i numeri Unsigned e quelli Signed.
+E' necessario comprende a fondo la logica dei numeri Unsigned e Signed.
 
-Non ricordo più quale fonte (ricordavo un commento di un video di Mr Powell's Computer Science Channel, ma non riesco più a trovarlo) mi avesse portato in questa [interessantissima pagina](https://sandbox.mc.edu/~bennet/cs110/) dell'Università del Mississippi dedicata alla matematica binaria.
+Non ricordo più quale fonte (credevo un commento di un video di Mr Powell's Computer Science Channel, ma non riesco più a trovarlo) mi avesse portato in questa [interessantissima pagina](https://sandbox.mc.edu/~bennet/cs110/) dell'Università del Mississippi dedicata alla matematica binaria.
 
 Grazie alla sezione Textbook ==> Module 3: Computer Integer Arithmetic ==> 2. Negative binary numbers avevo perfettamente compreso la rappresentazione binaria dei numeri negativi.
 
-Il metodo **Signed Magnitude** è molto facile da comprendere: si sacrifica un bit dedicandolo alla rappresentazione del segno; il bit sacrificabile è quello più significativo (MSB), pertanto se un numero Unsigned a 8 bit può andare da 0 a 255 (2^8 = 256 combinazioni rappresentabili), sacrificando un bit per rappresentare un numero Unsigned potremo avere solo 7 bit disponibili per il Modulo (2^7 = 128 combinazioni), dunque il nostro Unsigned potrà andare da -128 a + 128 (sempre 256 numeri rappresentabili - metà negativi, metà positivi).
+Il metodo **Signed Magnitude** è molto facile da comprendere: si sacrifica un bit dedicandolo alla rappresentazione del segno; il bit sacrificabile è quello più significativo (MSB), pertanto se un numero Unsigned a 8 bit può andare da 0 a 255 (2^8 = 256 combinazioni rappresentabili), un numero Unsigned avrà 7 bit disponibili per il Modulo (2^7 = 128 combinazioni) e un bit per il segno, dunque potrà andare da -128 a + 128 (sempre 256 numeri rappresentabili, ma metà negativi e metà positivi).
 
 ![Rappresentazione Modulo e Segno dei numeri a 4 bit](../../assets/math/75-math_signed_magnitude.gif){:width="100%"}
 
@@ -88,7 +90,7 @@ Similarmente ai vecchi tachimetri delle automobili, che una volta giunti a 99.99
 
 Approfondimenti sulla sottrazione in 2C ai link evidenziati in precedenza *e in calce a questa pagina*. **davvero?**
 
-Riprendendo quanto esposto nella pagina dei [Flag](../flag/#overflow), in un byte sono possibili 256 combinazioni:
+Riprendendo anche quanto esposto nella pagina dei [Flag](../flags/#overflow), in un byte sono possibili 256 combinazioni:
 
 - trattando i numeri come Unsigned, è possibile contare da 0 a 255;
 - trattando invece i numeri come Signed:
