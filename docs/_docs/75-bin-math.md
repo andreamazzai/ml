@@ -258,7 +258,7 @@ Andando a mettere in tabella le varie combinazioni di A, B e C, ricaviamo:
 |  1  |  1  |  0  |  0  |  1  |  0   |
 |  1  |  1  |  1  |  1  |  1  |  0   |
 
-Abbiamo detto che la somma di due Signed negativi non può avere come risultato un Signed positivo - e viceversa. Nei casi evidenziati da \* e \*\* troviamo invece rispettivamente:
+Abbiamo detto che la somma di due Signed negativi non può avere come risultato un Signed positivo - e viceversa. Nelle due righe evidenziate troviamo invece rispettivamente:
 
 - \* due Signed negativi (A7 = B7' = 1) che generano un risultato positivo (Q7 = 0) --> sappiamo che è una situazione di overflow.
 - \*\* due Signed positivi (A7 = B7' = 0) che generano un risultato negativo (Q7 = 1) --> sappiamo che è una situazione di overflow.
@@ -267,13 +267,29 @@ Mettendo a fattor comune quanto abbiamo visto fino ad ora, siamo in grado di ide
 
 1. A7 e B7' sono dello stesso segno e Q è invertito rispetto ad A e B, cioè **(A == B) AND (Q <> A)**; questo punto non specifica il valore dei bit, ma li mette in una comparazione relativa tra di loro;
 2. C7 e C8 sono invertiti tra loro, cioè **C7 <> C8**;
-3. **(A7 = B7 = 1 AND Q7 = 0) OR (A7 = B7 = 0 AND Q7 = 1)** è simile al punto 1, ma si specifica il valore assoluto dei bit dei valori in ingresso all'adder a 8 bit.
+3. **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** è simile al punto 1, ma si specifica il valore assoluto dei bit.
 
 Per quanto riguarda il primo caso, il nostro circuito basato sulle ALU 74LS181 non ci offre visibilità del valore di B7', che è computato internamente al chip e non esposto.
 
+![Primo metodo](../../assets/math/75-overflow-detector-xor-and.png)
+
+*Primo metodo.*
+
 Stesso ragionamento per C7: non ne abbiamo visibilità.
 
-Il metodo che possiamo utilizzare è il terzo: abbiamo sicuramente a disposizione i valori che i registri A e B del computer metteranno in input sui '181 e abbiamo visibilità anche del Carry-out (Cn4 del '181)
+![Secondo metodo](../../assets/math/75-overflow-detector-xor.png)
+
+*Secondo metodo.*
+
+Nemmeno il terzo metodo sembra utilizzabile, perché non abbiamo visibilità di B7': dobbiamo costruire artificialmente il segnale B7'.
+
+![Terzo metodo](../../assets/math/75-overflow-detector-and-or.png)
+
+{:width="25%"}
+
+*Terzo metodo.*
+
+
 
  a 
 
