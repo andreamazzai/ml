@@ -165,7 +165,7 @@ Il Complemento a 2 è dunque un modo molto pratico per rappresentare i numeri Si
 
 L'approfondimento dell'Overflow è stato un passaggio obbligato; prima di capire il funzionamento della parte di circuito dedicata al [flag V](../flags/#overflow), dovevo comprenderne bene la definizione e quali metodi si usassero per determinarne una eventuale presenza.
 
-Nel [link di riferimento](http://6502.org/users/dieter/v_flag/v_0.htm) l'autore Dieter inizialmente spiegava in maniera visiva in quali situazioni di somma o sottrazione tra due numeri Signed a 8 bit si generasse un overflow, utilizzando quella che si potrebbe forse definire una sorta di tavola pitagorica.
+Nel [link di riferimento](http://6502.org/users/dieter/v_flag/v_0.htm) l'autore Dieter Mueller inizialmente spiegava in maniera visiva in quali situazioni di somma o sottrazione tra due numeri Signed a 8 bit si generasse un overflow, utilizzando quella che si potrebbe forse definire una sorta di tavola pitagorica.
 
 Ricordiamo che l'overflow indica un errore nel processo di somma o sottrazione di due numeri Signed: se il numero risultante ha un segno errato rispetto al previsto, si ha un overflow.
 
@@ -221,7 +221,7 @@ Poiché stiamo parlando di numeri a 8 bit e la somma di -96 e - 48 sfocia in un 
 
 Come regola possiamo dire che se il bit del segno viene corrotto, siamo un una situazione di Overflow e dunque il flag V viene settato.
 
-Tom Nisbet segnalava che l'ispirazione per l'uso dei 74LS151 per determinare situazioni di Overflow derivava da questo [thread su Reddit](https://www.reddit.com/r/beneater/comments/kmuuex/question_for_all_74ls181_alu_people/), che rimanda poi in effetti alle pagine di Dieter Mueller su 6502.org.
+Tom Nisbet segnalava che l'ispirazione per l'uso dei 74LS151 per determinare situazioni di Overflow derivava da questo [thread su Reddit](https://www.reddit.com/r/beneater/comments/kmuuex/question_for_all_74ls181_alu_people/), che rimanda poi in effetti alle pagine di Dieter su 6502.org.
 
 ![Adder hardware per somme A+B e sottrazioni A-B](../../assets/math/75-dieter-alu.png){:width="66%"}
 
