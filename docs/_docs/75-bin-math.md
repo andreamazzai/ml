@@ -88,7 +88,8 @@ La regola che sta alla base della teoria del Complemento a 2 è: come posso rapp
 
 Similarmente ai vecchi tachimetri delle automobili, che una volta giunti a 99.999 passavano a 0, il 99.999 dell'aritmetica binaria a 8 bit corrisponde a 11111111, che sommato a 00000001 genera come risultato 00000000 (*tralasciando l'overflow*).
 
-Per i dovuti approfondimenti sulla sottrazione in 2C, si vedano i link evidenziati in precedenza in questa pagina.
+Per i dovuti approfondimenti sulla sottrazione in 2C, si vedano i
+[link](#fonti) evidenziati in precedenza in questa pagina.
 
 Riprendendo anche quanto esposto nella pagina dei [Flag](../flags/#overflow), in un byte sono possibili 256 combinazioni:
 
