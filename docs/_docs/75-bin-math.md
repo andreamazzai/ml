@@ -208,14 +208,23 @@ Note:
 Riprendiamo i due esempi riportati in calce alle tabelle:
 
 1. 0x70 + 0x40 = 0xB0, cioè 112 + 64 = 176, che però non rientra nel range dei numeri Signed -128 / + 127: il MSB di 0xB0 è 1, che secondo la notazione Signed significa che si tratta di un numero negativo, ma la somma di due Signed positivi non può avere come risultato un Signed negativo --> abbiamo una situazione di Overflow.
+
+~~~text
+                       1
+    0x70 ==> 112  ==>  0111.0000 +
+    0x40 ==>  64  ==>  0100.0000 = 
+            ----     ----------- 
+                       1011.0000 ==> 176 / 0xB0
+~~~
+
 2. 0xA0 - 0x30 = 0xB0, cioè -96 - 48 = -144, che però non rientra nel range dei numeri Signed -128 / + 127. In effetti, la sottrazione tra -96 e -48 viene in realtà eseguita sommando i due numeri espressi in Complemento a 2: -96 -48 = -96 +(-48)
 
 ~~~text
-             1
-    -96  ==>  1010.0000 +
-    -48  ==>  1101.0000 = 
-    ----     ----------- 
-             10111.0000 ==> 0111.0000 ==> 112 decimale
+                      1
+    0xA0 ==> -96  ==>  1010.0000 +
+    0z30 ==> -48  ==>  1101.0000 = 
+            ----     ----------- 
+                      10111.0000 ==> 0111.0000 ==> 112 / 0x70
 ~~~
 
 Poiché stiamo parlando di numeri a 8 bit e la somma di -96 e - 48 sfocia in un 9° bit che viene troncato, il risultato finale del calcolo è 112 o 0x70 esadecimale, il cui MSB è 0: secondo la notazione Signed significa che si tratta di un numero positivo, ma la somma di due Signed negativi non può avere come risultato un Signed positivo --> abbiamo una situazione di Overflow.
