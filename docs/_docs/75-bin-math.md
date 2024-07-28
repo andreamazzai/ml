@@ -269,29 +269,23 @@ Mettendo a fattor comune quanto abbiamo visto fino ad ora, siamo in grado di ide
 2. C7 e C8 sono invertiti tra loro, cioè **C7 <> C8**;
 3. **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** è simile al punto 1, ma si specifica il valore assoluto dei bit.
 
-Per quanto riguarda il primo caso, il nostro circuito basato sulle ALU 74LS181 non ci offre visibilità del valore di B7', che è computato internamente al chip e non esposto.
+Per quanto riguarda il primo caso **(A == B) AND (Q <> A)**, il nostro circuito basato sulle ALU 74LS181 non ci offre visibilità del valore di B7', che è computato internamente al chip e non esposto.
 
 ![Primo metodo](../../assets/math/75-overflow-detector-xor-and.png)
 
-*Primo metodo.*
-
-Stesso ragionamento per C7: non ne abbiamo visibilità.
+Stesso ragionamento per il secondo caso **C7 <> C8**: non abbiamo visibilità di C7.
 
 ![Secondo metodo](../../assets/math/75-overflow-detector-xor.png)
 
-*Secondo metodo.*
-
-Nemmeno il terzo metodo sembra utilizzabile, perché non abbiamo visibilità di B7': dobbiamo costruire artificialmente il segnale B7'.
+Nemmeno il terzo metodo **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** sembra utilizzabile, perché non abbiamo visibilità di B7': dobbiamo ricostruire artificialmente il segnale B7' basandoci sugli altri segnali in nostro possesso.
 
 ![Terzo metodo](../../assets/math/75-overflow-detector-and-or.png)
 
-*Terzo metodo.*
-
-Quest'ultimo metodo è *riciclabile* per la verifica dell'overflow nelle somme: il valore B7' che l'ultimo adder troverà in ingresso sarà uguale al valore di B7 messo in input sul '181 (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria dell'adder):
+- Quest'ultimo metodo è *riciclabile* per la verifica dell'overflow nelle somme: il valore B7' che l'ultimo adder troverà in ingresso sarà uguale al valore di B7 messo in input sul '181 (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria dell'adder):
 
 ![Overflow somma](../../assets/math/75-overflow-detector-a+b.png)
 
-Qualche modifica permette di riutilizzare il metodo anche per la verifica dell'overflow nelle sottrazioni: il valore B7' che l'ultimo adder troverà in ingresso sarà invertito rispetto al valore di B7 messo in input sul '181 (in una sottrazione somma A7 - B7, B7' viene invertito dalla circuiteria dell'adder):
+- Qualche modifica permette di riutilizzare il metodo anche per la verifica dell'overflow nelle sottrazioni: il valore B7' che l'ultimo adder troverà in ingresso sarà invertito rispetto al valore di B7 messo in input sul '181 (in una sottrazione somma A7 - B7, B7' viene invertito dalla circuiteria dell'adder):
 
 ![Overflow sottrazione](../../assets/math/75-overflow-detector-a-b.png)
 
