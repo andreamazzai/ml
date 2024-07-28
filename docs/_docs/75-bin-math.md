@@ -165,7 +165,7 @@ Il Complemento a 2 è dunque un modo molto pratico per rappresentare i numeri Si
 
 L'approfondimento dell'Overflow è stato un passaggio obbligato; prima di capire il funzionamento della parte di circuito dedicata al [flag V](../flags/#overflow), dovevo comprenderne bene la definizione e quali metodi si usassero per determinarne una eventuale presenza.
 
-Tom Nisbet segnalava che l'ispirazione per l'uso dei 74LS151 per determinare situazioni di Overflow derivava da questo [thread su Reddit](https://www.reddit.com/r/beneater/comments/kmuuex/question_for_all_74ls181_alu_people/), che rimanda poi in effetti a pagine di Dieter Mueller su 6502.org.
+Tom Nisbet segnalava che l'ispirazione per l'uso di un Data Selector/Multiplexer [74LS151](https://www.ti.com/lit/ds/symlink/sn54s151.pdf) per determinare situazioni di Overflow derivava da [questo thread su Reddit](https://www.reddit.com/r/beneater/comments/kmuuex/question_for_all_74ls181_alu_people/), che rimanda poi in effetti a pagine di Dieter Mueller su 6502.org.
 
 Nel [link di riferimento](http://6502.org/users/dieter/v_flag/v_0.htm) l'autore Dieter inizialmente spiegava in maniera visiva in quali situazioni di somma o sottrazione tra due numeri Signed a 8 bit si generasse un overflow, utilizzando quella che si potrebbe forse definire una sorta di tavola pitagorica.
 
@@ -297,6 +297,6 @@ Nemmeno il terzo metodo **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)
 
 ![Overflow sottrazione](../../assets/math/75-overflow-detector-a-b.png)
 
-*Terzo metodo.*
+Giunti a questo punto, avremmo bisogno di 4 porte AND con 3 ingressi e 3 porte OR (la terza per eseguire l'OR tra i due circuiti in modo da avere un unico avviso di overflow tanto in caso di addizione quanto di sottrazione).
 
-
+Un unico Data Selector/Multiplexer [74LS151](https://www.ti.com/lit/ds/symlink/sn54s151.pdf)
