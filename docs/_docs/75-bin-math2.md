@@ -1,6 +1,6 @@
 ---
 title: "Aritmetica binaria"
-permalink: /docs/math/
+permalink: /docs/math2/
 excerpt: "Aritmetica binaria"
 ---
 
@@ -81,7 +81,7 @@ Si nota subito la risoluzione del problema del doppio zero.
 
 Altro beneficio importantissimo è che le sottrazioni si realizzano sommando il Complemento a 2 del numero da sottrare. Ad esempio, invece di eseguire "15 - 7" si effettua "15 + (-7)".
 
-La regola che sta alla base della teoria del Complemento a 2 è: come posso rappresentare il numero "-1" in modo che, aggiungendovi "1", si ottenga "0"?
+La regola che sta alla base della teoria del Complemento a 2 è: come posso rappresentare il numero "-1" in modo che aggiungendovi "1" possa ottenere "0"?
 
 Similarmente ai vecchi tachimetri delle automobili, che una volta giunti a 99.999 passavano a 0, il 99.999 dell'aritmetica binaria a 8 bit corrisponde a 11111111, che sommato a 00000001 genera come risultato 00000000.
 
