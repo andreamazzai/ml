@@ -199,7 +199,7 @@ Per identificare l'esecuzione di un'operazione di addizione o di sottrazione e d
 | HI    | LO    | Sottrazione |
 | LO    | HI    | Addizione   |
 
-Anticipo brevemente un aspetto esposto in maggior dettaglio nella apposita sezione dedicata all'[Aritmetica binaria](../math/#numeri-unsigned-e-numeri-signed): in un byte sono possibili 256 combinazioni; in caso di numeri senza segno (Unsigned) è possibile contare da 0 a 255. Nel caso di numeri Signed, i numeri positivi da 0 a 127 hanno un riferimento paritetico con i numeri senza segno da 0 a 127, mentre i numeri con segno da -128 a -1 fanno il paio con i numeri senza segno da 128 a 255.
+Anticipo brevemente un aspetto esposto in maggior dettaglio nella apposita sezione dedicata all'[aritmetica binaria](../math/#numeri-unsigned-e-numeri-signed): in un byte sono possibili 256 combinazioni; in caso di numeri senza segno (Unsigned) è possibile contare da 0 a 255. Nel caso di numeri Signed, i numeri positivi da 0 a 127 hanno un riferimento paritetico con i numeri senza segno da 0 a 127, mentre i numeri con segno da -128 a -1 fanno il paio con i numeri senza segno da 128 a 255.
 
 **aggiungere note con HEX.**
 **aggiungere note con HEX.**

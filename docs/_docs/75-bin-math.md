@@ -86,10 +86,9 @@ Due sono gli aspetti da evidenziare:
 
 La regola che sta alla base della teoria del Complemento a 2 è: come posso rappresentare il numero "-1" in modo che, aggiungendovi "1", si ottenga "0"?
 
-Similarmente ai vecchi tachimetri delle automobili, che una volta giunti a 99.999 passavano a 0, il 99.999 dell'aritmetica binaria a 8 bit corrisponde a 11111111, che sommato a 00000001 genera come risultato 00000000 (*tralasciando l'overflow*).
+Similarmente ai vecchi tachimetri delle automobili, che una volta giunti a 99.999 passavano a 0, il 99.999 del tachimetro corrisponde all'11111111 dell'aritmetica binaria a 8 bit, che sommato a 00000001 genera come risultato 00000000.
 
-Per i dovuti approfondimenti sulla sottrazione in 2C, si vedano i
-[link](#fonti) evidenziati in precedenza in questa pagina.
+Per i dovuti approfondimenti sulla sottrazione in 2C, si vedano i [link](#fonti) evidenziati in precedenza in questa pagina.
 
 Riprendendo anche quanto esposto nella pagina dei [Flag](../flags/#overflow), in un byte sono possibili 256 combinazioni:
 
@@ -101,7 +100,9 @@ Riprendendo anche quanto esposto nella pagina dei [Flag](../flags/#overflow), in
 Questa tabella dovrebbe chiarire il concetto:
 
 ~~~text
+----------------------------------------
 | Hex  | Binary    | Signed | Unsigned | 
+----------------------------------------
 | 0x80 | 1000.0000 |   -128 |      128 | 
 | 0x81 | 1000.0001 |   -127 |      129 | 
 | 0x82 | 1000.0010 |   -126 |      130 | 
@@ -122,11 +123,12 @@ Questa tabella dovrebbe chiarire il concetto:
 | .... | ......... |    ... |      ... | 
 | .... | ......... |    ... |      ... | 
 | .... | ......... |    ... |      ... | 
-
-| Hex  | Binary    | Signed | Unsigned | 
 | 0xFD | 1111.1101 |   -  3 |      253 | 
 | 0xFE | 1111.1110 |   -  2 |      254 | 
 | 0xFF | 1111.1111 |   -  1 |      255 | 
+----------------------------------------
+| Hex  | Binary    | Signed | Unsigned | 
+----------------------------------------
 | 0x00 | 0000.0000 |      0 |        0 | 
 | 0x01 | 0000.0001 |      1 |        1 | 
 | 0x02 | 0000.0010 |      2 |        2 | 
