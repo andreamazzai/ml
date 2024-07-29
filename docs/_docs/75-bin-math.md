@@ -337,11 +337,11 @@ Q               144                       1001.0000 ==> 0x90 = -112, Overflow
 
 Il microcode opportunamente codificato dell'istruzione A + B porterebbe a 1 gli ingressi I3 e I4 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione produrrebbe Q7=1, B7=0 e A7=0 sugli ingressi di selezione (CBA = 100), che attiverebbero l'ingresso I4 che risulta a 1 in quanto attivato dal microcode, pertanto l'uscita Q del '151 sarebbe a 1, indicando che vi è Overflow --> situazione verificata correttamente.
 
-- **Esempio 3:** 0x50 - 0x30; sottrazione A - B di due Signed positivi
+- **Esempio 3:** 0x50 - 0x30; sottrazione A - B tra due Signed positivi
 
 ~~~text
     Hex        Dec        Bin             2C
-C                                         11 1
+C                                        11 1
 A   0x50  ==>    80  ==>  0101.0000  ==>  0101.0000 +
 B  -0x30  ==>   -48  ==>  0011.0000  ==>  1101.0000 = 
                ----                      ----------
@@ -350,7 +350,7 @@ Q                32                      10010.0000 ==> 0010.0000 ==> 0x20 = 32,
 
 Il microcode opportunamente codificato dell'istruzione A - B porterebbe a 1 gli ingressi I1 e I6 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione produrrebbe Q7=0, B7=0 e A7=0 sugli ingressi di selezione (CBA = 000), che attiverebbero l'ingresso I0 che risulta a 0, pertanto l'uscita Q del '151 sarebbe a 0, indicando che non vi è Overflow --> situazione verificata correttamente.
 
-- **Esempio 4:** 0x90 - 0x30; sottrazione A - B di un Signed negativo e un Signed positivo
+- **Esempio 4:** 0x90 - 0x30; sottrazione A - B tra un Signed negativo e un Signed positivo
 
 ~~~text
     Hex        Dec        Bin             2C
@@ -363,8 +363,10 @@ Q              -160                      10110.0000 ==> 0110.0000 ==> 0x60 = 96,
 
 Il microcode opportunamente codificato dell'istruzione A - B porterebbe a 1 gli ingressi I1 e I6 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione produrrebbe Q7=0, B7=0 e A7=1 sugli ingressi di selezione (CBA = 001), che attiverebbero l'ingresso I1 che risulta a 1 in quanto attivato dal microcode, pertanto l'uscita Q del '151 sarebbe a 1, indicando che vi è Overflow --> situazione verificata correttamente.
 
-In realtà il modulo ALU del computer NQSAP - e di conseguenza, del BEAM, utilizza solo A + B e A - B, dunque possiamo semplificare in:
+In realtà il modulo ALU del computer NQSAP - e di conseguenza, del BEAM - utilizza solo A + B e A - B, dunque possiamo semplificare le connessioni del '151:
 
 ![74ls151](../../assets/math/75-overflow-74151-2.png)
+
+Il segnale S0 dovrà avere una corrispondenza hardwired con l'istruzione di somma, mentre S1 dovrà averla con l'istruzione di sottrazione, come spiegato esposto nella sezione [Overflow](../flags/#overflow) della pagina del modulo dei Flag.
 
 Una regola che possiamo notare è che la somma di + e - non risulta mai in Overflow, come visto nell'esempio 1.
