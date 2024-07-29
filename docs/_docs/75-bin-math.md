@@ -27,11 +27,11 @@ Per una compresione completa dei temi trattati, raccomando di accedere più volt
 
 Ecco una serie di video su YouTube:
 
-1. **Binary Overflow** - Mr Powell's Computer Science Channel - [link](https://www.youtube.com/watch?v=Q7t9-Sq_4Ww&lc=Ugy04nCzuiaOJIqK_5J4AaABAg): concetto generico di overflow.
+1. **Binary Overflow** - Mr Powell's Computer Science Channel - [link](https://www.youtube.com/watch?v=Q7t9-Sq_4Ww&lc=Ugy04nCzuiaOJIqK_5J4AaABAg): concetto generico di Overflow.
 
     Ipotizziamo di avere un computer a 8 bit, in grado di sommare due numeri a 8 bit: sia gli addendi sia la somma sono numeri a 8 bit che possono dunque andare da 0 a 255.
       - Sommando ad esempio 73 + 114 si ottiene 187, che è un numero rappresentabile con 8 bit;
-      - sommando invece ad esempio 175 + 92 si ottiene 267, che non è rappresentabile con un numero a 8 bit: abbiamo un errore di overflow, perché i bit a nostra disposizione (8) non ci consentono di rappresentare il risultato della somma.
+      - sommando invece ad esempio 175 + 92 si ottiene 267, che non è rappresentabile con un numero a 8 bit: abbiamo un errore di Overflow, perché i bit a nostra disposizione (8) non ci consentono di rappresentare il risultato della somma.
 
     Abbiamo in pratica un riporto che dovremmo portare al 9° bit del nostro computer, che però ne ha solo 8. In questo caso il segnale di Carry in uscita dall'ALU ci segnalerebbe che il numero risultante dalla somma dei due addendi è più grande del numero calcolabile dall'ALU.
 
@@ -157,7 +157,7 @@ Questa tabella dovrebbe chiarire il concetto:
 
 *Relazione tra numeri Hex, Bin, Signed e Unsigned a 8 bit.*
 
-Come già visto nell'imamgine *Rappresentazione in Complemento a 2 dei numeri a 4 bit*, è importante notare anche qui il passaggio dei numeri Signed da -1 a 0 in corrispondenza del passaggio binario da 11111111 a 00000000.
+Come già visto nell'immagine *Rappresentazione in Complemento a 2 dei numeri a 4 bit*, è importante notare anche qui il passaggio dei numeri Signed da -1 a 0 in corrispondenza del passaggio binario da 11111111 a 00000000.
 
 Il Complemento a 2 è dunque un modo molto pratico per rappresentare i numeri Signed, nei quali un MSB = LO indica un numero positivo e un MSB = HI indica un numero negativo.
 
@@ -165,13 +165,13 @@ Il Complemento a 2 è dunque un modo molto pratico per rappresentare i numeri Si
 
 L'approfondimento dell'Overflow è stato un passaggio obbligato; prima di capire il funzionamento della parte di circuito dedicata al [flag V](../flags/#overflow), dovevo comprenderne bene la definizione e quali metodi si usassero per determinarne una eventuale presenza.
 
-Tom Nisbet segnalava che l'ispirazione per l'uso di un Data Selector/Multiplexer [74LS151](https://www.ti.com/lit/ds/symlink/sn54s151.pdf) per determinare situazioni di Overflow derivava da [questo thread su Reddit](https://www.reddit.com/r/beneater/comments/kmuuex/question_for_all_74ls181_alu_people/), che rimanda poi in effetti a pagine di Dieter Mueller su 6502.org.
+Tom Nisbet segnalava che l'ispirazione per l'uso di un Data Selector/Multiplexer [74LS151](https://www.ti.com/lit/ds/symlink/sn54s151.pdf) per individuare situazioni di Overflow derivava da [questo thread su Reddit](https://www.reddit.com/r/beneater/comments/kmuuex/question_for_all_74ls181_alu_people/), che rimanda poi in effetti a pagine di Dieter Mueller su 6502.org.
 
-Nel [link di riferimento](http://6502.org/users/dieter/v_flag/v_0.htm) l'autore Dieter inizialmente spiegava in maniera visiva in quali situazioni di somma o sottrazione tra due numeri Signed a 8 bit si generasse un overflow, utilizzando quella che si potrebbe forse definire una sorta di tavola pitagorica.
+Nel [link di riferimento](http://6502.org/users/dieter/v_flag/v_0.htm) l'autore Dieter inizialmente spiegava in maniera visiva in quali situazioni di somma o sottrazione tra due numeri Signed a 8 bit si generasse un Overflow, utilizzando quella che si potrebbe forse definire una sorta di tavola pitagorica.
 
-Ricordiamo che l'overflow indica un errore nel processo di somma o sottrazione di due numeri Signed: se il numero risultante ha un segno errato rispetto al previsto, si ha un overflow.
+Ricordiamo che l'Overflow indica un errore nel processo di somma o sottrazione di due numeri Signed: se il numero risultante ha un segno errato rispetto al previsto, si ha un Overflow.
 
-Nelle due rappresentazioni sottostanti, le combinazioni Colonna/Riga al cui incrocio vi è un asterisco "\*" indicano situazioni di overflow, cioè di un risultato che non può essere correttamente rappresentato con gli 8 bit a disposizione.
+Nelle due rappresentazioni sottostanti, le combinazioni Colonna/Riga al cui incrocio vi è un asterisco "\*" indicano situazioni di Overflow, cioè di un risultato che non può essere correttamente rappresentato con gli 8 bit a disposizione.
 
 ~~~text
 Operazione       Sum Colonna + Riga       Sub Colonna - Riga
@@ -207,29 +207,29 @@ Note:
 
 Riprendiamo i due esempi riportati in calce alle tabelle:
 
-1. 0x70 + 0x40 = 0xB0, cioè 112 + 64 = 176, che però non rientra nel range dei numeri Signed -128 / + 127: il MSB di 0xB0 è 1, che secondo la notazione Signed significa che si tratta di un numero negativo, ma la somma di due Signed positivi non può avere come risultato un Signed negativo --> abbiamo una situazione di Overflow.
+- **0x70 + 0x40 = 0xB0**, cioè 112 + 64 = 176, che però non rientra nel range -128 / + 127 dei numeri Signed a 8 bit: il MSB di 0xB0 è 1, che secondo la notazione Signed significa che si tratta di un numero negativo, ma la somma di due Signed positivi non può avere come risultato un Signed negativo --> abbiamo una situazione di Overflow.
 
 ~~~text
-                      1
+  Hex       Dec       1
   0x70 ==>  112  ==>  0111.0000 +
-  0x40 ==>   64  ==>  0100.0000 = 
-            ----     ----------- 
-                      1011.0000 ==> 176 / 0xB0
+ +0x40 ==>   64  ==>  0100.0000 = 
+           ----     ----------- 
+            176       1011.0000 ==> 176 / 0xB0
 ~~~
 
-2. 0xA0 - 0x30 = 0xB0, cioè -96 - 48 = -144, che però non rientra nel range dei numeri Signed -128 / + 127. In effetti, la sottrazione tra -96 e -48 viene in realtà eseguita sommando i due numeri espressi in Complemento a 2: -96 -48 = -96 +(-48)
+- **0xA0 - 0x30 = 0x70**, cioè -96 - 48 = -144, che però non rientra nel range -128 / + 127 dei numeri Signed a 8 bit. In effetti, la sottrazione tra -96 e -48 viene in realtà eseguita sommando i due numeri espressi in Complemento a 2: -96 -48 = -96 +(-48)
 
 ~~~text
-                      1
+  Hex       Dec      1
   0xA0 ==>  -96  ==>  1010.0000 +
-  0z30 ==>  -48  ==>  1101.0000 = 
-            ----     ----------- 
-                      10111.0000 ==> 0111.0000 ==> 112 / 0x70
+ -0x30 ==>  -48  ==>  1101.0000 = 
+           ----     ----------- 
+           -144      10111.0000 ==> 0111.0000 ==> 112 / 0x70
 ~~~
 
 Poiché stiamo parlando di numeri a 8 bit e la somma di -96 e - 48 sfocia in un 9° bit che viene troncato, il risultato finale del calcolo è 112 o 0x70 esadecimale, il cui MSB è 0: secondo la notazione Signed significa che si tratta di un numero positivo, ma la somma di due Signed negativi non può avere come risultato un Signed positivo --> abbiamo una situazione di Overflow.
 
-Come regola possiamo dire che se il bit del segno viene corrotto, siamo un una situazione di Overflow e dunque il flag V viene settato.
+In definitiva, possiamo dire che se il bit del segno viene corrotto, siamo un una situazione di Overflow e il flag V viene conseguentemente settato.
 
 ![Adder hardware per somme A+B e sottrazioni A-B](../../assets/math/75-dieter-alu.png){:width="66%"}
 
@@ -241,7 +241,7 @@ Dieter esponeva una rappresentazione logica di un Adder in grado di effettuare s
 
 *Ultimo stadio di un adder a 8 bit.*
 
-In un adder a 8 bit abbiamo 8 adder a 1 bit in cascata; quello rappresentato sopra è l'8° ed ultimo adder, i cui ingressi A e B' sono i bit più significativi dei valori in ingresso A e B'; sul Carry-in C_IN viene portato il Carry-out C_OUT proveniente dall'adder precedente, che è il 7°.
+In un adder a 8 bit abbiamo 8 adder a 1 bit in cascata; quello rappresentato sopra è l'8° ed ultimo adder, i cui ingressi A e B' sono i bit più significativi A7 e B7'; sul Carry-in C_IN viene portato il Carry-out C_OUT proveniente dall'adder precedente, che è il 7°.
 
 Nella tabella successiva:
 
@@ -268,20 +268,20 @@ Andando a mettere in tabella le varie combinazioni di A, B e C, ricaviamo:
 
 Abbiamo detto che la somma di due Signed negativi non può avere come risultato un Signed positivo - e viceversa. Nelle due righe evidenziate troviamo invece rispettivamente:
 
-- \* due Signed negativi (A7 = B7' = 1) che generano un risultato positivo (Q7 = 0) --> sappiamo che è una situazione di overflow.
-- \*\* due Signed positivi (A7 = B7' = 0) che generano un risultato negativo (Q7 = 1) --> sappiamo che è una situazione di overflow.
+- \* due Signed negativi (A7 = B7' = 1) che generano un risultato positivo (Q7 = 0) --> sappiamo che è una situazione di Overflow.
+- \*\* due Signed positivi (A7 = B7' = 0) che generano un risultato negativo (Q7 = 1) --> sappiamo che è una situazione di Overflow.
 
-Mettendo a fattor comune quanto abbiamo visto fino ad ora, siamo in grado di identificare gli stati che determinano una situazione di overflow. Possiamo trovare tre diversi casi:
+Mettendo a fattor comune quanto abbiamo visto fino ad ora, siamo in grado di stabilire gli stati che determinano una situazione di Overflow. Possiamo trovare tre diversi casi:
 
-1. A7 e B7' sono dello stesso segno e Q è invertito rispetto ad A e B, cioè **(A == B) AND (Q <> A)**; questo punto non specifica il valore dei bit, ma li mette in una comparazione relativa tra di loro;
-2. C7 e C8 sono invertiti tra loro, cioè **C7 <> C8**;
-3. **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** è simile al punto 1, ma si specifica il valore assoluto dei bit.
+1. A7 e B7' sono dello stesso segno e Q è invertito rispetto ad A e B, cioè **(A == B) AND (Q <> A)** (notare che non stiamo specificando un  valore assoluto 1 o 0 dei bit, ma ne stiamo eseguendo una comparazione relativa);
+2. C7 e C8 sono invertiti tra loro, cioè **C7 <> C8** (anche in questo caso si esegue una comparazione relativa);
+3. **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** è simile al punto 1, ma stiamo specificando il valore assoluto dei bit anziché porli in una logica di comparazione relativa.
 
 Per quanto riguarda il primo caso **(A == B) AND (Q <> A)**, il nostro circuito basato sulle ALU 74LS181 non ci offre visibilità del valore di B7', che è computato internamente al chip e non esposto.
 
 ![Primo metodo](../../assets/math/75-overflow-detector-xor-and.png)
 
-Stesso ragionamento per il secondo caso **C7 <> C8**: non abbiamo visibilità di C7.
+Stesso ragionamento per il secondo caso **C7 <> C8**: non abbiamo visibilità di C7, che è computato internamente al chip e non esposto.
 
 ![Secondo metodo](../../assets/math/75-overflow-detector-xor.png)
 
@@ -289,75 +289,80 @@ Nemmeno il terzo metodo **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)
 
 ![Terzo metodo](../../assets/math/75-overflow-detector-and-or.png)
 
-Quest'ultimo metodo è tuttavi *riciclabile* per la verifica dell'overflow nelle *addizioni*: il valore B7' che l'ultimo adder troverà in ingresso sarà uguale al valore di B7 messo in input sul '181 (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria dell'adder):
+Quest'ultimo metodo è tuttavi *riciclabile* per la verifica dell'Overflow nelle *addizioni*: il valore B7' che l'ultimo adder troverà in ingresso sarà uguale al valore di B7 messo in input sul '181 (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria dell'adder):
 
 ![Overflow somma](../../assets/math/75-overflow-detector-a+b.png)
 
-Qualche modifica permette di riutilizzare il metodo anche per la verifica dell'overflow nelle *sottrazioni*: il valore B7' che l'ultimo adder troverà in ingresso sarà invertito rispetto al valore di B7 messo in input sul '181 (in una sottrazione somma A7 - B7, B7' viene invertito dalla circuiteria dell'adder):
+Qualche modifica permette di riutilizzare il metodo anche per la verifica dell'Overflow nelle *sottrazioni*: il valore B7' che l'ultimo adder troverà in ingresso sarà invertito rispetto al valore di B7 messo in input sul '181 (in una sottrazione somma A7 - B7, B7' viene invertito dalla circuiteria dell'adder):
 
 ![Overflow sottrazione](../../assets/math/75-overflow-detector-a-b.png)
 
-Giunti a questo punto, per realizzare un circuito in grado di identificare l'overflow avremmo bisogno di 4 porte AND con 3 ingressi e 3 porte OR con 2 ingressi (la terza OR servirebbe ad eseguire l'OR logico tra i due circuiti precedenti per creare un'unica segnalazione di overflow tanto in caso di addizione quanto di sottrazione).
+Giunti a questo punto, per realizzare un circuito in grado di identificare l'Overflow avremmo bisogno di 4 porte AND con 3 ingressi e 3 porte OR con 2 ingressi (la terza OR servirebbe ad eseguire l'OR logico tra i due circuiti precedenti per creare un'unica segnalazione di Overflow tanto in caso di addizione quanto di sottrazione).
 
-Al posto di AND e OR, un unico 74LS151 può fare al caso nostro: una configurazione dei pin di ingresso di questo tipo potrebbe risolvere le equazioni di overflow sia per le addizioni, sia per le sottrazioni (tanto A - B quanto B - A):
+Al posto di AND e OR, un unico 74LS151 può fare al caso nostro: una configurazione dei pin di ingresso di questo tipo potrebbe risolvere le equazioni di Overflow sia per le addizioni, sia per la sottrazione A - B, quanto per quella B - A, che però nel nostro caso non è necessaria:
 
 ![74ls151](../../assets/math/75-overflow-74151.png)
 
-Gli ingressi A, B e C connessi agli MSB dei registri A e B e dell'uscita dell'ALU selezionerebbero quale tra gli ingressi I0-I7 attivare per portare in uscita una eventuale segnalazione di Overflow.
+Le combinazioni degli ingressi A, B e C del '151 (connessi agli MSB A7, B7 e Q7 dei registri A e B e dell'uscita Q dell'ALU) selezionano quale tra gli ingressi I0-I7 sia necessario attivare per portare in uscita una eventuale segnalazione di Overflow.
 
-Gli ingressi I0-I7 sarebbero opportunamente connessi "Hardwired" all'Instruction Register per capire quale sia l'operazione correntemente in esecuzione.
+Gli ingressi I0-I7 sono opportunamente connessi in modalità "Hardwired" all'Instruction Register per capire quale sia l'operazione correntemente in esecuzione.
 
 Facciamo alcuni esempi:
 
-- Esempio 1: somma di 0x20 + 0xC0; istruzione: Somma A + B
+- **Esempio 1:** 0x20 + 0xC0; somma A + B di un Signed positivo e un Signed negativo
 
 ~~~text
-
-A   0x20 ==>   32  ==>  0010.0000 +
-B  +0xC0 ==>  -64  ==>  1100.0000 = 
-              ----     ----------- 
-Q                       1110.0000 ==> -32 / 0xE0, no overflow
+    Hex        Dec        Bin             2C
+C                                                     
+A   0x20  ==>    32  ==>  0010.0000  ==>  0010.0000 +
+B  +0xC0  ==>   -64  ==>  1100.0000  ==>  1100.0000 = 
+               ----                      ----------
+Q               -32                       1110.0000 ==> 0xE0 = -32, no Overflow
 ~~~
 
-L'istruzione A + B porterebbe a 1 gli ingressi I3 e I4 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione porterebbe agli ingressi A, B e C rispettivamente A=0, B=1 e Q=1, dunque si attiverebbe l'ingresso I6, che risulta a 0, pertanto l'uscita del '151 sarebbe a 0, indicando che non vi è overflow.
+Il microcode opportunamente codificato dell'istruzione A + B porterebbe a 1 gli ingressi I3 e I4 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione produrrebbe Q7=1, B7=1 e A7=0 sugli ingressi di selezione (CBA = 110), che attiverebbero l'ingresso I6 che risulta a 0 in quanto non attivato dal microcode, pertanto l'uscita Q del '151 sarebbe a 0, indicando che non vi è Overflow --> situazione verificata correttamente.
 
-- Esempio 2: somma di 0x20 + 0x70
+- **Esempio 2:** 0x20 + 0x70; somma A + B di due Signed positivi
 
 ~~~text
-                        11
-A   0x20 ==>   32  ==>  0010.0000 +
-B  +0x70 ==>  112  ==>  0111.0000 = 
-             ----     ----------- 
-Q                       1001.0000 ==> -112 / 0x90, overflow
+    Hex        Dec        Bin             2C
+C                                         11
+A   0x20  ==>    32  ==>  0010.0000  ==>  0010.0000 +
+B  +0x70  ==>   112  ==>  0111.0000  ==>  0111.0000 = 
+               ----                      ----------
+Q               144                       1001.0000 ==> 0x90 = -112, Overflow
 ~~~
 
-L'istruzione A + B porterebbe a 1 gli ingressi I3 e I4 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione porterebbe agli ingressi A, B e C rispettivamente A=0, B=0 e Q=1, dunque si attiverebbe l'ingresso I4, che risulta a 1, pertanto l'uscita del '151 sarebbe a 1, indicando che vi è overflow.
+Il microcode opportunamente codificato dell'istruzione A + B porterebbe a 1 gli ingressi I3 e I4 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione produrrebbe Q7=1, B7=0 e A7=0 sugli ingressi di selezione (CBA = 100), che attiverebbero l'ingresso I4 che risulta a 1 in quanto attivato dal microcode, pertanto l'uscita Q del '151 sarebbe a 1, indicando che vi è Overflow --> situazione verificata correttamente.
 
-- Esempio 3: Sottrazione di 0x50 - 0x30
+- **Esempio 3:** 0x50 - 0x30; sottrazione A - B di due Signed positivi
 
 ~~~text
-                      1 
-A    0x50 ==>   80  ==>  1000.0000 +
-B   -0x30 ==>  -48  ==>  1101.0000 = 
-              ----     ----------- 
-Q                       10101.0000 ==> 0101.0000 ==> 80 / 0x50, overflow
+    Hex        Dec        Bin             2C
+C                                         11 1
+A   0x50  ==>    80  ==>  0101.0000  ==>  0101.0000 +
+B  -0x30  ==>   -48  ==>  0011.0000  ==>  1101.0000 = 
+               ----                      ----------
+Q                32                      10010.0000 ==> 0010.0000 ==> 0x20 = 32, no Overflow
 ~~~
 
-L'istruzione A - B porterebbe a 1 gli ingressi I1 e I6 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione porterebbe agli ingressi A, B e C rispettivamente A=1, B=1 e Q=0, dunque si attiverebbe l'ingresso I3, che risulta a 0, pertanto l'uscita del '151 sarebbe a 0, indicando che non vi è overflow.
+Il microcode opportunamente codificato dell'istruzione A - B porterebbe a 1 gli ingressi I1 e I6 del '151, mentre tutti gli altri ingressi sarebbero a 0; dall'operazione otterremmo Q7=0, B7=0 e A7=0 sugli ingressi di selezione (CBA = 000), che attiverebbero l'ingresso I0 che risulta a 0, pertanto l'uscita Q del '151 sarebbe a 0, indicando che non vi è Overflow --> situazione verificata correttamente.
 
-- Esempio 4: Sottrazione di 0x60 - 0x30
+- **Esempio 4:** 0x90 - 0x30; sottrazione A - B di un Signed negativo e un Signed positivo
 
 ~~~text
-                        11                 
-A    0x60 ==>   96  ==>  0110.0000 +
-B   -0x30 ==>  -48  ==>  1101.0000 = 
-              ----     ----------- 
-Q                       10011.0000 ==> 0011.0000 ==> 48 / 0x30, no overflow
+    Hex        Dec        Bin             2C
+C                                        1  1
+A   0x90  ==>  -112  ==>  1001.0000  ==>  1001.0000 +
+B  -0x30  ==>   -48  ==>  0011.0000  ==>  1101.0000 = 
+               ----                      ---------- 
+Q              -160                      10110.0000 ==> 0110.0000 ==> 0x60 = 96, Overflow
 ~~~
 
+Il microcode opportunamente codificato dell'istruzione A - B porterebbe a 1 gli ingressi I1 e I6 del '151, mentre tutti gli altri ingressi sarebbero a 0; dall'operazione otterremmo Q7=0, B7=0 e A7=1 sugli ingressi di selezione (CBA = 001), che attiverebbero l'ingresso I1 che risulta a 1 in quanto attivato dal microcode, pertanto l'uscita Q del '151 sarebbe a 1, indicando che vi è Overflow --> situazione verificata correttamente.
 
 In realtà il modulo ALU del computer NQSAP - e di conseguenza, del BEAM, utilizza solo A + B e A - B, dunque possiamo semplificare in:
 
 ![74ls151](../../assets/math/75-overflow-74151-2.png)
 
-importante notare che somma di + e - non risulta mai in overflow!!!
+Una regola che possiamo notare è che la somma di + e - non risulta mai in Overflow, come visto nell'esempio 1.
