@@ -253,7 +253,7 @@ Nella tabella successiva:
 - C8 è settato 1 se almeno due tra A7, B7' e C7 sono a 1.
 - V è il Flag di Overflow
 
-Andando a mettere in tabella le varie combinazioni di A, B e C, ricaviamo:
+Creando la truth table per A, B e C e considerando quanto appreso in precedenza, ricaviamo:
 
 | C7  | B7' | A7  | Q7  | C8  |  V   |
 | -   | -   | -   | -   | -   | -    |
@@ -266,7 +266,7 @@ Andando a mettere in tabella le varie combinazioni di A, B e C, ricaviamo:
 |  1  |  1  |  0  |  0  |  1  |  0   |
 |  1  |  1  |  1  |  1  |  1  |  0   |
 
-Abbiamo detto che la somma di due Signed negativi non può avere come risultato un Signed positivo - e viceversa. Nelle due righe evidenziate troviamo invece rispettivamente:
+Abbiamo detto che la somma di due Signed negativi non può avere come risultato un Signed positivo - e viceversa. Nelle due righe evidenziate troviamo infatti:
 
 - \* due Signed negativi (A7 = B7' = 1) che generano un risultato positivo (Q7 = 0) --> sappiamo che è una situazione di Overflow.
 - \*\* due Signed positivi (A7 = B7' = 0) che generano un risultato negativo (Q7 = 1) --> sappiamo che è una situazione di Overflow.
