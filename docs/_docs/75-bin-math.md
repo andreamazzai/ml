@@ -277,23 +277,23 @@ Mettendo a fattor comune quanto abbiamo visto fino ad ora, siamo in grado di sta
 2. C7 e C8 sono invertiti tra loro, cioè **C7 <> C8** (anche in questo caso si esegue una comparazione relativa);
 3. **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** è simile al punto 1, ma stiamo specificando il valore assoluto dei bit anziché porli in una logica di comparazione relativa.
 
-Per quanto riguarda il primo caso **(A == B) AND (Q <> A)**, il nostro circuito basato sulle ALU 74LS181 non ci offre visibilità del valore di B7', che è computato internamente al chip e non esposto.
+La truth table **(A == B) AND (Q <> A)** del primo caso si tradurrebbe nella seguente logica; purtroppo, il computer basato sulle ALU 74LS181 non offre visibilità del valore di B7', che è computato internamente al chip e non esposto, pertanto non la possiamo utilizzare:
 
 ![Primo metodo](../../assets/math/75-overflow-detector-xor-and.png)
 
-Stesso ragionamento per il secondo caso **C7 <> C8**: non abbiamo visibilità di C7, che è computato internamente al chip e non esposto.
+Stesso ragionamento per il secondo caso **C7 <> C8**: non abbiamo visibilità di C7, che è computato internamente al chip e non esposto:
 
 ![Secondo metodo](../../assets/math/75-overflow-detector-xor.png)
 
-Nemmeno il terzo metodo **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** sembra utilizzabile, perché non abbiamo visibilità di B7': dobbiamo ricostruire artificialmente il segnale B7' basandoci sugli altri segnali in nostro possesso.
+Nemmeno il terzo metodo **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** sembra utilizzabile, perché non vi è visibilità di B7': è necessario ricostruire artificialmente il segnale B7' basandosi sugli altri segnali disponibili nel computer:
 
 ![Terzo metodo](../../assets/math/75-overflow-detector-and-or.png)
 
-Quest'ultimo metodo è tuttavi *riciclabile* per la verifica dell'Overflow nelle *addizioni*: il valore B7' che l'ultimo adder troverà in ingresso sarà uguale al valore di B7 messo in input sul '181 (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria dell'adder):
+Quest'ultimo metodo è infatti *riciclabile* per la verifica dell'Overflow nelle *addizioni*: il valore B7' che l'ultimo adder troverà in ingresso sarà uguale al valore di B7 messo in input sul '181 (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria dell'adder):
 
 ![Overflow somma](../../assets/math/75-overflow-detector-a+b.png)
 
-Qualche modifica permette di riutilizzare il metodo anche per la verifica dell'Overflow nelle *sottrazioni*: il valore B7' che l'ultimo adder troverà in ingresso sarà invertito rispetto al valore di B7 messo in input sul '181 (in una sottrazione somma A7 - B7, B7' viene invertito dalla circuiteria dell'adder):
+Qualche modifica permette di riutilizzare lo stesso metodo anche per la verifica dell'Overflow nelle *sottrazioni*: il valore B7' che l'ultimo adder troverà in ingresso sarà invertito rispetto al valore di B7 messo in input sul '181 (in una sottrazione somma A7 - B7, B7' viene invertito dalla circuiteria dell'adder):
 
 ![Overflow sottrazione](../../assets/math/75-overflow-detector-a-b.png)
 
