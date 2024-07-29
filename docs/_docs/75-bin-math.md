@@ -307,6 +307,8 @@ Le combinazioni degli ingressi A, B e C del '151 (connessi agli MSB A7, B7 e Q7 
 
 Gli ingressi I0-I7 sono opportunamente connessi in modalità "Hardwired" all'Instruction Register per capire quale sia l'operazione correntemente in esecuzione.
 
+**Spiegare cosa significano le varie colonne E perché quando facciamo la somma non invertiamo il binario in complemento di due... Perché la somma è la somma , mentre è quando facciamo la sottrazione di un numero positivo che dobbiamo invertirlo**
+
 Facciamo alcuni esempi:
 
 - **Esempio 1:** 0x20 + 0xC0; somma A + B di un Signed positivo e un Signed negativo
