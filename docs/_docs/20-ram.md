@@ -296,7 +296,7 @@ A un certo punto ho capito che nello schema c'era un problema piuttosto importan
 
 *Tabella riepilogativa rivista analisi stati logici seconda versione modulo RAM.*
 
-Quando sono arrivato a questo punto ho realizzato di aver lavorato inutilmente: a cosa mi servono due MUX e un 245? Sono sufficienti due 245, uno per gestire I/O sul bus, uno per gestire il dip-switch, che in effetti è quanto aveva fatto 8bitEnthusiast! Ero stato illuminato e in quel momento mi è sembrato tutto chiaro!
+Quando sono arrivato a questo punto ho realizzato di aver lavorato inutilmente: a cosa mi servono due MUX e un '245? Sono sufficienti due '245, uno per gestire l'I/O sul bus e uno per gestire il dip-switch, che in effetti è quanto aveva fatto The8BitEnthusiast! Ero stato illuminato e in quel momento mi è sembrato tutto chiaro!
 
 Nel frattempo avevo anche iniziato a rinominare i segnali logici prendendo come punto di vista il computer e non il modulo:
 
