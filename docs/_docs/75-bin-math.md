@@ -346,7 +346,7 @@ B  -0x30  ==>   -48  ==>  0011.0000  ==>  1101.0000 =
 Q                32                      10010.0000 ==> 0010.0000 ==> 0x20 = 32, no Overflow
 ~~~
 
-Il microcode opportunamente codificato dell'istruzione A - B porterebbe a 1 gli ingressi I1 e I6 del '151, mentre tutti gli altri ingressi sarebbero a 0; dall'operazione otterremmo Q7=0, B7=0 e A7=0 sugli ingressi di selezione (CBA = 000), che attiverebbero l'ingresso I0 che risulta a 0, pertanto l'uscita Q del '151 sarebbe a 0, indicando che non vi è Overflow --> situazione verificata correttamente.
+Il microcode opportunamente codificato dell'istruzione A - B porterebbe a 1 gli ingressi I1 e I6 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione produrrebbe Q7=0, B7=0 e A7=0 sugli ingressi di selezione (CBA = 000), che attiverebbero l'ingresso I0 che risulta a 0, pertanto l'uscita Q del '151 sarebbe a 0, indicando che non vi è Overflow --> situazione verificata correttamente.
 
 - **Esempio 4:** 0x90 - 0x30; sottrazione A - B di un Signed negativo e un Signed positivo
 
@@ -359,7 +359,7 @@ B  -0x30  ==>   -48  ==>  0011.0000  ==>  1101.0000 =
 Q              -160                      10110.0000 ==> 0110.0000 ==> 0x60 = 96, Overflow
 ~~~
 
-Il microcode opportunamente codificato dell'istruzione A - B porterebbe a 1 gli ingressi I1 e I6 del '151, mentre tutti gli altri ingressi sarebbero a 0; dall'operazione otterremmo Q7=0, B7=0 e A7=1 sugli ingressi di selezione (CBA = 001), che attiverebbero l'ingresso I1 che risulta a 1 in quanto attivato dal microcode, pertanto l'uscita Q del '151 sarebbe a 1, indicando che vi è Overflow --> situazione verificata correttamente.
+Il microcode opportunamente codificato dell'istruzione A - B porterebbe a 1 gli ingressi I1 e I6 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione produrrebbe Q7=0, B7=0 e A7=1 sugli ingressi di selezione (CBA = 001), che attiverebbero l'ingresso I1 che risulta a 1 in quanto attivato dal microcode, pertanto l'uscita Q del '151 sarebbe a 1, indicando che vi è Overflow --> situazione verificata correttamente.
 
 In realtà il modulo ALU del computer NQSAP - e di conseguenza, del BEAM, utilizza solo A + B e A - B, dunque possiamo semplificare in:
 
