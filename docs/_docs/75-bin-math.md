@@ -229,7 +229,7 @@ Notare che in questo secondo caso l'ALU esegue internamente una operazione A + (
 
 In definitiva, possiamo dire che se il bit del segno viene corrotto, siamo un una situazione di Overflow e il flag V viene conseguentemente settato.
 
-#L'Overflow e l'hardware
+### L'Overflow e l'hardware
 
 ![Adder hardware per somme A+B e sottrazioni A-B](../../assets/math/75-dieter-alu.png){:width="66%"}
 
@@ -299,7 +299,7 @@ Qualche modifica permette di riutilizzare lo stesso metodo anche per la verifica
 
 Giunti a questo punto, per realizzare un circuito in grado di identificare l'Overflow avremmo bisogno di 4 porte AND con 3 ingressi e 3 porte OR con 2 ingressi (la terza OR servirebbe ad eseguire l'OR logico tra i due circuiti precedenti per creare un'unica segnalazione di Overflow tanto in caso di addizione quanto di sottrazione).
 
-Al posto di AND e OR, un unico 74LS151 può fare al caso nostro: una configurazione dei pin di ingresso di questo tipo potrebbe risolvere le equazioni di Overflow sia per le addizioni, sia per la sottrazione A - B, quanto per quella B - A, che però nel nostro caso non è necessaria:
+Al posto di AND e OR, un unico 74LS151 può fare al caso nostro: una configurazione dei pin di ingresso di questo tipo potrebbe risolvere le equazioni di Overflow sia per le addizioni, sia per le sottrazioni A - B e B - A; nella realizzazione del computer l'operazione B - A non è necessaria, pertanto non la terremo in considerazione:
 
 ![74ls151](../../assets/math/75-overflow-74151.png)
 
