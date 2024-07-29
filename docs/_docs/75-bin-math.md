@@ -231,17 +231,17 @@ In definitiva, possiamo dire che se il bit del segno viene corrotto, siamo un un
 
 ### L'Overflow e l'hardware
 
+Dieter esponeva una rappresentazione logica di un Adder in grado di effettuare sia somme sia sottrazioni, segnalando che "le somme A+B sono facili; per eseguire invece le sottrazioni, il metodo più semplice è quello di invertire B e procedere poi esattamente come per le somme: A+(-B)".
+
 ![Adder hardware per somme A+B e sottrazioni A-B](../../assets/math/75-dieter-alu.png){:width="66%"}
 
 *Adder hardware per somme A+B e sottrazioni A-B.*
 
-Dieter esponeva una rappresentazione logica di un Adder in grado di effettuare sia somme sia sottrazioni, segnalando che "le somme A+B sono facili; per eseguire invece le sottrazioni, il metodo più semplice è quello di invertire B e procedere poi esattamente come per le somme: A+(-B)".
+In un adder a 8 bit abbiamo 8 adder a 1 bit in cascata; quello rappresentato di seguito è l'8° ed ultimo adder, i cui ingressi A e B' sono i bit più significativi A7 e B7'; sul Carry-in C_IN viene portato il Carry-out C_OUT proveniente dall'adder precedente, che è il 7°.
 
 ![Ultimo stadio di un adder a 8 bit](../../assets/math/75-dieter-8th-adder.png){:width="25%"}
 
 *Ultimo stadio di un adder a 8 bit.*
-
-In un adder a 8 bit abbiamo 8 adder a 1 bit in cascata; quello rappresentato sopra è l'8° ed ultimo adder, i cui ingressi A e B' sono i bit più significativi A7 e B7'; sul Carry-in C_IN viene portato il Carry-out C_OUT proveniente dall'adder precedente, che è il 7°.
 
 Nella tabella successiva:
 
@@ -253,7 +253,7 @@ Nella tabella successiva:
 - C8 è settato 1 se almeno due tra A7, B7' e C7 sono a 1.
 - V è il Flag di Overflow
 
-Creando la truth table per A, B e C e considerando quanto appreso in precedenza, ricaviamo:
+Creando la truth table per la somma di A7, B7' e C7 e considerando anche quanto appreso in precedenza, ricaviamo:
 
 | C7  | B7' | A7  | Q7  | C8  |  V   |
 | -   | -   | -   | -   | -   | -    |
@@ -268,10 +268,10 @@ Creando la truth table per A, B e C e considerando quanto appreso in precedenza,
 
 Abbiamo detto che la somma di due Signed negativi non può avere come risultato un Signed positivo - e viceversa. Nelle due righe evidenziate troviamo infatti:
 
-- \* due Signed negativi (A7 = B7' = 1) che generano un risultato positivo (Q7 = 0) --> sappiamo che è una situazione di Overflow.
-- \*\* due Signed positivi (A7 = B7' = 0) che generano un risultato negativo (Q7 = 1) --> sappiamo che è una situazione di Overflow.
+- \* due Signed negativi (A7 = B7' = 1) la cui somma genera un risultato positivo (Q7 = 0) --> sappiamo che è una situazione di Overflow.
+- \*\* due Signed positivi (A7 = B7' = 0) la cui somma genera un risultato negativo (Q7 = 1) --> sappiamo che è una situazione di Overflow.
 
-Mettendo a fattor comune quanto abbiamo visto fino ad ora, siamo in grado di stabilire gli stati che determinano una situazione di Overflow. Possiamo identificare tre diversi casi:
+Mettendo a fattor comune quanto abbiamo visto fino ad ora, siamo in grado di sviluppare 3 diversi metodi per identificare una situazione di Overflow in una somma:
 
 1. A7 e B7' sono dello stesso segno e Q è invertito rispetto ad A e B, cioè **(A == B) AND (Q <> A)** (notare che non stiamo specificando un  valore assoluto 1 o 0 dei bit, ma ne stiamo eseguendo una comparazione relativa);
 2. C7 e C8 sono invertiti tra loro, cioè **C7 <> C8** (anche in questo caso si esegue una comparazione relativa);
@@ -285,15 +285,17 @@ Stesso ragionamento per il secondo caso **C7 <> C8**: non abbiamo visibilità di
 
 ![Secondo metodo](../../assets/math/75-overflow-detector-xor.png)
 
-Nemmeno il terzo metodo **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** sembra utilizzabile, perché non vi è visibilità di B7': è necessario ricostruire artificialmente il segnale B7' basandosi sugli altri segnali disponibili nel computer:
+Nemmeno il terzo metodo **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** sembra utilizzabile, perché non vi è visibilità di B7':
 
 ![Terzo metodo](../../assets/math/75-overflow-detector-and-or.png)
 
-Quest'ultimo metodo è infatti *riciclabile* per la verifica dell'Overflow nelle *addizioni*: il valore B7' che l'ultimo adder troverà in ingresso sarà uguale al valore di B7 messo in input sul '181 (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria dell'adder):
+E' possibile però ricostruire artificialmente il segnale B7' basandosi sugli altri segnali disponibili nel computer. Così facendo:
+
+- l'ultimo metodo diventa *riciclabile* per la verifica dell'Overflow per le *addizioni*: il valore B7' che l'ultimo adder troverà in ingresso sarà uguale al valore di B7 messo in input sul '181 (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria dell'adder):
 
 ![Overflow somma](../../assets/math/75-overflow-detector-a+b.png)
 
-Qualche modifica permette di riutilizzare lo stesso metodo anche per la verifica dell'Overflow nelle *sottrazioni*: il valore B7' che l'ultimo adder troverà in ingresso sarà invertito rispetto al valore di B7 messo in input sul '181 (in una sottrazione A7 - B7, B7' viene invertito dalla circuiteria dell'adder):
+- qualche modifica permette di riutilizzare lo stesso metodo anche per la verifica dell'Overflow nelle *sottrazioni*: il valore B7' che l'ultimo adder troverà in ingresso sarà invertito rispetto al valore di B7 messo in input sul '181 (in una sottrazione A7 - B7, B7' viene invertito dalla circuiteria dell'adder):
 
 ![Overflow sottrazione](../../assets/math/75-overflow-detector-a-b.png)
 
