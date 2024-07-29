@@ -271,7 +271,7 @@ Abbiamo detto che la somma di due Signed negativi non può avere come risultato 
 - \* due Signed negativi (A7 = B7' = 1) che generano un risultato positivo (Q7 = 0) --> sappiamo che è una situazione di Overflow.
 - \*\* due Signed positivi (A7 = B7' = 0) che generano un risultato negativo (Q7 = 1) --> sappiamo che è una situazione di Overflow.
 
-Mettendo a fattor comune quanto abbiamo visto fino ad ora, siamo in grado di stabilire gli stati che determinano una situazione di Overflow. Possiamo trovare tre diversi casi:
+Mettendo a fattor comune quanto abbiamo visto fino ad ora, siamo in grado di stabilire gli stati che determinano una situazione di Overflow. Possiamo identificare tre diversi casi:
 
 1. A7 e B7' sono dello stesso segno e Q è invertito rispetto ad A e B, cioè **(A == B) AND (Q <> A)** (notare che non stiamo specificando un  valore assoluto 1 o 0 dei bit, ma ne stiamo eseguendo una comparazione relativa);
 2. C7 e C8 sono invertiti tra loro, cioè **C7 <> C8** (anche in questo caso si esegue una comparazione relativa);
@@ -293,13 +293,13 @@ Quest'ultimo metodo è infatti *riciclabile* per la verifica dell'Overflow nelle
 
 ![Overflow somma](../../assets/math/75-overflow-detector-a+b.png)
 
-Qualche modifica permette di riutilizzare lo stesso metodo anche per la verifica dell'Overflow nelle *sottrazioni*: il valore B7' che l'ultimo adder troverà in ingresso sarà invertito rispetto al valore di B7 messo in input sul '181 (in una sottrazione somma A7 - B7, B7' viene invertito dalla circuiteria dell'adder):
+Qualche modifica permette di riutilizzare lo stesso metodo anche per la verifica dell'Overflow nelle *sottrazioni*: il valore B7' che l'ultimo adder troverà in ingresso sarà invertito rispetto al valore di B7 messo in input sul '181 (in una sottrazione A7 - B7, B7' viene invertito dalla circuiteria dell'adder):
 
 ![Overflow sottrazione](../../assets/math/75-overflow-detector-a-b.png)
 
 Giunti a questo punto, per realizzare un circuito in grado di identificare l'Overflow avremmo bisogno di 4 porte AND con 3 ingressi e 3 porte OR con 2 ingressi (la terza OR servirebbe ad eseguire l'OR logico tra i due circuiti precedenti per creare un'unica segnalazione di Overflow tanto in caso di addizione quanto di sottrazione).
 
-Al posto di AND e OR, un unico 74LS151 può fare al caso nostro: una configurazione dei pin di ingresso di questo tipo potrebbe risolvere le equazioni di Overflow sia per le addizioni, sia per le sottrazioni A - B e B - A; nella realizzazione del computer l'operazione B - A non è necessaria, pertanto non la terremo in considerazione:
+Al posto di AND e OR, un unico 74LS151 può fare al caso nostro: una configurazione dei pin di ingresso come evidenziato in figura risolve le equazioni di Overflow sia per le addizioni, sia per le sottrazioni A - B e B - A; si noti che l'operazione B - A non è necessaria nella realizzazione del computer, pertanto non la terremo in considerazione:
 
 ![74ls151](../../assets/math/75-overflow-74151.png)
 
