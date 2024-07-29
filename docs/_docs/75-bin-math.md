@@ -200,10 +200,10 @@ Esempio:         0x70 + 0x40 = Overflow   0xA0 - 0x30 = Overflow
 Note:
 
 - Le tabelle sono semplificate: sono mostrati solo i numeri multipli di 16 (0x**X**0), dunque 0x00, 0x10, 0x20 e così via.
-- Sono rappresentati numeri Signed a 8 bit, dunque, ad esempio, 0x20 rappresenta 32 decimale, mentre 0xA0 rappresenta -96 decimale.
+- Sono rappresentati numeri Signed a 8 bit, dunque, ad esempio, 0x20 corrisponde a 32 decimale, mentre 0xA0 corrisponde a -96 decimale.
 - Come esposto nella tabella *Relazione tra numeri Hex, Bin, Signed e Unsigned a 8 bit*, i numeri Signed vanno da -128 (0x80) a 127 (0x7F) passando per lo zero (0x00).
 
-Riprendiamo i due esempi riportati in calce alle tabelle:
+Riprendiamo i due esempi di Overflow riportati in calce alle tabelle:
 
 - **0x70 + 0x40 =** 112 + 64 = 176, che però non rientra nel range -128 / + 127 dei numeri Signed a 8 bit. In effetti, la somma tra 112 e 64 genera un risultato il cui MSB è 1, che secondo la notazione Signed è un numero negativo: poiché la somma di due Signed positivi non può avere come risultato un Signed negativo, siamo in una situazione di Overflow.
 
@@ -228,6 +228,8 @@ Riprendiamo i due esempi riportati in calce alle tabelle:
 Notare che in questo secondo caso l'ALU esegue internamente una operazione A + (-B), dunque B viene invertito secondo la regola del complemento a 2.
 
 In definitiva, possiamo dire che se il bit del segno viene corrotto, siamo un una situazione di Overflow e il flag V viene conseguentemente settato.
+
+#L'Overflow e l'hardware
 
 ![Adder hardware per somme A+B e sottrazioni A-B](../../assets/math/75-dieter-alu.png){:width="66%"}
 
