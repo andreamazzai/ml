@@ -165,7 +165,7 @@ Il Complemento a 2 è dunque un modo molto pratico per rappresentare i numeri Si
 
 L'approfondimento dell'Overflow è stato un passaggio obbligato; prima di capire il funzionamento della parte di circuito dedicata al [flag V](../flags/#overflow), dovevo comprenderne bene la definizione e quali metodi si usassero per determinarne una eventuale presenza.
 
-Tom Nisbet segnalava che l'ispirazione per l'uso di un Data Selector/Multiplexer [74LS151](https://www.ti.com/lit/ds/symlink/sn54s151.pdf) per individuare situazioni di Overflow derivava da [questo thread su Reddit](https://www.reddit.com/r/beneater/comments/kmuuex/question_for_all_74ls181_alu_people/), che rimanda poi in effetti a pagine di Dieter Mueller su 6502.org.
+Tom Nisbet segnalava che l'ispirazione per l'uso di un Data Selector/Multiplexer [74LS151](https://www.ti.com/lit/ds/symlink/sn54s151.pdf) per individuare situazioni di Overflow derivava da [un thread su Reddit](https://www.reddit.com/r/beneater/comments/kmuuex/question_for_all_74ls181_alu_people/), che rimandava poi a pagine scritte da Dieter Mueller su 6502.org.
 
 Nel [link di riferimento](http://6502.org/users/dieter/v_flag/v_0.htm) l'autore Dieter inizialmente spiegava in maniera visiva in quali situazioni di somma o sottrazione tra due numeri Signed a 8 bit si generasse un Overflow, utilizzando quella che si potrebbe forse definire una sorta di tavola pitagorica.
 
@@ -175,7 +175,6 @@ Nelle due rappresentazioni sottostanti, le combinazioni Colonna/Riga al cui incr
 
 ~~~text
 Operazione       Sum Colonna + Riga       Sub Colonna - Riga
-Flag:            Carry: no                Carry: sì
                  + 0123456789ABCDEF       + 0123456789ABCDEF
                  + 0000000000000000       - 0000000000000000
 Overflow:        00................       00................
@@ -202,32 +201,31 @@ Note:
 
 - Le tabelle sono semplificate: sono mostrati solo i numeri multipli di 16 (0x**X**0), dunque 0x00, 0x10, 0x20 e così via.
 - Sono rappresentati numeri Signed a 8 bit, dunque, ad esempio, 0x20 rappresenta 32 decimale, mentre 0xA0 rappresenta -96 decimale.
-- Per l'operazione di addizione **non c'è** un Carry in ingresso; per la sottrazione **c'è** un Carry in ingresso: come spiegato nella sezione del modulo ALU [Carry, addizioni e sottrazioni](../alu/#carry-addizioni-e-sottrazioni), il Carry **non viene** settato prima di eseguire una somma, mentre **viene** settato prima di eseguire una sottrazione.
 - Come esposto nella tabella *Relazione tra numeri Hex, Bin, Signed e Unsigned a 8 bit*, i numeri Signed vanno da -128 (0x80) a 127 (0x7F) passando per lo zero (0x00).
 
 Riprendiamo i due esempi riportati in calce alle tabelle:
 
-- **0x70 + 0x40 = 0xB0**, cioè 112 + 64 = 176, che però non rientra nel range -128 / + 127 dei numeri Signed a 8 bit: il MSB di 0xB0 è 1, che secondo la notazione Signed significa che si tratta di un numero negativo, ma la somma di due Signed positivi non può avere come risultato un Signed negativo --> abbiamo una situazione di Overflow.
+- **0x70 + 0x40 =** 112 + 64 = 176, che però non rientra nel range -128 / + 127 dei numeri Signed a 8 bit. In effetti, la somma tra 112 e 64 genera un risultato il cui MSB è 1, che secondo la notazione Signed è un numero negativo: poiché la somma di due Signed positivi non può avere come risultato un Signed negativo, siamo in una situazione di Overflow.
 
 ~~~text
   Hex       Dec       1
   0x70 ==>  112  ==>  0111.0000 +
  +0x40 ==>   64  ==>  0100.0000 = 
            ----     ----------- 
-            176       1011.0000 ==> 176 / 0xB0
+            176       1011.0000 ==> 0xB0
 ~~~
 
-- **0xA0 - 0x30 = 0x70**, cioè -96 - 48 = -144, che però non rientra nel range -128 / + 127 dei numeri Signed a 8 bit. In effetti, la sottrazione tra -96 e -48 viene in realtà eseguita sommando i due numeri espressi in Complemento a 2: -96 -48 = -96 +(-48)
+- **0xA0 - 0x30 =** -96 - 48 = -144, che però non rientra nel range -128 / + 127 dei numeri Signed a 8 bit. In effetti, la sottrazione tra -96 e -48 genera un risultato il cui MSB è 0 (il 9° bit viene troncato), che secondo la notazione Signed è un numero positivo: poiché la sottrazione tra due Signed negativi non può avere come risultato un Signed positivo, siamo in una situazione di Overflow.
 
 ~~~text
   Hex       Dec      1
   0xA0 ==>  -96  ==>  1010.0000 +
  -0x30 ==>  -48  ==>  1101.0000 = 
            ----     ----------- 
-           -144      10111.0000 ==> 0111.0000 ==> 112 / 0x70
+           -144      10111.0000 ==> 0111.0000 ==> 0x70
 ~~~
 
-Poiché stiamo parlando di numeri a 8 bit e la somma di -96 e - 48 sfocia in un 9° bit che viene troncato, il risultato finale del calcolo è 112 o 0x70 esadecimale, il cui MSB è 0: secondo la notazione Signed significa che si tratta di un numero positivo, ma la somma di due Signed negativi non può avere come risultato un Signed positivo --> abbiamo una situazione di Overflow.
+Notare che in questo secondo caso l'ALU esegue internamente una operazione A + (-B), dunque B viene invertito secondo la regola del complemento a 2.
 
 In definitiva, possiamo dire che se il bit del segno viene corrotto, siamo un una situazione di Overflow e il flag V viene conseguentemente settato.
 
@@ -235,7 +233,7 @@ In definitiva, possiamo dire che se il bit del segno viene corrotto, siamo un un
 
 *Adder hardware per somme A+B e sottrazioni A-B.*
 
-Dieter esponeva una rappresentazione logica di un Adder in grado di effettuare sia somme sia sottrazioni, segnalando che "le somme A+B sono facili; per eseguire le sottrazioni il metodo più semplice è quello di invertire B e procedere poi esattamente come per le somme: A+(-B)".
+Dieter esponeva una rappresentazione logica di un Adder in grado di effettuare sia somme sia sottrazioni, segnalando che "le somme A+B sono facili; per eseguire invece le sottrazioni, il metodo più semplice è quello di invertire B e procedere poi esattamente come per le somme: A+(-B)".
 
 ![Ultimo stadio di un adder a 8 bit](../../assets/math/75-dieter-8th-adder.png){:width="25%"}
 
