@@ -367,6 +367,6 @@ In realtà il modulo ALU del computer NQSAP - e di conseguenza, del BEAM - utili
 
 ![74ls151](../../assets/math/75-overflow-74151-2.png)
 
-Il segnale S0 dovrà avere una corrispondenza hardwired con l'istruzione di somma, mentre S1 dovrà averla con l'istruzione di sottrazione, come spiegato esposto nella sezione [Overflow](../flags/#overflow) della pagina del modulo dei Flag.
+Il segnale S0 dovrà avere una corrispondenza hardwired con l'istruzione di somma, mentre S1 dovrà averla con l'istruzione di sottrazione, come esposto nella sezione [Overflow](../flags/#overflow) della pagina del modulo dei Flag.
 
 Una regola che possiamo notare è che la somma di + e - non risulta mai in Overflow, come visto nell'esempio 1.
