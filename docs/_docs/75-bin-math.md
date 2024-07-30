@@ -56,6 +56,7 @@ E qualche pagina da visitare:
 1. [The Overflow (V) Flag Explained](http://www.6502.org/tutorials/vflag.html) di Bruce Clark su [6502.org](http://6502.org).
 2. [The 6502 overflow flag explained mathematically](https://www.righto.com/2012/12/the-6502-overflow-flag-explained.html) di Ken Shirriff - una pagina incredibilmente ben fatta che tratta Complementi, numeri Signed, Overflow.
 3. [The 6502 CPU's overflow flag explained at the silicon level](https://www.righto.com/2013/01/a-small-part-of-6502-chip-explained.html) di Ken Shirriff - interessantissima analisi dell'Overflow al livello del silicio del 6502.
+4. [Signed Binary Addition Calculator](https://madformath.com/calculators/digital-systems/signed-arithmetic/signed-binary-addition-calculator/signed-binary-addition-calculator) - calcolatore per somme di numeri Signed con evidenza dei vari passaggi di calcolo.
 
 ## Numeri Unsigned e numeri Signed
 
@@ -298,7 +299,7 @@ Mettendo a fattor comune quanto abbiamo visto fino ad ora, siamo in grado di svi
 2. C7 e C8 sono invertiti tra loro, cioè **C7 <> C8** (anche in questo caso si esegue una comparazione relativa);
 3. **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** è simile al punto 1, ma, anziché porli in una logica di comparazione relativa, stiamo specificando il valore assoluto dei bit.
 
-La truth table **(A == B) AND (Q <> A)** del primo caso si tradurrebbe nella seguente logica; purtroppo, il computer basato sulle ALU 74LS181 non offre visibilità del valore di B7', che è computato internamente all'ALU e non esposto, pertanto non la possiamo utilizzare:
+La truth table **(A == B) AND (Q <> A)** del primo caso si tradurrebbe nella logica in figura; purtroppo, il computer basato sulle ALU 74LS181 non offre visibilità del valore di B7', che è computato internamente all'ALU e non esposto, pertanto non la possiamo utilizzare:
 
 ![Primo metodo](../../assets/math/75-overflow-detector-xor-and.png)
 
@@ -392,6 +393,19 @@ In realtà il modulo ALU del computer NQSAP - e di conseguenza, del BEAM - utili
 
 ![74ls151](../../assets/math/75-overflow-74151-2.png)
 
-I segnali S0 ed S1 dovrà avere una corrispondenza hardwired con l'Instruction Register per identificare rispettivamente le istruzioni di somma e di sottrazione, similarmente a quanto si può vedere nello schema della sezione [Overflow](../flags/#overflow) della pagina del modulo Flag.
+I segnali S0 ed S1 dovranno avere una corrispondenza hardwired con l'Instruction Register per identificare rispettivamente le istruzioni di somma e di sottrazione. Riprendiamo lo schema della sezione [Overflow](../flags/#overflow) della pagina del modulo Flag:
 
-Per finire, da quanto visto fino ad ora possiamo dedurre un' altra regola: la somma di due Signed di segno opposto non può causare Overflow.
+Possiamo finalmente analizzare il circuito dell'Overflow dell'NQSAP e visualizzare la truth table completa:
+
+![Utilizzo di un 74LS151 per il calcolo dell'Overflow con evidenza degli MSB di H, B e dell'ALU e degli ingressi di selezione dell'operazione IR-Q1 e IR-Q3.](../../assets/flags/30-flag-v-151.png){:width="50%"}
+
+*Utilizzo di un 74LS151 per il calcolo dell'Overflow con evidenza degli MSB di H, B e dell'ALU e degli ingressi di selezione dell'operazione IR-Q1 e IR-Q3.*
+
+Per identificare l'esecuzione di un'operazione di addizione o di sottrazione e dunque selezionare quale debba essere l'ingresso corretto del '151 da attivare, si utilizzano due delle linee di selezione dell'operazione dell'ALU, in particolar modo:
+
+| IR-Q1 | IR-Q3 | Operazione  |
+| -     | -     | -           |
+| HI    | LO    | Sottrazione |
+| LO    | HI    | Addizione   |
+
+Per finire, da quanto visto fino ad ora possiamo dedurre un'altra regola: la somma di due Signed di segno opposto e **la sottrazione di due Signed dello stesso segno** non possono causare Overflow.
