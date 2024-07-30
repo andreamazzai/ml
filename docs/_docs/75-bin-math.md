@@ -8,7 +8,7 @@ excerpt: "Aritmetica binaria"
 
 Per comprendere appieno il funzionamento dei moduli Flag e ALU, è stato necessario approfondire anche alcuni concetti dell'aritmetica binaria.
 
-Cercando di assimilare il concetto di overflow, 
+Cercando di assimilare il concetto di overflow, .......................
 
 I concetti utili da comprendere sono:
 
@@ -23,7 +23,7 @@ I concetti utili da comprendere sono:
 
 Lungi dal voler (e poter) spiegare tutto, riporto alcuni concetti di base e suggerisco una serie di fonti che mi hanno permesso di arrivare a comprendere appieno i temi esposti.
 
-Per una compresione completa dei temi trattati, raccomando di accedere più volte alle fonti, anche in tempi diversi e in sequenze diverse: con letture ed approfondimenti ripetuti avevo raggiunto lo scopo prefissato, mentre più visualizzazioni dei video in modalità *brainstorming* mi avevano permesso di riempire i buchi fino a colmarli.
+Per una comprensione completa dei temi trattati, raccomando di accedere più volte alle fonti, anche in tempi diversi e in sequenze diverse: con letture ed approfondimenti ripetuti avevo raggiunto lo scopo prefissato, mentre più visualizzazioni dei video in modalità *brainstorming* mi avevano permesso di riempire i buchi fino a colmarli.
 
 Ecco una serie di video su YouTube:
 
@@ -50,11 +50,11 @@ Ecco una serie di video su YouTube:
       1) partire da destra e non modificare nulla fino al primo bit a 1 incluso;
       2) invertire tutti i bit rimanenti.
 
-      Esempio: per invertire il numero 01010100 (84 decimale) si lasciano invariati i primi 3 bit partendo da destra (01010**100**) e si invertono poi tutti gli altri da **01010**100 a **10101**100, ottenendo come risultato finale 10101100 (-84).
+      Esempio: per invertire il numero 0b01010100 (84 decimale) si lasciano invariati i primi 3 bit partendo da destra (0b01010**100**) e si invertono poi tutti gli altri da 0b**01010**100 a 0b**10101**100, ottenendo come risultato finale 0b10101100 (-84).
 
 ## Numeri Unsigned e numeri Signed
 
-E' necessario comprende a fondo la logica dei numeri Unsigned e Signed.
+E' necessario comprendere a fondo la logica dei numeri Unsigned e Signed.
 
 Non ricordo più quale fonte (credevo un commento di un video di Mr Powell's Computer Science Channel, ma non riesco più a trovarlo) mi avesse portato in questa [interessantissima pagina](https://sandbox.mc.edu/~bennet/cs110/) dell'Università del Mississippi dedicata alla matematica binaria.
 
@@ -68,10 +68,23 @@ Il metodo **Signed Magnitude** è molto facile da comprendere: si sacrifica un b
 
 Nell'immagine (semplificata a soli 4 bit per ragioni di spazio) si nota un problema non secondario: lo zero appare due volte (0000 e 1000): noi sappiamo che lo zero non ha segno, pertanto questa rappresentazione non è la migliore possibile.
 
-NB: nella pagina citata, vi è un esempio di sottrazione "5 - 2" che non comprendo e suppongo sia errata. L'immagine di riferimento è la seguente:
+NB: nella pagina citata, vi è un esempio di sottrazione "5 - 2" errata. L'immagine di riferimento è la seguente:
 
 ![Possibile errore nella pagina?](../../assets/math/75-math_mistake.gif
 ){:width="10%"}
+
+Quanto si desidera rappresentare è una sottrazione, ma anziché eseguire "5 - 2", si desidera utilizzare il metodo Signed Magnitude per invertire il valore da sottrarre in modo da trasformare l'operazione "5 + (-2)", invertendo il primo bit del numero 2, che dunque da 0010 diventa 1010:
+
+~~~text
+   Dec        Bin 
+C                 
+A     5  ==>  0101+
+B    -2  ==>  1010
+   ----       ----
+Q     3       1111 ==> -7
+~~~
+
+Come si vede, la somma di 0101 (5) e 1010 (-2) non porta al risultato aspettato (3), bensì a un chiaro errore.
 
 Tralasciando la spiegazione del metodo **Complemento a 1 (1C)**, anch'esso non ottimale, il **Complemento a 2 (2C)** risulta essere invece perfetto per la rappresentazione dei numeri negativi, portando tra l'altro in dote una grandissima semplificazione nell'esecuzione delle sottrazioni:
 
@@ -86,7 +99,7 @@ Due sono gli aspetti da evidenziare:
 
 La regola che sta alla base della teoria del Complemento a 2 è: come posso rappresentare il numero "-1" in modo che, aggiungendovi "1", si ottenga "0"?
 
-Similarmente ai vecchi tachimetri delle automobili, che una volta giunti a 99.999 passavano a 0, il 99.999 del tachimetro corrisponde all'11111111 dell'aritmetica binaria a 8 bit, che sommato a 00000001 genera come risultato 00000000.
+Similarmente ai vecchi tachimetri delle automobili, che una volta giunti a 99.999 passavano a 0, il 99.999 del tachimetro corrisponde allo 0b11111111 dell'aritmetica binaria a 8 bit, che sommato a 0b00000001 genera come risultato 0b00000000.
 
 Per i dovuti approfondimenti sulla sottrazione in 2C, si vedano i [link](#fonti) evidenziati in precedenza in questa pagina.
 
@@ -157,7 +170,7 @@ Questa tabella dovrebbe chiarire il concetto:
 
 *Relazione tra numeri Hex, Bin, Signed e Unsigned a 8 bit.*
 
-Come già visto nell'immagine *Rappresentazione in Complemento a 2 dei numeri a 4 bit*, è importante notare anche qui il passaggio dei numeri Signed da -1 a 0 in corrispondenza del passaggio binario da 11111111 a 00000000.
+Come già visto nell'immagine *Rappresentazione in Complemento a 2 dei numeri a 4 bit*, è importante notare anche qui il passaggio dei numeri Signed da -1 a 0 in corrispondenza del passaggio binario da 0b11111111 a 0b00000000.
 
 Il Complemento a 2 è dunque un modo molto pratico per rappresentare i numeri Signed, nei quali un MSB = LO indica un numero positivo e un MSB = HI indica un numero negativo.
 
@@ -208,24 +221,26 @@ Riprendiamo i due esempi di Overflow riportati in calce alle tabelle:
 - **0x70 + 0x40 =** 112 + 64 = 176, che però non rientra nel range -128 / + 127 dei numeri Signed a 8 bit. In effetti, la somma tra 112 e 64 genera un risultato il cui MSB è 1, che secondo la notazione Signed è un numero negativo: poiché la somma di due Signed positivi non può avere come risultato un Signed negativo, siamo in una situazione di Overflow.
 
 ~~~text
-  Hex       Dec       1
+  Hex       Dec       Bin
+                      1
   0x70 ==>  112  ==>  0111.0000 +
  +0x40 ==>   64  ==>  0100.0000 = 
            ----     ----------- 
             176       1011.0000 ==> 0xB0
 ~~~
 
-- **0xA0 - 0x30 =** -96 - 48 = -144, che però non rientra nel range -128 / + 127 dei numeri Signed a 8 bit. In effetti, la sottrazione tra -96 e -48 genera un risultato il cui MSB è 0 (il 9° bit viene troncato), che secondo la notazione Signed è un numero positivo: poiché la sottrazione tra due Signed negativi non può avere come risultato un Signed positivo, siamo in una situazione di Overflow.
+- **0xA0 - 0x30 =** -96 - 48 = -144, che però non rientra nel range -128 / + 127 dei numeri Signed a 8 bit. In effetti, la sottrazione tra -96 e 48\* genera un risultato il cui MSB è 0, che secondo la notazione Signed è un numero positivo: poiché la sottrazione tra un Signed positivo e un Signed negativo non può risultare in un Signed positivo, siamo in una situazione di Overflow. Si noti che il 9° bit viene troncato, perché il bus dati di questo computer è a 8 bit.
 
 ~~~text
-  Hex       Dec      1
+  Hex       Dec       Bin
+                     1
   0xA0 ==>  -96  ==>  1010.0000 +
  -0x30 ==>  -48  ==>  1101.0000 = 
            ----     ----------- 
            -144      10111.0000 ==> 0111.0000 ==> 0x70
 ~~~
 
-Notare che in questo secondo caso l'ALU esegue internamente una operazione A + (-B), dunque B viene invertito secondo la regola del complemento a 2.
+\* Notare che in questo secondo caso l'ALU esegue internamente una operazione A + (-B), dunque B viene invertito secondo la regola del Complemento a 2 (2C).
 
 In definitiva, possiamo dire che se il bit del segno viene corrotto, siamo un una situazione di Overflow e il flag V viene conseguentemente settato.
 
@@ -250,7 +265,7 @@ Nella tabella successiva:
 - A7 è l'MSB del numero da sommare A
 - Q7 è l'MSB del risultato di A7 + B7'+ C7
 - C8 è il Carry in uscita dall'8° adder (l'adder che esegue la somma A7 + B7')
-- C8 è settato 1 se almeno due tra A7, B7' e C7 sono a 1.
+- C8 è settato a 1 se almeno due tra A7, B7' e C7 sono a 1.
 - V è il Flag di Overflow
 
 Creando la truth table per la somma di A7, B7' e C7 e considerando anche quanto appreso in precedenza, ricaviamo:
@@ -277,25 +292,25 @@ Mettendo a fattor comune quanto abbiamo visto fino ad ora, siamo in grado di svi
 2. C7 e C8 sono invertiti tra loro, cioè **C7 <> C8** (anche in questo caso si esegue una comparazione relativa);
 3. **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** è simile al punto 1, ma stiamo specificando il valore assoluto dei bit anziché porli in una logica di comparazione relativa.
 
-La truth table **(A == B) AND (Q <> A)** del primo caso si tradurrebbe nella seguente logica; purtroppo, il computer basato sulle ALU 74LS181 non offre visibilità del valore di B7', che è computato internamente al chip e non esposto, pertanto non la possiamo utilizzare:
+La truth table **(A == B) AND (Q <> A)** del primo caso si tradurrebbe nella seguente logica; purtroppo, il computer basato sulle ALU 74LS181 non offre visibilità del valore di B7', che è computato internamente all'ALU e non esposto, pertanto non la possiamo utilizzare:
 
 ![Primo metodo](../../assets/math/75-overflow-detector-xor-and.png)
 
-Stesso ragionamento per il secondo caso **C7 <> C8**: non abbiamo visibilità di C7, che è computato internamente al chip e non esposto:
+Stesso ragionamento per il secondo caso **C7 <> C8**: non abbiamo visibilità di C7, che è computato internamente all'ALU e non esposto:
 
 ![Secondo metodo](../../assets/math/75-overflow-detector-xor.png)
 
-Nemmeno il terzo metodo **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** sembra utilizzabile, perché non vi è visibilità di B7':
+Nemmeno il terzo metodo **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** sembra utilizzabile, perché non vi è visibilità esterna di B7':
 
 ![Terzo metodo](../../assets/math/75-overflow-detector-and-or.png)
 
 E' possibile però ricostruire artificialmente il segnale B7' basandosi sugli altri segnali disponibili nel computer. Così facendo:
 
-- l'ultimo metodo diventa *riciclabile* per la verifica dell'Overflow per le *addizioni*: il valore B7' che l'ultimo adder troverà in ingresso sarà uguale al valore di B7 messo in input sul '181 (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria dell'adder):
+- l'ultimo metodo diventa *riciclabile* per la verifica dell'Overflow per le *addizioni*; il valore B7' che l'ultimo adder troverà in ingresso sarà infatti uguale al valore di B7 messo in input sul '181 (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria dell'adder):
 
 ![Overflow somma](../../assets/math/75-overflow-detector-a+b.png)
 
-- qualche modifica permette di riutilizzare lo stesso metodo anche per la verifica dell'Overflow nelle *sottrazioni*: il valore B7' che l'ultimo adder troverà in ingresso sarà invertito rispetto al valore di B7 messo in input sul '181 (in una sottrazione A7 - B7, B7' viene invertito dalla circuiteria dell'adder):
+- qualche modifica permette di riutilizzare lo stesso metodo anche per la verifica dell'Overflow nelle *sottrazioni*; il valore B7' che l'ultimo adder troverà in ingresso sarà infatti invertito rispetto al valore di B7 messo in input sul '181 (in una sottrazione A7 - B7, B7' viene invertito dalla circuiteria dell'adder):
 
 ![Overflow sottrazione](../../assets/math/75-overflow-detector-a-b.png)
 
@@ -312,6 +327,8 @@ Gli ingressi I0-I7 sono opportunamente connessi in modalità "Hardwired" all'Ins
 **Spiegare cosa significano le varie colonne E perché quando facciamo la somma non invertiamo il binario in complemento di due... Perché la somma è la somma , mentre è quando facciamo la sottrazione di un numero positivo che dobbiamo invertirlo**
 
 Facciamo alcuni esempi:
+
+**Rileggere e verificare se vale la pena spiegare che quando faccio la sottrazione di un numero positivo, solo allora utilizza il complemento a due per effettuare una somma anziché una sottrazione**
 
 - **Esempio 1:** 0x20 + 0xC0; somma A + B di un Signed positivo e un Signed negativo
 
@@ -365,10 +382,10 @@ Q              -160                      10110.0000 ==> 0110.0000 ==> 0x60 = 96,
 
 Il microcode opportunamente codificato dell'istruzione A - B porterebbe a 1 gli ingressi I1 e I6 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione produrrebbe Q7=0, B7=0 e A7=1 sugli ingressi di selezione (CBA = 001), che attiverebbero l'ingresso I1 che risulta a 1 in quanto attivato dal microcode, pertanto l'uscita Q del '151 sarebbe a 1, indicando che vi è Overflow --> situazione verificata correttamente.
 
-In realtà il modulo ALU del computer NQSAP - e di conseguenza, del BEAM - utilizza solo A + B e A - B, dunque possiamo semplificare le connessioni del '151:
+In realtà il modulo ALU del computer NQSAP - e di conseguenza, del BEAM - utilizza solo le istruzioni A + B e A - B, dunque possiamo semplificare le connessioni del '151:
 
 ![74ls151](../../assets/math/75-overflow-74151-2.png)
 
-Il segnale S0 dovrà avere una corrispondenza hardwired con l'istruzione di somma, mentre S1 dovrà averla con l'istruzione di sottrazione, come esposto nella sezione [Overflow](../flags/#overflow) della pagina del modulo dei Flag.
+Il segnale S0 dovrà avere una corrispondenza hardwired con l'istruzione di somma, mentre il segnale S1 dovrà averla con l'istruzione di sottrazione, similarmente a quanto si può vedere nello schema della sezione [Overflow](../flags/#overflow) della pagina del modulo Flag.
 
 Una regola che possiamo notare è che la somma di + e - non risulta mai in Overflow, come visto nell'esempio 1.
