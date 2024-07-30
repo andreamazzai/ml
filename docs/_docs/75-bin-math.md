@@ -395,11 +395,27 @@ In realtà il modulo ALU del computer NQSAP - e di conseguenza, del BEAM - utili
 
 I segnali S0 ed S1 dovranno avere una corrispondenza hardwired con l'Instruction Register per identificare rispettivamente le istruzioni di somma e di sottrazione. Riprendiamo lo schema della sezione [Overflow](../flags/#overflow) della pagina del modulo Flag:
 
-Possiamo finalmente analizzare il circuito dell'Overflow dell'NQSAP e visualizzare la truth table completa:
+Possiamo finalmente analizzare il circuito dell'Overflow dell'NQSAP (e del BEAM) e visualizzare la truth table completa:
 
 ![Utilizzo di un 74LS151 per il calcolo dell'Overflow con evidenza degli MSB di H, B e dell'ALU e degli ingressi di selezione dell'operazione IR-Q1 e IR-Q3.](../../assets/flags/30-flag-v-151.png){:width="50%"}
 
 *Utilizzo di un 74LS151 per il calcolo dell'Overflow con evidenza degli MSB di H, B e dell'ALU e degli ingressi di selezione dell'operazione IR-Q1 e IR-Q3.*
+
+| Q7-S2 | B7-S1 | A7-S0 | OP    | Ix   | V       |
+| -     | -     | -     | -     | -    | -       |
+|    0  |     0 |     0 |       |    0 |   0     |
+|    0  |     0 |     1 | A - B |    1 |   **1** |
+|    0  |     1 |     0 |       |    2 |   0     |
+|    0  |     1 |     1 | A + B |    3 |   **1** |
+|    1  |     0 |     0 | A + B |    4 |   **1** |
+|    1  |     0 |     1 |       |    5 |   0     |
+|    1  |     1 |     0 | A - B |    6 |   **1** |
+|    1  |     1 |     1 |       |    7 |   0     |
+
+Alla luce di tutte le considerazioni fatte, questa tabola assume ora un significato più semplice rispetto a quanto non si potesse pensare:
+
+- Il flag Overflow si attiva se **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** *E* stiamo eseguendo una somma(IR-Q3 attivo).
+- Il flag Overflow si attiva se  (A = 1 AND B = 0 AND Q = 0) OR (A = 0 AND B = 1 AND Q = 1) *E* stiamo eseguendo una sottrazione (IR-Q1 attivo).
 
 Per identificare l'esecuzione di un'operazione di addizione o di sottrazione e dunque selezionare quale debba essere l'ingresso corretto del '151 da attivare, si utilizzano due delle linee di selezione dell'operazione dell'ALU, in particolar modo:
 
