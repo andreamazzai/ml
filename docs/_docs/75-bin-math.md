@@ -403,16 +403,16 @@ Possiamo finalmente analizzare il circuito dell'Overflow dell'NQSAP (e del BEAM)
 
 Alla luce di tutte le considerazioni fatte, questa tabella assume ora un significato più semplice rispetto a quanto non si potesse inizialmente pensare:
 
-| Q7<br>S2 | B7<br>S1 | A7<br>S0 | OP  | Ix | V     |
-| -        | -        | -        | -   | -  | -     |
-|    0     |     0    |     0    |     | I0 | -     |
-|  **0**   |   **0**  |   **1**  | A-B | I1 | **1** |
-|    0     |     1    |     0    |     | I2 | -     |
-|  **0**   |   **1**  |   **1**  | A+B | I3 | **1** |
-|  **1**   |   **0**  |   **0**  | A+B | I4 | **1** |
-|    1     |     0    |     1    |     | I5 | -     |
-|  **1**   |   **1**  |   **0**  | A-B | I6 | **1** |
-|    1     |     1    |     1    |     | I7 | -     |
+| Q7-S2 | B7-S1 | A7-S0 | Sum/Sub | Input | Overflow     |
+| -     | -     | -     |  -      | -     |  -     |
+|   0   |   0   |   0   |         | I0    |  -     |
+| **0** | **0** | **1** |  A-B    | I1    |  **1** |
+|   0   |   1   |   0   |         | I2    |  -     |
+| **0** | **1** | **1** |  A+B    | I3    |  **1** |
+| **1** | **0** | **0** |  A+B    | I4    |  **1** |
+|   1   |   0   |   1   |         | I5    |  -     |
+| **1** | **1** | **0** |  A-B    | I6    |  **1** |
+|   1   |   1   |   1   |         | I7    |  -     |
 
 
 - Il flag Overflow si attiva se **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** *E* stiamo eseguendo una addizione (IR-Q3 attivo).
