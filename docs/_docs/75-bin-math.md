@@ -343,20 +343,21 @@ Alcuni degli ingressi I0-I7 sono opportunamente connessi in modalità "Hardwired
 Testiamo alcuni casi, ma non prima di aver fatto un esempio iniziale spiegando anche cosa significano le varie colonne:
 
 - Nella colonna **Hex** è esposta la rappresentazione esadecimale dei numeri che vogliamo sommare o sottrarre, con il simbolo dell'operazione alla sinistra del secondo numero; desideriamo eseguire l'operazione 0x70 - 0x30.
-- La colonna **Dec** mostra il valore decimale ricavato dalla tabella *Relazione tra numeri Hex, Bin, Signed e Unsigned a 8 bit*; 0x70 corrisponde a 112 decimale, mentre 0x30 corrisponde a 48: l'operazione è quindi 112 - 48 = 64.
+- La colonna **Dec** mostra il valore decimale ricavato dalla tabella *Relazione tra numeri Hex, Bin, Signed e Unsigned a 8 bit*; 0x70 corrisponde a 112 decimale, mentre 0x30 corrisponde a 48: l'operazione è quindi 112 - 48 (che avrà come risultato 64.
 - La colonna **Bin** espone la rappresentazione binaria dei numeri (in Complemento a 2 se negativi): 112 corrisponde a 0111.0000, mentre 48 corrisponde a 0011.0000.
-- La colonna **2C** è utilizzata per eseguire l'operazione di somma invertendo l'eventuale sottraendo positivo col metodo Complemento a 2.
+  - NB: se avessimo voluto ad esempio eseguire un'operazione di addizione 112 + (-48), il -48 sarebbe stato qui rappresentato nella sua forma 2C, cioè 1101.000.
+- La colonna **2C** è infine utilizzata per eseguire l'operazione di somma invertendo l'eventuale sottraendo positivo col metodo Complemento a 2: il sottraendo 48 viene convertito in 2C 1101.0000 e sommato al minuendo.
 
 ~~~text
     Hex        Dec        Bin             2C
-C                                        11111
+C                                        1111 
 A   0x70  ==>   112  ==>  0111.0000  ==>  0111.0000 +
 B  -0x30  ==>   -48  ==>  0011.0000  ==>  1101.0000 = 
                ----                      ----------
 Q                64                      10100.0000 ==> 0100.0000 ==> 0x40 = 64, no Overflow
 ~~~
 
-Come detto poco fa, la sottrazione di un numero positivo (nel nostro caso 48) viene infatti eseguita sommando il valore negativo di quel numero, cioè -48: la somma del Complemento a 2 di un numero trasforma la sottrazione in addizione, pertanto l'operazione diventa 112 + (-48), cioè 0111.0000 + 1101.0000 nella colonna 2C:
+Come detto in precedenza, la sottrazione di un numero positivo (nel nostro caso 48) viene eseguita sommando il minuendo con il valore negativo del sottraendo, cioè -48; il grande vantaggio del Complemento a 2 è proprio quello di permettere la trasformazione di una sottrazione in addizione, pertanto l'operazione passa da 112 - 48 a 112 + (-48), cioè 0111.0000 + 1101.0000 nella colonna 2C. Nel risultato, l'eventuale 9° bit deve essere scartato, in quanto il calcolo è effettuato su una word a 8 bit; l'8° bit (MSB) rappresenta il segno, che nel nostro esempio è 0 e dunque il risultato dell'operazione è positivo.
 
 Rafforzando quanto visto fino ad ora: quando devo effettuare la sottrazione di un numero positivo, ne calcolo il Complemento a 2 e lo sommo al minuendo.
 
