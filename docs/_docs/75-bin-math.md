@@ -306,7 +306,7 @@ La truth table **(A == B) AND (Q <> A)** del primo caso si tradurrebbe nella log
 
 A puro scopo illustrativo, avevo provato a disegnare lo schema di un adder che avesse la capacità di individuare situazioni di Overflow:
 
-![Adder su carta](../../assets/math/75-adder.png)
+![Adder su carta](../../assets/math/75-adder.png){:width="50%"}
 
 Stesso ragionamento per il secondo caso **C7 <> C8**: non abbiamo visibilità di C7, che è computato internamente all'ALU e non esposto:
 
