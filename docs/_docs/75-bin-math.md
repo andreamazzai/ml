@@ -304,7 +304,7 @@ La truth table **(A == B) AND (Q <> A)** del primo caso si tradurrebbe nella log
 
 ![Primo metodo](../../assets/math/75-overflow-detector-xor-and.png)
 
-Avevo provato a disegnare lo schema di un adder per comprendere meglio il concetto; si noti che in questo schema il segnale B7 in uscita dal registro B è *visibile* e può essere portato alla circuiteria atta a individuare situazioni di Overflow:
+Avevo provato a disegnare lo schema di un adder per comprendere meglio il concetto; si noti che in questo schema il segnale B7 in uscita dal registro B è *visibile* e può essere portato alla circuiteria preposta a individuare situazioni di Overflow:
 
 [![Adder su carta](../../assets/math/75-adder.png "Adder su carta"){:width="50%"}](../../assets/math/75-adder.png){:width="75%"}
 
@@ -332,13 +332,13 @@ E' possibile però ricostruire artificialmente il segnale B7' basandosi sugli al
 
 Giunti a questo punto, per realizzare un circuito in grado di identificare l'Overflow avremmo bisogno di 4 porte AND con 3 ingressi e 3 porte OR con 2 ingressi (la terza OR servirebbe ad eseguire l'OR logico tra i due circuiti precedenti per creare un'unica segnalazione di Overflow tanto in caso di addizione quanto di sottrazione).
 
-Al posto di 4x AND e 3x OR, un unico 74LS151 può fare al caso nostro: una configurazione dei pin di ingresso come evidenziato in figura risolve le equazioni di Overflow sia per le addizioni A + B, sia per le sottrazioni A - B e B - A; si noti però che l'operazione B - A non è necessaria nella realizzazione del computer, pertanto non la terremo in considerazione:
+Al posto di 4x AND e 3x OR, un unico 74LS151 può fare al caso nostro: una configurazione dei pin di ingresso come evidenziato in figura risolve le equazioni di Overflow sia per le addizioni A + B, sia per le sottrazioni A - B e B - A; si noti però che l'operazione B - A non è necessaria per simulare le istruzioni di sottrazione del 6502, pertanto non la terremo in considerazione:
 
 ![74ls151](../../assets/math/75-overflow-74151.png)
 
-Le combinazioni degli ingressi A, B e C del '151 (connessi agli MSB A7, B7 e Q7 dei registri A e B e dell'uscita Q dell'ALU) selezionano quale tra gli ingressi I0-I7 sia necessario attivare per portare in uscita una eventuale segnalazione di Overflow.
+- Le combinazioni degli ingressi A, B e C del '151 (connessi agli MSB A7, B7 e Q7 dei registri A e B e dell'uscita Q dell'ALU) selezionano quale tra gli ingressi I0-I7 sia necessario attivare per portare in uscita una eventuale segnalazione di Overflow.
 
-Alcuni degli ingressi I0-I7 sono opportunamente connessi in modalità "Hardwired" all'Instruction Register per determinare l'operazione correntemente in esecuzione.
+- Alcuni degli ingressi I0-I7 sono opportunamente connessi in modalità "Hardwired" all'Instruction Register per determinare l'operazione correntemente in esecuzione.
 
 Testiamo alcuni casi, ma non prima di aver fatto un esempio iniziale spiegando anche cosa significano le varie colonne:
 
@@ -415,7 +415,7 @@ Il microcode opportunamente codificato dell'istruzione A - B porterebbe a 1 gli 
 
 Riprendendo la spiegazione dell'esempio svolto in testa ai 4 casi appena discussi, si noti che i casi 3 e 4 sono sottrazioni nelle quali il sottraendo è positivo: in entrambi i casi non eseguirò una sottrazione, bensì una somma del minuendo nel suo stato originario e del sottraendo invertito col Complemento a 2.
 
-Tornando all'interpretazione dell'hardware, il modulo ALU del computer NQSAP e del computer BEAM utilizzano solo le istruzioni A + B e A - B, dunque possiamo semplificare le connessioni del '151 eliminando B - A:
+Tornando all'interpretazione dell'hardware, abbiamo anticipato che i moduli ALU del computer NQSAP e del computer BEAM utilizzano solo le istruzioni A + B e A - B, dunque possiamo semplificare le connessioni del '151 eliminando B - A:
 
 ![74ls151](../../assets/math/75-overflow-74151-2.png)
 
