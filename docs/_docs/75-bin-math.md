@@ -347,8 +347,6 @@ Testiamo alcuni casi, ma non prima di aver fatto un esempio iniziale spiegando a
 - La colonna **Bin** espone la rappresentazione binaria dei numeri (in Complemento a 2 se negativi): 112 corrisponde a 0111.0000, mentre 48 corrisponde a 0011.0000.
 - La colonna **2C** è utilizzata per eseguire l'operazione di somma invertendo l'eventuale sottraendo positivo col metodo Complemento a 2.
 
-Come detto poco fa, la sottrazione di un numero positivo (nel nostro caso 48) viene infatti eseguita sommando il valore negativo di quel numero, cioè -48: la somma del Complemento a 2 di un numero trasforma la sottrazione in addizione, pertanto l'operazione diventa 112 + (-48), cioè 0111.0000 + 1101.0000 nella colonna 2C:
-
 ~~~text
     Hex        Dec        Bin             2C
 C                                        11111
@@ -357,6 +355,8 @@ B  -0x30  ==>   -48  ==>  0011.0000  ==>  1101.0000 =
                ----                      ----------
 Q                64                      10100.0000 ==> 0100.0000 ==> 0x40 = 64, no Overflow
 ~~~
+
+Come detto poco fa, la sottrazione di un numero positivo (nel nostro caso 48) viene infatti eseguita sommando il valore negativo di quel numero, cioè -48: la somma del Complemento a 2 di un numero trasforma la sottrazione in addizione, pertanto l'operazione diventa 112 + (-48), cioè 0111.0000 + 1101.0000 nella colonna 2C:
 
 Rafforzando quanto visto fino ad ora: quando devo effettuare la sottrazione di un numero positivo, ne calcolo il Complemento a 2 e lo sommo al minuendo.
 
