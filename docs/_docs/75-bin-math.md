@@ -309,7 +309,7 @@ Avevo provato a disegnare lo schema di un adder per comprendere meglio il concet
 [![Adder su carta](../../assets/math/75-adder.png "Adder su carta"){:width="50%"}](../../assets/math/75-adder.png){:width="75%"}
 
 ---
-Stesso ragionamento per il secondo caso **C7 <> C8**: non abbiamo visibilità di C7, che è computato internamente all'ALU e non esposto:
+Stesso ragionamento per il secondo caso **C7 <> C8**: non il '181 non offre visibilità di C7, che è computato internamente all'ALU e non esposto:
 
 ![Secondo metodo](../../assets/math/75-overflow-detector-xor.png)
 
@@ -318,15 +318,17 @@ Nemmeno il terzo metodo **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)
 
 ![Terzo metodo](../../assets/math/75-overflow-detector-and-or.png)
 
-E' possibile però ricostruire artificialmente il segnale B7' basandosi sugli altri segnali disponibili nel computer. Così facendo:
+E' possibile però ricostruire artificialmente il segnale B7' basandosi sugli altri segnali disponibili nel computer. Infatti:
 
-- l'ultimo metodo diventa *riciclabile* per la verifica dell'Overflow per le *addizioni*; il valore B7' che l'ultimo adder troverà in ingresso sarà infatti uguale al valore di B7 messo in input sul '181 (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria dell'adder):
+- l'ultimo metodo diventa utilizzabile per la verifica dell'Overflow per le *addizioni*; il valore B7' che l'ultimo adder del '181 troverà in ingresso sarà infatti uguale al valore di B7 messo in input (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria dell'ALU):
 
 ![Overflow somma](../../assets/math/75-overflow-detector-a+b.png)
 
-- qualche modifica permette di riutilizzare lo stesso metodo anche per la verifica dell'Overflow nelle *sottrazioni*; il valore B7' che l'ultimo adder troverà in ingresso sarà infatti invertito rispetto al valore di B7 messo in input sul '181 (in una sottrazione A7 - B7, B7' viene invertito dalla circuiteria dell'adder):
+- qualche modifica permette di riutilizzare lo stesso metodo anche per la verifica dell'Overflow nelle *sottrazioni*; il valore B7' che l'ultimo adder del '181 troverà in ingresso sarà infatti invertito rispetto al valore di B7 messo in input (in una sottrazione A7 - B7, B7' viene invertito dalla circuiteria dell'ALU*):
 
 ![Overflow sottrazione](../../assets/math/75-overflow-detector-a-b.png)
+
+\* La sottrazione viene effettuata sommando il Complemento a 2 del sottraendo; avendo a disposizione il valore logico di B7, è facile modificare il circuito per tenerne in considerazione l'inverso e individuare l'Overflow anche nell'operazione di sottrazione.
 
 Giunti a questo punto, per realizzare un circuito in grado di identificare l'Overflow avremmo bisogno di 4 porte AND con 3 ingressi e 3 porte OR con 2 ingressi (la terza OR servirebbe ad eseguire l'OR logico tra i due circuiti precedenti per creare un'unica segnalazione di Overflow tanto in caso di addizione quanto di sottrazione).
 
