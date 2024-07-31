@@ -343,9 +343,9 @@ Al posto di 4x AND e 3x OR, un unico 74LS151 può fare al caso nostro: una confi
 Testiamo alcuni casi, ma non prima di aver fatto un esempio iniziale spiegando anche cosa significano le varie colonne:
 
 - Nella colonna **Hex** è esposta la rappresentazione esadecimale dei numeri che vogliamo sommare o sottrarre, con il simbolo dell'operazione alla sinistra del secondo numero; desideriamo eseguire l'operazione 0x70 - 0x30.
-- La colonna **Dec** mostra il valore decimale ricavato dalla tabella *Relazione tra numeri Hex, Bin, Signed e Unsigned a 8 bit*; 0x70 corrisponde a 112 decimale, mentre 0x30 corrisponde a 48: l'operazione è quindi 112 - 48 (che avrà come risultato 64.
+- La colonna **Dec** mostra il valore decimale ricavato dalla tabella *Relazione tra numeri Hex, Bin, Signed e Unsigned a 8 bit*; 0x70 corrisponde a 112 decimale, mentre 0x30 corrisponde a 48: l'operazione è quindi 112 - 48 (che avrà come risultato 64).
 - La colonna **Bin** espone la rappresentazione binaria dei numeri (in Complemento a 2 se negativi): 112 corrisponde a 0111.0000, mentre 48 corrisponde a 0011.0000.
-  - NB: se avessimo voluto ad esempio eseguire un'operazione di addizione 112 + (-48), il -48 sarebbe stato qui rappresentato nella sua forma 2C, cioè 1101.000.
+  - NB: se avessimo voluto ad esempio eseguire un'operazione di addizione 112 + (-48), il -48 sarebbe stato qui rappresentato in questa colonna nella sua forma 2C, cioè 1101.000.
 - La colonna **2C** è infine utilizzata per eseguire l'operazione di somma invertendo l'eventuale sottraendo positivo col metodo Complemento a 2: il sottraendo 48 viene convertito in 2C 1101.0000 e sommato al minuendo.
 
 ~~~text
@@ -357,9 +357,9 @@ B  -0x30  ==>   -48  ==>  0011.0000  ==>  1101.0000 =
 Q                64                      10100.0000 ==> 0100.0000 ==> 0x40 = 64, no Overflow
 ~~~
 
-Come detto in precedenza, la sottrazione di un numero positivo (nel nostro caso 48) viene eseguita sommando il minuendo con il valore negativo del sottraendo, cioè -48; il grande vantaggio del Complemento a 2 è proprio quello di permettere la trasformazione di una sottrazione in addizione, pertanto l'operazione passa da 112 - 48 a 112 + (-48), cioè 0111.0000 + 1101.0000 nella colonna 2C. Nel risultato, l'eventuale 9° bit deve essere scartato, in quanto il calcolo è effettuato su una word a 8 bit; l'8° bit (MSB) rappresenta il segno, che nel nostro esempio è 0 e dunque il risultato dell'operazione è positivo.
+Come detto in precedenza, la sottrazione di un numero positivo (nel nostro caso 48) viene, infatti, eseguita sommando il minuendo con il valore negativo del sottraendo, cioè -48; il grande vantaggio del Complemento a 2 è proprio quello di permettere la trasformazione di una sottrazione in addizione, pertanto l'operazione passa da 112 - 48 a 112 + (-48), cioè 0111.0000 + 1101.0000 nella colonna 2C. Nel risultato, l'eventuale 9° bit deve essere scartato, in quanto il calcolo è effettuato su una word a 8 bit; l'8° bit (MSB) rappresenta il segno, che nel nostro esempio è 0 e dunque il risultato dell'operazione è positivo.
 
-Rafforzando quanto visto fino ad ora: quando devo effettuare la sottrazione di un numero positivo, ne calcolo il Complemento a 2 e lo sommo al minuendo.
+In altre parole: quando devo effettuare la sottrazione di un numero positivo, ne calcolo il Complemento a 2 e lo sommo al minuendo.
 
 - **Caso 1:** 0x20 + 0xC0; somma A + B di un Signed positivo e un Signed negativo
 
@@ -374,6 +374,8 @@ Q               -32                       1110.0000 ==> 0xE0 = -32, no Overflow
 
 Il microcode opportunamente codificato dell'istruzione A + B porterebbe a 1 gli ingressi I3 e I4 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione produrrebbe Q7=1, B7=1 e A7=0 sugli ingressi di selezione (CBA = 110), che attiverebbero l'ingresso I6 che risulta a 0 in quanto non attivato dal microcode, pertanto l'uscita Q del '151 sarebbe a 0, indicando che non vi è Overflow --> situazione verificata correttamente.
 
+---
+
 - **Caso 2:** 0x20 + 0x70; somma A + B di due Signed positivi
 
 ~~~text
@@ -387,6 +389,8 @@ Q               144                       1001.0000 ==> 0x90 = -112, Overflow
 
 Il microcode opportunamente codificato dell'istruzione A + B porterebbe a 1 gli ingressi I3 e I4 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione produrrebbe Q7=1, B7=0 e A7=0 sugli ingressi di selezione (CBA = 100), che attiverebbero l'ingresso I4 che risulta a 1 in quanto attivato dal microcode, pertanto l'uscita Q del '151 sarebbe a 1, indicando che vi è Overflow --> situazione verificata correttamente.
 
+---
+
 - **Caso 3:** 0x50 - 0x30; sottrazione A - B tra due Signed positivi
 
 ~~~text
@@ -399,6 +403,8 @@ Q                32                      10010.0000 ==> 0010.0000 ==> 0x20 = 32,
 ~~~
 
 Il microcode opportunamente codificato dell'istruzione A - B porterebbe a 1 gli ingressi I1 e I6 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione produrrebbe Q7=0, B7=0 e A7=0 sugli ingressi di selezione (CBA = 000), che attiverebbero l'ingresso I0 che risulta a 0, pertanto l'uscita Q del '151 sarebbe a 0, indicando che non vi è Overflow --> situazione verificata correttamente.
+
+---
 
 - **Caso 4:** 0x90 - 0x30; sottrazione A - B tra un Signed negativo e un Signed positivo
 
@@ -415,7 +421,7 @@ Il microcode opportunamente codificato dell'istruzione A - B porterebbe a 1 gli 
 
 Riprendendo la spiegazione dell'esempio svolto in testa ai 4 casi appena discussi, si noti che i casi 3 e 4 sono sottrazioni nelle quali il sottraendo è positivo: in entrambi i casi non eseguirò una sottrazione, bensì una somma del minuendo nel suo stato originario e del sottraendo invertito col Complemento a 2.
 
-Tornando all'interpretazione dell'hardware, abbiamo anticipato che i moduli ALU del computer NQSAP e del computer BEAM utilizzano solo le istruzioni A + B e A - B, dunque possiamo semplificare le connessioni del '151 eliminando B - A:
+Tornando all'interpretazione dell'hardware, abbiamo anticipato in precedenza che i moduli ALU del computer NQSAP e del computer BEAM utilizzano solo le istruzioni A + B e A - B, dunque possiamo semplificare le connessioni del '151 eliminando B - A:
 
 ![74ls151](../../assets/math/75-overflow-74151-2.png)
 
