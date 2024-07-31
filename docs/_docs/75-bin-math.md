@@ -413,7 +413,9 @@ Q              -160                      10110.0000 ==> 0110.0000 ==> 0x60 = 96,
 
 Il microcode opportunamente codificato dell'istruzione A - B porterebbe a 1 gli ingressi I1 e I6 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione produrrebbe Q7=0, B7=0 e A7=1 sugli ingressi di selezione (CBA = 001), che attiverebbero l'ingresso I1 che risulta a 1 in quanto attivato dal microcode, pertanto l'uscita Q del '151 sarebbe a 1, indicando che vi è Overflow --> situazione verificata correttamente.
 
-In realtà il modulo ALU del computer NQSAP - e di conseguenza, del BEAM - utilizza solo le istruzioni A + B e A - B, dunque possiamo semplificare le connessioni del '151:
+Riprendendo la spiegazione dell'esempio svolto in testa ai 4 casi appena discussi, si noti che i casi 3 e 4 sono sottrazioni nelle quali il sottraendo è positivo: in entrambi i casi non eseguirò una sottrazione, bensì una somma del minuendo nel suo stato originario e del sottraendo invertito col Complemento a 2.
+
+Tornando all'interpretazione dell'hardware, il modulo ALU del computer NQSAP e del computer BEAM utilizzano solo le istruzioni A + B e A - B, dunque possiamo semplificare le connessioni del '151 eliminando B - A:
 
 ![74ls151](../../assets/math/75-overflow-74151-2.png)
 
