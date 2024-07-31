@@ -304,9 +304,9 @@ La truth table **(A == B) AND (Q <> A)** del primo caso si tradurrebbe nella log
 
 ![Primo metodo](../../assets/math/75-overflow-detector-xor-and.png)
 
-A puro scopo illustrativo, avevo provato a disegnare lo schema di un adder che avesse la capacità di individuare situazioni di Overflow:
+A puro scopo illustrativo, avevo provato a disegnare lo schema di un adder che avesse la capacità di individuare situazioni di Overflow; si noti che il segnale B7 è disponibile e può essere portato alla XOR:
 
-![Adder su carta](../../assets/math/75-adder.png){:width="50%"}
+[![Adder su carta](../../assets/math/75-adder.png "Adder su carta"){:width="50%"}](../../assets/math/75-adder.png)
 
 Stesso ragionamento per il secondo caso **C7 <> C8**: non abbiamo visibilità di C7, che è computato internamente all'ALU e non esposto:
 
