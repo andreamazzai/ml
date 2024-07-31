@@ -320,11 +320,11 @@ Nemmeno il terzo metodo **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)
 
 E' possibile però ricostruire artificialmente il segnale B7' basandosi sugli altri segnali disponibili nel computer. Infatti:
 
-- l'ultimo metodo diventa utilizzabile per la verifica dell'Overflow per le *addizioni*; il valore B7' che l'ultimo adder del '181 troverà in ingresso sarà infatti uguale al valore di B7 messo in input (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria dell'ALU e dunque possiamo usare B7 come input del circuito che determina l'eventuale stato di Overflow):
+- l'ultimo metodo diventa utilizzabile per la verifica dell'Overflow per le *addizioni*; il valore B7' che l'ultimo adder del '181 troverà in ingresso sarà infatti uguale al valore di B7 messo in input (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria dell'ALU e possiamo dunque usare B7 come input del circuito che determina l'eventuale stato di Overflow):
 
 ![Overflow somma](../../assets/math/75-overflow-detector-a+b.png)
 
-- qualche modifica permette di riutilizzare lo stesso metodo anche per la verifica dell'Overflow nelle *sottrazioni*; il valore B7' che l'ultimo adder del '181 troverà in ingresso sarà infatti invertito rispetto al valore di B7 messo in input (in una sottrazione A7 - B7, B7' viene invertito dalla circuiteria dell'ALU* e dunque possiamo usare B7 invertito come input del circuito che determina l'eventuale stato di Overflow):
+- qualche modifica permette di riutilizzare lo stesso metodo anche per la verifica dell'Overflow nelle *sottrazioni*; il valore B7' che l'ultimo adder del '181 troverà in ingresso sarà infatti invertito rispetto al valore di B7 messo in input (in una sottrazione A7 - B7, B7' viene invertito dalla circuiteria dell'ALU* e possiamo dunque usare l'inverso di B7 come input del circuito che determina l'eventuale stato di Overflow):
 
 ![Overflow sottrazione](../../assets/math/75-overflow-detector-a-b.png)
 
@@ -332,21 +332,35 @@ E' possibile però ricostruire artificialmente il segnale B7' basandosi sugli al
 
 Giunti a questo punto, per realizzare un circuito in grado di identificare l'Overflow avremmo bisogno di 4 porte AND con 3 ingressi e 3 porte OR con 2 ingressi (la terza OR servirebbe ad eseguire l'OR logico tra i due circuiti precedenti per creare un'unica segnalazione di Overflow tanto in caso di addizione quanto di sottrazione).
 
-Al posto di 4x AND e 3x OR, un unico 74LS151 può fare al caso nostro: una configurazione dei pin di ingresso come evidenziato in figura risolve le equazioni di Overflow sia per le addizioni A + B, sia per le sottrazioni A - B e B - A; si noti che l'operazione B - A non è necessaria nella realizzazione del computer, pertanto non la terremo in considerazione:
+Al posto di 4x AND e 3x OR, un unico 74LS151 può fare al caso nostro: una configurazione dei pin di ingresso come evidenziato in figura risolve le equazioni di Overflow sia per le addizioni A + B, sia per le sottrazioni A - B e B - A; si noti però che l'operazione B - A non è necessaria nella realizzazione del computer, pertanto non la terremo in considerazione:
 
 ![74ls151](../../assets/math/75-overflow-74151.png)
 
 Le combinazioni degli ingressi A, B e C del '151 (connessi agli MSB A7, B7 e Q7 dei registri A e B e dell'uscita Q dell'ALU) selezionano quale tra gli ingressi I0-I7 sia necessario attivare per portare in uscita una eventuale segnalazione di Overflow.
 
-Alcuni degli ingressi I0-I7 sono opportunamente connessi in modalità "Hardwired" all'Instruction Register per capire quale sia l'operazione correntemente in esecuzione.
+Alcuni degli ingressi I0-I7 sono opportunamente connessi in modalità "Hardwired" all'Instruction Register per determinare l'operazione correntemente in esecuzione.
 
-Facciamo alcuni esempi:
+Testiamo alcuni casi, ma non prima di aver fatto un esempio iniziale spiegando anche cosa significano le varie colonne:
 
-**Spiegare cosa significano le varie colonne E perché quando facciamo la somma non invertiamo il binario in complemento di due... Perché la somma è la somma , mentre è quando facciamo la sottrazione di un numero positivo che dobbiamo invertirlo**
+- Nella colonna **Hex** è esposta la rappresentazione esadecimale dei numeri che vogliamo sommare o sottrarre, con il simbolo dell'operazione alla sinistra del secondo numero; desideriamo eseguire l'operazione 0x70 - 0x30.
+- La colonna **Dec** mostra il valore decimale ricavato dalla tabella *Relazione tra numeri Hex, Bin, Signed e Unsigned a 8 bit*; 0x70 corrisponde a 112 decimale, mentre 0x30 corrisponde a 48: l'operazione è quindi 112 - 48 = 64.
+- La colonna **Bin** espone la rappresentazione binaria dei numeri (in Complemento a 2 se negativi): 112 corrisponde a 0111.0000, mentre 48 corrisponde a 0011.0000.
+- La colonna **2C** è utilizzata per eseguire l'operazione di somma invertendo l'eventuale sottraendo positivo col metodo Complemento a 2.
 
-**Rileggere e verificare se vale la pena spiegare che quando faccio la sottrazione di un numero positivo, solo allora utilizza il complemento a due per effettuare una somma anziché una sottrazione**
+Come detto poco fa, la sottrazione di un numero positivo (nel nostro caso 48) viene infatti eseguita sommando il valore negativo di quel numero, cioè -48: la somma del Complemento a 2 di un numero trasforma la sottrazione in addizione, pertanto l'operazione diventa 112 + (-48), cioè 0111.0000 + 1101.0000 nella colonna 2C:
 
-- **Esempio 1:** 0x20 + 0xC0; somma A + B di un Signed positivo e un Signed negativo
+~~~text
+    Hex        Dec        Bin             2C
+C                                        11111
+A   0x70  ==>   112  ==>  0111.0000  ==>  0111.0000 +
+B  -0x30  ==>   -48  ==>  0011.0000  ==>  1101.0000 = 
+               ----                      ----------
+Q                64                      10100.0000 ==> 0100.0000 ==> 0x40 = 64, no Overflow
+~~~
+
+Rafforzando quanto visto fino ad ora: quando devo effettuare la sottrazione di un numero positivo, ne calcolo il Complemento a 2 e lo sommo al minuendo.
+
+- **Caso 1:** 0x20 + 0xC0; somma A + B di un Signed positivo e un Signed negativo
 
 ~~~text
     Hex        Dec        Bin             2C
@@ -359,7 +373,7 @@ Q               -32                       1110.0000 ==> 0xE0 = -32, no Overflow
 
 Il microcode opportunamente codificato dell'istruzione A + B porterebbe a 1 gli ingressi I3 e I4 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione produrrebbe Q7=1, B7=1 e A7=0 sugli ingressi di selezione (CBA = 110), che attiverebbero l'ingresso I6 che risulta a 0 in quanto non attivato dal microcode, pertanto l'uscita Q del '151 sarebbe a 0, indicando che non vi è Overflow --> situazione verificata correttamente.
 
-- **Esempio 2:** 0x20 + 0x70; somma A + B di due Signed positivi
+- **Caso 2:** 0x20 + 0x70; somma A + B di due Signed positivi
 
 ~~~text
     Hex        Dec        Bin             2C
@@ -372,7 +386,7 @@ Q               144                       1001.0000 ==> 0x90 = -112, Overflow
 
 Il microcode opportunamente codificato dell'istruzione A + B porterebbe a 1 gli ingressi I3 e I4 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione produrrebbe Q7=1, B7=0 e A7=0 sugli ingressi di selezione (CBA = 100), che attiverebbero l'ingresso I4 che risulta a 1 in quanto attivato dal microcode, pertanto l'uscita Q del '151 sarebbe a 1, indicando che vi è Overflow --> situazione verificata correttamente.
 
-- **Esempio 3:** 0x50 - 0x30; sottrazione A - B tra due Signed positivi
+- **Caso 3:** 0x50 - 0x30; sottrazione A - B tra due Signed positivi
 
 ~~~text
     Hex        Dec        Bin             2C
@@ -385,7 +399,7 @@ Q                32                      10010.0000 ==> 0010.0000 ==> 0x20 = 32,
 
 Il microcode opportunamente codificato dell'istruzione A - B porterebbe a 1 gli ingressi I1 e I6 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione produrrebbe Q7=0, B7=0 e A7=0 sugli ingressi di selezione (CBA = 000), che attiverebbero l'ingresso I0 che risulta a 0, pertanto l'uscita Q del '151 sarebbe a 0, indicando che non vi è Overflow --> situazione verificata correttamente.
 
-- **Esempio 4:** 0x90 - 0x30; sottrazione A - B tra un Signed negativo e un Signed positivo
+- **Caso 4:** 0x90 - 0x30; sottrazione A - B tra un Signed negativo e un Signed positivo
 
 ~~~text
     Hex        Dec        Bin             2C
