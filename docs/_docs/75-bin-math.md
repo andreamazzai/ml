@@ -322,7 +322,7 @@ Tuttavia, è possibile ricostruire artificialmente il segnale B7' basandosi sugl
 
 ![Overflow sottrazione](../../assets/math/75-overflow-detector-a-b.png)
 
-\* Ricordiamo che la sottrazione viene effettuata sommando il Complemento a 2 del sottraendo; avendo a disposizione il valore logico di B7, è facile modificare il circuito per tenerne in considerazione l'inverso e individuare l'Overflow anche nell'operazione di sottrazione.
+\* Ricordiamo che la sottrazione viene effettuata sommando il Complemento a 2 del sottraendo; avendo a disposizione il valore logico di B7, è facile tenerne in considerazione l'inverso e individuare l'Overflow anche nell'operazione di sottrazione.
 
 Giunti a questo punto, per realizzare un circuito in grado di identificare l'Overflow basandoci sul terzo metodo, avremmo bisogno di 4 porte AND con 3 ingressi e 3 porte OR con 2 ingressi: la terza OR servirebbe ad eseguire l'OR logico tra i due circuiti precedenti per creare un'unica segnalazione di Overflow tanto in caso di addizione quanto di sottrazione.
 
@@ -331,6 +331,11 @@ Detto questo, si potrebbe notare che anche il circuito del metodo 1 permetterebb
 Ora le cose si fanno interessanti: Dieter prosegue indicando che un unico chip 74LS151 indirizza tutte le necessità. Una configurazione dei pin di ingresso come evidenziato in figura risolve le equazioni di Overflow sia per le addizioni A + B, sia per le sottrazioni A - B e B - A:
 
 ![74LS151](../../assets/math/75-overflow-74151.png)
+
+Il '151 contiene la circuiteria atta a selezionare una di 8 sorgenti di dati in funzione di una codifica univoca di 3 bit sugli ingressi di selezione: in effetti, l'equazione dell'overflow è basata su 3 input (A, B, Q) e........ as a result of a unique three binary code at select inputs.
+
+provare a fare l'equazione per i 4 casi: 2 somme e 2 sottrazioni!!!!!!!!!!!!
+
 
 - Si noti però che l'operazione B - A non è necessaria per simulare le istruzioni di sottrazione del 6502, pertanto non la terremo in considerazione.
 
