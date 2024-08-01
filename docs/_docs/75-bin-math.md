@@ -99,7 +99,7 @@ Tralasciando la spiegazione del metodo **Complemento a 1 (1C)**, anch'esso non o
 Due sono gli aspetti da evidenziare:
 
 - Risoluzione del problema del doppio zero.
-- Le sottrazioni si possono eseguire senza errori sommando il Complemento a 2 del sottraendo. Ad esempio, invece di eseguire "15 - 7", si effettua "15 + (-7)": è piuttosto evidente che l'addizione è l'operazione più semplice in assoluto da implementare; utilizzando il Complemento a 2 è possibile applicare alle sottrazioni le stesse regole delle addizioni, semplificandone enormemente i calcoli.
+- Le sottrazioni si possono eseguire senza errori sommando al minuendo il Complemento a 2 del sottraendo. Ad esempio, invece di eseguire "15 - 7", si effettua "15 + (-7)": è piuttosto evidente che l'addizione è l'operazione più semplice in assoluto da implementare; utilizzando il Complemento a 2 è possibile applicare alle sottrazioni le stesse regole delle addizioni, semplificandone enormemente i calcoli.
 
 La regola che sta alla base della teoria del Complemento a 2 è: come posso rappresentare il numero "-1" in modo che, aggiungendovi "1", si ottenga "0"?
 
@@ -332,7 +332,21 @@ Ora le cose si fanno interessanti: Dieter prosegue indicando che un unico chip 7
 
 ![74LS151](../../assets/math/75-overflow-74151.png)
 
-Il '151 contiene la circuiteria atta a selezionare una di 8 sorgenti di dati in funzione di una codifica univoca di 3 bit sugli ingressi di selezione: in effetti, l'equazione dell'overflow è basata su 3 input (A, B, Q) e........ as a result of a unique three binary code at select inputs.
+Il '151 consente di selezionare una tra 8 sorgenti di dati in funzione di una codifica univoca di 3 bit sugli ingressi di selezione: in effetti, l'equazione dell'Overflow è proprio basata su 3 input (A, B, Q) e la connessione delle sorgenti a un'operazione specifica avrebbe come risultato un output a 1 quando si verifica una specifica combinazione degli ingressi (ad esempio A = 1, B = 1 e Q = 0, che rappresenta due Signed negativi in ingresso all'ALU e un Signed negativo in uscita, che rappresenta una tipica situazione di Overflow) associata all'ingresso selezionato da CBA = 011 che indica, grazie a qualche connessione alla Control Logic o all'Instruction Register, che stiamo eseguendo una addizione: come detto poco sopra, una somma di due Signed negativi non può risultare in un Signed positivo.
+
+
+(A7 = B7’ = 1 AND Q7 = 0) OR (A7 = B7’ = 0 AND Q7 = 1) per ADDIZIONE
+
+poi se
+
+ -A - (+B) = MSB 0
+  A - (-B) = MSB 1
+
+  alloa abbiamo overflow, dunquq
+
+(A7 = 1 AND B7’ = Q7 = 0) OR (A7 = 0 AND B7’ = Q7 = 1) per SOTTRAZIONE
+
+
 
 provare a fare l'equazione per i 4 casi: 2 somme e 2 sottrazioni!!!!!!!!!!!!
 
