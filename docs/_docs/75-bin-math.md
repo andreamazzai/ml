@@ -266,7 +266,7 @@ In un Adder a 8 bit abbiamo 8 Adder a 1 bit in cascata; quello rappresentato di 
 
 La tabella seguente sintetizza quanto accade nell'8° Adder:
 
-- C_IN proviene dal C_OUT del 7° Adder
+- C7 (C_IN nel disegno) proviene dal C_OUT dell'Adder precedente
 - B7' è l'MSB del numero da sommare B (normale o invertito dalla circuiteria interna, a seconda che si esegua una somma o una sottrazione)
 - A7 è l'MSB del numero da sommare A
 - Q7 è l'MSB del risultato di A7 + B7' + C7
@@ -276,7 +276,7 @@ La tabella seguente sintetizza quanto accade nell'8° Adder:
 
 Creando la truth table per la *somma* di A7, B7' e C7, ricaviamo:
 
-| C_IN  | B7'   | A7    | Q7    | C8    |  V       |
+| C7  | B7'   | A7    | Q7    | C8    |  V       |
 | -     | -     | -     | -     | -     | -        |
 | 0     | 0     | 0     | 0     | 0     | 0        |
 | 0     | 0     | 1     | 1     | 0     | 0        |
@@ -287,10 +287,12 @@ Creando la truth table per la *somma* di A7, B7' e C7, ricaviamo:
 | 1     | 1     | 0     | 0     | 1     | 0        |
 | 1     | 1     | 1     | 1     | 1     | 0        |
 
-Abbiamo visto poco sopra che la somma di due Signed positivi non può avere come risultato un Signed negativo; aggiungiamo che anche la situazione opposta è dimostrabile. Nelle due righe evidenziate troviamo infatti:
+Nella sezione [Approfondimento Overflow](#approfondimento-overflow) abbiamo visto che la somma di due Signed positivi non può avere come risultato un Signed negativo; aggiungiamo che anche la situazione opposta è dimostrabile. Nelle due righe evidenziate troviamo infatti:
 
 - \* due Signed negativi (A7 = B7' = 1) la cui somma genera un risultato positivo (Q7 = 0) --> abbiamo una situazione di Overflow.
 - \*\* due Signed positivi (A7 = B7' = 0) la cui somma genera un risultato negativo (Q7 = 1) --> abbiamo una situazione di Overflow.
+
+### Metodi di identificazione dell'Overflow
 
 Mettendo a fattor comune quanto abbiamo visto fino ad ora, siamo in grado di sviluppare 3 diversi metodi per identificare una situazione di Overflow in una somma:
 
@@ -328,27 +330,30 @@ Giunti a questo punto, per realizzare un circuito in grado di identificare l'Ove
 
 Detto questo, si potrebbe notare che anche il circuito del metodo 1 permetterebbe di individuare situazioni di Overflow sfruttando B7 anziché B7': richiederebbe un numero inferiore di porte logiche, ma di tre tipologie (XOR, NOT, AND) anziché di due (AND, OR).
 
-A questo proposito, avevo provato a disegnare lo schema di due registri A e B e di un generico adder per comprendere meglio il concetto; si noti la circuiteria preposta ad individuare situazioni di Overflow:
+A questo proposito, avevo provato a disegnare lo schema di due registri A e B e di un generico Adder per comprendere meglio il concetto; si noti la circuiteria preposta ad individuare situazioni di Overflow:
 
 [![Adder su carta](../../assets/math/75-adder.png "Adder su carta"){:width="50%"}](../../assets/math/75-adder.png){:width="75%"}
 
-- nell'esecuzione di una addizione, l'8° Adder dell'ALU troverà al suo ingresso B7' esattamente lo stesso valore presente all'uscita B7 del registro B
-- nell'esecuzione di una sottrazione, l'inversione effettuata dal Complemento a 2 presenterà all'ingresso B7' dell'8° Adder il valore invertito rispetto a quello presente all'uscita B7 del registro B.
+- nell'esecuzione di una addizione, l'8° Adder dell'ALU troverà al suo ingresso interno B7' esattamente lo stesso valore presente all'uscita B7 del registro B;
+- nell'esecuzione di una sottrazione, l'inversione effettuata dal Complemento a 2 presenterà a B7' il valore invertito rispetto a quello presente all'uscita B7 del registro B.
+
+### Semplificazione con il 74LS151
 
 Ora le cose si fanno interessanti: Dieter prosegue indicando che un unico chip 74LS151 è in grado di indirizzare tutte le necessità.
 
-Evidenziamo i punti da prendere in considerazione:
+Evidenziamo i due punti da prendere in considerazione per vedere se possiamo farli combaciare con il '151:
 
-- il '151 consente di selezionare una tra 8 sorgenti di dati (I0-I7) in funzione di una codifica univoca di 3 bit sugli ingressi di selezione ABC;
 - l'equazione dell'Overflow è basata su 3 input (A, B, Q);
 - leggendo l'Instruction Register sappiamo se stiamo eseguendo una addizione o una sottrazione.
 
-Ci sono abbastanza elementi per far combaciare questa esigenza con il '151. Provando a scrivere un flusso logico:
+In effetti, il '151 consente di selezionare una sorgente di dati (tra le 8 disponibili I0-I7) in funzione di una codifica univoca presentata ai suoi ingressi di selezione A, B e C.
 
-1. la presenza di uno specifico stato logico degli ingressi di selezione ABC
-2. attiva un determinato ingresso Ix, che
-3. se opportunamente connesso all'IR e grazie a una specifica selezione delle codifiche delle istruzioni del microcode
-4. può risultare in uno stato logico 1 in output al '151.
+Provando a scrivere un flusso logico:
+
+1. la presenza di uno specifico stato logico agli ingressi di selezione ABC connessi ad A7, B7 e Q7
+2. attiva un determinato ingresso Ix tra quelli connessi all'Instruction Register, che
+3. grazie alla opportuna scelta dell'opcode delle istruzioni di somma e sottrazione
+4. può risultare in uno stato logico 1 in uscita dal '151.
 
 Ipotizziamo ad esempio di eseguire una somma con:
 
