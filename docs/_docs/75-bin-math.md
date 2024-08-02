@@ -298,7 +298,7 @@ Mettendo a fattor comune quanto abbiamo visto fino ad ora, siamo in grado di svi
 2. C7 e C8 sono invertiti tra loro, cioè **C7 <> C8** (anche in questo caso si esegue una comparazione relativa);
 3. **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** è simile al punto 1, ma, anziché porre i bit in una comparazione relativa, ne stiamo specificando il valore assoluto.
 
-La truth table **(A == B) AND (Q <> A)** del primo caso si tradurrebbe nella logica in figura; purtroppo, il computer basato sulle ALU 74LS181 non offre visibilità del valore di B7', che è computato internamente all'ALU e non esposto, pertanto non la possiamo utilizzare:
+La truth table **(A == B) AND (Q <> A)** del primo caso si tradurrebbe nella logica in figura; purtroppo, il computer basato su 74LS181 non offre visibilità del valore di B7', che è computato internamente all'ALU e non esposto, pertanto non la possiamo utilizzare:
 
 ![Primo metodo](../../assets/math/75-overflow-detector-xor-and.png)
 
@@ -308,11 +308,11 @@ Anche nel secondo caso **C7 <> C8** manca una informazione, perché C7 è comput
 ![Secondo metodo](../../assets/math/75-overflow-detector-xor.png)
 
 ---
-Nemmeno il terzo metodo **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** sembra utilizzabile, perché non vi è visibilità esterna di B7':
+Nemmeno il terzo metodo **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** sembra utilizzabile, perché non vi è visibilità esterna di B7', che è confinato alla circuiteria interna dell'ALU:
 
 ![Terzo metodo](../../assets/math/75-overflow-detector-and-or.png)
 
-Anche se i tre metodi esaminati sembrano portare a una strada chiusa, è possibile ricostruire artificialmente il segnale B7' basandosi sugli altri segnali disponibili nel computer: in una somma, il valore B7' in ingresso all'ultimo Adder del '181 sarà infatti uguale al valore di B7 dato in input al chip (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria interna dell'ALU e possiamo dunque usare B7 come input del circuito che determina l'eventuale stato di Overflow).
+I tre metodi esaminati sembrano portare a una strada chiusa; tuttavia, è possibile ricostruire artificialmente il segnale B7' basandosi sugli altri segnali disponibili nel computer: in una somma, il valore B7' in ingresso all'ultimo Adder del '181 sarà infatti uguale al valore di B7 dato in input al chip (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria interna dell'ALU e possiamo dunque usare B7 come input del circuito che determina l'eventuale stato di Overflow).
 
 ![Overflow somma](../../assets/math/75-overflow-detector-a+b.png)
 
@@ -320,19 +320,22 @@ Anche se i tre metodi esaminati sembrano portare a una strada chiusa, è possibi
 
 ![Overflow sottrazione](../../assets/math/75-overflow-detector-a-b.png)
 
-\* La sottrazione viene effettuata sommando il Complemento a 2 del sottraendo, pertanto sappiamo che il valore di B7' sarà inverito rispetto a B7.
+\* La sottrazione viene effettuata sommando il Complemento a 2 del sottraendo, pertanto sappiamo che il valore di B7' sarà invertito rispetto a B7.
 
 In definitiva, il terzo metodo è utilizzabile per la verifica dell'Overflow sia per le addizioni, sia per le sottrazioni.
 
 Giunti a questo punto, per realizzare un circuito in grado di identificare l'Overflow basandoci sul terzo metodo, avremmo bisogno di 4 porte AND con 3 ingressi e 3 porte OR con 2 ingressi: la terza OR servirebbe ad eseguire l'OR logico tra i due circuiti precedenti per creare un'unica segnalazione di Overflow tanto in caso di addizione quanto in caso di sottrazione.
 
-Detto questo, si potrebbe notare che anche il circuito del metodo 1 permetterebbe di individuare situazioni di Overflow: richiederebbe un numero inferiore di porte logiche, ma di tre tipologie (XOR, NOT, AND) anziché di due (AND, OR).
+Detto questo, si potrebbe notare che anche il circuito del metodo 1 permetterebbe di individuare situazioni di Overflow sfruttando B7 anziché B7': richiederebbe un numero inferiore di porte logiche, ma di tre tipologie (XOR, NOT, AND) anziché di due (AND, OR).
 
-A questo proposito, avevo provato a disegnare lo schema di un adder per comprendere meglio il concetto; si noti che in questo schema il segnale B7 in uscita dal registro B è *visibile* e può essere portato alla circuiteria preposta a individuare situazioni di Overflow:
+A questo proposito, avevo provato a disegnare lo schema di due registri A e B e di un generico adder per comprendere meglio il concetto; si noti la circuiteria preposta ad individuare situazioni di Overflow:
 
 [![Adder su carta](../../assets/math/75-adder.png "Adder su carta"){:width="50%"}](../../assets/math/75-adder.png){:width="75%"}
 
-Ora le cose si fanno interessanti: Dieter prosegue indicando che un unico chip 74LS151 indirizza tutte le necessità. Una configurazione dei pin di ingresso come evidenziato in figura risolve le equazioni di Overflow sia per le addizioni A + B, sia per le sottrazioni A - B e B - A:
+- nell'esecuzione di una addizione, l'8° Adder dell'ALU troverà al suo ingresso B7' esattamente lo stesso valore presente all'uscita B7 del registro B
+- nell'esecuzione di una sottrazione, l'inversione effettuata dal Complemento a 2 presenterà all'ingresso B7' dell'8° Adder il valore invertito rispetto a quello presente all'uscita B7 del registro B.
+
+Ora le cose si fanno interessanti: Dieter prosegue indicando che un unico chip 74LS151 è in grado di indirizzare tutte le necessità. Infatti, una configurazione dei pin di ingresso come evidenziato in figura risolve le equazioni di Overflow sia per le addizioni A + B, sia per le sottrazioni A - B e B - A:
 
 ![74LS151](../../assets/math/75-overflow-74151.png)
 
