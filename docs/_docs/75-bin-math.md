@@ -248,6 +248,11 @@ Riprendiamo i due esempi di Overflow riportati in calce alle tabelle:
 
 \*\* Il 9° bit viene troncato, perché la dimensione della word usata nell'operazione è di 8 bit.
 
+Oltre ai due esempi citati poco sopra, è opportuno anticipare che sono dimostrabili anche le ipotesi contrarie:
+
+- se la somma di due Signed negativi genera un risultato Signed positivo, siamo in una situazione di Overflow;
+- se la sottrazione tra un Signed positivo e un Signed negativo genera un risultato Signed negativo, siamo in una situazione di Overflow.
+
 In definitiva, possiamo dire che se il bit del segno viene corrotto, siamo un una situazione di Overflow e il flag V viene conseguentemente settato.
 
 ### L'Overflow e l'hardware
@@ -294,13 +299,13 @@ Nella sezione [Approfondimento Overflow](#approfondimento-overflow) abbiamo vist
 
 ### Metodi di identificazione dell'Overflow
 
-Mettendo a fattor comune quanto abbiamo visto fino ad ora, siamo in grado di sviluppare 3 diversi metodi per identificare una situazione di Overflow in una somma:
+Mettendo a fattor comune quanto abbiamo visto fino ad ora, possiamo identificare 3 situazioni che determinano un Overflow in una somma:
 
 1. A7 e B7' sono dello stesso segno e Q è invertito rispetto ad A e B, cioè **(A7 == B7') AND (Q7 <> A7)** (notare che non stiamo specificando un valore assoluto 1 o 0 dei bit: stiamo considerando le relazioni tra i segnali);
 2. C7 e C8 sono invertiti tra loro, cioè **C7 <> C8** (anche in questo caso si esegue una comparazione relativa);
 3. **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** è simile al punto 1, ma, anziché porre i bit in una comparazione relativa, ne stiamo specificando il valore assoluto.
 
-La truth table **(A == B) AND (Q <> A)** del primo caso si tradurrebbe nella logica in figura; purtroppo, il computer basato su 74LS181 non offre visibilità del valore di B7', che è computato internamente all'ALU e non esposto, pertanto non la possiamo utilizzare:
+La truth table **(A7 == B7') AND (Q7 <> A7)** del primo caso si tradurrebbe nella logica in figura; purtroppo, il computer basato su 74LS181 non offre visibilità del valore di B7', che è computato internamente all'ALU e non esposto, pertanto non la possiamo utilizzare:
 
 ![Primo metodo](../../assets/math/75-overflow-detector-xor-and.png)
 
@@ -310,7 +315,7 @@ Anche nel secondo caso **C7 <> C8** manca una informazione, perché C7 è comput
 ![Secondo metodo](../../assets/math/75-overflow-detector-xor.png)
 
 ---
-Nemmeno il terzo metodo **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** sembra utilizzabile, perché non vi è visibilità esterna di B7', che è confinato alla circuiteria interna dell'ALU:
+Nemmeno il terzo metodo **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** sembra utilizzabile, perché B7' è confinato alla circuiteria interna dell'ALU:
 
 ![Terzo metodo](../../assets/math/75-overflow-detector-and-or.png)
 
@@ -328,14 +333,21 @@ In definitiva, il terzo metodo è utilizzabile per la verifica dell'Overflow sia
 
 Giunti a questo punto, per realizzare un circuito in grado di identificare l'Overflow basandoci sul terzo metodo, avremmo bisogno di 4 porte AND con 3 ingressi e 3 porte OR con 2 ingressi: la terza OR servirebbe ad eseguire l'OR logico tra i due circuiti precedenti per creare un'unica segnalazione di Overflow tanto in caso di addizione quanto in caso di sottrazione.
 
+L'equazione completa diventerebbe:
+
+**(A7 = B7’ = 1 AND Q7 = 0) OR (A7 = B7’ = 0 AND Q7 = 1) OR (A7 = 1 AND B7’ = Q7 = 0) OR (A7 = 0 AND B7’ = Q7 = 1)**
+
 Detto questo, si potrebbe notare che anche il circuito del metodo 1 permetterebbe di individuare situazioni di Overflow sfruttando B7 anziché B7': richiederebbe un numero inferiore di porte logiche, ma di tre tipologie (XOR, NOT, AND) anziché di due (AND, OR).
 
+**+++++ attenzione dubbi da chiarire e verificare**
+**+++++ attenzione dubbi da chiarire e verificare**
 A questo proposito, avevo provato a disegnare lo schema di due registri A e B e di un generico Adder per comprendere meglio il concetto; si noti la circuiteria preposta ad individuare situazioni di Overflow:
 
 [![Adder su carta](../../assets/math/75-adder.png "Adder su carta"){:width="50%"}](../../assets/math/75-adder.png){:width="75%"}
 
 - nell'esecuzione di una addizione, l'8° Adder dell'ALU troverà al suo ingresso interno B7' esattamente lo stesso valore presente all'uscita B7 del registro B;
 - nell'esecuzione di una sottrazione, l'inversione effettuata dal Complemento a 2 presenterà a B7' il valore invertito rispetto a quello presente all'uscita B7 del registro B.
+**+++++ attenzione dubbi da chiarire e verificare**
 
 ### Semplificazione con il 74LS151
 
@@ -344,7 +356,7 @@ Ora le cose si fanno interessanti: Dieter prosegue indicando che un unico chip 7
 Evidenziamo i due punti da prendere in considerazione per vedere se possiamo farli combaciare con il '151:
 
 - l'equazione dell'Overflow è basata su 3 input (A, B, Q);
-- leggendo l'Instruction Register sappiamo se stiamo eseguendo una addizione o una sottrazione.
+- leggendo l'Instruction Register  se stiamo eseguendo una addizione o una sottrazione.
 
 In effetti, il '151 consente di selezionare una sorgente di dati (tra le 8 disponibili I0-I7) in funzione di una codifica univoca presentata ai suoi ingressi di selezione A, B e C.
 
