@@ -258,13 +258,13 @@ Dieter esponeva una rappresentazione logica di un Adder in grado di effettuare s
 
 *Adder hardware per somme A+B e sottrazioni A-B.*
 
-In un Adder a 8 bit abbiamo 8 Adder a 1 bit in cascata; quello rappresentato di seguito è l'8° ed ultimo Adder, i cui ingressi A e B' sono i bit più significativi A7 e B7' dei numeri da sommare; il Carry-out C_OUT proveniente dal 7° Adder viene presentato al Carry-in C_IN di questo 8° ed ultimo Adder.
+In un Adder a 8 bit abbiamo 8 Adder a 1 bit in cascata; quello rappresentato di seguito è l'8° ed ultimo, i cui ingressi A e B' sono i bit più significativi A7 e B7' dei numeri da sommare; l'ingresso Carry-in C_IN è connesso all'output Carry-Out C_OUT proveniente dal precedente Adder.
 
 ![Ultimo stadio di un Adder a 8 bit](../../assets/math/75-dieter-8th-adder.png){:width="25%"}
 
 *Ultimo stadio di un Adder a 8 bit.*
 
-Nella tabella seguente si rappresenta quanto accade nell'8° Adder:
+La tabella seguente sintetizza quanto accade nell'8° Adder:
 
 - C_IN proviene dal C_OUT del 7° Adder
 - B7' è l'MSB del numero da sommare B (normale o invertito dalla circuiteria interna, a seconda che si esegua una somma o una sottrazione)
@@ -326,14 +326,21 @@ Tuttavia, è possibile ricostruire artificialmente il segnale B7' basandosi sugl
 
 Giunti a questo punto, per realizzare un circuito in grado di identificare l'Overflow basandoci sul terzo metodo, avremmo bisogno di 4 porte AND con 3 ingressi e 3 porte OR con 2 ingressi: la terza OR servirebbe ad eseguire l'OR logico tra i due circuiti precedenti per creare un'unica segnalazione di Overflow tanto in caso di addizione quanto di sottrazione.
 
-Detto questo, si potrebbe notare che anche il circuito del metodo 1 permetterebbe di individuare situazioni di Overflow e richiederebbe un numero inferiore di porte, ma di tre tipologie (XOR, NOT, AND) anziché di due.
+Detto questo, si potrebbe notare che anche il circuito del metodo 1 permetterebbe di individuare situazioni di Overflow: richiederebbe un numero inferiore di porte logiche, ma di tre tipologie (XOR, NOT, AND) anziché di due (AND, OR).
 
 Ora le cose si fanno interessanti: Dieter prosegue indicando che un unico chip 74LS151 indirizza tutte le necessità. Una configurazione dei pin di ingresso come evidenziato in figura risolve le equazioni di Overflow sia per le addizioni A + B, sia per le sottrazioni A - B e B - A:
 
 ![74LS151](../../assets/math/75-overflow-74151.png)
 
-Il '151 consente di selezionare una tra 8 sorgenti di dati in funzione di una codifica univoca di 3 bit sugli ingressi di selezione: in effetti, l'equazione dell'Overflow è proprio basata su 3 input (A, B, Q) e la connessione delle sorgenti a un'operazione specifica avrebbe come risultato un output a 1 quando si verifica una specifica combinazione degli ingressi (ad esempio A = 1, B = 1 e Q = 0, che rappresenta due Signed negativi in ingresso all'ALU e un Signed negativo in uscita, che rappresenta una tipica situazione di Overflow) associata all'ingresso selezionato da CBA = 011 che indica, grazie a qualche connessione alla Control Logic o all'Instruction Register, che stiamo eseguendo una addizione: come detto poco sopra, una somma di due Signed negativi non può risultare in un Signed positivo.
+Il '151 consente di selezionare una tra 8 sorgenti di dati (I0-I7) in funzione di una codifica univoca di 3 bit sugli ingressi di selezione. Ci sono abbastanza elementi per far combaciare questa esigenza con il '151:
 
+- l'equazione dell'Overflow è proprio basata su 3 input (A, B, Q)
+- la presenza di uno specifico stato logico degli ingressi di selezione (ad esempio A = 1, B = 1 e Q = 0, che rappresenta due Signed negativi in ingresso all'ALU e un Signed negativo in uscita) attiva un determinato ingresso Ix, che, grazie a una specifica selezione delle codifiche delle istruzioni del microcode, può risultare in uno stato logico 1 in output al '151.
+
+qualche connessione alla Control Logic o all'Instruction Register, che stiamo eseguendo una addizione: come detto poco sopra, una somma di due Signed negativi non può risultare in un Signed positivo.
+, che rappresenta una tipica situazione di Overflow) associata all'ingresso selezionato da CBA = 011 che indica, grazie a qualche connessione alla Control Logic o all'Instruction Register, che stiamo eseguendo una addizione: come detto poco sopra, una somma di due Signed negativi non può risultare in un Signed positivo.
+
+la connessione delle sorgenti a un'operazione specifica avrebbe come risultato un output a 1 quando si verifica 
 
 (A7 = B7’ = 1 AND Q7 = 0) OR (A7 = B7’ = 0 AND Q7 = 1) per ADDIZIONE
 
