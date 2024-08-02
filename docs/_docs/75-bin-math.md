@@ -222,7 +222,7 @@ Note:
 
 Riprendiamo i due esempi di Overflow riportati in calce alle tabelle:
 
-- **0x70 + 0x40 =** in decimale 112 + 64 = 176, che però non rientra nel range -128 / + 127 dei numeri Signed a 8 bit. In effetti, la somma tra 112 e 64 genera un risultato il cui MSB è 1, che secondo la notazione Signed è un numero negativo: poiché abbiamo sommato numeri Signed, anche il risultato deve essere letto come Signed: 0xB0 = -80, che è palesemente errato. Ne ricaviamo che se la somma di due Signed positivi genera un risultato Signed negativo, siamo in una situazione di Overflow.
+- **0x70 + 0x40 =** in decimale 112 + 64 = 176, che però non rientra nel range -128 / + 127 dei numeri Signed a 8 bit. In effetti, la somma tra 112 e 64 genera un risultato il cui MSB è 1, che secondo la notazione Signed è un numero negativo. Poiché abbiamo sommato numeri Signed, anche il risultato deve essere letto come Signed: 0xB0 = -80, che è palesemente errato. Ne ricaviamo che se la somma di due Signed positivi genera un risultato Signed negativo, siamo in una situazione di Overflow.
 
 ~~~text
   Hex       Dec       Bin
@@ -233,7 +233,7 @@ Riprendiamo i due esempi di Overflow riportati in calce alle tabelle:
             176       1011.0000 ==> 0xB0
 ~~~
 
-- **0xA0 - 0x30 =** -96 - 48 = -144, che però non rientra nel range -128 / + 127 dei numeri Signed a 8 bit. In effetti, la sottrazione tra -96 e 48\* genera un risultato il cui MSB è 0, che secondo la notazione Signed è un numero positivo: poiché abbiamo sottratto numeri Signed, anche il risultato deve essere letto come Signed: 0x70 = 112, che è palesemente errato. Ne ricaviamo che se la sottrazione tra due Signed negativi genera un risultato Signed positivo, siamo in una situazione di Overflow.
+- **0xA0 - 0x30 =** -96 - 48 = -144, che però non rientra nel range -128 / + 127 dei numeri Signed a 8 bit. In effetti, la sottrazione tra -96 e 48\* genera un risultato il cui MSB è 0, che secondo la notazione Signed è un numero positivo. Poiché abbiamo sottratto numeri Signed, anche il risultato deve essere letto come Signed: 0x70 = 112, che è palesemente errato. Ne ricaviamo che se la sottrazione tra un Signed negativo e un Signed positivo genera un risultato Signed positivo, siamo in una situazione di Overflow.
 
 ~~~text
   Hex       Dec       Bin
@@ -287,7 +287,7 @@ Creando la truth table per la *somma* di A7, B7' e C7, ricaviamo:
 | 1     | 1     | 0     | 0     | 1     | 0        |
 | 1     | 1     | 1     | 1     | 1     | 0        |
 
-Abbiamo detto poco sopra che la somma di due Signed negativi non può avere come risultato un Signed positivo e viceversa. Nelle due righe evidenziate troviamo infatti:
+Abbiamo visto poco sopra che la somma di due Signed positivi non può avere come risultato un Signed negativo; aggiungiamo che anche la situazione opposta è dimostrabile. Nelle due righe evidenziate troviamo infatti:
 
 - \* due Signed negativi (A7 = B7' = 1) la cui somma genera un risultato positivo (Q7 = 0) --> abbiamo una situazione di Overflow.
 - \*\* due Signed positivi (A7 = B7' = 0) la cui somma genera un risultato negativo (Q7 = 1) --> abbiamo una situazione di Overflow.
@@ -303,7 +303,7 @@ La truth table **(A == B) AND (Q <> A)** del primo caso si tradurrebbe nella log
 ![Primo metodo](../../assets/math/75-overflow-detector-xor-and.png)
 
 ---
-Anche nel secondo caso **C7 <> C8** non abbiamo una informazione a disposizione, perché C7 è computato internamente all'ALU e non esposto:
+Anche nel secondo caso **C7 <> C8** manca una informazione, perché C7 è computato internamente all'ALU e non esposto:
 
 ![Secondo metodo](../../assets/math/75-overflow-detector-xor.png)
 
@@ -312,21 +312,25 @@ Nemmeno il terzo metodo **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)
 
 ![Terzo metodo](../../assets/math/75-overflow-detector-and-or.png)
 
-Tuttavia, è possibile ricostruire artificialmente il segnale B7' basandosi sugli altri segnali disponibili nel computer: in una operazione di somma, il valore B7' in ingresso all'ultimo Adder del '181 sarà infatti uguale al valore di B7 dato in input al chip (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria interna dell'ALU e possiamo dunque usare B7 come input del circuito che determina l'eventuale stato di Overflow).
-
-- Con questa premessa, il terzo metodo è utilizzabile per la verifica dell'Overflow per le *addizioni*:
+Anche se i tre metodi esaminati sembrano portare a una strada chiusa, è possibile ricostruire artificialmente il segnale B7' basandosi sugli altri segnali disponibili nel computer: in una somma, il valore B7' in ingresso all'ultimo Adder del '181 sarà infatti uguale al valore di B7 dato in input al chip (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria interna dell'ALU e possiamo dunque usare B7 come input del circuito che determina l'eventuale stato di Overflow).
 
 ![Overflow somma](../../assets/math/75-overflow-detector-a+b.png)
 
-- Qualche modifica permette di riutilizzare lo stesso metodo anche per la verifica dell'Overflow nelle *sottrazioni*; in una sottrazione, il valore B7' che l'ultimo Adder del '181 troverà in ingresso sarà infatti invertito rispetto al valore di B7 dato in input al chip (in una sottrazione A7 - B7, B7' viene invertito dalla circuiteria interna dell'ALU* e possiamo dunque usare l'inverso di B7 come input del circuito che determina l'eventuale stato di Overflow):
+- Qualche considerazione permette di riutilizzare lo stesso metodo anche per la verifica dell'Overflow nelle *sottrazioni*; in una sottrazione, il valore B7' in ingresso all'ultimo Adder del '181 sarà infatti invertito rispetto al valore di B7 dato in input al chip (in una sottrazione A7 - B7, B7' viene invertito dalla circuiteria interna dell'ALU* e possiamo dunque usare l'inverso di B7 come input del circuito che determina l'eventuale stato di Overflow):
 
 ![Overflow sottrazione](../../assets/math/75-overflow-detector-a-b.png)
 
-\* Ricordiamo che la sottrazione viene effettuata sommando il Complemento a 2 del sottraendo; avendo a disposizione il valore logico di B7, è facile tenerne in considerazione l'inverso e individuare l'Overflow anche nell'operazione di sottrazione.
+\* La sottrazione viene effettuata sommando il Complemento a 2 del sottraendo, pertanto sappiamo che il valore di B7' sarà inverito rispetto a B7.
 
-Giunti a questo punto, per realizzare un circuito in grado di identificare l'Overflow basandoci sul terzo metodo, avremmo bisogno di 4 porte AND con 3 ingressi e 3 porte OR con 2 ingressi: la terza OR servirebbe ad eseguire l'OR logico tra i due circuiti precedenti per creare un'unica segnalazione di Overflow tanto in caso di addizione quanto di sottrazione.
+In definitiva, il terzo metodo è utilizzabile per la verifica dell'Overflow sia per le addizioni, sia per le sottrazioni.
+
+Giunti a questo punto, per realizzare un circuito in grado di identificare l'Overflow basandoci sul terzo metodo, avremmo bisogno di 4 porte AND con 3 ingressi e 3 porte OR con 2 ingressi: la terza OR servirebbe ad eseguire l'OR logico tra i due circuiti precedenti per creare un'unica segnalazione di Overflow tanto in caso di addizione quanto in caso di sottrazione.
 
 Detto questo, si potrebbe notare che anche il circuito del metodo 1 permetterebbe di individuare situazioni di Overflow: richiederebbe un numero inferiore di porte logiche, ma di tre tipologie (XOR, NOT, AND) anziché di due (AND, OR).
+
+A questo proposito, avevo provato a disegnare lo schema di un adder per comprendere meglio il concetto; si noti che in questo schema il segnale B7 in uscita dal registro B è *visibile* e può essere portato alla circuiteria preposta a individuare situazioni di Overflow:
+
+[![Adder su carta](../../assets/math/75-adder.png "Adder su carta"){:width="50%"}](../../assets/math/75-adder.png){:width="75%"}
 
 Ora le cose si fanno interessanti: Dieter prosegue indicando che un unico chip 74LS151 indirizza tutte le necessità. Una configurazione dei pin di ingresso come evidenziato in figura risolve le equazioni di Overflow sia per le addizioni A + B, sia per le sottrazioni A - B e B - A:
 
