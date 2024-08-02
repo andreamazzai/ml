@@ -335,14 +335,31 @@ A questo proposito, avevo provato a disegnare lo schema di due registri A e B e 
 - nell'esecuzione di una addizione, l'8° Adder dell'ALU troverà al suo ingresso B7' esattamente lo stesso valore presente all'uscita B7 del registro B
 - nell'esecuzione di una sottrazione, l'inversione effettuata dal Complemento a 2 presenterà all'ingresso B7' dell'8° Adder il valore invertito rispetto a quello presente all'uscita B7 del registro B.
 
-Ora le cose si fanno interessanti: Dieter prosegue indicando che un unico chip 74LS151 è in grado di indirizzare tutte le necessità. Infatti, una configurazione dei pin di ingresso come evidenziato in figura risolve le equazioni di Overflow sia per le addizioni A + B, sia per le sottrazioni A - B e B - A:
+Ora le cose si fanno interessanti: Dieter prosegue indicando che un unico chip 74LS151 è in grado di indirizzare tutte le necessità.
+
+Evidenziamo i punti da prendere in considerazione:
+
+- il '151 consente di selezionare una tra 8 sorgenti di dati (I0-I7) in funzione di una codifica univoca di 3 bit sugli ingressi di selezione ABC;
+- l'equazione dell'Overflow è basata su 3 input (A, B, Q);
+- leggendo l'Instruction Register sappiamo se stiamo eseguendo una addizione o una sottrazione.
+
+Ci sono abbastanza elementi per far combaciare questa esigenza con il '151. Provando a scrivere un flusso logico:
+
+1. la presenza di uno specifico stato logico degli ingressi di selezione ABC
+2. attiva un determinato ingresso Ix, che
+3. se opportunamente connesso all'IR e grazie a una specifica selezione delle codifiche delle istruzioni del microcode
+4. può risultare in uno stato logico 1 in output al '151.
+
+Ipotizziamo ad esempio di eseguire una somma con:
+
+- input sull'ALU A7 = B7 = 1 e output Q7 = 0, cioè due Signed negativi in ingresso e un Signed positivo in uscita;
+- I3 e I4 del '151 connessi a una linea dell'Instruction Register attiva in caso di istruzione di somma.
+
+La combinazione 011 agli ingressi CBA del '151 attiverà l'ingresso I3, che si troverà ad 1: l'uscita del '151 sarà attiva, evidenziando una situazione di Overflow.
+
+Infatti, una configurazione dei pin di ingresso come evidenziato in figura risolve le equazioni di Overflow sia per le addizioni A + B, sia per le sottrazioni A - B e B - A:
 
 ![74LS151](../../assets/math/75-overflow-74151.png)
-
-Il '151 consente di selezionare una tra 8 sorgenti di dati (I0-I7) in funzione di una codifica univoca di 3 bit sugli ingressi di selezione. Ci sono abbastanza elementi per far combaciare questa esigenza con il '151:
-
-- l'equazione dell'Overflow è proprio basata su 3 input (A, B, Q)
-- la presenza di uno specifico stato logico degli ingressi di selezione (ad esempio A = 1, B = 1 e Q = 0, che rappresenta due Signed negativi in ingresso all'ALU e un Signed negativo in uscita) attiva un determinato ingresso Ix, che, grazie a una specifica selezione delle codifiche delle istruzioni del microcode, può risultare in uno stato logico 1 in output al '151.
 
 qualche connessione alla Control Logic o all'Instruction Register, che stiamo eseguendo una addizione: come detto poco sopra, una somma di due Signed negativi non può risultare in un Signed positivo.
 , che rappresenta una tipica situazione di Overflow) associata all'ingresso selezionato da CBA = 011 che indica, grazie a qualche connessione alla Control Logic o all'Instruction Register, che stiamo eseguendo una addizione: come detto poco sopra, una somma di due Signed negativi non può risultare in un Signed positivo.
