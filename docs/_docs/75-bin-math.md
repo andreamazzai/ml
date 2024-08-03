@@ -6,7 +6,7 @@ excerpt: "Aritmetica binaria"
 
 ## Concetti importanti
 
-Per comprendere appieno il funzionamento dei moduli Flag e ALU, avevo sentito la necessità di conoscere in dettaglio alcuni concetti dell'aritmetica binaria:
+Lo studio dei moduli Flag e ALU aveva evidenziato le mie lacune su diversi concetti dell'aritmetica binaria:
 
 1. Numeri binari senza segno (Unsigned) e con segno (Signed)
 2. Modalità di rappresentazione dei numeri binari con segno:
@@ -18,7 +18,7 @@ Per comprendere appieno il funzionamento dei moduli Flag e ALU, avevo sentito la
 
 ## Fonti
 
-Lungi dal voler (e poter) spiegare tutto, in questo pagina cerco di riassumere quanto avevo appreso e suggerisco una serie di fonti di approfondimento.
+Lungi dal voler (e poter) spiegare tutto, in questo pagina cerco di riassumere quanto avevo appreso per rimediare alle mie lacune e suggerisco una serie di fonti di approfondimento.
 
 Per una comprensione completa dei temi trattati, raccomando di accedere più volte alle informazioni, anche in tempi diversi e in sequenze diverse: con letture ed approfondimenti ripetuti avevo raggiunto lo scopo prefissato, mentre più visualizzazioni dei video in modalità *brainstorming* mi avevano permesso di riempire i buchi fino a colmarli.
 
