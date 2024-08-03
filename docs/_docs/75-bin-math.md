@@ -384,7 +384,7 @@ Dovendo indirizzare 8 combinazioni di Q, B e A (000, 001 etc. fino a 111), una c
 
 ![74LS151](../../assets/math/75-overflow-74151-i3-sum-full.png){:width="50%"}
 
-La seguente tabella riepilogativa permette di visualizzare le situazioni di Overflow in base agli stati di Q, B ed A ed al fatto che si stiano eseguendo addizioni o sottrazioni:
+La seguente tabella riepiloga le situazioni di Overflow in base agli stati di Q, B ed A ed al fatto che si stiano eseguendo addizioni o sottrazioni:
 
 | Q7-S2 | B7-S1 | A7-S0 | Sum/Sub | Input  | Overflow     |
 | -     | -     | -     |  -      | -      |  -     |
