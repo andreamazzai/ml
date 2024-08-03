@@ -333,7 +333,7 @@ In definitiva, il terzo metodo è utilizzabile per la verifica dell'Overflow sia
 
 Giunti a questo punto, per realizzare un circuito in grado di identificare l'Overflow basandoci sul terzo metodo, avremmo bisogno di 4 porte AND con 3 ingressi e 3 porte OR con 2 ingressi: la terza OR servirebbe ad eseguire l'OR logico tra i due circuiti precedenti per creare un'unica segnalazione di Overflow tanto in caso di addizione quanto in caso di sottrazione.
 
-![Overflow somma e sottrazione](../../assets/math/75-overflow-detector-a-b.png)
+![Overflow somma e sottrazione](../../assets/math/75-overflow-detector-a+b-a-b.png)
 
 \* La sottrazione viene effettuata sommando il Complemento a 2 del sottraendo, pertanto sappiamo che il valore di B7' sarà invertito rispetto a B7.
 
