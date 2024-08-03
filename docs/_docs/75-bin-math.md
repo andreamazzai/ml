@@ -337,23 +337,13 @@ Giunti a questo punto, per realizzare un circuito in grado di identificare l'Ove
 
 ![Overflow somma e sottrazione](../../assets/math/75-overflow-detector-a+b-a-b.png){:width="57%"}
 
-\* La sottrazione viene effettuata sommando il Complemento a 2 del sottraendo, pertanto sappiamo che il valore di B7' sarà invertito rispetto a B7.
-
 L'equazione completa diventerebbe:
 
-**(A7 = B7’ = 1 AND Q7 = 0)**
-  **OR**
-**(A7 = B7’ = 0 AND Q7 = 1)**
-  **OR**
-**(A7 = 1 AND B7’ = Q7 = 0)**
-  **OR**
-**(A7 = 0 AND B7’ = Q7 = 1)**
+**(A7 = B7’ = 1 AND Q7 = 0) OR (A7 = B7’ = 0 AND Q7 = 1) OR (A7 = 1 AND B7’ = Q7 = 0) OR (A7 = 0 AND B7’ = Q7 = 1)**
 
 Detto questo, si potrebbe notare che anche il circuito del metodo 1 permette di individuare situazioni di Overflow sfruttando B7 anziché B7': richiede un numero inferiore di porte logiche, ma di tre tipologie (XOR, NOT, AND) anziché di due (AND, OR).
 
 ricordare NPP e PNN per sottrazioni, PPN e NNP per addizioni
-
-Forse vale la pena far notare che overflow in effetti si riferisce al fatto di sforare dai bit che compongonoil numero vero e proprio ?
 
 **+++++ attenzione dubbi da chiarire e verificare**
 **+++++ attenzione dubbi da chiarire e verificare**
