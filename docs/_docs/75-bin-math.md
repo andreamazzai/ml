@@ -378,7 +378,7 @@ Ipotizziamo ad esempio di eseguire una somma con:
 
 La combinazione 011 agli ingressi S2-S1-S0 del '151 attiverà l'ingresso I3, che porterà all'uscita Z il segnale allo stato logico 1 proveniente dall'IR, evidenziando una situazione di Overflow.
 
-![74LS151](../../assets/math/75-overflow-74151-i3-sum.png){:width="50%"}
+![74LS151](../../assets/math/75-overflow-74151-i3-sum.png){:width="40%"}
 
 Dovendo indirizzare 8 combinazioni di Q, B e A (000, 001 etc. fino a 111), una configurazione dei pin di ingresso come evidenziato nella successiva figura risolve le equazioni di Overflow sia per le addizioni A + B, sia per le sottrazioni A - B e B - A, purché i pin I0-I7 del '151 siano correttamente connessi all'IR per rilevare l'esecuzione di istruzioni di somma A + B e sottrazione A - B e B - A:
 
