@@ -271,8 +271,7 @@ In un Adder a 8 bit abbiamo 8 Adder a 1 bit in cascata; quello rappresentato di 
 
 La tabella seguente sintetizza quanto accade nell'8° Adder:
 
-
-| C7  | B7'   | A7    | Q7    | C8    |  V       |
+| C7    | B7'   | A7    | Q7    | C8    |  V       |
 | -     | -     | -     | -     | -     | -        |
 | 0     | 0     | 0     | 0     | 0     | 0        |
 | 0     | 0     | 1     | 1     | 0     | 0        |
@@ -284,14 +283,14 @@ La tabella seguente sintetizza quanto accade nell'8° Adder:
 | 1     | 1     | 1     | 1     | 1     | 0        |
 
 - C7 (C_IN nel disegno) proviene dal C_OUT dell'Adder precedente;
-- B7' è l'MSB del numero da sommare B (normale o invertito dalla circuiteria interna, a seconda che si esegua una somma o una sottrazione);
+- B7' è l'MSB del numero da sommare B (normale o invertito dalla circuiteria interna dell'ALU, a seconda che si esegua una somma o una sottrazione);
 - A7 è l'MSB del numero da sommare A;
 - Q7 è l'MSB del risultato di A7 + B7' + C7;
-- C8 è il Carry in uscita dall'8° Adder (C_OUT);
+- C8 è il Carry in uscita (C_OUT);
 - C8 risulta a 1 se almeno due tra A7, B7' e C7 sono a 1;
 - V è il Flag di Overflow.
 
-Nella sezione [Approfondimento Overflow](#approfondimento-overflow) abbiamo visto che la somma di due Signed positivi non può avere come risultato un Signed negativo; aggiungiamo che anche la situazione opposta è dimostrabile. Nelle due righe evidenziate troviamo infatti:
+Nella sezione [Approfondimento Overflow](#approfondimento-overflow) abbiamo visto che la somma di due Signed positivi non può avere come risultato un Signed negativo e che anche la situazione opposta vera. Nelle due righe evidenziate troviamo infatti:
 
 - \* due Signed negativi (A7 = B7' = 1) la cui somma genera un risultato positivo (Q7 = 0) --> abbiamo una situazione di Overflow.
 - \*\* due Signed positivi (A7 = B7' = 0) la cui somma genera un risultato negativo (Q7 = 1) --> abbiamo una situazione di Overflow.
@@ -304,7 +303,7 @@ Mettendo a fattor comune quanto abbiamo visto fino ad ora, possiamo identificare
 2. C7 e C8 sono invertiti tra loro, cioè **C7 <> C8** (anche in questo caso si esegue una comparazione relativa);
 3. **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** è simile al punto 1, ma, anziché porre i bit in una comparazione relativa, ne stiamo specificando il valore assoluto.
 
-La truth table **(A7 == B7') AND (Q7 <> A7)** del primo caso si tradurrebbe nella logica in figura; purtroppo, il computer basato su 74LS181 non offre visibilità del valore di B7', che è computato internamente all'ALU e non esposto, pertanto non la possiamo utilizzare:
+La truth table **(A7 == B7') AND (Q7 <> A7)** del primo caso si tradurrebbe nella logica in figura; purtroppo, il computer basato su 74LS181 non offre visibilità del valore di B7', che è computato internamente all'ALU e non esposto, pertanto questo metodo non è utilizzabile:
 
 ![Primo metodo](../../assets/math/75-overflow-detector-xor-and.png)
 
@@ -318,7 +317,9 @@ Nemmeno il terzo metodo **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)
 
 ![Terzo metodo](../../assets/math/75-overflow-detector-and-or.png)
 
-I tre metodi esaminati sembrano portare a una strada chiusa; tuttavia, è possibile ricostruire artificialmente il segnale B7' basandosi sugli altri segnali disponibili nel computer: in una somma, il valore B7' in ingresso all'ultimo Adder del '181 sarà infatti uguale al valore di B7 dato in input al chip (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria interna dell'ALU e possiamo dunque usare B7 come input del circuito che determina l'eventuale stato di Overflow).
+I tre metodi esaminati sembrano portare a una strada chiusa; tuttavia, è possibile ricostruire artificialmente il segnale B7' basandosi sugli altri segnali disponibili nel computer.
+
+- In una somma, il valore B7' in ingresso all'ultimo Adder del '181 sarà infatti uguale al valore di B7 dato in input al chip (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria interna dell'ALU e possiamo dunque usare B7 come input del circuito che determina l'eventuale stato di Overflow).
 
 ![Overflow somma](../../assets/math/75-overflow-detector-a+b.png)
 
