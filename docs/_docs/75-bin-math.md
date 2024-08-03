@@ -350,10 +350,12 @@ Ora le cose si fanno interessanti: Dieter prosegue indicando che un unico chip 7
 Evidenziamo i due punti da prendere in considerazione per vedere se possiamo farli combaciare con il '151:
 
 - l'equazione dell'Overflow è basata su 3 input (A, B, Q);
-- l'eventuale Overflow è anche conseguenza dell'operazione seguita;
-- leggendo l'Instruction Register sappiamo se stiamo eseguendo una addizione o una sottrazione.
+- l'eventuale Overflow è anche conseguenza dell'operazione seguita; l'Instruction Register ci può indicare se si sta eseguendo una addizione o una sottrazione.
 
-**Se A = 1, B = 1 e Q = 0 e stiamo facendo una somma, abbiamo un overflow. Se stiamo facendo una sottrazione, allora no.**
+Un esempio concreto:
+
+- se A = 1, B = 1 e Q = 0 e stiamo eseguendo una somma, abbiamo un Overflow;
+- se A = 1, B = 1 e Q = 0 e stiamo facendo una sottrazione, allora non vi è Overflow.
 
 In effetti, il '151 consente di selezionare una sorgente di dati (tra le 8 disponibili I0-I7) in funzione di una codifica univoca presentata ai suoi ingressi di selezione A, B e C.
 
@@ -362,7 +364,8 @@ Provando a scrivere un flusso logico:
 1. la presenza di uno specifico stato logico agli ingressi di selezione ABC connessi ad A7, B7 e Q7
 2. attiva un determinato ingresso Ix tra quelli connessi all'Instruction Register, che
 3. grazie alla opportuna scelta dell'opcode delle istruzioni di somma e sottrazione
-4. può risultare in uno stato logico 1 in uscita dal '151.
+4. può risultare in uno stato logico 1 in uscita sul '151
+5. evidenziando una condizione di Overflow
 
 Ipotizziamo ad esempio di eseguire una somma con:
 
