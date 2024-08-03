@@ -441,6 +441,8 @@ Q               -32                       1110.0000 ==> 0xE0 = -32, no Overflow
 
 Il microcode opportunamente codificato dell'istruzione A + B porterebbe a 1 gli ingressi I3 e I4 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione produrrebbe Q7=1, B7=1 e A7=0 sugli ingressi di selezione (CBA = 110), che attiverebbero l'ingresso I6 che risulta a 0 in quanto non attivato dal microcode, pertanto l'uscita Q del '151 sarebbe a 0, indicando che non vi è Overflow --> situazione verificata correttamente.
 
+![74LS151](../../assets/math/75-overflow-74151-i6.png){:width="50%"}
+
 ---
 
 - **Caso 2:** 0x20 + 0x70; somma A + B di due Signed positivi
