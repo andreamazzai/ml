@@ -380,7 +380,7 @@ La combinazione 011 agli ingressi S2-S1-S0 del '151 attiverà l'ingresso I3, che
 
 ![74LS151](../../assets/math/75-overflow-74151-i3-sum.png){:width="50%"}
 
-Avendo diverse combinazioni A, B e Q da indirizzare (000, 001 etc. fino a 111), una configurazione dei pin di ingresso come evidenziato in figura risolve le equazioni di Overflow sia per le addizioni A + B, sia per le sottrazioni A - B e B - A:
+Dovendo indirizzare 8 combinazioni di A, B e Q (000, 001 etc. fino a 111), una configurazione dei pin di ingresso come evidenziato in figura risolve le equazioni di Overflow sia per le addizioni A + B, sia per le sottrazioni A - B e B - A, purché i pin I0-I7 del '151 siano correttamente connessi all'IR per rilevare l'esecuzione di istruzioni di somma A + B e sottrazione A - B e B - A:
 
 ![74LS151](../../assets/math/75-overflow-74151-i3-sum-full.png){:width="50%"}
 
