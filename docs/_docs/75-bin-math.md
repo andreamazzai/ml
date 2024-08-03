@@ -18,7 +18,7 @@ Lo studio dei moduli Flag e ALU aveva evidenziato le mie lacune su diversi conce
 
 ## Fonti
 
-Lungi dal voler (e poter) spiegare tutto, in questo pagina cerco di riassumere quanto avevo appreso per rimediare alle mie lacune e suggerisco una serie di fonti di approfondimento.
+Lungi dal voler (e poter) spiegare tutto in questo pagina, cerco di riassumere quanto avevo appreso per rimediare alle mie lacune e suggerisco una serie di fonti di approfondimento.
 
 Per una comprensione completa dei temi trattati, raccomando di accedere più volte alle informazioni, anche in tempi diversi e in sequenze diverse: con letture ed approfondimenti ripetuti avevo raggiunto lo scopo prefissato, mentre più visualizzazioni dei video in modalità *brainstorming* mi avevano permesso di riempire i buchi fino a colmarli.
 
@@ -64,7 +64,7 @@ E' necessario comprendere a fondo logica e differenze relative ai numeri Unsigne
 
 Approfondendo i numeri Signed, ero giusto in questa [interessantissima pagina](https://sandbox.mc.edu/~bennet/cs110/) dell'Università del Mississippi dedicata alla matematica binaria.
 
-Grazie alla sezione Textbook ==> Module 3: Computer Integer Arithmetic ==> 2. Negative binary numbers avevo perfettamente compreso la rappresentazione binaria dei numeri negativi.
+Grazie alla sezione *Textbook ==> Module 3: Computer Integer Arithmetic ==> 2. Negative binary numbers* avevo perfettamente compreso la rappresentazione binaria dei numeri negativi.
 
 Il metodo **Signed Magnitude** è molto facile da comprendere: si sacrifica un bit dedicandolo alla rappresentazione del segno; il bit sacrificabile è quello più significativo (MSB), pertanto se un numero Unsigned a 8 bit può andare da 0 a 255 (2^8 = 256 combinazioni rappresentabili), un numero Unsigned avrà 7 bit disponibili per il Modulo (2^7 = 128 combinazioni) e un bit per il segno, dunque potrà andare da -128 a + 128 (sempre 256 numeri rappresentabili, ma metà negativi e metà positivi).
 
@@ -83,7 +83,6 @@ Quanto si desiderava in realtà rappresentare era una sottrazione utilizzando il
 
 ~~~text
    Dec        Bin 
-C                 
 A     5  ==>  0101+
 B    -2  ==>  1010
    ----       ----
@@ -101,18 +100,18 @@ Tralasciando la spiegazione del metodo **Complemento a 1 (1C)**, anch'esso non o
 Due sono gli aspetti da evidenziare:
 
 - Risoluzione del problema del doppio zero.
-- Le sottrazioni si possono eseguire senza errori sommando al minuendo il Complemento a 2 del sottraendo. Ad esempio, invece di eseguire "15 - 7", si effettua "15 + (-7)": è piuttosto evidente che l'addizione è l'operazione più semplice in assoluto da implementare; utilizzando il Complemento a 2 è possibile applicare alle sottrazioni le stesse regole delle addizioni, semplificandone enormemente i calcoli.
+- Le sottrazioni si possono eseguire senza errori sommando minuendo e Complemento a 2 del sottraendo. Ad esempio, invece di eseguire "15 - 7", si effettua "15 + (-7)": è piuttosto evidente che l'addizione è l'operazione più semplice in assoluto da implementare; utilizzando il Complemento a 2 è possibile applicare alle sottrazioni le stesse regole delle addizioni, semplificandone enormemente i calcoli.
 
 La regola che sta alla base della teoria del Complemento a 2 è: come posso rappresentare il numero "-1" in modo che, aggiungendovi "1", si ottenga "0"?
 
 Similarmente ai vecchi tachimetri delle automobili, che una volta giunti a 99.999 passavano a 00.000, il 99.999 del tachimetro corrisponde allo 1111.1111 dell'aritmetica binaria a 8 bit: sommato a 0000.0001, genera come risultato 0000.0000 (il punto separatore fra i primi 4 bit e i secondi 4 bit dei numeri a 8 bit è inserito solamente per agevolarne la visualizzazione e non ne modifica in alcun modo i valori).
 
-Per i dovuti approfondimenti sulla sottrazione in 2C, si vedano i [link](#fonti) evidenziati in precedenza in questa pagina.
+Per approfondire la sottrazione in 2C, si vedano i [link](#fonti) evidenziati in precedenza, in particolar modo il [video numero 4](https://www.youtube.com/watch?v=sJXTo3EZoxM).
 
 Riprendendo anche quanto esposto nella pagina dei [Flag](../flags/#overflow), in un byte sono possibili 256 combinazioni:
 
 - trattando i numeri come Unsigned, è possibile contare da 0 a 255;
-- trattando invece i numeri come Signed:
+- trattando invece i numeri come Signed in Complemento a 2:
   - i valori da 0 a 127 sono rappresentati allo stesso modo dei numeri Unsigned da 0 a 127 (da Hex 0x00 in poi);
   - i valori da -128 a -1 fanno il paio con le rappresentazioni esadecimali e binarie dei numeri Unsigned da 128 a 255 (da Hex 0x80 a 0xFF).
   
@@ -184,7 +183,7 @@ Il Complemento a 2 è dunque un modo molto pratico per rappresentare i numeri Si
 
 L'approfondimento dell'Overflow è stato un passaggio obbligato; prima di capire il funzionamento della parte di circuito dedicata al [flag V](../flags/#overflow), dovevo comprenderne bene la definizione e quali metodi si usassero per determinarne una eventuale presenza.
 
-Tom Nisbet segnalava che l'ispirazione per l'uso di un Data Selector/Multiplexer [74LS151](https://www.ti.com/lit/ds/symlink/sn54s151.pdf) per individuare situazioni di Overflow derivava da [un thread su Reddit](https://www.reddit.com/r/beneater/comments/kmuuex/question_for_all_74ls181_alu_people/), che rimandava poi a pagine scritte da Dieter Mueller su 6502.org.
+Tom Nisbet segnalava che l'ispirazione per l'uso di un Data Selector/Multiplexer [74LS151](https://www.ti.com/lit/ds/symlink/sn54s151.pdf) per individuare situazioni di Overflow nel suo NQSAP derivava da [un thread su Reddit](https://www.reddit.com/r/beneater/comments/kmuuex/question_for_all_74ls181_alu_people/), che rimandava poi a pagine scritte da Dieter Mueller (aka ttlworks) su 6502.org.
 
 Nel [link di riferimento](http://6502.org/users/dieter/v_flag/v_0.htm), Dieter inizialmente spiegava in maniera visiva in quali situazioni di somma o sottrazione tra due numeri Signed a 8 bit si generasse un Overflow, utilizzando quella che si potrebbe forse definire una sorta di tavola pitagorica.
 
