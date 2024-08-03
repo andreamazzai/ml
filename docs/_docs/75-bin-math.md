@@ -374,17 +374,15 @@ Provando a scrivere un flusso logico:
 Ipotizziamo ad esempio di eseguire una somma con:
 
 - input sull'ALU A7 = B7 = 1 e output Q7 = 0, cioè due Signed negativi in ingresso e un Signed positivo in uscita, che determinano una situazione di Overflow;
-- I3 del '151 connesso a una linea dell'Instruction Register attiva in caso di istruzione di somma.
+- I3 del '151 connesso a una linea dell'Instruction Register attiva in caso di istruzione di somma A + B.
 
 La combinazione 011 agli ingressi S2-S1-S0 del '151 attiverà l'ingresso I3, che porterà all'uscita Z il segnale allo stato logico 1 proveniente dall'IR, evidenziando una situazione di Overflow.
 
 ![74LS151](../../assets/math/75-overflow-74151-i3-sum.png){:width="50%"}
 
-Infatti, una configurazione dei pin di ingresso come evidenziato in figura risolve le equazioni di Overflow sia per le addizioni A + B, sia per le sottrazioni A - B e B - A:
+Avendo diverse combinazioni A, B e Q da indirizzare (000, 001 etc. fino a 111), una configurazione dei pin di ingresso come evidenziato in figura risolve le equazioni di Overflow sia per le addizioni A + B, sia per le sottrazioni A - B e B - A:
 
-
-qualche connessione alla Control Logic o all'Instruction Register, che stiamo eseguendo una addizione: come detto poco sopra, una somma di due Signed negativi non può risultare in un Signed positivo.
-, che rappresenta una tipica situazione di Overflow associata all'ingresso selezionato da CBA = 011 che indica, grazie a qualche connessione alla Control Logic o all'Instruction Register, che stiamo eseguendo una addizione: come detto poco sopra, una somma di due Signed negativi non può risultare in un Signed positivo.
+![74LS151](../../assets/math/75-overflow-74151-i3-sum-full.png){:width="50%"}
 
 la connessione delle sorgenti a un'operazione specifica avrebbe come risultato un output a 1 quando si verifica 
 
