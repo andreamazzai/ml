@@ -74,10 +74,10 @@ Il metodo **Signed Magnitude** è molto facile da comprendere: si sacrifica un b
 
 Nell'immagine (semplificata a soli 4 bit per ragioni di spazio) si nota un problema non secondario: lo zero appare due volte (0000 e 1000): noi sappiamo che lo zero non ha segno, pertanto questa rappresentazione non è la migliore possibile.
 
-NB: nella pagina citata, vi è un esempio di sottrazione "5 - 2" errata. L'immagine di riferimento è la seguente:
+NB: nella pagina citata, vi è un esempio errato di sottrazione "5 - 2". L'immagine di riferimento è la seguente:
 
 ![Errore sottrazione](../../assets/math/75-math_mistake.gif
-){:width="10%"}
+){:width="15%"}
 
 Quanto si desiderava in realtà rappresentare era una sottrazione utilizzando il metodo Modulo e Segno, che permette di trasformare l'operazione da "5 - 2" in "5 + (-2)" invertendo il primo bit del numero 2, che dunque da 0010 diventa 1010:
 
@@ -100,13 +100,11 @@ Tralasciando la spiegazione del metodo **Complemento a 1 (1C)**, anch'esso non o
 Due sono gli aspetti da evidenziare:
 
 - Risoluzione del problema del doppio zero.
-- Le sottrazioni si possono eseguire senza errori sommando minuendo e Complemento a 2 del sottraendo. Ad esempio, invece di eseguire "15 - 7", si effettua "15 + (-7)": è piuttosto evidente che l'addizione è l'operazione più semplice in assoluto da implementare; utilizzando il Complemento a 2 è possibile applicare alle sottrazioni le stesse regole delle addizioni, semplificandone enormemente i calcoli.
+  - La regola che sta alla base della teoria del Complemento a 2 è: come posso rappresentare il numero "-1" in modo che, aggiungendovi "1", si ottenga "0"?
+  - Similarmente ai vecchi tachimetri delle automobili, che una volta giunti a 99.999 passavano a 00.000, il 99.999 del tachimetro corrisponde allo 1111.1111 dell'aritmetica binaria a 8 bit: sommato a 0000.0001, genera come risultato 0000.0000 (il punto separatore fra i primi 4 bit e i secondi 4 bit dei numeri a 8 bit è inserito solamente per agevolarne la visualizzazione e non ne modifica in alcun modo i valori).
 
-La regola che sta alla base della teoria del Complemento a 2 è: come posso rappresentare il numero "-1" in modo che, aggiungendovi "1", si ottenga "0"?
-
-Similarmente ai vecchi tachimetri delle automobili, che una volta giunti a 99.999 passavano a 00.000, il 99.999 del tachimetro corrisponde allo 1111.1111 dell'aritmetica binaria a 8 bit: sommato a 0000.0001, genera come risultato 0000.0000 (il punto separatore fra i primi 4 bit e i secondi 4 bit dei numeri a 8 bit è inserito solamente per agevolarne la visualizzazione e non ne modifica in alcun modo i valori).
-
-Per approfondire la sottrazione in 2C, si vedano i [link](#fonti) evidenziati in precedenza, in particolar modo il [video numero 4](https://www.youtube.com/watch?v=sJXTo3EZoxM).
+- Le sottrazioni si possono eseguire senza errori sommando minuendo e Complemento a 2 del sottraendo. Ad esempio, invece di eseguire "15 - 7", si effettua "15 + (-7)": l'addizione è l'operazione più semplice in assoluto da eseguire e implementare; utilizzando il Complemento a 2 diventa possibile applicare alle sottrazioni le stesse regole già applicate alle addizioni, semplificandone enormemente i calcoli.
+  - Per approfondire la sottrazione in 2C, si vedano i [link](#fonti) evidenziati in precedenza, in particolar modo il [video numero 4](https://www.youtube.com/watch?v=sJXTo3EZoxM).
 
 Riprendendo anche quanto esposto nella pagina dei [Flag](../flags/#overflow), in un byte sono possibili 256 combinazioni:
 
