@@ -315,17 +315,17 @@ Anche nel secondo caso **C7 <> C8** manca una informazione, perché C7 è comput
 ---
 Nemmeno il terzo metodo **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** sembra utilizzabile, perché B7' è confinato alla circuiteria interna dell'ALU:
 
-![Terzo metodo](../../assets/math/75-overflow-detector-and-or.png)
+![Terzo metodo](../../assets/math/75-overflow-detector-and-or.png){:width="66%"}
 
 I tre metodi esaminati sembrano portare a una strada chiusa; tuttavia, è possibile ricostruire artificialmente il segnale B7' basandosi sugli altri segnali disponibili nel computer.
 
 - In una *addizione*, il valore B7' in ingresso all'ultimo Adder del '181 sarà infatti uguale al valore di B7 dato in input al chip (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria interna dell'ALU e possiamo dunque usare B7 come input del circuito che determina l'eventuale stato di Overflow).
 
-![Overflow somma](../../assets/math/75-overflow-detector-a+b.png)
+![Overflow somma](../../assets/math/75-overflow-detector-a+b.png){:width="66%"}
 
 - Qualche considerazione permette di riutilizzare lo stesso metodo anche per la verifica dell'Overflow nelle *sottrazioni*; il valore B7' in ingresso all'ultimo Adder del '181 sarà infatti invertito rispetto al valore di B7 dato in input al chip (in una sottrazione A7 - B7, B7' viene invertito dalla circuiteria interna dell'ALU* e possiamo dunque usare l'inverso di B7 come input del circuito che determina l'eventuale stato di Overflow):
 
-![Overflow sottrazione](../../assets/math/75-overflow-detector-a-b.png)
+![Overflow sottrazione](../../assets/math/75-overflow-detector-a-b.png){:width="75%"}
 
 \* La sottrazione viene effettuata sommando il Complemento a 2 del sottraendo, pertanto sappiamo che il valore di B7' sarà invertito rispetto a B7.
 
