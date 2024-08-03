@@ -389,7 +389,7 @@ Infatti, una configurazione dei pin di ingresso come evidenziato in figura risol
 ![74LS151](../../assets/math/75-overflow-74151.png)
 
 qualche connessione alla Control Logic o all'Instruction Register, che stiamo eseguendo una addizione: come detto poco sopra, una somma di due Signed negativi non può risultare in un Signed positivo.
-, che rappresenta una tipica situazione di Overflow) associata all'ingresso selezionato da CBA = 011 che indica, grazie a qualche connessione alla Control Logic o all'Instruction Register, che stiamo eseguendo una addizione: come detto poco sopra, una somma di due Signed negativi non può risultare in un Signed positivo.
+, che rappresenta una tipica situazione di Overflow associata all'ingresso selezionato da CBA = 011 che indica, grazie a qualche connessione alla Control Logic o all'Instruction Register, che stiamo eseguendo una addizione: come detto poco sopra, una somma di due Signed negativi non può risultare in un Signed positivo.
 
 la connessione delle sorgenti a un'operazione specifica avrebbe come risultato un output a 1 quando si verifica 
 
