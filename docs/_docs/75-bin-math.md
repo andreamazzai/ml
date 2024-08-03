@@ -412,8 +412,8 @@ Testiamo alcuni casi di addizione e sottrazione, ma non prima di aver fatto un e
 - Nella colonna **Hex** è esposta la rappresentazione esadecimale dei numeri che vogliamo sommare o sottrarre, con il simbolo dell'operazione alla sinistra del secondo numero; desideriamo eseguire l'operazione 0x70 - 0x30.
 - La colonna **Dec** mostra il valore decimale ricavato dalla tabella *Relazione tra numeri Hex, Bin, Signed e Unsigned a 8 bit*; 0x70 corrisponde a 112 decimale, mentre 0x30 corrisponde a 48: l'operazione è quindi 112 - 48 (che avrà come risultato 64).
 - La colonna **Bin** espone la rappresentazione binaria dei numeri (in Complemento a 2 se negativi): 112 corrisponde a 0111.0000, mentre 48 corrisponde a 0011.0000.
-  - NB: se avessimo voluto ad esempio eseguire un'operazione di addizione 112 + (-48), il -48 sarebbe stato qui rappresentato in questa colonna nella sua forma 2C, cioè 1101.000.
-- La colonna **2C** è infine utilizzata per eseguire l'operazione di somma invertendo l'eventuale sottraendo positivo col metodo Complemento a 2: il sottraendo 48 viene convertito in 2C 1101.0000 e sommato al minuendo.
+  - NB: se invece di una sottrazione 112 - 48 avessimo voluto eseguire ad esempio un'operazione di addizione 112 + (-48) tra un Signed positivo e un Signed negativo, il -48 sarebbe stato qui rappresentato colonna nella sua forma in Complemento a 2, cioè 1101.000.
+- La colonna **2C** è infine utilizzata per eseguire l'operazione di somma invertendo l'eventuale sottraendo positivo: il sottraendo 48 viene convertito in 2C 1101.0000 (che in decimale è -48) e sommato al minuendo.
 
 ~~~text
     Hex        Dec        Bin             2C
@@ -424,9 +424,11 @@ B  -0x30  ==>   -48  ==>  0011.0000  ==>  1101.0000 =
 Q                64                      10100.0000 ==> 0100.0000 ==> 0x40 = 64, no Overflow
 ~~~
 
-Come detto in precedenza, la sottrazione di un numero positivo (nel nostro caso 48) viene, infatti, eseguita sommando il minuendo con il valore negativo del sottraendo, cioè -48; il grande vantaggio del Complemento a 2 è proprio quello di permettere la trasformazione di una sottrazione in addizione, pertanto l'operazione passa da 112 - 48 a 112 + (-48), cioè 0111.0000 + 1101.0000 nella colonna 2C. Nel risultato, l'eventuale 9° bit deve essere scartato, in quanto il calcolo è effettuato su una word a 8 bit; l'8° bit (MSB) rappresenta il segno, che nel nostro esempio è 0 e dunque il risultato dell'operazione è positivo.
+Come riportato in più occasioni, la sottrazione di un numero positivo (nel nostro caso 48) viene eseguita sommando il minuendo con il valore invertito del sottraendo, cioè -48; il grande vantaggio del Complemento a 2 è proprio quello di permettere la trasformazione di una sottrazione in addizione, pertanto l'operazione originaria 112 - 48 diventa 112 + (-48), cioè 0111.0000 + 1101.0000 nella colonna 2C. Nel risultato, l'eventuale 9° bit deve essere scartato, in quanto il calcolo è effettuato su una word a 8 bit; l'8° bit (MSB) del risultato rappresenta il segno, che nel nostro esempio è 0 ad indicare un Signed positivo.
 
 In altre parole: quando devo effettuare la sottrazione di un numero positivo, ne calcolo il Complemento a 2 e lo sommo al minuendo.
+
+Nel caso specifico di questa sottrazione di esempio, non c'è Overflow, in quanto il valore 64 risultante dalla sottrazione 0x70 - 0x30 è incluso nel range di numeri Signed ad 8 bit.
 
 - **Caso 1:** 0x20 + 0xC0; somma A + B di un Signed positivo e un Signed negativo
 
@@ -494,7 +496,7 @@ Il microcode opportunamente codificato dell'istruzione A - B porterebbe a 1 gli 
 
 ![74LS151](../../assets/math/75-overflow-74151-i1.png){:width="50%"}
 
-Riprendendo la spiegazione dell'esempio svolto in testa ai 4 casi appena discussi, si noti che i casi 3 e 4 sono sottrazioni nelle quali il sottraendo è positivo: in entrambi i casi non eseguirò una sottrazione, bensì una somma del minuendo nel suo stato originario e del sottraendo invertito col Complemento a 2.
+Riprendendo la spiegazione dell'esempio svolto in testa ai quattro casi appena discussi, si noti che i casi 3 e 4 sono sottrazioni nelle quali il sottraendo è positivo: in entrambi i casi non eseguirò una sottrazione, bensì una somma del minuendo nel suo stato originario e del sottraendo invertito col Complemento a 2.
 
 Tornando all'interpretazione dell'hardware, abbiamo anticipato in precedenza che i moduli ALU del computer NQSAP e del computer BEAM utilizzano solo le istruzioni A + B e A - B, dunque possiamo semplificare le connessioni del '151 eliminando B - A:
 
