@@ -6,7 +6,7 @@ excerpt: "Aritmetica binaria"
 
 ## Concetti importanti
 
-Per comprendere appieno il funzionamento dei moduli Flag e ALU, è stato necessario approfondire anche alcuni concetti dell'aritmetica binaria.
+Per comprendere appieno il funzionamento dei moduli Flag e ALU, avevo sentito la necessità di conoscere in dettaglio alcuni concetti dell'aritmetica binaria:
 
 1. Numeri binari senza segno (Unsigned) e con segno (Signed)
 2. Modalità di rappresentazione dei numeri binari con segno:
@@ -18,7 +18,7 @@ Per comprendere appieno il funzionamento dei moduli Flag e ALU, è stato necessa
 
 ## Fonti
 
-Lungi dal voler (e poter) spiegare tutto, riporto alcuni concetti di base e suggerisco una serie di fonti.
+Lungi dal voler (e poter) spiegare tutto, in questo pagina cerco di riassumere quanto avevo appreso e suggerisco una serie di fonti di approfondimento.
 
 Per una comprensione completa dei temi trattati, raccomando di accedere più volte alle informazioni, anche in tempi diversi e in sequenze diverse: con letture ed approfondimenti ripetuti avevo raggiunto lo scopo prefissato, mentre più visualizzazioni dei video in modalità *brainstorming* mi avevano permesso di riempire i buchi fino a colmarli.
 
@@ -56,9 +56,11 @@ E qualche pagina da visitare:
 3. [The 6502 CPU's overflow flag explained at the silicon level](https://www.righto.com/2013/01/a-small-part-of-6502-chip-explained.html) di Ken Shirriff - interessantissima analisi dell'Overflow al livello del silicio del 6502.
 4. [Signed Binary Addition Calculator](https://madformath.com/calculators/digital-systems/signed-arithmetic/signed-binary-addition-calculator/signed-binary-addition-calculator) - calcolatore per somme di numeri Signed con evidenza dei vari passaggi di calcolo.
 
+Evidenzio in particolare [The 6502 overflow flag explained mathematically](https://www.righto.com/2012/12/the-6502-overflow-flag-explained.html) per una comprensione completa dell'Overflow, che sarà ripreso e approfondito in seguito in questa pagina.
+
 ## Numeri Unsigned e numeri Signed
 
-E' necessario comprendere a fondo la logica dei numeri Unsigned e Signed.
+E' necessario comprendere a fondo logica e differenze relative ai numeri Unsigned e Signed.
 
 Approfondendo i numeri Signed, ero giusto in questa [interessantissima pagina](https://sandbox.mc.edu/~bennet/cs110/) dell'Università del Mississippi dedicata alla matematica binaria.
 
@@ -253,7 +255,7 @@ Oltre ai due esempi citati poco sopra, è opportuno anticipare che sono dimostra
 - se la somma di due Signed negativi genera un risultato Signed positivo, siamo in una situazione di Overflow;
 - se la sottrazione tra un Signed positivo e un Signed negativo genera un risultato Signed negativo, siamo in una situazione di Overflow.
 
-In definitiva, possiamo dire che se il bit del segno viene corrotto, siamo un una situazione di Overflow e il flag V viene conseguentemente settato.
+In definitiva, possiamo dire che se il bit del segno viene corrotto si è verificato un Overflow e il flag V viene conseguentemente settato.
 
 ### L'Overflow e l'hardware
 
@@ -339,6 +341,10 @@ L'equazione completa diventerebbe:
 
 Detto questo, si potrebbe notare che anche il circuito del metodo 1 permetterebbe di individuare situazioni di Overflow sfruttando B7 anziché B7': richiederebbe un numero inferiore di porte logiche, ma di tre tipologie (XOR, NOT, AND) anziché di due (AND, OR).
 
+ricordare NPP e PNN per sottrazioni, PPN e NNP per addizioni
+
+Forse vale la pena far notare che overflow in effetti si riferisce al fatto di sforare dai bit che compongonoil numero vero e proprio ?
+
 **+++++ attenzione dubbi da chiarire e verificare**
 **+++++ attenzione dubbi da chiarire e verificare**
 A questo proposito, avevo provato a disegnare lo schema di due registri A e B e di un generico Adder per comprendere meglio il concetto; si noti la circuiteria preposta ad individuare situazioni di Overflow:
@@ -356,7 +362,10 @@ Ora le cose si fanno interessanti: Dieter prosegue indicando che un unico chip 7
 Evidenziamo i due punti da prendere in considerazione per vedere se possiamo farli combaciare con il '151:
 
 - l'equazione dell'Overflow è basata su 3 input (A, B, Q);
-- leggendo l'Instruction Register  se stiamo eseguendo una addizione o una sottrazione.
+- l'eventuale Overflow è anche conseguenza dell'operazione seguita;
+- leggendo l'Instruction Register sappiamo se stiamo eseguendo una addizione o una sottrazione.
+
+**Se A = 1, B = 1 e Q = 0 e stiamo facendo una somma, abbiamo un overflow. Se stiamo facendo una sottrazione, allora no.**
 
 In effetti, il '151 consente di selezionare una sorgente di dati (tra le 8 disponibili I0-I7) in funzione di una codifica univoca presentata ai suoi ingressi di selezione A, B e C.
 
