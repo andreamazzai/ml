@@ -356,7 +356,7 @@ Evidenziamo i due punti da prendere in considerazione per vedere se possiamo far
 - l'equazione dell'Overflow è basata su 3 input (A, B, Q);
 - l'eventuale Overflow è anche conseguenza dell'operazione seguita; l'Instruction Register ci può indicare se si sta eseguendo una addizione o una sottrazione.
 
-Un esempio concreto:
+Un esempio concreto con input uguali, ma diverse situazioni:
 
 - se A = 1, B = 1 e Q = 0 e stiamo eseguendo una somma, abbiamo un Overflow;
 - se A = 1, B = 1 e Q = 0 e stiamo facendo una sottrazione, allora non vi è Overflow.
@@ -373,14 +373,15 @@ Provando a scrivere un flusso logico:
 
 Ipotizziamo ad esempio di eseguire una somma con:
 
-- input sull'ALU A7 = B7 = 1 e output Q7 = 0, cioè due Signed negativi in ingresso e un Signed positivo in uscita;
-- I3 e I4 del '151 connessi a una linea dell'Instruction Register attiva in caso di istruzione di somma.
+- input sull'ALU A7 = B7 = 1 e output Q7 = 0, cioè due Signed negativi in ingresso e un Signed positivo in uscita, che determinano una situazione di Overflow;
+- I3 del '151 connesso a una linea dell'Instruction Register attiva in caso di istruzione di somma.
 
-La combinazione 011 agli ingressi S2-S1-S0 del '151 attiverà l'ingresso I3, che si troverà ad 1: l'uscita del '151 sarà attiva, evidenziando una situazione di Overflow.
+La combinazione 011 agli ingressi S2-S1-S0 del '151 attiverà l'ingresso I3, che porterà all'uscita Z il segnale allo stato logico 1 proveniente dall'IR, evidenziando una situazione di Overflow.
+
+![74LS151](../../assets/math/75-overflow-74151-i3-sum.png){:width="50%"}
 
 Infatti, una configurazione dei pin di ingresso come evidenziato in figura risolve le equazioni di Overflow sia per le addizioni A + B, sia per le sottrazioni A - B e B - A:
 
-![74LS151](../../assets/math/75-overflow-74151-i3-sum.png){:width="50%"}
 
 qualche connessione alla Control Logic o all'Instruction Register, che stiamo eseguendo una addizione: come detto poco sopra, una somma di due Signed negativi non può risultare in un Signed positivo.
 , che rappresenta una tipica situazione di Overflow associata all'ingresso selezionato da CBA = 011 che indica, grazie a qualche connessione alla Control Logic o all'Instruction Register, che stiamo eseguendo una addizione: come detto poco sopra, una somma di due Signed negativi non può risultare in un Signed positivo.
