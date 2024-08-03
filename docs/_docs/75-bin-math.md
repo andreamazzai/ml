@@ -341,7 +341,13 @@ Giunti a questo punto, per realizzare un circuito in grado di identificare l'Ove
 
 L'equazione completa diventerebbe:
 
-**(A7 = B7’ = 1 AND Q7 = 0) OR (A7 = B7’ = 0 AND Q7 = 1) OR (A7 = 1 AND B7’ = Q7 = 0) OR (A7 = 0 AND B7’ = Q7 = 1)**
+**(A7 = B7’ = 1 AND Q7 = 0)**
+  **OR**
+**(A7 = B7’ = 0 AND Q7 = 1)**
+  **OR**
+**(A7 = 1 AND B7’ = Q7 = 0)**
+  **OR**
+**(A7 = 0 AND B7’ = Q7 = 1)**
 
 Detto questo, si potrebbe notare che anche il circuito del metodo 1 permette di individuare situazioni di Overflow sfruttando B7 anziché B7': richiede un numero inferiore di porte logiche, ma di tre tipologie (XOR, NOT, AND) anziché di due (AND, OR).
 
