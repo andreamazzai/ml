@@ -290,16 +290,16 @@ La tabella seguente sintetizza quanto accade nell'8° Adder:
 - C8 risulta a 1 se almeno due tra A7, B7' e C7 sono a 1;
 - V è il Flag di Overflow.
 
-Nella sezione [Approfondimento Overflow](#approfondimento-overflow) abbiamo visto che la somma di due Signed positivi non può avere come risultato un Signed negativo e che anche la situazione opposta vera. Nelle due righe evidenziate troviamo infatti:
+Nella sezione [Approfondimento Overflow](#approfondimento-overflow) abbiamo visto che la somma di due Signed positivi non può avere come risultato un Signed negativo e che anche la situazione opposta è vera. Nelle due righe evidenziate troviamo infatti:
 
-- \* due Signed negativi (A7 = B7' = 1) la cui somma genera un risultato positivo (Q7 = 0) --> abbiamo una situazione di Overflow.
-- \*\* due Signed positivi (A7 = B7' = 0) la cui somma genera un risultato negativo (Q7 = 1) --> abbiamo una situazione di Overflow.
+- \* due Signed negativi (A7 = B7' = 1) la cui somma genera un risultato positivo (Q7 = 0) --> corrisponde a una situazione di Overflow.
+- \*\* due Signed positivi (A7 = B7' = 0) la cui somma genera un risultato negativo (Q7 = 1) --> corrisponde a una situazione di Overflow.
 
 ### Metodi di identificazione dell'Overflow
 
-Mettendo a fattor comune quanto abbiamo visto fino ad ora, possiamo identificare 3 situazioni che determinano un Overflow in una somma:
+Mettendo a fattor comune quanto abbiamo visto fino ad ora, possiamo identificare 3 situazioni misurabili che determinano un Overflow in una somma:
 
-1. A7 e B7' sono dello stesso segno e Q è invertito rispetto ad A e B, cioè **(A7 == B7') AND (Q7 <> A7)** (notare che non stiamo specificando un valore assoluto 1 o 0 dei bit: stiamo considerando le relazioni tra i segnali);
+1. A7 e B7' sono dello stesso segno e Q è invertito, cioè **(A7 == B7') AND (Q7 <> A7)** (notare che non stiamo specificando un valore assoluto 1 o 0 dei bit: stiamo considerando le relazioni tra i segnali);
 2. C7 e C8 sono invertiti tra loro, cioè **C7 <> C8** (anche in questo caso si esegue una comparazione relativa);
 3. **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** è simile al punto 1, ma, anziché porre i bit in una comparazione relativa, ne stiamo specificando il valore assoluto.
 
@@ -315,7 +315,7 @@ Anche nel secondo caso **C7 <> C8** manca una informazione, perché C7 è comput
 ---
 Nemmeno il terzo metodo **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** sembra utilizzabile, perché B7' è confinato alla circuiteria interna dell'ALU:
 
-![Terzo metodo](../../assets/math/75-overflow-detector-and-or.png){:width="43%"}
+![Terzo metodo](../../assets/math/75-overflow-detector-and-or.png){:width="45%"}
 
 I tre metodi esaminati sembrano portare a una strada chiusa; tuttavia, è possibile ricostruire artificialmente il segnale B7' basandosi sugli altri segnali disponibili nel computer.
 
@@ -323,7 +323,9 @@ I tre metodi esaminati sembrano portare a una strada chiusa; tuttavia, è possib
 
 ![Overflow somma](../../assets/math/75-overflow-detector-a+b.png){:width="43%"}
 
-- Qualche considerazione permette di riutilizzare lo stesso metodo anche per la verifica dell'Overflow nelle *sottrazioni*; il valore B7' in ingresso all'ultimo Adder del '181 sarà infatti invertito rispetto al valore di B7 dato in input al chip (in una sottrazione A7 - B7, B7' viene invertito dalla circuiteria interna dell'ALU* e possiamo dunque usare l'inverso di B7 come input del circuito che determina l'eventuale stato di Overflow):
+Qualche considerazione permette di riutilizzare lo stesso metodo anche per la verifica dell'Overflow nelle *sottrazioni*.
+
+- Il valore B7' in ingresso all'ultimo Adder del '181 sarà infatti invertito rispetto al valore di B7 dato in input al chip (in una sottrazione A7 - B7, B7' viene invertito dalla circuiteria interna dell'ALU* e possiamo dunque usare l'inverso di B7 come input del circuito che determina l'eventuale stato di Overflow):
 
 ![Overflow sottrazione](../../assets/math/75-overflow-detector-a-b.png){:width="43%"}
 
@@ -331,7 +333,7 @@ I tre metodi esaminati sembrano portare a una strada chiusa; tuttavia, è possib
 
 In definitiva, il terzo metodo è utilizzabile per la verifica dell'Overflow sia per le addizioni, sia per le sottrazioni.
 
-Giunti a questo punto, per realizzare un circuito in grado di identificare l'Overflow basandoci sul terzo metodo, avremmo bisogno di 4 porte AND con 3 ingressi e 3 porte OR con 2 ingressi: la terza OR servirebbe ad eseguire l'OR logico tra i due circuiti precedenti per creare un'unica segnalazione di Overflow tanto in caso di addizione quanto in caso di sottrazione.
+Giunti a questo punto, per realizzare un circuito in grado di identificare l'Overflow basandoci sul terzo metodo servirebbero 4 porte AND con 3 ingressi e 3 porte OR con 2 ingressi: la terza OR servirebbe ad eseguire l'OR logico tra i due circuiti precedenti per creare un'unica segnalazione di Overflow tanto in caso di addizione quanto in caso di sottrazione.
 
 ![Overflow somma e sottrazione](../../assets/math/75-overflow-detector-a+b-a-b.png){:width="57%"}
 
