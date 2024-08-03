@@ -380,33 +380,17 @@ La combinazione 011 agli ingressi S2-S1-S0 del '151 attiverà l'ingresso I3, che
 
 ![74LS151](../../assets/math/75-overflow-74151-i3-sum.png){:width="50%"}
 
-Dovendo indirizzare 8 combinazioni di A, B e Q (000, 001 etc. fino a 111), una configurazione dei pin di ingresso come evidenziato in figura risolve le equazioni di Overflow sia per le addizioni A + B, sia per le sottrazioni A - B e B - A, purché i pin I0-I7 del '151 siano correttamente connessi all'IR per rilevare l'esecuzione di istruzioni di somma A + B e sottrazione A - B e B - A:
+Dovendo indirizzare 8 combinazioni di Q, B e A (000, 001 etc. fino a 111), una configurazione dei pin di ingresso come evidenziato nella successiva figura risolve le equazioni di Overflow sia per le addizioni A + B, sia per le sottrazioni A - B e B - A, purché i pin I0-I7 del '151 siano correttamente connessi all'IR per rilevare l'esecuzione di istruzioni di somma A + B e sottrazione A - B e B - A:
 
 ![74LS151](../../assets/math/75-overflow-74151-i3-sum-full.png){:width="50%"}
 
-la connessione delle sorgenti a un'operazione specifica avrebbe come risultato un output a 1 quando si verifica 
+Si noti però che l'operazione B - A non è necessaria per simulare le istruzioni di sottrazione del 6502, pertanto non la terremo in considerazione.
 
-(A7 = B7’ = 1 AND Q7 = 0) OR (A7 = B7’ = 0 AND Q7 = 1) per ADDIZIONE
+Riepilogando:
 
-poi se
+- le combinazioni degli ingressi S2-S1-S0 del '151 (connessi agli MSB Q7, B7 e A7 dei registri A e B e dell'uscita Q dell'ALU) selezionano quale tra gli ingressi I0-I7 sia necessario attivare per portare in uscita una eventuale segnalazione di Overflow;
 
- -A - (+B) = MSB 0
-  A - (-B) = MSB 1
-
-  alloa abbiamo overflow, dunquq
-
-(A7 = 1 AND B7’ = Q7 = 0) OR (A7 = 0 AND B7’ = Q7 = 1) per SOTTRAZIONE
-
-
-
-provare a fare l'equazione per i 4 casi: 2 somme e 2 sottrazioni!!!!!!!!!!!!
-
-
-- Si noti però che l'operazione B - A non è necessaria per simulare le istruzioni di sottrazione del 6502, pertanto non la terremo in considerazione.
-
-- Le combinazioni degli ingressi A, B e C del '151 (connessi agli MSB A7, B7 e Q7 dei registri A e B e dell'uscita Q dell'ALU) selezionano quale tra gli ingressi I0-I7 sia necessario attivare per portare in uscita una eventuale segnalazione di Overflow.
-
-- Alcuni degli ingressi I0-I7 sono opportunamente connessi in modalità "Hardwired" all'Instruction Register per determinare l'operazione correntemente in esecuzione.
+- alcuni degli ingressi I0-I7 sono opportunamente connessi in modalità "Hardwired" all'Instruction Register per determinare l'operazione correntemente in esecuzione.
 
 Testiamo alcuni casi, ma non prima di aver fatto un esempio iniziale spiegando anche cosa significano le varie colonne:
 
