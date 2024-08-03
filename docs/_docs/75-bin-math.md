@@ -103,14 +103,15 @@ Due sono gli aspetti da evidenziare:
   - La regola che sta alla base della teoria del Complemento a 2 è: come posso rappresentare il numero "-1" in modo che, aggiungendovi "1", si ottenga "0"?
   - Similarmente ai vecchi tachimetri delle automobili, che una volta giunti a 99.999 passavano a 00.000, il 99.999 del tachimetro corrisponde allo 1111.1111 dell'aritmetica binaria a 8 bit: sommato a 0000.0001, genera come risultato 0000.0000 (il punto separatore fra i primi 4 bit e i secondi 4 bit dei numeri a 8 bit è inserito solamente per agevolarne la visualizzazione e non ne modifica in alcun modo i valori).
 
-- Le sottrazioni si possono eseguire senza errori sommando minuendo e Complemento a 2 del sottraendo. Ad esempio, invece di eseguire "15 - 7", si effettua "15 + (-7)": l'addizione è l'operazione più semplice in assoluto da eseguire e implementare; utilizzando il Complemento a 2 diventa possibile applicare alle sottrazioni le stesse regole già applicate alle addizioni, semplificandone enormemente i calcoli.
+- Le sottrazioni si possono eseguire senza errori sommando minuendo e Complemento a 2 del sottraendo.
+  - Ad esempio, invece di eseguire "15 - 7", si effettua "15 + (-7)": l'addizione è l'operazione più semplice in assoluto da eseguire e implementare; utilizzando il Complemento a 2 diventa possibile applicare alle sottrazioni le stesse regole già applicate alle addizioni, semplificandone enormemente i calcoli.
   - Per approfondire la sottrazione in 2C, si vedano i [link](#fonti) evidenziati in precedenza, in particolar modo il [video numero 4](https://www.youtube.com/watch?v=sJXTo3EZoxM).
 
 Riprendendo anche quanto esposto nella pagina dei [Flag](../flags/#overflow), in un byte sono possibili 256 combinazioni:
 
 - trattando i numeri come Unsigned, è possibile contare da 0 a 255;
 - trattando invece i numeri come Signed in Complemento a 2:
-  - i valori da 0 a 127 sono rappresentati allo stesso modo dei numeri Unsigned da 0 a 127 (da Hex 0x00 in poi);
+  - i valori da 0 a 127 sono rappresentati allo stesso modo dei numeri Unsigned da 0 a 127 (da Hex 0x00 a 0x7F);
   - i valori da -128 a -1 fanno il paio con le rappresentazioni esadecimali e binarie dei numeri Unsigned da 128 a 255 (da Hex 0x80 a 0xFF).
   
 Questa tabella dovrebbe chiarire il concetto:
@@ -190,27 +191,27 @@ Ricordiamo che l'Overflow indica un errore nel processo di somma o sottrazione d
 Nelle due tabelle sottostanti, che rappresentano rispettivamente operazioni di addizione e di sottrazione, le combinazioni Colonna/Riga al cui incrocio vi è un asterisco "\*" indicano situazioni di Overflow, cioè di un risultato che non può essere correttamente rappresentato con gli 8 bit a disposizione.
 
 ~~~text
-Operazione       Sum Colonna + Riga       Sub Colonna - Riga
-                 + 0123456789ABCDEF       + 0123456789ABCDEF
-                 + 0000000000000000       - 0000000000000000
-Overflow:        00................       00................
-Overflow:        10.......*........       10........*.......
-Overflow:        20......**........       20........**......
-Overflow:        30.....***........       30........***.....
-Overflow:        40....****........       40........****....
-Overflow:        50...*****........       50........*****...
-Overflow:        60..******........       60........******..
-Overflow:        70.*******........       70........*******.
-Overflow:        80........********       80********........
-Overflow:        90........*******.       90.*******........
-Overflow:        A0........******..       A0..******........
-Overflow:        B0........*****...       B0...*****........
-Overflow:        C0........****....       C0....****........
-Overflow:        D0........***.....       D0.....***........
-Overflow:        E0........**......       E0......**........
-Overflow:        F0........*.......       F0.......*........
+Operazione       Sum  (Column + Row)       Sub (Column - Row)
+                   +0123456789ABCDEF         +0123456789ABCDEF
+                 +  0000000000000000       -  0000000000000000
+Overflow:        00 ................       00 ................
+Overflow:        10 .......*........       10 ........*.......
+Overflow:        20 ......**........       20 ........**......
+Overflow:        30 .....***........       30 ........***.....
+Overflow:        40 ....****........       40 ........****....
+Overflow:        50 ...*****........       50 ........*****...
+Overflow:        60 ..******........       60 ........******..
+Overflow:        70 .*******........       70 ........*******.
+Overflow:        80 ........********       80 ********........
+Overflow:        90 ........*******.       90 .*******........
+Overflow:        A0 ........******..       A0 ..******........
+Overflow:        B0 ........*****...       B0 ...*****........
+Overflow:        C0 ........****....       C0 ....****........
+Overflow:        D0 ........***.....       D0 .....***........
+Overflow:        E0 ........**......       E0 ......**........
+Overflow:        F0 ........*.......       F0 .......*........
 
-Esempio:         0x70 + 0x40 = Overflow   0xA0 - 0x30 = Overflow
+Esempio:        0x70 + 0x40 = Overflow    0xA0 - 0x30 = Overflow
 ~~~
 
 Note:
@@ -221,7 +222,7 @@ Note:
 
 Riprendiamo i due esempi di Overflow riportati in calce alle tabelle:
 
-- **0x70 + 0x40 =** in decimale 112 + 64 = 176, che però non rientra nel range -128 / + 127 dei numeri Signed a 8 bit. In effetti, la somma tra 112 e 64 genera un risultato il cui MSB è 1, che secondo la notazione Signed è un numero negativo. Poiché abbiamo sommato numeri Signed, anche il risultato deve essere letto come Signed: 0xB0 = -80, che è palesemente errato. Ne ricaviamo che se la somma di due Signed positivi genera un risultato Signed negativo, siamo in una situazione di Overflow.
+- **0x70 + 0x40 =** in decimale 112 + 64 = 176, che però non rientra nel range -128 / + 127 dei numeri Signed a 8 bit. In effetti, la somma tra 112 e 64 genera un risultato il cui MSB è 1, che secondo la notazione Signed è un numero negativo. Poiché abbiamo sommato numeri Signed, anche il risultato deve essere letto come Signed: 0xB0 = -80, che è palesemente errato. Ne ricaviamo che se la somma di due Signed positivi genera un risultato Signed negativo, siamo in una situazione di Overflow, cioè di numero non rappresentabile con i bit a disposizione.
 
 ~~~text
   Hex       Dec       Bin
@@ -232,7 +233,7 @@ Riprendiamo i due esempi di Overflow riportati in calce alle tabelle:
             176       1011.0000 ==> 0xB0
 ~~~
 
-- **0xA0 - 0x30 =** -96 - 48 = -144, che però non rientra nel range -128 / + 127 dei numeri Signed a 8 bit. In effetti, la sottrazione tra -96 e 48\* genera un risultato il cui MSB è 0, che secondo la notazione Signed è un numero positivo. Poiché abbiamo sottratto numeri Signed, anche il risultato deve essere letto come Signed: 0x70 = 112, che è palesemente errato. Ne ricaviamo che se la sottrazione tra un Signed negativo e un Signed positivo genera un risultato Signed positivo, siamo in una situazione di Overflow.
+- **0xA0 - 0x30 =** -96 - 48 = -144, che però non rientra nel range -128 / + 127 dei numeri Signed a 8 bit. In effetti, la sottrazione tra -96 e 48\* genera un risultato il cui MSB è 0, che secondo la notazione Signed è un numero positivo. Poiché abbiamo sottratto numeri Signed, anche il risultato deve essere letto come Signed: 0x70 = 112, che è palesemente errato. Ne ricaviamo che se la sottrazione tra un Signed negativo e un Signed positivo genera un risultato Signed positivo, siamo in una situazione di Overflow, cioè di numero non rappresentabile con i bit a disposizione.
 
 ~~~text
   Hex       Dec       Bin
@@ -262,7 +263,7 @@ Dieter esponeva una rappresentazione logica di un Adder in grado di effettuare s
 
 *Adder hardware per somme A+B e sottrazioni A-B.*
 
-In un Adder a 8 bit abbiamo 8 Adder a 1 bit in cascata; quello rappresentato di seguito è l'8° ed ultimo, i cui ingressi A e B' sono i bit più significativi A7 e B7' dei numeri da sommare; l'ingresso Carry-in C_IN è connesso all'output Carry-Out C_OUT proveniente dal precedente Adder.
+In un Adder a 8 bit abbiamo 8 Adder a 1 bit in cascata; quello rappresentato di seguito è l'8° ed ultimo, i cui ingressi A e B' sono i bit più significativi A7 e B7' dei numeri da sommare; l'ingresso Carry-in C_IN è connesso all'output Carry-Out C_OUT proveniente dall'Adder precedente.
 
 ![Ultimo stadio di un Adder a 8 bit](../../assets/math/75-dieter-8th-adder.png){:width="25%"}
 
@@ -270,15 +271,6 @@ In un Adder a 8 bit abbiamo 8 Adder a 1 bit in cascata; quello rappresentato di 
 
 La tabella seguente sintetizza quanto accade nell'8° Adder:
 
-- C7 (C_IN nel disegno) proviene dal C_OUT dell'Adder precedente
-- B7' è l'MSB del numero da sommare B (normale o invertito dalla circuiteria interna, a seconda che si esegua una somma o una sottrazione)
-- A7 è l'MSB del numero da sommare A
-- Q7 è l'MSB del risultato di A7 + B7' + C7
-- C8 è il Carry in uscita dall'8° Adder (C_OUT)
-- C8 risulta a 1 se almeno due tra A7, B7' e C7 sono a 1.
-- V è il Flag di Overflow
-
-Creando la truth table per la *somma* di A7, B7' e C7, ricaviamo:
 
 | C7  | B7'   | A7    | Q7    | C8    |  V       |
 | -     | -     | -     | -     | -     | -        |
@@ -290,6 +282,14 @@ Creando la truth table per la *somma* di A7, B7' e C7, ricaviamo:
 | 1     | 0     | 1     | 0     | 1     | 0        |
 | 1     | 1     | 0     | 0     | 1     | 0        |
 | 1     | 1     | 1     | 1     | 1     | 0        |
+
+- C7 (C_IN nel disegno) proviene dal C_OUT dell'Adder precedente;
+- B7' è l'MSB del numero da sommare B (normale o invertito dalla circuiteria interna, a seconda che si esegua una somma o una sottrazione);
+- A7 è l'MSB del numero da sommare A;
+- Q7 è l'MSB del risultato di A7 + B7' + C7;
+- C8 è il Carry in uscita dall'8° Adder (C_OUT);
+- C8 risulta a 1 se almeno due tra A7, B7' e C7 sono a 1;
+- V è il Flag di Overflow.
 
 Nella sezione [Approfondimento Overflow](#approfondimento-overflow) abbiamo visto che la somma di due Signed positivi non può avere come risultato un Signed negativo; aggiungiamo che anche la situazione opposta è dimostrabile. Nelle due righe evidenziate troviamo infatti:
 
