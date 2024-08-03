@@ -458,7 +458,7 @@ Q               144                       1001.0000 ==> 0x90 = -112, Overflow
 
 Il microcode opportunamente codificato dell'istruzione A + B porterebbe a 1 gli ingressi I3 e I4 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione produrrebbe Q7=1, B7=0 e A7=0 sugli ingressi di selezione (S2-S1-S0 = 100), che attiverebbero l'ingresso I4 che risulta a 1 in quanto attivato dal microcode, pertanto l'uscita Q del '151 sarebbe a 1, indicando che vi è Overflow --> situazione verificata correttamente.
 
-![74LS151](../../assets/math/75-overflow-74151-i4.png){:width="30%"}
+![74LS151](../../assets/math/75-overflow-74151-i4.png){:width="40%"}
 
 ---
 
@@ -475,7 +475,7 @@ Q                32                      10010.0000 ==> 0010.0000 ==> 0x20 = 32,
 
 Il microcode opportunamente codificato dell'istruzione A - B porterebbe a 1 gli ingressi I1 e I6 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione produrrebbe Q7=0, B7=0 e A7=0 sugli ingressi di selezione (S2-S1-S0 = 000), che attiverebbero l'ingresso I0 che risulta a 0, pertanto l'uscita Q del '151 sarebbe a 0, indicando che non vi è Overflow --> situazione verificata correttamente.
 
-![74LS151](../../assets/math/75-overflow-74151-i0.png){:width="30%"}
+![74LS151](../../assets/math/75-overflow-74151-i0.png){:width="40%"}
 
 ---
 
@@ -492,7 +492,7 @@ Q              -160                      10110.0000 ==> 0110.0000 ==> 0x60 = 96,
 
 Il microcode opportunamente codificato dell'istruzione A - B porterebbe a 1 gli ingressi I1 e I6 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione produrrebbe Q7=0, B7=0 e A7=1 sugli ingressi di selezione (S2-S1-S0 = 001), che attiverebbero l'ingresso I1 che risulta a 1 in quanto attivato dal microcode, pertanto l'uscita Q del '151 sarebbe a 1, indicando che vi è Overflow --> situazione verificata correttamente.
 
-![74LS151](../../assets/math/75-overflow-74151-i1.png){:width="30%"}
+![74LS151](../../assets/math/75-overflow-74151-i1.png){:width="40%"}
 
 Riprendendo la spiegazione dell'esempio svolto in testa ai 4 casi appena discussi, si noti che i casi 3 e 4 sono sottrazioni nelle quali il sottraendo è positivo: in entrambi i casi non eseguirò una sottrazione, bensì una somma del minuendo nel suo stato originario e del sottraendo invertito col Complemento a 2.
 
