@@ -307,7 +307,7 @@ La truth table **(A7 == B7') AND (Q7 <> A7)** del primo caso si tradurrebbe nell
 
 ![Primo metodo](../../assets/math/75-overflow-detector-xor-not-and.png)
 
-Per dovere di cronaca 😊 riporto lo schema di due registri A e B e di un generico Adder che avevo disegnato per comprendere meglio il concetto dell'Overflow nelle addizioni; si noti la circuiteria preposta ad individuare situazioni di Overflow.
+Per dovere di cronaca 😊 riporto lo schema di due registri A e B e di un generico Adder che avevo disegnato per comprendere meglio le addizioni; si noti la circuiteria preposta ad individuare situazioni di Overflow.
 
 [![Adder su carta](../../assets/math/75-adder.png "Adder su carta"){:width="50%"}](../../assets/math/75-adder.png){:width="75%"}
 
@@ -341,15 +341,9 @@ Giunti a questo punto, per realizzare un circuito in grado di identificare l'Ove
 
 ![Overflow somma e sottrazione](../../assets/math/75-overflow-detector-a+b-a-b.png){:width="57%"}
 
-L'equazione completa diventerebbe: **(A7 = B7’ = 1 AND Q7 = 0) OR (A7 = B7’ = 0 AND Q7 = 1) OR (A7 = 1 AND B7’ = Q7 = 0) OR (A7 = 0 AND B7’ = Q7 = 1)**
+L'equazione completa diventa: **(A7 = B7’ = 1 AND Q7 = 0) OR (A7 = B7’ = 0 AND Q7 = 1) OR (A7 = 1 AND B7’ = Q7 = 0) OR (A7 = 0 AND B7’ = Q7 = 1)**
 
-
-
-- nell'esecuzione di una addizione, l'8° Adder dell'ALU troverà al suo ingresso interno B7' esattamente lo stesso valore presente all'uscita B7 del registro B;
-- nell'esecuzione di una sottrazione, l'inversione effettuata dal Complemento a 2 presenterà a B7' il valore invertito rispetto a quello presente all'uscita B7 del registro B.
-**+++++ attenzione dubbi da chiarire e verificare**
-
-### Semplificazione con il 74LS151
+### Semplificazione con 74LS151
 
 Ora le cose si fanno interessanti: Dieter prosegue indicando che un unico chip 74LS151 è in grado di indirizzare tutte le necessità.
 
