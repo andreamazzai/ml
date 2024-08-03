@@ -365,10 +365,10 @@ In effetti, il '151 consente di selezionare una sorgente di dati (tra le 8 dispo
 
 Provando a scrivere un flusso logico:
 
-1. la presenza di uno specifico stato logico agli ingressi di selezione S2-S1-S0 connessi a Q7, B7 e A7
-2. attiva un determinato ingresso Ix tra quelli connessi all'Instruction Register, che
+1. la presenza di uno specifico stato logico agli ingressi di selezione **S2-S1-S0** connessi a **Q7**, **B7** e **A7**
+2. attiva un determinato ingresso **Ix** tra quelli connessi all'Instruction Register, che
 3. grazie alla opportuna scelta dell'opcode delle istruzioni di somma e sottrazione
-4. può risultare in uno stato logico 1 in uscita sul '151
+4. può risultare in uno stato logico 1 sull'uscita **Z** uscita sul '151
 5. evidenziando una condizione di Overflow.
 
 Ipotizziamo ad esempio di eseguire una somma con:
@@ -397,7 +397,6 @@ La seguente tabella riepilogativa permette di visualizzare le situazioni di Over
 | **1** | **1** | **0** | **A-B** | **I6** |  **1** |
 |   1   |   1   |   1   |         | I7     |  -     |
 
-
 Si noti però che l'operazione B - A non è necessaria per simulare le istruzioni di sottrazione del 6502, dunque in futuro non la terremo in considerazione.
 
 Riepilogando:
@@ -405,6 +404,8 @@ Riepilogando:
 - le combinazioni degli ingressi S2-S1-S0 del '151 (connessi agli MSB Q7, B7 e A7 dei registri A e B e dell'uscita Q dell'ALU) selezionano quale tra gli ingressi I0-I7 sia necessario attivare per portare in uscita una eventuale segnalazione di Overflow;
 
 - alcuni degli ingressi I0-I7 sono opportunamente connessi in modalità "Hardwired" all'Instruction Register per determinare l'operazione correntemente in esecuzione.
+
+### Addizioni e sottrazioni con verifica dell'hardware
 
 Testiamo alcuni casi di addizione e sottrazione, ma non prima di aver fatto un esempio iniziale spiegando anche il significato delle colonne:
 
