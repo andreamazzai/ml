@@ -384,7 +384,21 @@ Dovendo indirizzare 8 combinazioni di Q, B e A (000, 001 etc. fino a 111), una c
 
 ![74LS151](../../assets/math/75-overflow-74151-i3-sum-full.png){:width="50%"}
 
-Si noti però che l'operazione B - A non è necessaria per simulare le istruzioni di sottrazione del 6502, pertanto non la terremo in considerazione.
+La seguente tabella riepilogativa permette di visualizzare le situazioni di Overflow in base agli stati di Q, B ed A ed al fatto che si stiano eseguendo addizioni o sottrazioni:
+
+| Q7-S2 | B7-S1 | A7-S0 | Sum/Sub | Input  | Overflow     |
+| -     | -     | -     |  -      | -      |  -     |
+|   0   |   0   |   0   |         | I0     |  -     |
+| **0** | **0** | **1** | **A-B** | **I1** |  **1** |
+| **0** | **1** | **0** | **B-A** | **I2** |  **1** |
+| **0** | **1** | **1** | **A+B** | **I3** |  **1** |
+| **1** | **0** | **0** | **A+B** | **I4** |  **1** |
+| **1** | **0** | **1** | **B-A** | **I5** |  **1** |
+| **1** | **1** | **0** | **A-B** | **I6** |  **1** |
+|   1   |   1   |   1   |         | I7     |  -     |
+
+
+Si noti però che l'operazione B - A non è necessaria per simulare le istruzioni di sottrazione del 6502, dunque in futuro non la terremo in considerazione.
 
 Riepilogando:
 
@@ -392,7 +406,7 @@ Riepilogando:
 
 - alcuni degli ingressi I0-I7 sono opportunamente connessi in modalità "Hardwired" all'Instruction Register per determinare l'operazione correntemente in esecuzione.
 
-Testiamo alcuni casi, ma non prima di aver fatto un esempio iniziale spiegando anche cosa significano le varie colonne:
+Testiamo alcuni casi di addizione e sottrazione, ma non prima di aver fatto un esempio iniziale spiegando anche il significato delle colonne:
 
 - Nella colonna **Hex** è esposta la rappresentazione esadecimale dei numeri che vogliamo sommare o sottrarre, con il simbolo dell'operazione alla sinistra del secondo numero; desideriamo eseguire l'operazione 0x70 - 0x30.
 - La colonna **Dec** mostra il valore decimale ricavato dalla tabella *Relazione tra numeri Hex, Bin, Signed e Unsigned a 8 bit*; 0x70 corrisponde a 112 decimale, mentre 0x30 corrisponde a 48: l'operazione è quindi 112 - 48 (che avrà come risultato 64).
