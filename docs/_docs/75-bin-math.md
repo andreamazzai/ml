@@ -357,26 +357,26 @@ Un esempio concreto:
 - se A = 1, B = 1 e Q = 0 e stiamo eseguendo una somma, abbiamo un Overflow;
 - se A = 1, B = 1 e Q = 0 e stiamo facendo una sottrazione, allora non vi è Overflow.
 
-In effetti, il '151 consente di selezionare una sorgente di dati (tra le 8 disponibili I0-I7) in funzione di una codifica univoca presentata ai suoi ingressi di selezione A, B e C.
+In effetti, il '151 consente di selezionare una sorgente di dati (tra le 8 disponibili I0-I7) in funzione di una codifica univoca presentata ai suoi ingressi di selezione S2-S1-S0.
 
 Provando a scrivere un flusso logico:
 
-1. la presenza di uno specifico stato logico agli ingressi di selezione ABC connessi ad A7, B7 e Q7
+1. la presenza di uno specifico stato logico agli ingressi di selezione S2-S1-S0 connessi a Q7, B7 e A7
 2. attiva un determinato ingresso Ix tra quelli connessi all'Instruction Register, che
 3. grazie alla opportuna scelta dell'opcode delle istruzioni di somma e sottrazione
 4. può risultare in uno stato logico 1 in uscita sul '151
-5. evidenziando una condizione di Overflow
+5. evidenziando una condizione di Overflow.
 
 Ipotizziamo ad esempio di eseguire una somma con:
 
 - input sull'ALU A7 = B7 = 1 e output Q7 = 0, cioè due Signed negativi in ingresso e un Signed positivo in uscita;
 - I3 e I4 del '151 connessi a una linea dell'Instruction Register attiva in caso di istruzione di somma.
 
-La combinazione 011 agli ingressi CBA del '151 attiverà l'ingresso I3, che si troverà ad 1: l'uscita del '151 sarà attiva, evidenziando una situazione di Overflow.
+La combinazione 011 agli ingressi S2-S1-S0 del '151 attiverà l'ingresso I3, che si troverà ad 1: l'uscita del '151 sarà attiva, evidenziando una situazione di Overflow.
 
 Infatti, una configurazione dei pin di ingresso come evidenziato in figura risolve le equazioni di Overflow sia per le addizioni A + B, sia per le sottrazioni A - B e B - A:
 
-![74LS151](../../assets/math/75-overflow-74151.png)
+![74LS151](../../assets/math/75-overflow-74151-i3-sum.png){:width="40%"}
 
 qualche connessione alla Control Logic o all'Instruction Register, che stiamo eseguendo una addizione: come detto poco sopra, una somma di due Signed negativi non può risultare in un Signed positivo.
 , che rappresenta una tipica situazione di Overflow associata all'ingresso selezionato da CBA = 011 che indica, grazie a qualche connessione alla Control Logic o all'Instruction Register, che stiamo eseguendo una addizione: come detto poco sopra, una somma di due Signed negativi non può risultare in un Signed positivo.
