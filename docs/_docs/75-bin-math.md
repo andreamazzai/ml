@@ -347,6 +347,10 @@ L'equazione completa diventa: **(A7 = B7’ = 1 AND Q7 = 0) OR (A7 = B7’ = 0 A
 
 Ora le cose si fanno interessanti: Dieter prosegue indicando che un unico chip 74LS151 è in grado di indirizzare tutte le necessità.
 
+![Schema logico del 74LS151](../../assets/math/75-overflow-74151.png){:width="80%"}
+
+*Schema logico del 74LS151.*
+
 Evidenziamo i due punti da prendere in considerazione per vedere se possiamo farli combaciare con il '151:
 
 - l'equazione dell'Overflow è basata su 3 input (A, B, Q);
@@ -376,7 +380,7 @@ La combinazione 011 agli ingressi S2-S1-S0 del '151 attiverà l'ingresso I3, che
 
 Infatti, una configurazione dei pin di ingresso come evidenziato in figura risolve le equazioni di Overflow sia per le addizioni A + B, sia per le sottrazioni A - B e B - A:
 
-![74LS151](../../assets/math/75-overflow-74151-i3-sum.png){:width="40%"}
+![74LS151](../../assets/math/75-overflow-74151-i3-sum.png){:width="50%"}
 
 qualche connessione alla Control Logic o all'Instruction Register, che stiamo eseguendo una addizione: come detto poco sopra, una somma di due Signed negativi non può risultare in un Signed positivo.
 , che rappresenta una tipica situazione di Overflow associata all'ingresso selezionato da CBA = 011 che indica, grazie a qualche connessione alla Control Logic o all'Instruction Register, che stiamo eseguendo una addizione: come detto poco sopra, una somma di due Signed negativi non può risultare in un Signed positivo.
