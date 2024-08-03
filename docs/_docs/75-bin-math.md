@@ -307,6 +307,10 @@ La truth table **(A7 == B7') AND (Q7 <> A7)** del primo caso si tradurrebbe nell
 
 ![Primo metodo](../../assets/math/75-overflow-detector-xor-not-and.png)
 
+Per dovere di cronaca 😊 riporto lo schema di due registri A e B e di un generico Adder che avevo disegnato per comprendere meglio il concetto dell'Overflow nelle addizioni; si noti la circuiteria preposta ad individuare situazioni di Overflow.
+
+[![Adder su carta](../../assets/math/75-adder.png "Adder su carta"){:width="50%"}](../../assets/math/75-adder.png){:width="75%"}
+
 ---
 Anche nel secondo caso **C7 <> C8** manca una informazione, perché C7 è computato internamente all'ALU e non esposto:
 
@@ -337,20 +341,9 @@ Giunti a questo punto, per realizzare un circuito in grado di identificare l'Ove
 
 ![Overflow somma e sottrazione](../../assets/math/75-overflow-detector-a+b-a-b.png){:width="57%"}
 
-L'equazione completa diventerebbe:
+L'equazione completa diventerebbe: **(A7 = B7’ = 1 AND Q7 = 0) OR (A7 = B7’ = 0 AND Q7 = 1) OR (A7 = 1 AND B7’ = Q7 = 0) OR (A7 = 0 AND B7’ = Q7 = 1)**
 
-**(A7 = B7’ = 1 AND Q7 = 0) OR (A7 = B7’ = 0 AND Q7 = 1) OR (A7 = 1 AND B7’ = Q7 = 0) OR (A7 = 0 AND B7’ = Q7 = 1)**
 
-Detto questo, si potrebbe notare che anche il circuito del metodo 1 permette di individuare situazioni di Overflow sfruttando B7 anziché B7': richiede un numero inferiore di porte logiche, ma di tre tipologie (XOR, NOT, AND) anziché di due (AND, OR).
-
-ricordare NPP e PNN per sottrazioni, PPN e NNP per addizioni
-
-**+++++ attenzione dubbi da chiarire e verificare**
-**+++++ attenzione dubbi da chiarire e verificare**
-
-A questo proposito, avevo provato a disegnare lo schema di due registri A e B e di un generico Adder per comprendere meglio il concetto; si noti la circuiteria preposta ad individuare situazioni di Overflow:
-
-[![Adder su carta](../../assets/math/75-adder.png "Adder su carta"){:width="50%"}](../../assets/math/75-adder.png){:width="75%"}
 
 - nell'esecuzione di una addizione, l'8° Adder dell'ALU troverà al suo ingresso interno B7' esattamente lo stesso valore presente all'uscita B7 del registro B;
 - nell'esecuzione di una sottrazione, l'inversione effettuata dal Complemento a 2 presenterà a B7' il valore invertito rispetto a quello presente all'uscita B7 del registro B.
