@@ -343,7 +343,7 @@ L'equazione completa diventerebbe:
 
 **(A7 = B7’ = 1 AND Q7 = 0) OR (A7 = B7’ = 0 AND Q7 = 1) OR (A7 = 1 AND B7’ = Q7 = 0) OR (A7 = 0 AND B7’ = Q7 = 1)**
 
-Detto questo, si potrebbe notare che anche il circuito del metodo 1 permetterebbe di individuare situazioni di Overflow sfruttando B7 anziché B7': richiederebbe un numero inferiore di porte logiche, ma di tre tipologie (XOR, NOT, AND) anziché di due (AND, OR).
+Detto questo, si potrebbe notare che anche il circuito del metodo 1 permette di individuare situazioni di Overflow sfruttando B7 anziché B7': richiede un numero inferiore di porte logiche, ma di tre tipologie (XOR, NOT, AND) anziché di due (AND, OR).
 
 ricordare NPP e PNN per sottrazioni, PPN e NNP per addizioni
 
@@ -351,6 +351,7 @@ Forse vale la pena far notare che overflow in effetti si riferisce al fatto di s
 
 **+++++ attenzione dubbi da chiarire e verificare**
 **+++++ attenzione dubbi da chiarire e verificare**
+
 A questo proposito, avevo provato a disegnare lo schema di due registri A e B e di un generico Adder per comprendere meglio il concetto; si noti la circuiteria preposta ad individuare situazioni di Overflow:
 
 [![Adder su carta](../../assets/math/75-adder.png "Adder su carta"){:width="50%"}](../../assets/math/75-adder.png){:width="75%"}
