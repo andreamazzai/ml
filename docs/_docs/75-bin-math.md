@@ -539,19 +539,19 @@ Per identificare l'esecuzione di un'operazione di addizione o di sottrazione, si
 
 Detto in altri termini, gli opcode delle istruzioni di somma e sottrazione dovranno avere i bit 1 e 3 settati come in tabella, mentre gli altri bit non avranno tali vincoli:
 
-| bit | Somma | Sottrazione |
-| -   | -     | -           |
-|   0 |     X |           X |
-|   1 |    LO |          HI |
-|   2 |     X |           X |
-|   3 |    HI |          LO |
-|   4 |     X |           X |
-|   5 |     X |           X |
-|   6 |     X |           X |
-|   7 |     X |           X |
+| bit |  Somma | Sottrazione |
+| -   |  -     | -           |
+|   0 |      X |           X |
+|   1 | **LO** |      **HI** |
+|   2 |      X |           X |
+|   3 | **HI** |      **LO** |
+|   4 |      X |           X |
+|   5 |      X |           X |
+|   6 |      X |           X |
+|   7 |      X |           X |
 
-Questo corrisponde esattamente a quanto indicato nella pagina sezione [Un esempio pratico](../alu/#un-esempio-pratico) della pagina del modulo ALU, nella quale si evidenzia ad esempio che le istruzioni di somma dovranno presentare "01001 sui 5 bit comuni tra Instruction Register e ALU": il bit numero 3 è a 1, mentre il bit numero 1 è a 0, esattamente come richiesto dalla tabella precedente.
+Questo corrisponde esattamente a quanto indicato nella sezione [Un esempio pratico](../alu/#un-esempio-pratico) della pagina del modulo ALU, nella quale si evidenzia ad esempio che le istruzioni di somma dovranno presentare "01001 sui 5 bit comuni tra Instruction Register e ALU": il bit numero 3 è a 1, mentre il bit numero 1 è a 0, esattamente come richiesto dalla tabella precedente.
 
 ![Connessioni in uscita dall'Instruction Register dell'NQSAP.](../../assets/math/75-IR-to-74151.png){:width="66%"}
 
-Per finire, da quanto visto fino ad ora possiamo dedurre un'altra regola: la somma di due Signed di segno opposto e **la sottrazione di due Signed dello stesso segno** non possono causare Overflow.
+Per finire, da quanto visto fino ad ora possiamo dedurre un'altra regola: la somma di due Signed di segno opposto e la sottrazione di due Signed dello stesso segno non possono causare Overflow.
