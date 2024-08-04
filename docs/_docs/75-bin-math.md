@@ -502,7 +502,7 @@ Tornando poi all'interpretazione dell'hardware, abbiamo anticipato che i moduli 
 
 ![74LS151](../../assets/math/75-overflow-74151-a+b-a-b.png){:width="50%"}
 
-I segnali (A + B) e (A - B) dovranno avere una connessione hardwired con l'Instruction Register per identificare rispettivamente le istruzioni di somma e di sottrazione. Quando nella descrizione dei quattro casi si indicava "Il microcode opportunamente codificato..." si intende infatti che tali istruzioni dovranno rispettare dei vincoli nella scelta degli opcode, in modo da poter sapere con certezza se stiamo eseguendo l'una o l'altra.
+I segnali (A + B) e (A - B) dovranno avere una connessione hardwired con l'Instruction Register per permetterci di identificare rispettivamente le istruzioni di somma e di sottrazione. Quando nella descrizione dei quattro casi appena visti si indica "Il microcode opportunamente codificato..." si intende infatti che tali istruzioni dovranno rispettare dei vincoli nella scelta degli opcode, in modo da poter sapere con certezza se stiamo eseguendo l'una o l'altra.
 
 Riprendendo lo schema della sezione [Overflow](../flags/#overflow) dalla pagina del modulo Flag, possiamo ora applicare quanto visto in questa pagina per comprenderne il funzionamento e visualizzare la truth table definitiva:
 
@@ -545,6 +545,8 @@ Detto in altri termini, gli opcode delle istruzioni di somma e sottrazione dovra
 |   5 |     X |           X |
 |   6 |     X |           X |
 |   7 |     X |           X |
+
+Questo corrisponde esattamente a quanto indicato nella pagina sezione [Un esempio pratico](../alu/#un-esempio-pratico) della pagina del modulo ALU, nella quale si evidenzia ad esempio che le istruzioni di somma dovranno presentare "01001 sui 5 bit comuni tra Instruction Register e ALU": il bit numero 3 è a 1, mentre il bit numero 1 è a 0, esattamente come richiesto dalla tabella precedente.
 
 ![Connessioni in uscita dall'Instruction Register dell'NQSAP.](../../assets/math/75-IR-to-74151.png){:width="66%"}
 
