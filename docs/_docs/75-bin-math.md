@@ -188,7 +188,7 @@ Nel [link di riferimento](http://6502.org/users/dieter/v_flag/v_0.htm), Dieter i
 
 Ricordiamo che l'Overflow indica un errore nel processo di somma o sottrazione di due numeri Signed: se il numero risultante ha un segno errato rispetto al previsto, si ha un Overflow.
 
-Nelle due tabelle sottostanti, che rappresentano rispettivamente operazioni di addizione e di sottrazione, le combinazioni Colonna/Riga al cui incrocio vi è un asterisco "\*" indicano situazioni di Overflow, cioè di un risultato che non può essere correttamente rappresentato con gli 8 bit a disposizione.
+Nelle due tabelle sottostanti, che rappresentano rispettivamente operazioni di addizione e di sottrazione, le combinazioni Colonna/Riga al cui incrocio vi è un asterisco "\*" indicano situazioni di Overflow, cioè di un risultato che non può essere correttamente rappresentato con gli 8 bit disponibili.
 
 ~~~text
 Operazione       Sum  (Column + Row)       Sub (Column - Row)
@@ -341,7 +341,7 @@ Giunti a questo punto, per realizzare un circuito in grado di identificare l'Ove
 
 ![Overflow somma e sottrazione](../../assets/math/75-overflow-detector-a+b-a-b.png){:width="57%"}
 
-L'equazione completa diventa: **(A7 = B7’ = 1 AND Q7 = 0) OR (A7 = B7’ = 0 AND Q7 = 1) OR (A7 = 1 AND B7’ = Q7 = 0) OR (A7 = 0 AND B7’ = Q7 = 1)**
+L'equazione completa diventa: **(A7 = B7 = 1 AND Q7 = 0) OR (A7 = B7 = 0 AND Q7 = 1) OR (A7 = 1 AND B7 = Q7 = 0) OR (A7 = 0 AND B7 = Q7 = 1)**
 
 ### Semplificazione con 74LS151
 
@@ -430,7 +430,7 @@ In altre parole: quando devo effettuare la sottrazione di un numero positivo, ne
 
 Nel caso specifico di questa sottrazione di esempio, non c'è Overflow, in quanto il valore 64 risultante dalla sottrazione 0x70 - 0x30 è incluso nel range di numeri Signed ad 8 bit.
 
-- **Caso 1:** 0x20 + 0xC0; somma A + B di un Signed positivo e un Signed negativo
+- **Caso 1:** 0x20 + 0xC0; somma A + B di un Signed positivo e un Signed negativo.
 
 ~~~text
     Hex        Dec        Bin             2C
@@ -447,7 +447,7 @@ Il microcode opportunamente codificato dell'istruzione A + B porterebbe a 1 gli 
 
 ---
 
-- **Caso 2:** 0x20 + 0x70; somma A + B di due Signed positivi
+- **Caso 2:** 0x20 + 0x70; somma A + B di due Signed positivi.
 
 ~~~text
     Hex        Dec        Bin             2C
@@ -464,7 +464,7 @@ Il microcode opportunamente codificato dell'istruzione A + B porterebbe a 1 gli 
 
 ---
 
-- **Caso 3:** 0x50 - 0x30; sottrazione A - B tra due Signed positivi
+- **Caso 3:** 0x50 - 0x30; sottrazione A - B tra due Signed positivi.
 
 ~~~text
     Hex        Dec        Bin             2C
@@ -481,7 +481,7 @@ Il microcode opportunamente codificato dell'istruzione A - B porterebbe a 1 gli 
 
 ---
 
-- **Caso 4:** 0x90 - 0x30; sottrazione A - B tra un Signed negativo e un Signed positivo
+- **Caso 4:** 0x90 - 0x30; sottrazione A - B tra un Signed negativo e un Signed positivo.
 
 ~~~text
     Hex        Dec        Bin             2C
@@ -500,9 +500,9 @@ Riprendendo la spiegazione dell'esempio svolto in testa ai quattro casi appena d
 
 Tornando all'interpretazione dell'hardware, abbiamo anticipato che i moduli ALU del computer NQSAP e del computer BEAM utilizzano solo le istruzioni A + B e A - B, dunque possiamo semplificare le connessioni del '151 eliminando B - A:
 
-![74LS151](../../assets/math/75-overflow-74151-a+b-a-b.png)
+![74LS151](../../assets/math/75-overflow-74151-a+b-a-b.png){:width="50%"}
 
-I segnali S0 ed S1 dovranno avere una corrispondenza hardwired con l'Instruction Register per identificare rispettivamente le istruzioni di somma e di sottrazione. Riprendiamo lo schema della sezione [Overflow](../flags/#overflow) della pagina del modulo Flag:
+I segnali a+b ed S1 dovranno avere una corrispondenza hardwired con l'Instruction Register per identificare rispettivamente le istruzioni di somma e di sottrazione. Riprendiamo lo schema della sezione [Overflow](../flags/#overflow) della pagina del modulo Flag:
 
 Possiamo finalmente analizzare il circuito dell'Overflow dell'NQSAP (e del BEAM) e visualizzare la truth table completa:
 
