@@ -523,8 +523,12 @@ Alla luce di tutte le considerazioni fatte, questa tabella può assumere ora un 
 | **1** | **1** | **0** | **A-B** | **I6** |  **1** |
 |   1   |   1   |   1   |         | I7     |  -     |
 
-- Il flag Overflow si attiva se **(A7 = B7 = 1 AND Q7 = 0) OR (A7 = B7 = 0 AND Q7 = 1)** *E* stiamo eseguendo una addizione (IR-Q3 attivo).
-- Il flag Overflow si attiva se **(A = 1 AND B = 0 AND Q = 0) OR (A = 0 AND B = 1 AND Q = 1)** *E* stiamo eseguendo una sottrazione (IR-Q1 attivo).
+Il flag Overflow si attiva se:
+
+- **(A7 = B7 = 1 AND Q7 = 0)** *E* stiamo eseguendo una addizione (IR-Q3 attivo), oppure
+- **(A7 = B7 = 0 AND Q7 = 1)** *E* stiamo eseguendo una addizione (IR-Q3 attivo), oppure
+- **(A = 1 AND B = 0 AND Q = 0)** *E* stiamo eseguendo una sottrazione (IR-Q1 attivo), oppure
+- **(A = 0 AND B = 1 AND Q = 1)** *E* stiamo eseguendo una sottrazione (IR-Q1 attivo).
 
 Per identificare l'esecuzione di un'operazione di addizione o di sottrazione, si utilizzano due linee dell'Instruction Register:
 
