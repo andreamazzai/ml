@@ -496,19 +496,19 @@ Il microcode opportunamente codificato dell'istruzione A - B porterebbe a 1 gli 
 
 ![74LS151](../../assets/math/75-overflow-74151-i1.png){:width="50%"}
 
-Riprendendo la spiegazione dell'esempio svolto in testa ai quattro casi appena discussi, si noti che i casi 3 e 4 sono sottrazioni nelle quali il sottraendo è positivo: in entrambi i casi l'ALU eseguirà internamente una somma del minuendo nel suo stato originario e del sottraendo invertito col Complemento a 2.
+Riprendendo la spiegazione dell'esempio svolto in testa ai quattro casi appena discussi, si noti che anche i casi 3 e 4 sono sottrazioni nelle quali il sottraendo è positivo: in entrambi i casi l'ALU eseguirà internamente una somma del minuendo nel suo stato originario e del sottraendo invertito col Complemento a 2.
 
-Tornando all'interpretazione dell'hardware, abbiamo anticipato che i moduli ALU del computer NQSAP e del computer BEAM utilizzano solo le istruzioni A + B e A - B, dunque possiamo semplificare le connessioni del '151 eliminando B - A:
+Tornando poi all'interpretazione dell'hardware, abbiamo anticipato che i moduli ALU del computer NQSAP e del computer BEAM utilizzano solo le istruzioni A + B e A - B, dunque possiamo semplificare le connessioni del '151 eliminando B - A:
 
 ![74LS151](../../assets/math/75-overflow-74151-a+b-a-b.png){:width="50%"}
 
-I segnali (A + B) e (A - B) dovranno avere una corrispondenza hardwired con l'Instruction Register per identificare rispettivamente le istruzioni di somma e di sottrazione.
+I segnali (A + B) e (A - B) dovranno avere una connessione hardwired con l'Instruction Register per identificare rispettivamente le istruzioni di somma e di sottrazione. Quando nella descrizione dei quattro casi si indicava "Il microcode opportunamente codificato..." si intende infatti che tali istruzioni dovranno rispettare dei vincoli nella scelta degli opcode, in modo da poter sapere con certezza se stiamo eseguendo l'una o l'altra.
 
-Riprendendo lo schema della sezione [Overflow](../flags/#overflow) dalla pagina del modulo Flag, possiamo ora applicare quanto visto in questa pagina per comprenderne il funzionamento e visualizzare la truth table completa:
+Riprendendo lo schema della sezione [Overflow](../flags/#overflow) dalla pagina del modulo Flag, possiamo ora applicare quanto visto in questa pagina per comprenderne il funzionamento e visualizzare la truth table definitiva:
 
-![Utilizzo di un 74LS151 per il calcolo dell'Overflow con evidenza degli MSB di H, B e dell'ALU e degli ingressi di selezione dell'operazione IR-Q1 e IR-Q3.](../../assets/flags/30-flag-v-151.png){:width="50%"}
+![Utilizzo del 74LS151 nell'NQSAP per il calcolo dell'Overflow con evidenza degli MSB di H, B e dell'ALU e degli ingressi di selezione dell'operazione IR-Q1 e IR-Q3.](../../assets/flags/30-flag-v-151.png){:width="50%"}
 
-*Utilizzo di un 74LS151 per il calcolo dell'Overflow con evidenza degli MSB di H, B e dell'ALU e degli ingressi di selezione dell'operazione IR-Q1 e IR-Q3.*
+*Utilizzo del 74LS151 nell'NQSAP per il calcolo dell'Overflow con evidenza degli MSB di H, B e dell'ALU e degli ingressi di selezione dell'operazione IR-Q1 e IR-Q3.*
 
 Alla luce di tutte le considerazioni fatte, questa tabella può assumere ora un significato più semplice rispetto a quanto non si potesse inizialmente pensare:
 
@@ -526,11 +526,26 @@ Alla luce di tutte le considerazioni fatte, questa tabella può assumere ora un 
 - Il flag Overflow si attiva se **(A7 = B7 = 1 AND Q7 = 0) OR (A7 = B7 = 0 AND Q7 = 1)** *E* stiamo eseguendo una addizione (IR-Q3 attivo).
 - Il flag Overflow si attiva se **(A = 1 AND B = 0 AND Q = 0) OR (A = 0 AND B = 1 AND Q = 1)** *E* stiamo eseguendo una sottrazione (IR-Q1 attivo).
 
-Per identificare l'esecuzione di un'operazione di addizione o di sottrazione e dunque selezionare quale debba essere l'ingresso corretto del '151 da attivare, si utilizzano due delle linee di selezione dell'operazione dell'ALU, in particolar modo:
+Per identificare l'esecuzione di un'operazione di addizione o di sottrazione, si utilizzano due linee dell'Instruction Register:
 
-| IR-Q1 | IR-Q3 | Operazione  |
+| IR-Q3 | IR-Q1 | Operazione  |
 | -     | -     | -           |
-| HI    | LO    | Sottrazione |
-| LO    | HI    | Addizione   |
+| LO    | HI    | Sottrazione |
+| HI    | LO    | Addizione   |
+
+Detto in altri termini, gli opcode delle istruzioni di somma e sottrazione dovranno avere i bit 1 e 3 settati come in tabella, mentre gli altri bit non avranno tali vincoli:
+
+| bit | Somma | Sottrazione |
+| -   | -     | -           |
+|   0 |     X |           X |
+|   1 |    LO |          HI |
+|   2 |     X |           X |
+|   3 |    HI |          LO |
+|   4 |     X |           X |
+|   5 |     X |           X |
+|   6 |     X |           X |
+|   7 |     X |           X |
+
+![Connessioni in uscita dall'Instruction Register dell'NQSAP.](../../assets/math/75-IR-to-74151.png){:width="66%"}
 
 Per finire, da quanto visto fino ad ora possiamo dedurre un'altra regola: la somma di due Signed di segno opposto e **la sottrazione di due Signed dello stesso segno** non possono causare Overflow.
