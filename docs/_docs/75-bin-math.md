@@ -496,15 +496,15 @@ Il microcode opportunamente codificato dell'istruzione A - B porterebbe a 1 gli 
 
 ![74LS151](../../assets/math/75-overflow-74151-i1.png){:width="50%"}
 
-Riprendendo la spiegazione dell'esempio svolto in testa ai quattro casi appena discussi, si noti che i casi 3 e 4 sono sottrazioni nelle quali il sottraendo è positivo: in entrambi i casi non si esegue una sottrazione, bensì una somma del minuendo nel suo stato originario e del sottraendo invertito col Complemento a 2.
+Riprendendo la spiegazione dell'esempio svolto in testa ai quattro casi appena discussi, si noti che i casi 3 e 4 sono sottrazioni nelle quali il sottraendo è positivo: in entrambi i casi l'ALU eseguirà internamente una somma del minuendo nel suo stato originario e del sottraendo invertito col Complemento a 2.
 
 Tornando all'interpretazione dell'hardware, abbiamo anticipato che i moduli ALU del computer NQSAP e del computer BEAM utilizzano solo le istruzioni A + B e A - B, dunque possiamo semplificare le connessioni del '151 eliminando B - A:
 
 ![74LS151](../../assets/math/75-overflow-74151-a+b-a-b.png){:width="50%"}
 
-I segnali a+b ed S1 dovranno avere una corrispondenza hardwired con l'Instruction Register per identificare rispettivamente le istruzioni di somma e di sottrazione. Riprendiamo lo schema della sezione [Overflow](../flags/#overflow) della pagina del modulo Flag:
+I segnali (A + B) e (A - B) dovranno avere una corrispondenza hardwired con l'Instruction Register per identificare rispettivamente le istruzioni di somma e di sottrazione.
 
-Possiamo finalmente analizzare il circuito dell'Overflow dell'NQSAP (e del BEAM) e visualizzare la truth table completa:
+Riprendendo lo schema della sezione [Overflow](../flags/#overflow) dalla pagina del modulo Flag, possiamo ora applicare quanto visto in questa pagina per comprenderne il funzionamento e visualizzare la truth table completa:
 
 ![Utilizzo di un 74LS151 per il calcolo dell'Overflow con evidenza degli MSB di H, B e dell'ALU e degli ingressi di selezione dell'operazione IR-Q1 e IR-Q3.](../../assets/flags/30-flag-v-151.png){:width="50%"}
 
