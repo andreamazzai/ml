@@ -34,9 +34,9 @@ Ecco una serie di video su YouTube:
 
 2. **Somme di numeri Unsigned, il concetto di Carry ed eventuale Overflow** - Mr Dimmick's Computing Channel - [link](https://www.youtube.com/watch?v=nKxjLM6ePcI): molto ben fatto; spiega anche le regole di base applicabili a tutte le somme di numeri binari.
 
-3. **Numeri negativi in binario** dello stesso autore del video 1 - [link](https://www.youtube.com/watch?v=dHB7jFjESLY): un ottimo video che spiega come rappresentare i numeri negativi in Complemento a 2 e come convertire un numero positivo in negativo e viceversa.
+3. **Numeri negativi in binario** dello stesso autore del video 1 - [link](https://www.youtube.com/watch?v=dHB7jFjESLY): un ottimo video che spiega come rappresentare i numeri negativi in complemento a 2 e come convertire un numero positivo in negativo e viceversa.
 
-    - Con il Complemento a 2, vi è un solo 0, a differenza di quanto accade con Modulo e Segno (si veda più avanti in questa pagina).
+    - Con il complemento a 2, vi è un solo 0, a differenza di quanto accade con Modulo e Segno (si veda più avanti in questa pagina).
     - Per convertire un numero positivo in negativo è sufficiente invertire tutti i bit ed aggiungere 1.
     - Lo stesso procedimento è perfettamente valido anche al contrario (da negativo a positivo).
     - Prestare attenzione a un errore riconosciuto anche dall'autore nei commenti: nella discussione di Segno e Modulo il range non va da -64 a +64, ma da -128 a +128.
@@ -62,7 +62,7 @@ Evidenzio in particolare [The 6502 overflow flag explained mathematically](https
 
 E' necessario comprendere a fondo logica e differenze relative ai numeri Unsigned e Signed.
 
-Approfondendo i numeri Signed, ero giusto in questa [interessantissima pagina](https://sandbox.mc.edu/~bennet/cs110/) dell'Università del Mississippi dedicata alla matematica binaria.
+Approfondendo i numeri Signed, ero giunto a questa [interessantissima pagina](https://sandbox.mc.edu/~bennet/cs110/) dell'Università del Mississippi dedicata alla matematica binaria.
 
 Grazie alla sezione *Textbook ==> Module 3: Computer Integer Arithmetic ==> 2. Negative binary numbers* avevo perfettamente compreso la rappresentazione binaria dei numeri negativi.
 
@@ -100,17 +100,17 @@ Tralasciando la spiegazione del metodo **Complemento a 1 (1C)**, anch'esso non o
 Due sono gli aspetti da evidenziare:
 
 - Risoluzione del problema del doppio zero.
-  - La regola che sta alla base della teoria del Complemento a 2 è: come posso rappresentare il numero "-1" in modo che, aggiungendovi "1", si ottenga "0"?
+  - La regola che sta alla base della teoria del complemento a 2 è: come posso rappresentare il numero "-1" in modo che, aggiungendovi "1", si ottenga "0"?
   - Similarmente ai vecchi tachimetri delle automobili, che una volta giunti a 99.999 passavano a 00.000, il 99.999 del tachimetro corrisponde allo 1111.1111 dell'aritmetica binaria a 8 bit: sommato a 0000.0001, genera come risultato 0000.0000 (il punto separatore fra i primi 4 bit e i secondi 4 bit dei numeri a 8 bit è inserito solamente per agevolarne la visualizzazione e non ne modifica in alcun modo i valori).
 
-- Le sottrazioni si possono eseguire senza errori sommando minuendo e Complemento a 2 del sottraendo.
-  - Ad esempio, invece di eseguire "15 - 7", si effettua "15 + (-7)": l'addizione è l'operazione più semplice in assoluto da eseguire e implementare; utilizzando il Complemento a 2 diventa possibile applicare alle sottrazioni le stesse regole già applicate alle addizioni, semplificandone enormemente i calcoli.
+- Le sottrazioni si possono eseguire senza errori sommando minuendo e complemento a 2 del sottraendo.
+  - Ad esempio, invece di eseguire "15 - 7", si effettua "15 + (-7)": l'addizione è l'operazione più semplice in assoluto da eseguire e implementare; utilizzando il complemento a 2 diventa possibile applicare alle sottrazioni le stesse regole già applicate alle addizioni, semplificandone enormemente i calcoli.
   - Per approfondire la sottrazione in 2C, si vedano i [link](#fonti) evidenziati in precedenza, in particolar modo il [video numero 4](https://www.youtube.com/watch?v=sJXTo3EZoxM).
 
 Riprendendo anche quanto esposto nella pagina dei [Flag](../flags/#overflow), in un byte sono possibili 256 combinazioni:
 
 - trattando i numeri come Unsigned, è possibile contare da 0 a 255;
-- trattando invece i numeri come Signed in Complemento a 2:
+- trattando invece i numeri come Signed in complemento a 2:
   - i valori da 0 a 127 sono rappresentati allo stesso modo dei numeri Unsigned da 0 a 127 (da Hex 0x00 a 0x7F);
   - i valori da -128 a -1 fanno il paio con le rappresentazioni esadecimali e binarie dei numeri Unsigned da 128 a 255 (da Hex 0x80 a 0xFF).
   
@@ -176,7 +176,7 @@ Questa tabella dovrebbe chiarire il concetto:
 
 Come già visto nell'immagine *Rappresentazione in Complemento a 2 dei numeri a 4 bit*, è importante notare anche qui il passaggio dei numeri Signed da -1 a 0 in corrispondenza del passaggio binario da 1111.1111 a 0000.0000.
 
-Il Complemento a 2 è dunque un modo molto pratico per rappresentare i numeri Signed, nei quali un MSB = 0 indica un numero positivo e un MSB = 1 indica un numero negativo.
+Il complemento a 2 è dunque un modo molto pratico per rappresentare i numeri Signed, nei quali un MSB = 0 indica un numero positivo e un MSB = 1 indica un numero negativo.
 
 ## Approfondimento Overflow
 
@@ -244,7 +244,7 @@ Riprendiamo i due esempi di Overflow riportati in calce alle tabelle:
            -144      10111.0000** ==> 0111.0000 ==> 0x70
 ~~~
 
-\* Notare che in questo secondo caso l'ALU esegue internamente una operazione A + (-B), dunque la rappresentazione di B è  invertita secondo la regola del Complemento a 2 (2C).
+\* Notare che in questo secondo caso l'ALU esegue internamente una operazione A + (-B), dunque la rappresentazione di B è  invertita secondo la regola del complemento a 2 (2C).
 
 \*\* Il 9° bit viene troncato, perché la dimensione della word usata nell'operazione è di 8 bit.
 
@@ -333,7 +333,7 @@ Qualche considerazione permette di riutilizzare lo stesso metodo anche per la ve
 
 ![Overflow sottrazione](../../assets/math/75-overflow-detector-a-b.png){:width="43%"}
 
-\* La sottrazione viene effettuata sommando il Complemento a 2 del sottraendo, pertanto sappiamo che il valore di B7' sarà invertito rispetto a B7.
+\* La sottrazione viene effettuata sommando il complemento a 2 del sottraendo, pertanto sappiamo che il valore di B7' sarà invertito rispetto a B7.
 
 In definitiva, il terzo metodo è utilizzabile per la verifica dell'Overflow sia per le addizioni, sia per le sottrazioni.
 
@@ -411,8 +411,8 @@ Testiamo alcuni casi di addizione e sottrazione, ma non prima di aver fatto un e
 
 - Nella colonna **Hex** è esposta la rappresentazione esadecimale dei numeri che vogliamo sommare o sottrarre, con il simbolo dell'operazione alla sinistra del secondo numero; desideriamo eseguire l'operazione 0x70 - 0x30.
 - La colonna **Dec** mostra il valore decimale ricavato dalla tabella *Relazione tra numeri Hex, Bin, Signed e Unsigned a 8 bit*; 0x70 corrisponde a 112 decimale, mentre 0x30 corrisponde a 48: l'operazione è quindi 112 - 48 (che avrà come risultato 64).
-- La colonna **Bin** espone la rappresentazione binaria dei numeri (in Complemento a 2 se negativi): 112 corrisponde a 0111.0000, mentre 48 corrisponde a 0011.0000.
-  - NB: se invece di una sottrazione 112 - 48 avessimo voluto eseguire ad esempio un'operazione di addizione 112 + (-48) tra un Signed positivo e un Signed negativo, il -48 sarebbe stato qui rappresentato colonna nella sua forma in Complemento a 2, cioè 1101.000.
+- La colonna **Bin** espone la rappresentazione binaria dei numeri (in complemento a 2 se negativi): 112 corrisponde a 0111.0000, mentre 48 corrisponde a 0011.0000.
+  - NB: se invece di una sottrazione 112 - 48 avessimo voluto eseguire ad esempio un'operazione di addizione 112 + (-48) tra un Signed positivo e un Signed negativo, il -48 sarebbe stato qui rappresentato colonna nella sua forma in complemento a 2, cioè 1101.000.
 - La colonna **2C** è infine utilizzata per eseguire l'operazione di somma invertendo l'eventuale sottraendo positivo: il sottraendo 48 viene convertito in 2C 1101.0000 (che in decimale è -48) e sommato al minuendo.
 
 ~~~text
@@ -424,9 +424,9 @@ B  -0x30  ==>   -48  ==>  0011.0000  ==>  1101.0000 =
 Q                64                      10100.0000 ==> 0100.0000 ==> 0x40 = 64, no Overflow
 ~~~
 
-Come riportato in più occasioni, la sottrazione di un numero positivo (nel nostro caso 48) viene eseguita sommando il minuendo con il valore invertito del sottraendo, cioè -48; il grande vantaggio del Complemento a 2 è proprio quello di permettere la trasformazione di una sottrazione in addizione, pertanto l'operazione originaria 112 - 48 diventa 112 + (-48), cioè 0111.0000 + 1101.0000 nella colonna 2C. Nel risultato, l'eventuale 9° bit deve essere scartato, in quanto il calcolo è effettuato su una word a 8 bit; l'8° bit (MSB) del risultato rappresenta il segno, che nel nostro esempio è 0 ad indicare un Signed positivo.
+Come riportato in più occasioni, la sottrazione di un numero positivo (nel nostro caso 48) viene eseguita sommando il minuendo con il valore invertito del sottraendo, cioè -48; il grande vantaggio del complemento a 2 è proprio quello di permettere la trasformazione di una sottrazione in addizione, pertanto l'operazione originaria 112 - 48 diventa 112 + (-48), cioè 0111.0000 + 1101.0000 nella colonna 2C. Nel risultato, l'eventuale 9° bit deve essere scartato, in quanto il calcolo è effettuato su una word a 8 bit; l'8° bit (MSB) del risultato rappresenta il segno, che nel nostro esempio è 0 ad indicare un Signed positivo.
 
-In altre parole: quando devo effettuare la sottrazione di un numero positivo, ne calcolo il Complemento a 2 e lo sommo al minuendo.
+In altre parole: quando devo effettuare la sottrazione di un numero positivo, ne calcolo il complemento a 2 e lo sommo al minuendo.
 
 Nel caso specifico di questa sottrazione di esempio, non c'è Overflow, in quanto il valore 64 risultante dalla sottrazione 0x70 - 0x30 è incluso nel range di numeri Signed ad 8 bit.
 
@@ -496,7 +496,7 @@ Il microcode opportunamente codificato dell'istruzione A - B porterebbe a 1 gli 
 
 ![74LS151](../../assets/math/75-overflow-74151-i1.png){:width="50%"}
 
-Riprendendo la spiegazione dell'esempio svolto in testa ai quattro casi appena discussi, si noti che anche i casi 3 e 4 sono sottrazioni nelle quali il sottraendo è positivo: in entrambi i casi l'ALU eseguirà internamente una somma del minuendo nel suo stato originario e del sottraendo invertito col Complemento a 2.
+Riprendendo la spiegazione dell'esempio svolto in testa ai quattro casi appena discussi, si noti che anche i casi 3 e 4 sono sottrazioni nelle quali il sottraendo è positivo: in entrambi i casi l'ALU eseguirà internamente una somma del minuendo nel suo stato originario e del sottraendo invertito col complemento a 2.
 
 Tornando poi all'interpretazione dell'hardware, abbiamo anticipato che i moduli ALU del computer NQSAP e del computer BEAM utilizzano solo le istruzioni A + B e A - B, dunque possiamo semplificare le connessioni del '151 eliminando B - A:
 
