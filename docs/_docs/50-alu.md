@@ -286,7 +286,7 @@ L'uso del Carry nel '181 (e di conseguenza nell'NQSAP) è simile a quanto avvien
 
 ### L'Overflow
 
-Dalle interessantissime note di Tom trascrivevo anche che, per le caratteristiche di funzionamento del '181 e provando a fare delle addizioni o sottrazioni con e senza Carry, si potrebbe pensare di poter eseguire un semplice OR esclusivo (XOR) tra i Carry Out (/Cn+4) dei due chip per capire se c'è Overflow o no. Tuttavia il meccanismo non funziona in caso di istruzioni **A + 1** e **A - 1** (e dunque per la verifica dell'esistenza di un overflow si ricorrerà ad un altro metodo, **come si vedrà in seguito analizzando in dettaglio il flag Overflow**).
+Dalle interessantissime note di Tom trascrivevo anche che, per le caratteristiche di funzionamento del '181 e provando a fare delle addizioni o sottrazioni con e senza Carry, si potrebbe pensare di poter eseguire un semplice OR esclusivo (XOR) tra i Carry Out (/Cn+4) dei due chip per capire se c'è Overflow o no. Tuttavia il meccanismo non funziona in caso di istruzioni **A + 1** e **A - 1** (e dunque per la verifica dell'esistenza di un overflow si ricorrerà ad un altro metodo, come discusso nell'[analisi dettagliata dell'Overflow](../math/#approfondimento-overflow)).
 
 Per quale motivo la verifica suddetta non è valida in caso di istruzioni di incremento e decremento?
 
