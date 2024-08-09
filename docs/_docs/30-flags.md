@@ -263,6 +263,10 @@ Si noti che la Truth Table della tabella richiederebbe i componenti evidenziati 
 
 *Schema originale per realizzazione della Truth Table di selezione del Carry.*
 
+![Schema rivisto con l'applicazione del teorema di De Morgan](../../assets/flags/30-flag-c-h-alu-de-morgan-nor.png){:width="50%"}
+
+*Schema rivisto con l'applicazione del teorema di De Morgan.*
+
 ## Moduli Flag dell'NQSAP e del BEAM
 
 Il modulo Flag del computer BEAM è sostanzialmente una copia del modulo Flag del computer NQSAP; con le mie conoscenze non avrei saputo svilupparne una versione migliore, ma il fatto di averne compreso perfettamente tanto il funzionamento quanto l'integrazione con gli altri moduli del computer è stata una ottima lezione.
@@ -279,7 +283,6 @@ Molte delle istruzioni modificano i flag.
 
 Altre referenze Tom Nisbet per Flags
 
-- Question for all 74ls181 alu people on reddit led to the design of the oVerflow flag.
 - How to add a decremental and incremental circuit to the ALU ? on reddit inspired the idea to drive the PC load line from the flags instead of running the flags through the microcode.
 - Opcodes and Flag decoding circuit on reddit has a different approach to conditional jumps using hardware. Instead of driving the LOAD line of the PC, the circuit sits between the Instruction Register and the ROM and conditionally jams a NOP or JMP instruction to the microcode depending on the state of the flags. One interesting part of the design is that the opcodes of the jump instructions are arranged so that the flag of interest can be determined by bits from the IR. NQSAP already did something similar with the ALU select lines, so the concept was used again for the conditional jump select lines.
 
@@ -287,8 +290,4 @@ LINK: il PDF di MICR LOGIC come compendio a istruzioni ,indirizzamenti flag etc
 
 http://www.6502.org/tutorials/vflag.html per V sezione 2.4.2.1
 
-interessante la definizione di come rappresentare un numero in complemento di 2 (2C): quel numero che sommato al numero in oggetto dà zero come risultato: -1 = $FF; -2 = $FE
-
-2.4.2.2 per esempi somme e sottrazioni
-
-V indica se il risultato di somma o sottrazione è fuori dal range 
+## Link utili

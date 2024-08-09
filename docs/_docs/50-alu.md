@@ -286,7 +286,7 @@ L'uso del Carry nel '181 (e di conseguenza nell'NQSAP) è simile a quanto avvien
 
 ### L'Overflow
 
-Dalle interessantissime note di Tom trascrivevo anche che, per le caratteristiche di funzionamento del '181 e provando a fare delle addizioni o sottrazioni con e senza Carry, si potrebbe pensare di eseguire un semplice OR esclusivo (XOR) tra i Carry Out (/Cn+4) dei due chip per individuare se il risultato dell'operazione genera un Overflow. Tuttavia il meccanismo non funziona in caso di istruzioni **A + 1** e **A - 1** (e dunque per la verifica dell'esistenza dell'Overflow si ricorrerà ad un altro metodo, come discusso nella pagina dedicata all'[aritmetica binaria](../math/#approfondimento-overflow)).
+Dalle interessantissime note di Tom trascrivevo anche che, per le caratteristiche di funzionamento del '181 e provando a fare delle addizioni o sottrazioni con e senza Carry, si potesse pensare di eseguire un semplice OR esclusivo (XOR) tra i Carry Out (/Cn+4) dei due chip per individuare se il risultato dell'operazione genera un Overflow. Tuttavia il meccanismo non funziona in caso di istruzioni **A + 1** e **A - 1** (e dunque per la verifica dell'esistenza dell'Overflow si ricorrerà ad un altro metodo, come discusso nella pagina dedicata all'[aritmetica binaria](../math/#approfondimento-overflow)).
 
 Per quale motivo la verifica suddetta non è valida in caso di istruzioni di incremento e decremento?
 
@@ -340,11 +340,8 @@ Ne parliamo perché i '161 usati nel MAR e i '181 dell'ALU ne parlano nei datash
 
 ## Link utili
 
-https://www.reddit.com/r/beneater/comments/kmuuex/question_for_all_74ls181_alu_people/ come trovare l'oveflow, Tom si è ispirato qui
-
 https://bread80.com/2019/09/02/adding-adc-sbc-inc-dec-operations-to-ben-eaters-alu/#easy-footnote-4-43 da leggere per capire se buono
 
-https://www.reddit.com/r/beneater/comments/jwxke0/how_to_add_a_decremental_and_incremental_circuit/ Interessante , da mettere nella sezione dei Flag , è l'ispirazione che Tom ha preso per utilizzare un altro sistema per la gestione dei Flage dei salti relativi anziché inviare i Flag alle eprom , risparmiando così i famosi preziosi linee di input
 
 - [Inside the vintage 74181 ALU chip: how it works and why it's so strange](https://www.righto.com/2017/03/inside-vintage-74181-alu-chip-how-it.html) di Ken Shirriff. Fondamentale per capire il perché dell'implementazione apparentemente così strana del chip.
 - Comparator Functions of 74LS181 (74HCT181) ALU - [link](https://www.youtube.com/watch?v=jmROTNtoUGI): ottimo video di David Courtney.
