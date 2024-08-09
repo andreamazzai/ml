@@ -234,7 +234,7 @@ Detto in altre parole ancora:
 
 ### Riepilogo: sottrazioni, comparazioni e indirizzamenti
 
-La documentazione dell'NQSAP segnalava che "poiché la ALU è legata all'IR, ci sono solo 8 Opcode disponibili per metterla in Subtract Mode", ma non capivo cosa volesse dire. "Per creare i 16 Opcode necessari per tutte le combinazioni di Subtract e Compare, si mette una NOR su ALU-S0 (IR 0) e l'altro input su LF, così da  riutilizzare la Selection 0111 come se fosse 0110, che è la modalità Subtract".
+La documentazione dell'NQSAP segnalava che "poiché la ALU è legata all'IR, ci sono solo 8 Opcode disponibili per metterla in Subtract Mode", ma non capivo cosa volesse dire. "Per creare i 16 Opcode necessari per tutte le combinazioni di Subtract e Compare, si mette una NOR su ALU-S0 (IR 0) e su LF, così da  riutilizzare la Selection 0111 come se fosse 0110, che è la modalità Subtract".
 
 Importante evidenziare che la modalità **Subtract Mode** del '181 altro non è che la configurazione di Input M/S3-S0 = 00110 che equivale alla operazione aritmetica di sottrazione, come chiarito da David Courtney nel video [Comparator Functions of 74LS181 (74HCT181) ALU](https://www.youtube.com/watch?v=jmROTNtoUGI). Il datasheet non era così chiaro relativamente alla definizione di questa modalità.
 
@@ -286,7 +286,7 @@ L'uso del Carry nel '181 (e di conseguenza nell'NQSAP) è simile a quanto avvien
 
 ### L'Overflow
 
-Dalle interessantissime note di Tom trascrivevo anche che, per le caratteristiche di funzionamento del '181 e provando a fare delle addizioni o sottrazioni con e senza Carry, si potrebbe pensare di poter eseguire un semplice OR esclusivo (XOR) tra i Carry Out (/Cn+4) dei due chip per capire se c'è Overflow o no. Tuttavia il meccanismo non funziona in caso di istruzioni **A + 1** e **A - 1** (e dunque per la verifica dell'esistenza di un overflow si ricorrerà ad un altro metodo, come discusso nell'[analisi dettagliata dell'Overflow](../math/#approfondimento-overflow)).
+Dalle interessantissime note di Tom trascrivevo anche che, per le caratteristiche di funzionamento del '181 e provando a fare delle addizioni o sottrazioni con e senza Carry, si potrebbe pensare di eseguire un semplice OR esclusivo (XOR) tra i Carry Out (/Cn+4) dei due chip per individuare se il risultato dell'operazione genera un Overflow. Tuttavia il meccanismo non funziona in caso di istruzioni **A + 1** e **A - 1** (e dunque per la verifica dell'esistenza dell'Overflow si ricorrerà ad un altro metodo, come discusso nella pagina dedicata all'[aritmetica binaria](../math/#approfondimento-overflow)).
 
 Per quale motivo la verifica suddetta non è valida in caso di istruzioni di incremento e decremento?
 
@@ -299,7 +299,7 @@ Per quale motivo la verifica suddetta non è valida in caso di istruzioni di inc
 
 - Nel secondo caso non si ha un reale Overflow incrementando la word iniziale da 0000.1111 a 0001.0000, ma se si andassero ad interpretare i Carry Out dei due '181 con una funzione XOR, si incorrerebbe in un errore, in quanto i due segnali sono invertiti e la XOR segnalerebbe Overflow, sbagliando.
 
-Tutto questo è spiegato molto bene da Tom nella stessa pagina citata poche righe più sopra; **come detto poc'anzi, l'argomento dell'Overflow sarà comunque ripreso diffusamente in una sezione dedicata**.
+Tutto questo è spiegato molto bene da Tom nella stessa pagina citata poche righe più sopra; come detto poc'anzi, l'argomento dell'Overflow è anche diffusamente ripreso [in una sezione dedicata](../math/#approfondimento-overflow).
 
 ## Differenze tra Moduli ALU dell'NQSAP e del BEAM
 
@@ -337,7 +337,6 @@ Ecco una lista delle differenze:
 Ne parliamo perché i '161 usati nel MAR e i '181 dell'ALU ne parlano nei datasheet.
 
 **FARE SPIEGAZIONE FUNZIONAMENTO H PER ROTAZIONE**
-**FARE SPIEGAZIONE FUNZIONAMENTO H PER ROTAZIONE**
 
 ## Link utili
 
@@ -345,10 +344,10 @@ https://www.reddit.com/r/beneater/comments/kmuuex/question_for_all_74ls181_alu_p
 
 https://bread80.com/2019/09/02/adding-adc-sbc-inc-dec-operations-to-ben-eaters-alu/#easy-footnote-4-43 da leggere per capire se buono
 
-https://www.reddit.com/r/beneater/comments/jwxke0/how_to_add_a_decremental_and_incremental_circuit/ Interessante , da mettere nella sezione dei Flag , è l'ispirazione che Tom ha preso per utilizzare un'altro sistema per la gestione dei Flage dei salti relativi anziché inviare i Flag alle eprom , risparmiando così i famosi preziosi linee di input
+https://www.reddit.com/r/beneater/comments/jwxke0/how_to_add_a_decremental_and_incremental_circuit/ Interessante , da mettere nella sezione dei Flag , è l'ispirazione che Tom ha preso per utilizzare un altro sistema per la gestione dei Flage dei salti relativi anziché inviare i Flag alle eprom , risparmiando così i famosi preziosi linee di input
 
 - [Inside the vintage 74181 ALU chip: how it works and why it's so strange](https://www.righto.com/2017/03/inside-vintage-74181-alu-chip-how-it.html) di Ken Shirriff. Fondamentale per capire il perché dell'implementazione apparentemente così strana del chip.
-- David Courtney
+- Comparator Functions of 74LS181 (74HCT181) ALU - [link](https://www.youtube.com/watch?v=jmROTNtoUGI): ottimo video di David Courtney.
 
 Un valido riferimento per l’analisi della relazione tra IR ed ALU è stata la pagina 6502 Instruction Set di Norbert Landsteiner, che invito a consultare anche per il 6502 Assembler e il Virtual 6502 che avrei utilizzato in seguito in fase di debug del microcode che stavo sviluppando.
 
