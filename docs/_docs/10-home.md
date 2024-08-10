@@ -87,29 +87,24 @@ Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ## Crediti e ringraziamenti
 
 - Ben Eater per la sua grande capacità di creazione di contenuti interessanti [contenuti interessanti](https://www.youtube.com/@BenEater/playlists/)
-
 - Tom Nisbet che ha realizzato l'[NQSAP](https://https://tomnisbet.github.io/nqsap/) espandendo e migliorando in maniera sostanziale il progetto di Ben Eater
-
 - Il subreddit [r/beneater](https://www.reddit.com/r/beneater/) - in particolar modo [The8BitEnthusiast](https://www.reddit.com/user/The8BitEnthusiast/) e [Tom Nisbet](https://www.reddit.com/user/nib85/) - grazie!
+- Ken Shirrif per alcuni [interessantissimi articoli](https://www.righto.com/) su Overflow, 6502 e 74181 (e molto altro!).
 
 ## Altri link
 
-- Un [compendio Micro Logic](https://www.atarimania.com/documents/6502%20(65xx)%20Microprocessor%20Instant%20Reference%20Card.pdf) incredibilmente utile, che in sole due pagine plastificabili include opcode, modalità di indirizzamento, flag e istruzioni che li modificano, funzionamento delle istruzioni di scorrimento e molto altro. Immancabile.
-
+- Un [compendio della Micro Logic](https://www.atarimania.com/documents/6502%20(65xx)%20Microprocessor%20Instant%20Reference%20Card.pdf) incredibilmente utile, che in sole due pagine plastificabili include opcode, modalità di indirizzamento, flag e istruzioni che li modificano, funzionamento delle istruzioni di scorrimento e molto altro. Insostituibile.
 - Un valido riferimento per l'analisi della relazione tra Control Logic ("CL") ed IR è stata la pagina [6502 Instruction Set](https://www.masswerk.at/6502/6502_instruction_set.html) di Norbert Landsteiner, che invito a consultare anche per il [6502 Assembler](https://www.masswerk.at/6502/assembler.html) e il [Virtual 6502](https://www.masswerk.at/6502/) che ho utilizzato in fase di debug del microcode.
 
 ## TO DO
 
 - qualche idea è stata presa anche da NQSAP-pCB, ad esempio i 74LS377
-
 - 6502.org
 - Il blog di Ken Shirrif per una eccellente spiegazione dell'overflow nel 6502
 - quel professore dell'università del Montana
 - Libro di Malvino
 - David Courtney
-
-Includere appunti su acquisto dei materiali, cavi utilizzati
-problemi di alimentazione
-lkink al video dell'ALU
-
+- Includere appunti su acquisto dei materiali, cavi utilizzati
+- problemi di alimentazione
+- lkink al video dell'ALU
 - non ho utilizzato HC perché... bla bla bla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla bla
