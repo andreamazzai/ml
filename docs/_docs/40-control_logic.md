@@ -3,6 +3,8 @@ title: "Control Logic"
 permalink: /docs/control/
 excerpt: "Control Logic del BEAM computer"
 ---
+PALCEHOLDER
+
 21/09/2022 - Flags and Conditional Jumps NQSAP	https://tomnisbet.github.io/nqsap/docs/flags/
 Bisogna dire che più volte, leggendo il blog di Tom Nisbet, ho trovato delle idee molto clever.
 
@@ -13,14 +15,6 @@ La realizzazione del comuter SAP mi ha permesso finalmente di capire cosa sia il
 
 È piuttosto comune leggere ad esempio che è necessario aggiornare il bios dei server per indirizzare falle di sicurezza che sono state scoperte e che potrebbero essere utilizzate dagli hacker per puntini puntini puntini nuovo paragrafo
 Non capendo come potesse essere aggiornata una CPU, dal momento che si tratta di un componente non programmabile virgola non riuscivo a comprendere come fosse possibile arginare i problemi di sicurezza; con il microcode ho capito
-
-
-
-
-
-
-
-
 
 
 Ritornando alla dimensione delle EEPROM da utilizzare per il microcode, nei miei appunti trovo traccia di diverse revisioni, ad esempio:

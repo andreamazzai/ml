@@ -69,7 +69,7 @@ Grazie alla sezione *Textbook ==> Module 3: Computer Integer Arithmetic ==> 2. N
 
 Il metodo **Signed Magnitude** è molto facile da comprendere: si sacrifica un bit dedicandolo alla rappresentazione del segno; il bit sacrificabile è quello più significativo (MSB), pertanto se un numero Unsigned a 8 bit può andare da 0 a 255 (2^8 = 256 combinazioni rappresentabili), un numero Unsigned avrà 7 bit disponibili per il Modulo (2^7 = 128 combinazioni) e un bit per il segno, dunque potrà andare da -128 a + 128 (sempre 256 numeri rappresentabili, ma metà negativi e metà positivi).
 
-![Rappresentazione Modulo e Segno dei numeri a 4 bit](../../assets/math/75-math_signed_magnitude.gif){:width="100%"}
+![Rappresentazione Modulo e Segno dei numeri a 4 bit](../../assets/math/math_signed_magnitude.gif){:width="100%"}
 
 *Rappresentazione Modulo e Segno dei numeri a 4 bit.*
 
@@ -77,7 +77,7 @@ Nell'immagine (semplificata a soli 4 bit per ragioni di spazio) si nota un probl
 
 NB: nella pagina citata, vi è un esempio errato di sottrazione "5 - 2". L'immagine di riferimento è la seguente:
 
-![Errore sottrazione](../../assets/math/75-math_mistake.gif
+![Errore sottrazione](../../assets/math/math_mistake.gif
 ){:width="15%"}
 
 Quanto si desiderava in realtà rappresentare era una sottrazione utilizzando il metodo Modulo e Segno, che permette di trasformare l'operazione da "5 - 2" in "5 + (-2)" invertendo il primo bit del numero 2, che dunque da 0010 diventa 1010:
@@ -94,7 +94,7 @@ Come si vede, la somma binaria di 0101 (5) e 1010 (-2) non porta al risultato as
 
 Tralasciando la spiegazione del metodo **Complemento a 1 (1C)**, anch'esso non ottimale, il **Complemento a 2 (2C)** risulta invece perfetto per la rappresentazione dei numeri negativi, portando tra l'altro in dote una grandissima semplificazione nell'esecuzione delle sottrazioni.
 
-![Rappresentazione in Complemento a 2 dei numeri a 4 bit](../../assets/math/75-math_2c.gif){:width="100%"}
+![Rappresentazione in Complemento a 2 dei numeri a 4 bit](../../assets/math/math_2c.gif){:width="100%"}
 
 *Rappresentazione in Complemento a 2 dei numeri a 4 bit.*
 
@@ -260,13 +260,13 @@ In definitiva, possiamo dire che se il bit del segno viene corrotto si è verifi
 
 Dieter esponeva una rappresentazione logica di un Adder in grado di effettuare sia somme sia sottrazioni, segnalando che "le somme A+B sono facili; per eseguire invece le sottrazioni, il metodo più semplice è quello di invertire B e procedere poi esattamente come per le somme: A+(-B)".
 
-![Adder hardware per somme A+B e sottrazioni A-B](../../assets/math/75-dieter-alu.png){:width="66%"}
+![Adder hardware per somme A+B e sottrazioni A-B](../../assets/math/dieter-alu.png){:width="66%"}
 
 *Adder hardware per somme A+B e sottrazioni A-B.*
 
 In un Adder a 8 bit abbiamo 8 Adder a 1 bit in cascata; quello rappresentato di seguito è l'8° ed ultimo, i cui ingressi A e B' sono i bit più significativi A7 e B7' dei numeri da sommare; l'ingresso Carry-in C_IN è connesso all'output Carry-Out C_OUT proveniente dall'Adder precedente.
 
-![Ultimo stadio di un Adder a 8 bit](../../assets/math/75-dieter-8th-adder.png){:width="25%"}
+![Ultimo stadio di un Adder a 8 bit](../../assets/math/dieter-8th-adder.png){:width="25%"}
 
 *Ultimo stadio di un Adder a 8 bit.*
 
@@ -306,33 +306,33 @@ Mettendo a fattor comune quanto abbiamo visto fino ad ora, possiamo identificare
 
 La truth table **(A7 == B7') AND (Q7 <> A7)** del primo caso si tradurrebbe nella logica in figura; purtroppo, il computer basato su 74LS181 non offre visibilità del valore di B7', che è computato internamente all'ALU e non esposto, pertanto questo metodo non è utilizzabile:
 
-![Primo metodo](../../assets/math/75-overflow-detector-xor-not-and.png)
+![Primo metodo](../../assets/math/overflow-detector-xor-not-and.png)
 
 Per dovere di cronaca 😊 riporto lo schema di due registri A e B e di un generico Adder che avevo disegnato per comprendere meglio le addizioni; si noti la circuiteria preposta ad individuare situazioni di Overflow.
 
-[![Adder su carta](../../assets/math/75-adder.png "Adder su carta"){:width="50%"}](../../assets/math/75-adder.png){:width="75%"}
+[![Adder su carta](../../assets/math/adder.png "Adder su carta"){:width="50%"}](../../assets/math/adder.png){:width="75%"}
 
 ---
 Anche nel secondo caso **C7 <> C8** manca una informazione, perché C7 è computato internamente all'ALU e non esposto:
 
-![Secondo metodo](../../assets/math/75-overflow-detector-xor.png)
+![Secondo metodo](../../assets/math/overflow-detector-xor.png)
 
 ---
 Nemmeno il terzo metodo **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** sembra utilizzabile, perché B7' è confinato alla circuiteria interna dell'ALU:
 
-![Terzo metodo](../../assets/math/75-overflow-detector-and-or.png){:width="45%"}
+![Terzo metodo](../../assets/math/overflow-detector-and-or.png){:width="45%"}
 
 I tre metodi esaminati sembrano portare a una strada chiusa; tuttavia, è possibile ricostruire artificialmente il segnale B7' basandosi sugli altri segnali disponibili nel computer.
 
 - In una *addizione*, il valore B7' in ingresso all'ultimo Adder del '181 sarà infatti uguale al valore di B7 dato in input al chip (in una somma A7 + B7, B7' non subisce modifiche dalla circuiteria interna dell'ALU e possiamo dunque usare B7 come input del circuito che determina l'eventuale stato di Overflow).
 
-![Overflow somma](../../assets/math/75-overflow-detector-a+b.png){:width="43%"}
+![Overflow somma](../../assets/math/overflow-detector-a+b.png){:width="43%"}
 
 Qualche considerazione permette di riutilizzare lo stesso metodo anche per la verifica dell'Overflow nelle *sottrazioni*.
 
 - Il valore B7' in ingresso all'ultimo Adder del '181 sarà infatti invertito rispetto al valore di B7 dato in input al chip (in una sottrazione A7 - B7, B7' viene invertito dalla circuiteria interna dell'ALU* e possiamo dunque usare l'inverso di B7 come input del circuito che determina l'eventuale stato di Overflow):
 
-![Overflow sottrazione](../../assets/math/75-overflow-detector-a-b.png){:width="43%"}
+![Overflow sottrazione](../../assets/math/overflow-detector-a-b.png){:width="43%"}
 
 \* La sottrazione viene effettuata sommando il complemento a 2 del sottraendo, pertanto sappiamo che il valore di B7' sarà invertito rispetto a B7.
 
@@ -340,7 +340,7 @@ In definitiva, il terzo metodo è utilizzabile per la verifica dell'Overflow sia
 
 Giunti a questo punto, per realizzare un circuito in grado di identificare l'Overflow basandoci sul terzo metodo servirebbero 4 porte AND con 3 ingressi e 3 porte OR con 2 ingressi: la terza OR servirebbe ad eseguire l'OR logico tra i due circuiti precedenti per creare un'unica segnalazione di Overflow tanto in caso di addizione quanto in caso di sottrazione.
 
-![Overflow somma e sottrazione](../../assets/math/75-overflow-detector-a+b-a-b.png){:width="57%"}
+![Overflow somma e sottrazione](../../assets/math/overflow-detector-a+b-a-b.png){:width="57%"}
 
 L'equazione completa diventa: **(A7 = B7 = 1 AND Q7 = 0) OR (A7 = B7 = 0 AND Q7 = 1) OR (A7 = 1 AND B7 = Q7 = 0) OR (A7 = 0 AND B7 = Q7 = 1)**
 
@@ -348,7 +348,7 @@ L'equazione completa diventa: **(A7 = B7 = 1 AND Q7 = 0) OR (A7 = B7 = 0 AND Q7 
 
 Ora le cose si fanno interessanti: Dieter prosegue indicando che un unico chip 74LS151 è in grado di indirizzare tutte le necessità.
 
-![Schema logico del 74LS151](../../assets/math/75-overflow-74151.png){:width="80%"}
+![Schema logico del 74LS151](../../assets/math/overflow-74151.png){:width="80%"}
 
 *Schema logico del 74LS151.*
 
@@ -379,11 +379,11 @@ Ipotizziamo ad esempio di eseguire una somma con:
 
 La combinazione 011 agli ingressi S2-S1-S0 del '151 attiverà l'ingresso I3, che porterà all'uscita Z il segnale allo stato logico 1 proveniente dall'IR, evidenziando una situazione di Overflow.
 
-![74LS151](../../assets/math/75-overflow-74151-i3-sum.png){:width="40%"}
+![74LS151](../../assets/math/overflow-74151-i3-sum.png){:width="40%"}
 
 Dovendo indirizzare 8 combinazioni di Q, B e A (000, 001 etc. fino a 111), una configurazione dei pin di ingresso come evidenziato nella successiva figura risolve le equazioni di Overflow sia per le addizioni A + B, sia per le sottrazioni A - B e B - A, purché i pin I0-I7 del '151 siano correttamente connessi all'IR per rilevare l'esecuzione di istruzioni di somma A + B e sottrazione A - B e B - A:
 
-![74LS151](../../assets/math/75-overflow-74151-i3-sum-full.png){:width="50%"}
+![74LS151](../../assets/math/overflow-74151-i3-sum-full.png){:width="50%"}
 
 La seguente tabella riepiloga le situazioni di Overflow in base agli stati di Q, B ed A ed al fatto che si stiano eseguendo addizioni o sottrazioni:
 
@@ -444,7 +444,7 @@ Q               -32                       1110.0000 ==> 0xE0 = -32, no Overflow
 
 Il microcode opportunamente codificato dell'istruzione A + B porterebbe a 1 gli ingressi I3 e I4 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione produrrebbe Q7=1, B7=1 e A7=0 sugli ingressi di selezione (S2-S1-S0 = 110), che attiverebbero l'ingresso **I6** che risulta a 0 in quanto non attivato dal microcode, pertanto l'uscita Q del '151 sarebbe a 0, indicando che non vi è Overflow --> situazione verificata correttamente:
 
-![74LS151](../../assets/math/75-overflow-74151-i6.png){:width="50%"}
+![74LS151](../../assets/math/overflow-74151-i6.png){:width="50%"}
 
 ---
 
@@ -461,7 +461,7 @@ Q               144                       1001.0000 ==> 0x90 = -112, Overflow
 
 Il microcode opportunamente codificato dell'istruzione A + B porterebbe a 1 gli ingressi I3 e I4 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione produrrebbe Q7=1, B7=0 e A7=0 sugli ingressi di selezione (S2-S1-S0 = 100), che attiverebbero l'ingresso **I4** che risulta a 1 in quanto attivato dal microcode, pertanto l'uscita Q del '151 sarebbe a 1, indicando che vi è Overflow --> situazione verificata correttamente.
 
-![74LS151](../../assets/math/75-overflow-74151-i4.png){:width="50%"}
+![74LS151](../../assets/math/overflow-74151-i4.png){:width="50%"}
 
 ---
 
@@ -478,7 +478,7 @@ Q                32                      10010.0000 ==> 0010.0000 ==> 0x20 = 32,
 
 Il microcode opportunamente codificato dell'istruzione A - B porterebbe a 1 gli ingressi I1 e I6 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione produrrebbe Q7=0, B7=0 e A7=0 sugli ingressi di selezione (S2-S1-S0 = 000), che attiverebbero l'ingresso **I0** che risulta a 0, pertanto l'uscita Q del '151 sarebbe a 0, indicando che non vi è Overflow --> situazione verificata correttamente.
 
-![74LS151](../../assets/math/75-overflow-74151-i0.png){:width="50%"}
+![74LS151](../../assets/math/overflow-74151-i0.png){:width="50%"}
 
 ---
 
@@ -495,13 +495,13 @@ Q              -160                      10110.0000 ==> 0110.0000 ==> 0x60 = 96,
 
 Il microcode opportunamente codificato dell'istruzione A - B porterebbe a 1 gli ingressi I1 e I6 del '151, mentre tutti gli altri ingressi sarebbero a 0; l'operazione produrrebbe Q7=0, B7=0 e A7=1 sugli ingressi di selezione (S2-S1-S0 = 001), che attiverebbero l'ingresso **I1** che risulta a 1 in quanto attivato dal microcode, pertanto l'uscita Q del '151 sarebbe a 1, indicando che vi è Overflow --> situazione verificata correttamente.
 
-![74LS151](../../assets/math/75-overflow-74151-i1.png){:width="50%"}
+![74LS151](../../assets/math/overflow-74151-i1.png){:width="50%"}
 
 Riprendendo la spiegazione dell'esempio svolto in testa ai quattro casi appena discussi, si noti che anche i casi 3 e 4 sono sottrazioni nelle quali il sottraendo è positivo: in entrambi i casi l'ALU eseguirà internamente una somma del minuendo nel suo stato originario e del sottraendo invertito col complemento a 2.
 
 Tornando poi all'interpretazione dell'hardware, abbiamo anticipato che i moduli ALU del computer NQSAP e del computer BEAM utilizzano solo le istruzioni A + B e A - B, dunque possiamo semplificare le connessioni del '151 eliminando B - A:
 
-![74LS151](../../assets/math/75-overflow-74151-a+b-a-b.png){:width="50%"}
+![74LS151](../../assets/math/overflow-74151-a+b-a-b.png){:width="50%"}
 
 I segnali (A + B) e (A - B) dovranno avere una connessione hardwired con l'Instruction Register per permetterci di identificare rispettivamente le istruzioni di somma e di sottrazione. Quando nella descrizione dei quattro casi appena visti si indica "Il microcode opportunamente codificato..." si intende infatti che tali istruzioni dovranno rispettare dei vincoli nella scelta degli opcode, in modo da poter sapere con certezza se stiamo eseguendo l'una o l'altra.
 
@@ -553,7 +553,7 @@ Detto in altri termini, gli opcode delle istruzioni di somma e sottrazione dovra
 
 Questo corrisponde esattamente a quanto indicato nella sezione [Un esempio pratico](../alu/#un-esempio-pratico) della pagina del modulo ALU, nella quale si evidenzia ad esempio che le istruzioni di somma dovranno presentare "01001 sui 5 bit comuni tra Instruction Register e ALU": il bit numero 3 è a 1, mentre il bit numero 1 è a 0, esattamente come richiesto dalla tabella precedente.
 
-![Connessioni in uscita dall'Instruction Register dell'NQSAP.](../../assets/math/75-IR-to-74151.png){:width="66%"}
+![Connessioni in uscita dall'Instruction Register dell'NQSAP.](../../assets/math/IR-to-74151.png){:width="66%"}
 
 Per finire, da quanto visto fino ad ora possiamo dedurre un'altra regola: la somma di due Signed di segno opposto e la sottrazione di due Signed dello stesso segno non possono causare Overflow.
 
