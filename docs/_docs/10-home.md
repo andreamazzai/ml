@@ -103,6 +103,7 @@ Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 ## TO DO
 
+- mettere i link ai miei post su Reddit
 - qualche idea è stata presa anche da NQSAP-pCB, ad esempio i 74LS377
 - quel professore dell'università del Montana
 - Libro di Malvino
