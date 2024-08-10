@@ -1,7 +1,7 @@
 ---
 title: "ALU"
 permalink: /docs/alu/
-excerpt: "Costruzione dell'Unità Aritmetica e Logica del BEAM computer"
+excerpt: "Unità Aritmetica e Logica del BEAM computer"
 ---
 [![Unità Aritmetica e Logica del BEAM](../../assets/alu/50-alu-beam.png "Unità Aritmetica e Logica del BEAM"){:width="100%"}](../../assets/alu/50-alu-beam.png)
 
@@ -50,9 +50,6 @@ Nell'esempio dell'istruzione INX del 6502, dopo le due fasi di fetch comuni a tu
 
 Nella sezione dedicata alle istruzioni e al microcode si analizzeranno in dettaglio le microistruzioni di tutte le istruzioni del computer.
 
-## DA FARE
-
-(**da fare**: in questo caso, ma anche nel caso delle istruzioni di shift / rotazione e forse anche CPX e CPY, verificare se non potessi usare D invece di H)
 
 ### Funzioni logiche e operazioni aritmetiche
 
@@ -64,7 +61,7 @@ Avevo intanto deciso di comprendere le operazioni messe a disposizione dal '181 
 
 *Funzioni logiche e operazioni aritmetiche del 74LS181.*
 
-Il datasheet del '181 era abbastanza criptico e dunque ho avevo fatto ricorso anche alle molte risorse disponibili in rete riportate a fondo pagina. Dal datasheet si comprendeva che vi sono 4 segnali S0, S1, S2 ed S3 ("*Select*") per la selezione della funzione / operazione e un segnale di controllo della modalità M ("*Mode*", M = HI per le funzioni logiche; M = LO per le operazioni aritmetiche); A e B sono gli input dei dati. Nel datasheet venivano menzionati anche il Carry Look-Ahead e il Ripple-Carry, approfonditi nella sezione dedicata all'[Aritmetica Binaria](../math/#approfondimento-overflow))..
+Il datasheet del '181 era abbastanza criptico e dunque ho avevo fatto ricorso anche alle molte risorse disponibili in rete riportate a fondo pagina. Dal datasheet si comprendeva che vi sono 4 segnali S0, S1, S2 ed S3 ("*Select*") per la selezione della funzione / operazione e un segnale di controllo della modalità M ("*Mode*", M = HI per le funzioni logiche; M = LO per le operazioni aritmetiche); A e B sono gli input dei dati. Nel datasheet venivano menzionati anche il Carry Look-Ahead e il Ripple-Carry, approfonditi nella sezione dedicata all'[Aritmetica Binaria](../math/#approfondimento-overflow).
 
 Inizialmente avevo trascritto la tabella delle funzioni / operazioni in un foglio Excel per poter lavorare più agevolmente:
 
@@ -111,10 +108,10 @@ Provando a sintetizzare quando disegnato nell'NQSAP, avevo costruito questa tabe
 | 1  | 0  | 1  | 0  | 0  | 1  | A Plus B    |  0x09           |
 | 1  | 0  | 1  | 1  | 0  | 0  | A Plus A    |  0x0C***        |
 | 1  | 0  | 1  | 1  | 1  | 1  | A Minus 1   |  0x0F           |
-| x  | 1  | 0  | 0  | 0  | 0  | Not A       |  0x10\*\*\*\*   |
-| x  | 1  | 0  | 1  | 1  | 0  | A XOR B     |  0x16\*\*\*\*   |
-| x  | 1  | 1  | 0  | 1  | 1  | A AND B     |  0x1B\*\*\*\*   |
-| x  | 1  | 1  | 1  | 1  | 0  | A OR B      |  0x1E\*\*\*\*   |
+| x  | 1  | 0  | 0  | 0  | 0  | Not A       |  0x10****       |
+| x  | 1  | 0  | 1  | 1  | 0  | A XOR B     |  0x16****       |
+| x  | 1  | 1  | 0  | 1  | 1  | A AND B     |  0x1B****       |
+| x  | 1  | 1  | 1  | 1  | 0  | A OR B      |  0x1E****       |
 
 *Sintesi operazioni dell'ALU dell'NQSAP.*
 
@@ -331,3 +328,4 @@ Ecco una lista delle differenze:
 - Parlare del bench di test sulla base di quanto appreso da David Courtney.
 - *Schema di uno degli 8 Flip-Flop del 74LS377.* -- **Da fare**: Valutare se anche questo ha un riflesso positivo sul discorso del glitch
 - https://bread80.com/2019/09/02/adding-adc-sbc-inc-dec-operations-to-ben-eaters-alu/#easy-footnote-4-43 da leggere per capire se buono
+- subito dopo il capitolo "Il registro H" capire "(da fare: in questo caso, ma anche nel caso delle istruzioni di shift / rotazione e forse anche CPX e CPY, verificare se non potessi usare D invece di H)"

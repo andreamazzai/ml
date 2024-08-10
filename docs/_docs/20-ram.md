@@ -1,7 +1,7 @@
 ---
 title: "RAM e MAR"
 permalink: /docs/ram/
-excerpt: "Costruzione del modulo di memoria del BEAM computer"
+excerpt: "Modulo di memoria del BEAM computer"
 ---
 [![Modulo RAM e MAR del BEAM](../../assets/ram/20-ram-beam.png "Modulo RAM e MAR del BEAM"){:width="100%"}](../../assets/ram/20-ram-beam.png)
 

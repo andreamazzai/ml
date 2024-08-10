@@ -1,7 +1,7 @@
 ---
 title: "Program Counter"
 permalink: /docs/programcounter/
-excerpt: "Costruzione del Program Counter del BEAM computer"
+excerpt: "Program Counter del BEAM computer"
 ---
 
 [![Registro dei Flag del BEAM](../../assets/flags/30-flag-beam.png "Registro dei Flag del BEAM"){:width="100%"}](../../assets/flags/30-flag-beam.png)

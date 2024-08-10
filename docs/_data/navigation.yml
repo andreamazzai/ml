@@ -37,9 +37,11 @@
       - title: "Registri DXY"
         url: /docs/dxy/
       - title: "Stack Pointer"
-        url: /docs/sp/
+        url: /docs/stack-pointer/
       - title: "Output"
         url: /docs/output/
+      - title: "Arduino Loader"
+        url: /docs/loader/
   #     - title: "Ring Counter"
   #       url: /docs/ring-counter/
   #     - title: "Control"
