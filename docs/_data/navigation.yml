@@ -32,15 +32,15 @@
         url: /docs/programcounter/
       - title: "Control Logic"
         url: /docs/control/
-      - title: "ALU"
+      - title: "- ALU"
         url: /docs/alu/
-      - title: "Registri DXY"
+      - title: "- Registri DXY"
         url: /docs/dxy/
-      - title: "Output"
+      - title: "- Output"
         url: /docs/output/
-      - title: "Stack Pointer"
+      - title: "- Stack Pointer"
         url: /docs/stack-pointer/
-      - title: "Arduino Loader"
+      - title: "- Arduino Loader"
         url: /docs/loader/
   #     - title: "Ring Counter"
   #       url: /docs/ring-counter/
