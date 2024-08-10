@@ -16,7 +16,6 @@ La realizzazione del comuter SAP mi ha permesso finalmente di capire cosa sia il
 È piuttosto comune leggere ad esempio che è necessario aggiornare il bios dei server per indirizzare falle di sicurezza che sono state scoperte e che potrebbero essere utilizzate dagli hacker per puntini puntini puntini nuovo paragrafo
 Non capendo come potesse essere aggiornata una CPU, dal momento che si tratta di un componente non programmabile virgola non riuscivo a comprendere come fosse possibile arginare i problemi di sicurezza; con il microcode ho capito
 
-
 Ritornando alla dimensione delle EEPROM da utilizzare per il microcode, nei miei appunti trovo traccia di diverse revisioni, ad esempio:
 
 - mi servono EEPROM 28C64 per avere 256 (8 bit) istruzioni + 3 step + 2 flag, ma dimenticavo che avendo due ROM gemelle dovevo gestirne anche la selezione e dunque aggiungere un ulteriore bit, pertanto mi servirebbero delle 28C128;
@@ -359,5 +358,8 @@ Altre referenze Tom Nisbet per Flags	• Question for all 74ls181 alu people on 
 	• How to add a decremental and incremental circuit to the ALU ? on reddit inspired the idea to drive the PC load line from the flags instead of running the flags through the microcode.
 	• Opcodes and Flag decoding circuit on reddit has a different approach to conditional jumps using hardware. Instead of driving the LOAD line of the PC, the circuit sits between the Instruction Register and the ROM and conditionally jams a NOP or JMP instruction to the microcode depending on the state of the flags. One interesting part of the design is that the opcodes of the jump instructions are arranged so that the flag of interest can be determined by bits from the IR. NQSAP already did something similar with the ALU select lines, so the concept was used again for the conditional jump select lines.
 
+[![Schema del modulo Control Logic](../../assets/control/40-control-logic-schema.png "Schema del modulo Control Logic"){:width="50%"}](../../assets/control/40-control-logic-schema.png)
+
+*Schema del modulo Control Logic.*
 
 Il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Come descritto in maggior dettaglio nella sezione riservate al microcode, con soli 8 step non sarebbe stato possibile emulare alcune delle istruzioni del 6502, come quelle di salto relativo ed altre. Questa è in realtà una differenza architetturale più legata alla Control Logic, però l’impatto principale sul numero di step disponibili si riflette in particolar modo sull’ALU ed ha dunque sicuramente senso citarla in questa sezione.
