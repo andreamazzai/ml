@@ -1,7 +1,7 @@
 ---
-title: "Flag"
-permalink: /docs/flags/
-excerpt: "Costruzione del registro dei flag del BEAM computer"
+title: "Program Counter"
+permalink: /docs/programcounter/
+excerpt: "Costruzione del Program Counter del BEAM computer"
 ---
 
 [![Registro dei Flag del BEAM](../../assets/flags/30-flag-beam.png "Registro dei Flag del BEAM"){:width="100%"}](../../assets/flags/30-flag-beam.png)
@@ -280,7 +280,7 @@ Il modulo Flag del computer BEAM è sostanzialmente una copia del modulo Flag de
 
 ## Link utili
 
-- Tom segnala di aver preso ispirazione dal thread su Reddit [How to add a decremental and incremental circuit to the ALU ?](https://www.reddit.com/r/beneater/comments/jwxke0/how_to_add_a_decremental_and_incremental_circuit/) per l'idea di pilotare il caricamento del [Program Counter](../programcounter/) dal registro dei Flag anziché attraverso il microcode come sul SAP di Ben Eater.
+- Tom segnala di aver preso ispirazione dal thread su Reddit [How to add a decremental and incremental circuit to the ALU ?](https://www.reddit.com/r/beneater/comments/jwxke0/how_to_add_a_decremental_and_incremental_circuit/) per l'idea di pilotare il caricamento del Program Counter dal registro dei Flag anziché attraverso il microcode, come avveniva invece sul SAP di Ben Eater.
 
 Flag e Microcode
 Molte delle istruzioni modificano i flag.

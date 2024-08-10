@@ -41,7 +41,9 @@ Ecco una serie di video su YouTube:
     - Lo stesso procedimento è perfettamente valido anche al contrario (da negativo a positivo).
     - Prestare attenzione a un errore riconosciuto anche dall'autore nei commenti: nella discussione di Segno e Modulo il range non va da -64 a +64, ma da -128 a +128.
 
-4. **Binary Addition and Subtraction With Negative Numbers, 2's Complements & Signed Magnitude** - The Organic Chemistry Tutor - [link](https://www.youtube.com/watch?v=sJXTo3EZoxM): ottimo video con visualizzazione grafica molto efficace.
+4. **Twos complement: Negative numbers in binary** di Ben Eater - [link](https://www.youtube.com/watch?v=dHB7jFjESLY): ancora su numeri negativi, complementi e sottrazioni. Ottimo per capire come il complemento a 2 indirizzi le lacune del complemento a 1.
+
+5. **Binary Addition and Subtraction With Negative Numbers, 2's Complements & Signed Magnitude** - The Organic Chemistry Tutor - [link](https://www.youtube.com/watch?v=sJXTo3EZoxM): ottimo video con visualizzazione grafica molto efficace.
 
     - Particolarmente interessante un [commento](https://www.youtube.com/watch?v=sJXTo3EZoxM&lc=Ugyl7WIoyqVR8wM0dAJ4AaABAg) che segnala che per invertire il segno di un numero binario rappresentato in 2C è sufficiente seguire due passaggi:
       1) partire da destra e non modificare nulla fino al primo bit a 1 incluso;
