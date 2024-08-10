@@ -41,6 +41,8 @@ Cercando un nome per il mio progetto, ho identificato in "BEAM" quello ideale: d
 
 I primi 8 mesi di lavoro sul progetto BEAM sono stati interamente devoluti allo studio: volevo capire ogni dettaglio dell'NQSAP, che presentava moltissime aggiunte al SAP e diverse idee davvero "clever"!
 
+[![Rappresentazione su carta di una possibile disposizione dei moduli](assets/beam-paper-breadboards.png "Rappresentazione su carta di una possibile disposizione dei moduli"){:width="75%"}](assets/beam-paper-breadboards.png)
+
 Tra gli aspetti da citare e sui quali ho speso molto, **molto**, ***davvero molto*** tempo:
 
 - comprensione del funzionamento dell'ALU 74181, per la quale ho realizzato un bench di test sulla base di quanto appreso da David Courtney
