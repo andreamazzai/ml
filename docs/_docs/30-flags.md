@@ -6,7 +6,7 @@ excerpt: "Registro dei flag del BEAM computer"
 
 [![Registro dei Flag del BEAM](../../assets/flags/30-flag-beam.png "Registro dei Flag del BEAM"){:width="100%"}](../../assets/flags/30-flag-beam.png)
 
-Più volte, analizzando l'NQSAP e leggendo la documentazione di Tom Nisbet, avevo trovato delle idee molto clever; alcune di queste si trovano nel modulo dei Flag.
+Più volte, analizzando l'NQSAP e leggendo la documentazione di Tom Nisbet, avevo trovato delle idee molto ingegnose; alcune di queste si trovano nel modulo dei Flag.
 
 [![Schema logico del modulo Flag di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità.](../../assets/flags/30-flag-nqsap-schematics.png "Schema logico del modulo Flag di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità."){:width="100%"}](../../assets/flags/30-flag-nqsap-schematics.png)
 

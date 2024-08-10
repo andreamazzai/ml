@@ -26,7 +26,7 @@ Nei primi mesi del 2022, dopo aver completato i primi moduli base del computer 6
 
 ### Evoluzione del computer a 8 bit: BEAM
 
-Ho completato il SAP computer a settembre, ma già in precedenza avevo cominciato a studiare i miglioramenti e le espansioni fatte da altri follower di Ben, soprattutto in merito alla possibilità di automatizzare l'inserimento del programma da eseguire con un bootloader, nonché alla necessità di incrementare la RAM oltre i 16 byte; durante l'estate di quell'anno ho scoperto il fantastico progetto [NQSAP](https://https://tomnisbet.github.io/nqsap/) di **Tom Nisbet**: un computer a 8-bit basato su quello di Ben Eater, ma ingegnerizzato per emulare le istruzioni del 6502. Ho realizzato velocemente che sarebbe stato il mio successivo progetto, perché metteva insieme molti aspetti che trovavo di grande interesse:
+Ho completato il SAP computer a settembre, ma già in precedenza avevo cominciato a studiare i miglioramenti e le espansioni fatte da altri follower di Ben, soprattutto in merito alla possibilità di automatizzare l'inserimento del programma da eseguire con un bootloader, nonché alla necessità di incrementare la RAM oltre i 16 byte; durante l'estate di quell'anno ho scoperto il fantastico progetto [NQSAP](https://tomnisbet.github.io/nqsap/) di **Tom Nisbet**: un computer a 8-bit basato su quello di Ben Eater, ma ingegnerizzato per emulare le istruzioni del 6502. Ho realizzato velocemente che sarebbe stato il mio successivo progetto, perché metteva insieme molti aspetti che trovavo di grande interesse:
 
 1. evoluzione del computer di Ben Eater, col quale avevo iniziato a riacquistare confidenza con l'elettronica digitale
 2. emulazione del processore del mio primo computer, completa di registri indice, modalità di indirizzamento e Stack Pointer
@@ -40,10 +40,6 @@ Cercando un nome per il mio progetto, ho identificato in "BEAM" quello ideale: d
 ### Studio e progettazione
 
 I primi 8 mesi di lavoro sul progetto BEAM sono stati interamente devoluti allo studio: volevo capire ogni dettaglio dell'NQSAP, che presentava moltissime aggiunte al SAP e diverse idee davvero "clever"!
-
-[![Rappresentazione su carta di una possibile disposizione dei moduli](assets/beam-paper-breadboards.png "Rappresentazione su carta di una possibile disposizione dei moduli"){:width="100%"}](assets/beam-paper-breadboards.png)
-
-*Rappresentazione su carta di una possibile disposizione dei moduli.*
 
 Tra gli aspetti da citare e sui quali ho speso molto, **molto**, ***davvero molto*** tempo:
 
@@ -63,9 +59,13 @@ Tra gli aspetti da citare e sui quali ho speso molto, **molto**, ***davvero molt
 - sviluppo del software del bootloader
 - disegno degli schemi con Kicad
 
+[![Schema logico luglio 2023](assets/hand-drawn-logic.jpg "Schema logico luglio 2023"){:width="66%"}](assets/hand-drawn-logic.jpg)
+
 A luglio 2023 ho cercato di ricomporre tutto ciò che avevo appreso e ho provato trascriverlo su carta: avevo compreso molto bene il funzionamento di alcuni moduli, mentre su altri avevo ancora molti dubbi. Inoltre, non mi erano ancora chiare diverse interazioni tra i moduli, soprattutto nei segnali di controllo dei flag; rileggendo il materiale che avevo studiato e gli appunti che avevo trascritto su OneNote nei mesi precedenti, ho unito i puntini e realizzato lo schema logico del computer, iniziando a intravedere non più una serie di moduli a se' stanti, bensì un costrutto logico sensato:
 
-[![Schema logico luglio 2023](assets/hand-drawn-logic.jpg "Schema logico luglio 2023"){:width="66%"}](assets/hand-drawn-logic.jpg)
+[![Rappresentazione su carta di una possibile disposizione dei moduli](assets/beam-paper-breadboards.png "Rappresentazione su carta di una possibile disposizione dei moduli"){:width="100%"}](assets/beam-paper-breadboards.png)
+
+*Rappresentazione su carta di una possibile disposizione dei moduli.*
 
 ## Realizzazione
 
