@@ -538,18 +538,18 @@ Per identificare l'esecuzione di un'operazione di addizione o di sottrazione, si
 | LO    | HI    | Sottrazione |
 | HI    | LO    | Addizione   |
 
-Detto in altri termini, gli opcode delle istruzioni di somma e sottrazione dovranno avere i bit 1 e 3 settati come in tabella, mentre gli altri bit non avranno tali vincoli:
+Detto in altri termini, gli opcode delle istruzioni di addizione e sottrazione dovranno avere i bit 1 e 3 settati come in tabella, mentre gli altri bit non avranno tali vincoli:
 
-| bit |  Somma | Sottrazione |
-| -   |  -     | -           |
-|   0 |      X |           X |
-|   1 | **LO** |      **HI** |
-|   2 |      X |           X |
-|   3 | **HI** |      **LO** |
-|   4 |      X |           X |
-|   5 |      X |           X |
-|   6 |      X |           X |
-|   7 |      X |           X |
+| bit |  Addizione | Sottrazione |
+| -   |  -         | -           |
+|   0 |      X     |           X |
+|   1 | **LO**     |      **HI** |
+|   2 |      X     |           X |
+|   3 | **HI**     |      **LO** |
+|   4 |      X     |           X |
+|   5 |      X     |           X |
+|   6 |      X     |           X |
+|   7 |      X     |           X |
 
 Questo corrisponde esattamente a quanto indicato nella sezione [Un esempio pratico](../alu/#un-esempio-pratico) della pagina del modulo ALU, nella quale si evidenzia ad esempio che le istruzioni di somma dovranno presentare "01001 sui 5 bit comuni tra Instruction Register e ALU": il bit numero 3 è a 1, mentre il bit numero 1 è a 0, esattamente come richiesto dalla tabella precedente.
 
