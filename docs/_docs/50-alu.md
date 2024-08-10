@@ -64,7 +64,7 @@ Avevo intanto deciso di comprendere le operazioni messe a disposizione dal '181 
 
 *Funzioni logiche e operazioni aritmetiche del 74LS181.*
 
-Il datasheet del '181 era abbastanza criptico e dunque ho avevo fatto ricorso anche alle molte risorse disponibili in rete riportate a fondo pagina. Dal datasheet si comprendeva che vi sono 4 segnali S0, S1, S2 ed S3 ("*Select*") per la selezione della funzione / operazione e un segnale di controllo della modalità M ("*Mode*", M = HI per le funzioni logiche; M = LO per le operazioni aritmetiche); A e B sono gli input dei dati. Nel datasheet venivano menzionati anche il Carry Look-Ahead e il Ripple-Carry, approfonditi nella sezione dedicata all'Aritmetica Binaria.
+Il datasheet del '181 era abbastanza criptico e dunque ho avevo fatto ricorso anche alle molte risorse disponibili in rete riportate a fondo pagina. Dal datasheet si comprendeva che vi sono 4 segnali S0, S1, S2 ed S3 ("*Select*") per la selezione della funzione / operazione e un segnale di controllo della modalità M ("*Mode*", M = HI per le funzioni logiche; M = LO per le operazioni aritmetiche); A e B sono gli input dei dati. Nel datasheet venivano menzionati anche il Carry Look-Ahead e il Ripple-Carry, approfonditi nella sezione dedicata all'[Aritmetica Binaria](../math/#approfondimento-overflow))..
 
 Inizialmente avevo trascritto la tabella delle funzioni / operazioni in un foglio Excel per poter lavorare più agevolmente:
 
@@ -200,7 +200,7 @@ Abbiamo evidenziato in precedenza che le istruzioni di modificano lo stato dei f
 
 Per approfondirle, partiamo ad esempio da una istruzione che fa uso dei flag risultanti da una comparazione: l'istruzione di salto condizionale BMI (**B**ranch on **MI**nus). Questa istruzione viene eseguita solo in presenza del flag N, che indica che il numero risultante dalla comparazione *con segno*\* è **N**egativo, cioè compreso tra -128 e -1 (0x80 e 0xFF in esadecimale).
 
-\* = si veda la sezione riservata all'[aritmetica binaria](../math/#numeri-unsigned-e-numeri-signed).
+\* = si veda la sezione riservata all'[Aritmetica Binaria](../math/#numeri-unsigned-e-numeri-signed).
 
 Come anticipato, i flag delle istruzioni di comparazione sono calcolati eseguendo una sottrazione fittizia tra il valore contenuto nel registro A, X o Y e il valore indicato dall'operando dell'istruzione di comparazione; si prendono in considerazione solo i flag risultanti dall'operazione e il risultato della sottrazione viene scartato. I flag sono dunque generati sfruttando l'operazione di sottrazione del '181, che è però già utilizzata per eseguire l'operazione standard di sottrazione **A Minus B** (terza riga della tabella *Sintesi operazioni dell'ALU dell'NQSAP* dove M-S3/S2/S1/S0 = 00110 e il microcodice dovrà perciò presentare **00110** sui 5 bit comuni tra Instruction Register e ALU).
 
@@ -286,7 +286,7 @@ L'uso del Carry nel '181 (e di conseguenza nell'NQSAP) è simile a quanto avvien
 
 ### L'Overflow
 
-Dalle interessantissime note di Tom trascrivevo anche che, per le caratteristiche di funzionamento del '181 e provando a fare delle addizioni o sottrazioni con e senza Carry, si potesse pensare di eseguire un semplice OR esclusivo (XOR) tra i Carry Out (/Cn+4) dei due chip per individuare se il risultato dell'operazione genera un Overflow. Tuttavia il meccanismo non funziona in caso di istruzioni **A + 1** e **A - 1** (e dunque per la verifica dell'esistenza dell'Overflow si ricorrerà ad un altro metodo, come discusso nella pagina dedicata all'[aritmetica binaria](../math/#approfondimento-overflow)).
+Dalle interessantissime note di Tom trascrivevo anche che, per le caratteristiche di funzionamento del '181 e provando a fare delle addizioni o sottrazioni con e senza Carry, si potesse pensare di eseguire un semplice OR esclusivo (XOR) tra i Carry Out (/Cn+4) dei due chip per individuare se il risultato dell'operazione genera un Overflow. Tuttavia il meccanismo non funziona in caso di istruzioni **A + 1** e **A - 1** (e dunque per la verifica dell'esistenza dell'Overflow si ricorrerà ad un altro metodo, come discusso nella pagina dedicata all'[Aritmetica Binaria](../math/#approfondimento-overflow)).
 
 Per quale motivo la verifica suddetta non è valida in caso di istruzioni di incremento e decremento?
 
@@ -317,35 +317,19 @@ Ecco una lista delle differenze:
 
 *Schema di uno degli 8 Flip-Flop del 74LS377.*
 
- **Da fare**: Valutare se anche questo ha un riflesso positivo sul discorso del glitch
-
 - Il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Come descritto in maggior dettaglio nella sezione riservate al microcode, con soli 8 step non sarebbe stato possibile emulare alcune delle istruzioni del 6502, come quelle di salto relativo ed altre. Questa è in realtà una differenza architetturale più legata alla Control Logic, però l'impatto principale sul numero di step disponibili si riflette in particolar modo sull'ALU ed ha dunque sicuramente senso citarla in questa sezione.
 
-**Da fare**:
-
-- /WE ↘↗
-- Descrivere comportamento HW **shift register** per le rotazioni
-- Parlare del bench di test sulla base di quanto appreso da David Courtney.
-
-## Link e approfondimenti
-
-- complemento di 1
-## Aritmetica Binaria
-
-## Ripple Mode Carry e Carry Look Ahead
-
-Ne parliamo perché i '161 usati nel MAR e i '181 dell'ALU ne parlano nei datasheet.
-
-**FARE SPIEGAZIONE FUNZIONAMENTO H PER ROTAZIONE**
-
 ## Link utili
-
-https://bread80.com/2019/09/02/adding-adc-sbc-inc-dec-operations-to-ben-eaters-alu/#easy-footnote-4-43 da leggere per capire se buono
-
 
 - [Inside the vintage 74181 ALU chip: how it works and why it's so strange](https://www.righto.com/2017/03/inside-vintage-74181-alu-chip-how-it.html) di Ken Shirriff. Fondamentale per capire il perché dell'implementazione apparentemente così strana del chip.
 - Comparator Functions of 74LS181 (74HCT181) ALU - [link](https://www.youtube.com/watch?v=jmROTNtoUGI): ottimo video di David Courtney.
 
 Un valido riferimento per l’analisi della relazione tra IR ed ALU è stata la pagina 6502 Instruction Set di Norbert Landsteiner, che invito a consultare anche per il 6502 Assembler e il Virtual 6502 che avrei utilizzato in seguito in fase di debug del microcode che stavo sviluppando.
 
-## Note
+## TO DO
+
+- /WE ↘↗
+- Descrivere comportamento HW **shift register** per le rotazioni
+- Parlare del bench di test sulla base di quanto appreso da David Courtney.
+- *Schema di uno degli 8 Flip-Flop del 74LS377.* -- **Da fare**: Valutare se anche questo ha un riflesso positivo sul discorso del glitch
+- https://bread80.com/2019/09/02/adding-adc-sbc-inc-dec-operations-to-ben-eaters-alu/#easy-footnote-4-43 da leggere per capire se buono

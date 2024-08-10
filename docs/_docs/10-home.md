@@ -80,14 +80,25 @@ Benefici:
 
 Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-Crediti e ringraziamenti e link utili:
+### Note
+
+- Gli schemi KiCad non includono la gran parte dei LED: sono indicati solamente i LED del modulo Clock e i LED che segnalano le modalità Program Mode / Run Mode nel modulo RAM / MAR. Sono invece rappresentate tutte le LED Bar.
+
+## Crediti e ringraziamenti
 
 - Ben Eater per la sua grande capacità di creazione di contenuti interessanti [contenuti interessanti](https://www.youtube.com/@BenEater/playlists/)
+
 - Tom Nisbet che ha realizzato l'[NQSAP](https://https://tomnisbet.github.io/nqsap/) espandendo e migliorando in maniera sostanziale il progetto di Ben Eater
+
 - Il subreddit [r/beneater](https://www.reddit.com/r/beneater/) - in particolar modo [The8BitEnthusiast](https://www.reddit.com/user/The8BitEnthusiast/) e [Tom Nisbet](https://www.reddit.com/user/nib85/) - grazie!
+
+## Altri link
+
+- Un [compendio Micro Logic](https://www.atarimania.com/documents/6502%20(65xx)%20Microprocessor%20Instant%20Reference%20Card.pdf) incredibilmente utile, che in sole due pagine plastificabili include opcode, modalità di indirizzamento, flag e istruzioni che li modificano, funzionamento delle istruzioni di scorrimento e molto altro. Immancabile.
+
 - Un valido riferimento per l'analisi della relazione tra Control Logic ("CL") ed IR è stata la pagina [6502 Instruction Set](https://www.masswerk.at/6502/6502_instruction_set.html) di Norbert Landsteiner, che invito a consultare anche per il [6502 Assembler](https://www.masswerk.at/6502/assembler.html) e il [Virtual 6502](https://www.masswerk.at/6502/) che ho utilizzato in fase di debug del microcode.
 
-**da fare**
+## TO DO
 
 - qualche idea è stata presa anche da NQSAP-pCB, ad esempio i 74LS377
 

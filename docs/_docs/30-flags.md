@@ -70,7 +70,7 @@ V, Z e C escono dal MUX '157 e sono presentati a 3 dei 4 Flip-Flop disponibili i
 
 Il flag **N**egative viene invece sempre letto direttamente dalla linea D7 del bus e caricato sul 4° Flip-Flop.
 
-Quattro porte AND permettono il caricamento dei FF in presenza del segnale di clock e della contemporanea attivazione degli opportuni segnali **FN**, **FV**, **FZ** ed **FC** provenienti dalla Control Logic (CL); è opportuno ricordare che il caricamento dei registri viene sempre effettuato in corrispondenza del Rising Edge del Clock.
+Quattro porte AND permettono il caricamento dei FF in presenza del segnale di clock e della contemporanea attivazione degli opportuni segnali **FN**, **FV**, **FZ** ed **FC** provenienti dalla Control Logic (CL); è opportuno ricordare che il caricamento dei registri viene sempre effettuato in corrispondenza del Rising Edge del Clock. Il segnale **FS** seleziona se gli input del '157 devono leggere i valori riportati dal bus, oppure quelli computati.
 
 Ogni istruzione del computer, grazie alla personalizzazione del microcode, può settare anche più di un flag alla volta (come accade ad esempio per le operazioni ADC e SBC, che sul 6502 influiscono contemporaneamente su tutti i 4 flag **NVZC**).
 
@@ -157,10 +157,6 @@ In definitiva, il microcode delle istruzioni di salto prevede:
 
 - l'attivazione di JE per eseguire i salti condizionali;
 - l'attivazione di WP per eseguire i salti incondizionati.
-
-Vi è un effetto non desiderato: "le istruzioni di salto condizionato non eseguite sprecano cicli di clock"… non si potrebbe semplicemente usare N per terminare anticipatamente l'istruzione? Lui sembra renderla un po' complicata
-
-**29/01/2023 leggendo bene dice che dovrebbe essere possibile fare in modo che la logica elettronica dell'istruzione Jump vada ad attivare N se il salto non deve esserci… da verificare**
 
 ## Calcolo dei Flag N, V, Z e C
 
@@ -284,5 +280,5 @@ Il modulo Flag del computer BEAM è sostanzialmente una copia del modulo Flag de
 ## TO DO
 
 - Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
-
-LINK: il PDF di MICRO LOGIC come compendio a istruzioni ,indirizzamenti flag etc
+- Effetto non desiderato: "le istruzioni di salto condizionato non eseguite sprecano cicli di clock"… non si potrebbe semplicemente usare N per terminare anticipatamente l'istruzione? Lui sembra renderla un po' complicata
+- 29/01/2023 leggendo bene dice che dovrebbe essere possibile fare in modo che la logica elettronica dell'istruzione Jump vada ad attivare N se il salto non deve esserci… da verificare
