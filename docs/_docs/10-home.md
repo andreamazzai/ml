@@ -89,7 +89,8 @@ Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 - Ben Eater per la sua grande capacità di creazione di contenuti interessanti [contenuti interessanti](https://www.youtube.com/@BenEater/playlists/)
 - Tom Nisbet che ha realizzato l'[NQSAP](https://https://tomnisbet.github.io/nqsap/) espandendo e migliorando in maniera sostanziale il progetto di Ben Eater
 - Il subreddit [r/beneater](https://www.reddit.com/r/beneater/) - in particolar modo [The8BitEnthusiast](https://www.reddit.com/user/The8BitEnthusiast/) e [Tom Nisbet](https://www.reddit.com/user/nib85/) - grazie!
-- Ken Shirrif per alcuni [interessantissimi articoli](https://www.righto.com/) su Overflow, 6502 e 74181 (e molto altro!).
+- Ken Shirrif per alcuni [interessantissimi articoli](https://www.righto.com/) su Overflow, 6502 e 74181 (e molto altro!)
+- Il sito [6502.org](http://6502.org) e il suo forum, con documentazione dettagliata senza fronzoli e utenti incredibilmente competenti
 
 ## Altri link
 
@@ -99,11 +100,8 @@ Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ## TO DO
 
 - qualche idea è stata presa anche da NQSAP-pCB, ad esempio i 74LS377
-- 6502.org
-- Il blog di Ken Shirrif per una eccellente spiegazione dell'overflow nel 6502
 - quel professore dell'università del Montana
 - Libro di Malvino
-- David Courtney
 - Includere appunti su acquisto dei materiali, cavi utilizzati
 - problemi di alimentazione
 - lkink al video dell'ALU
