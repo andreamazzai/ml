@@ -41,7 +41,7 @@ Cercando un nome per il mio progetto, ho identificato in "BEAM" quello ideale: d
 
 I primi 8 mesi di lavoro sul progetto BEAM sono stati interamente devoluti allo studio: volevo capire ogni dettaglio dell'NQSAP, che presentava moltissime aggiunte al SAP e diverse idee davvero "clever"!
 
-[![Rappresentazione su carta di una possibile disposizione dei moduli](assets/beam-paper-breadboards.png "Rappresentazione su carta di una possibile disposizione dei moduli"){:width="75%"}](assets/beam-paper-breadboards.png)
+[![Rappresentazione su carta di una possibile disposizione dei moduli](assets/beam-paper-breadboards.png "Rappresentazione su carta di una possibile disposizione dei moduli"){:width="100%"}](assets/beam-paper-breadboards.png)
 
 Tra gli aspetti da citare e sui quali ho speso molto, **molto**, ***davvero molto*** tempo:
 
@@ -71,7 +71,7 @@ La fase costruttiva è iniziata a ottobre 2023 e si è conclusa nei primi giorni
 
 In queste pagine si trova la documentazione dettagliata dei moduli, corredata da una serie di note e appunti.
 
-[![BEAM Breadboard Computer](assets/beam.png "BEAM breadboard computer"){:width="50%"}](assets/beam.png)
+[![BEAM Breadboard Computer](assets/beam.png "BEAM breadboard computer"){:width="66%"}](assets/beam.png)
 
 Benefici:
 
