@@ -322,9 +322,7 @@ Ecco una lista delle differenze:
 ## Link utili
 
 - [Inside the vintage 74181 ALU chip: how it works and why it's so strange](https://www.righto.com/2017/03/inside-vintage-74181-alu-chip-how-it.html) di Ken Shirriff. Fondamentale per capire il perché dell'implementazione apparentemente così strana del chip.
-- Comparator Functions of 74LS181 (74HCT181) ALU - [link](https://www.youtube.com/watch?v=jmROTNtoUGI): ottimo video di David Courtney.
-
-Un valido riferimento per l’analisi della relazione tra IR ed ALU è stata la pagina 6502 Instruction Set di Norbert Landsteiner, che invito a consultare anche per il 6502 Assembler e il Virtual 6502 che avrei utilizzato in seguito in fase di debug del microcode che stavo sviluppando.
+- [Demo of 74LS181 (74HCT181) ALU](https://www.youtube.com/watch?v=Fq0MIJjlGsw) e [Comparator Functions of 74LS181 (74HCT181) ALU](https://www.youtube.com/watch?v=jmROTNtoUGI): due ottimi video di David Courtney.
 
 ## TO DO
 
