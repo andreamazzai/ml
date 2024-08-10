@@ -275,24 +275,14 @@ Il modulo Flag del computer BEAM è sostanzialmente una copia del modulo Flag de
 
 *Schema logico del modulo Flag del computer BEAM.*
 
-## ALTRO
-
-
 ## Link utili
 
-- Tom segnala di aver preso ispirazione dal thread su Reddit [How to add a decremental and incremental circuit to the ALU ?](https://www.reddit.com/r/beneater/comments/jwxke0/how_to_add_a_decremental_and_incremental_circuit/) per l'idea di pilotare il caricamento del [Program Counter](../programcounter/) dal registro dei Flag anziché attraverso il microcode come sul SAP di Ben Eater.
+- Tom segnala di aver preso ispirazione da un thread su Reddit [How to add a decremental and incremental circuit to the ALU ?](https://www.reddit.com/r/beneater/comments/jwxke0/how_to_add_a_decremental_and_incremental_circuit/) per l'idea di pilotare il caricamento del [Program Counter](../programcounter/) dal registro dei Flag anziché gestirli con copie multiple del microcode come avveniva come sul SAP di Ben Eater.
 
-Flag e Microcode
-Molte delle istruzioni modificano i flag.
+- Tom notava anche l'approccio del thread [Opcodes and Flag decoding circuit](https://www.reddit.com/r/beneater/comments/m76ijz/opcodes_and_flag_decoding_circuit/) per eseguire salti condizionali in hardware. Invece di pilotare la linea LOAD del Program Counter, il circuito dell'autore del thread si trova tra il Registro delle Istruzioni e la ROM e forza condizionatamente un'istruzione NOP o JMP a seconda dello stato dei flag. Gli opcode delle istruzioni di salto sono disposti in modo tale che il flag di interesse possa essere determinato dai bit in uscita dall'Instruction Register. Concetto interessante, ma Tom aveva già implementato una funzionalità simile con le linee di selezione dell'ALU hardwired all'IR, quindi questa modalità è stata riutilizzata anche per la gestione dei [salti condizionali](#i-salti-condizionali).
+
+## TO DO
 
 - Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
 
-Altre referenze Tom Nisbet per Flags
-
-- Opcodes and Flag decoding circuit on reddit has a different approach to conditional jumps using hardware. Instead of driving the LOAD line of the PC, the circuit sits between the Instruction Register and the ROM and conditionally jams a NOP or JMP instruction to the microcode depending on the state of the flags. One interesting part of the design is that the opcodes of the jump instructions are arranged so that the flag of interest can be determined by bits from the IR. NQSAP already did something similar with the ALU select lines, so the concept was used again for the conditional jump select lines.
-
-LINK: il PDF di MICR LOGIC come compendio a istruzioni ,indirizzamenti flag etc
-
-http://www.6502.org/tutorials/vflag.html per V sezione 2.4.2.1
-
-## Link utili
+LINK: il PDF di MICRO LOGIC come compendio a istruzioni ,indirizzamenti flag etc
