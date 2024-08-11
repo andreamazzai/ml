@@ -3,7 +3,7 @@ title: "Stack Pointer"
 permalink: /docs/stack-pointer/
 excerpt: "Registro Stack Pointer del BEAM computer"
 ---
-[![Registro Stack Pointer del BEAM computer](../../assets/clock/sp/70-beam-sp.png "Registro Stack Pointer del BEAM computer"){:width="100%"}](../../assets/sp/70-beam-sp.png)
+[![Registro Stack Pointer del BEAM computer](../../assets/sp/70-beam-sp.png "Registro Stack Pointer del BEAM computer"){:width="100%"}](../../assets/sp/70-beam-sp.png)
 
 Il limite principale del computer SAP di Ben Eater era sicuramente la modesta quantità di RAM indirizzabile, pari a 16 byte; era possibile caricare un semplice contatore da 0 a 255 e viceversa, oppure un piccolo algoritmo di Fibonacci, ma nulla di più. Questo è stato lo stimolo primario per la realizzazione di un computer più potente.
 
