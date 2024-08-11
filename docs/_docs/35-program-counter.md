@@ -3,8 +3,9 @@ title: "Program Counter"
 permalink: /docs/programcounter/
 excerpt: "Program Counter del BEAM computer"
 ---
+[![Program Counter del BEAM computer](../../assets/pc/35-beam-pc.png "Program Counter del BEAM computer"){:width="100%"}](../../assets/pc/35-beam-pc.png)
+
 PLACEHOLDER
-[![Registro dei Flag del BEAM](../../assets/flags/30-flag-beam.png "Registro dei Flag del BEAM"){:width="100%"}](../../assets/flags/30-flag-beam.png)
 
 Bisogna dire che più volte, leggendo la documentazione di Tom Nisbet, avevo trovato delle idee molto clever; alcune di queste si trovano nel modulo dei Flag. Cercherò di riportare anche alcune fonti utilizzate da Tom indicandone i collegamenti a fondo pagina.
 
