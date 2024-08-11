@@ -20,27 +20,27 @@
       #   url: /docs/why/
   - title: "COSTRUZIONE"
     children:
-      - title: "= Per iniziare"
+      - title: "> Per iniziare"
         url: /docs/beginning/
-      - title: "= Clock"
+      - title: "> Clock"
         url: /docs/clock/
-      - title: "= RAM e MAR"
+      - title: "> RAM e MAR"
         url: /docs/ram/
-      - title: "= Flag"
+      - title: "> Flag"
         url: /docs/flags/
-      - title: "= Program Counter"
+      - title: "> Program Counter"
         url: /docs/programcounter/
-      - title: "= Control Logic"
+      - title: "> Control Logic"
         url: /docs/control/
-      - title: "= ALU"
+      - title: "> ALU"
         url: /docs/alu/
-      - title: "= Registri DXY"
+      - title: "> Registri DXY"
         url: /docs/dxy/
-      - title: "= Output"
+      - title: "> Output"
         url: /docs/output/
-      - title: "= Stack Pointer"
+      - title: "> Stack Pointer"
         url: /docs/stack-pointer/
-      - title: "= Arduino Loader"
+      - title: "> Arduino Loader"
         url: /docs/loader/
   #     - title: "Ring Counter"
   #       url: /docs/ring-counter/
@@ -54,9 +54,9 @@
   #       url: /docs/build-history/
   - title: "APPROFONDIMENTI"
     children:
-      - title: "= Aritmetica Binaria"
+      - title: "> Aritmetica Binaria"
         url: /docs/math/
-      - title: "= Instruction Summary"
+      - title: "> Instruction Summary"
         url: /docs/in-summary/
   #     - title: "Opcode Table"
   #       url: /docs/in-by-opcode/
@@ -70,9 +70,9 @@
   #       url: /docs/further-reading/
   - title: "RIFERIMENTI"
     children:
-      - title: "= BEAM su GitHub"
+      - title: "> BEAM su GitHub"
         url: "https://github.com/andreamazzai/beam"
-      - title: "= SAP di Ben Eater"
+      - title: "> SAP di Ben Eater"
         url: "https://eater.net/8bit/"
-      - title: "= NQSAP di Tom Nisbet su GitHub"
+      - title: "> NQSAP di Tom Nisbet su GitHub"
         url: "https://github.com/TomNisbet/nqsap"
