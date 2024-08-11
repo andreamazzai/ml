@@ -76,7 +76,7 @@
         url: "https://eater.net/8bit/"
       # - title: "> NQSAP di Tom Nisbet su GitHub"
       #   url: "<a href = "https://github.com/TomNisbet/nqsap" target = "_blank"></a>"
-      - title: <a href = "https://github.com/TomNisbet/nqsap" target = "_blank">> NQSAP di Tom Nisbet su GitHub</a>
+      - title: <a href = "https://github.com/TomNisbet/nqsap" target = "_blank">NQSAP di Tom Nisbet su GitHub</a>"
         url: "<a href = "https://github.com/TomNisbet/nqsap" target = "_blank"></a>"
 
 # <a href = "address" target = "_blank">testo</a>
