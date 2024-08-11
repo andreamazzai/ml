@@ -9,6 +9,8 @@ Il circuito di clock del computer BEAM riprende il modulo di clock progettato da
 - Il secondo 555 permette di eseguire dei singoli step.
 - Il terzo 555 permette di selezionare tra la modalità a step e il clock continuo utilizzando un più comodo bottone anziché un interruttore. 
 
+Notare che premendo il bottone dello step Durante l'esecuzione in clock continuo permettedi fermare il computer all'istruzione attuale e di proseguire dal micro istruzione successiva step by step . premendo nuovamente il tasto start il computer riprende a lavorare in modalità clock continuo.
+
 Notare anche gli ingressi ~{LDR-Active} e LDR-CLK.
 
 Se ~{LDR-Active} è LO, allora disattivo tutti i clock del modulo perché Arduino gestirà LDR-CLK.
