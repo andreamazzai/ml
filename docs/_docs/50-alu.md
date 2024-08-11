@@ -319,6 +319,7 @@ Ecco una lista delle differenze:
 ## Link utili
 
 - [Inside the vintage 74181 ALU chip: how it works and why it's so strange](https://www.righto.com/2017/03/inside-vintage-74181-alu-chip-how-it.html) di Ken Shirriff. Fondamentale per capire il perché dell'implementazione apparentemente così strana del chip.
+- La pagina delle [note sul 74181](https://tomnisbet.github.io/nqsap/docs/74181-alu-notes) di Tom Nisbet.
 - [Demo of 74LS181 (74HCT181) ALU](https://www.youtube.com/watch?v=Fq0MIJjlGsw) e [Comparator Functions of 74LS181 (74HCT181) ALU](https://www.youtube.com/watch?v=jmROTNtoUGI): due ottimi video di David Courtney.
 
 ## TO DO
