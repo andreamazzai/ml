@@ -12,10 +12,15 @@ Attenzione : nello schema cè una led bar collegata al ring counter, Una led bar
 21/09/2022 - Flags and Conditional Jumps NQSAP	https://tomnisbet.github.io/nqsap/docs/flags/
 Bisogna dire che più volte, leggendo il blog di Tom Nisbet, ho trovato delle idee molto clever.
 
+[![Schema logico della Control Logic dell'NQSAP](../../assets/control/40-control-logic-schema-nqsap.png "Schema logico della Control Logic dell'NQSAP"){:width="100%"}](../../assets/alu/40-control-logic-schema-nqsap.png)
+
+*Schema logico della Control Logic dell'NQSAP, leggermente modificato al solo scopo di migliorarne la leggibilità.*
+
 Questo non è il disegno originale dell'autore, ma il mio rivisto.
 		• 04/10/2022 Ho spostato le porte di collegamento tra IR e ALU-S0 nel foglio della Control Logic.
 
 La realizzazione del comuter SAP mi ha permesso finalmente di capire cosa sia il microcode di un computer moderno.
+
 
 È piuttosto comune leggere ad esempio che è necessario aggiornare il bios dei server per indirizzare falle di sicurezza che sono state scoperte e che potrebbero essere utilizzate dagli hacker per puntini puntini puntini nuovo paragrafo
 Non capendo come potesse essere aggiornata una CPU, dal momento che si tratta di un componente non programmabile virgola non riuscivo a comprendere come fosse possibile arginare i problemi di sicurezza; con il microcode ho capito
