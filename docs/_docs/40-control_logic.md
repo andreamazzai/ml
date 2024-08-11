@@ -3,7 +3,11 @@ title: "Control Logic"
 permalink: /docs/control/
 excerpt: "Control Logic del BEAM computer"
 ---
-PALCEHOLDER
+[![Control Logic del BEAM computer](../../assets/control/40-beam-control.png "Control Logic del BEAM computer"){:width="100%"}](../../assets/control/40-beam-control.png)
+
+**PLACEHOLDER**
+
+Attenzione : nello schema cè una led bar collegata al ring counter, Una led bar collegata alle uscite a - quattro a 11del bass delle rom, ma probabilmente qui manca un pezzettino di led bar per arrivare ai 12 indirizzi totaliindirizzatidai 12 pine in più manca la led bar del registro delle istruzioni
 
 21/09/2022 - Flags and Conditional Jumps NQSAP	https://tomnisbet.github.io/nqsap/docs/flags/
 Bisogna dire che più volte, leggendo il blog di Tom Nisbet, ho trovato delle idee molto clever.
