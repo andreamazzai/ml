@@ -5,7 +5,7 @@ excerpt: "Circuito di Clock del BEAM computer"
 ---
 [![Circuito di Clock del BEAM computer](../../assets/clock/15-beam-clock.png "Circuito di Clock del BEAM computer"){:width="100%"}](../../assets/clock/15-beam-clock.png)
 
-Il circuito di clock del computer BEAM riprende il modulo di clock progettato da Ben Eater ([link](https://eater.net/8bit/clock)) per il computer SAP, semplificandone leggermente l'utilizzo grazie a pulsanti tattili anziché interruttori a scorrimento e aggiungendo qualche interazione con i controlli esterni provenienti dal [Loader](../loader).
+Il circuito di clock del computer BEAM riprende il modulo di clock progettato da Ben Eater per il computer SAP, semplificandone leggermente l'utilizzo grazie a pulsanti tattili anziché interruttori a scorrimento e aggiungendo qualche interazione con i controlli esterni provenienti dal [Loader](../loader).
 
 - Il primo 555 è utilizzato come classico generatore astabile con possibilità di selezionare la frequenza di funzionamento attraverso un potenziometro; un pulsante "Turbo" permette di bypassare temporaneamente la resistenza del potenziometro portando la frequenza di lavoro al valore massimo. Questo pulsante può essere utile se, durante una esecuzione a bassa velocità propedeutica a una analisi visiva degli output, diventi utile superare una routine particolarmente ripetitiva o impegnativa senza dover agire sul potenziometro.
 - Il secondo 555 permette di eseguire singole microistruzioni ("Step").
@@ -33,7 +33,7 @@ Il microcode dell'istruzione HLT del computer attiva l'omonimo segnale sul modul
 
 ## Link utili
 
-- I [video](https://eater.net/8bit/clock) di Ben Eater che descrivono il funzionamento dei timer 555 e la costruzione del modulo di clock.
+- I <a href = "https://eater.net/8bit/clock" target = "_blank">video</a> di Ben Eater che descrivono il funzionamento dei timer 555 e la costruzione del modulo di clock.
 
 ## TO DO
 
