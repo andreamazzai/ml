@@ -359,6 +359,12 @@ Invece dei più comuni dip-switch, ho utilizzato dei comodissimi Rocker Switch (
 
 *Rocker Switch.*
 
+## Link utili
+
+- La documentazione "Building the SAP-3 rev 3.3.pdf" scritta da rolf-electronics e disponibile su "https://github.com/rolf-electronics/The-8-bit-SAP-3" target = "_blank">GitHub</a>.
+
+- Tom notava anche l'approccio del thread [Opcodes and Flag decoding circuit](https://www.reddit.com/r/beneater/comments/m76ijz/opcodes_and_flag_decoding_circuit/) per eseguire salti condizionali in hardware. Invece di pilotare la linea LOAD del Program Counter, il circuito dell'autore del thread si trova tra l'IR e la ROM e forza condizionatamente un'istruzione NOP o JMP a seconda dello stato dei flag. Gli opcode delle istruzioni di salto sono disposti in modo tale che il flag di interesse possa essere determinato dai bit in uscita dall'IR. Concetto interessante, ma Tom aveva già implementato una funzionalità simile con le linee di selezione dell'ALU hardwired all'IR, che è stata riutilizzata anche per la gestione dei [salti condizionali](#i-salti-condizionali).
+
 ## TO DO
 
-- ????????
+- mettere dei link
