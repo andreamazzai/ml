@@ -15,11 +15,11 @@ Notare che una pressione dell'interruttore Step durante il normale funzionamento
 
 Gli interruttori Start/Stop e Step sono stati duplicati anche in una zona più facilmente raggiungible del computer, cioè sotto alla Control Logic; in tale sede è stato incluso anche un interruttore di Reset.
 
-Notare anche gli ingressi ~{LDR-Active} e LDR-CLK.
+Sul modulo sono presenti tre segnali provenienti dal Loader: LDR-Active, LDR-CLK e CLK-Start.
 
-Se ~{LDR-Active} è LO, allora disattivo tutti i clock del modulo perché Arduino gestirà LDR-CLK.
+Un segnale LDR-Active HI indica che il Loader prende il controllo del circuito di clock disattivandone completamente l'output e fermando l'esecuzione del programma. In questa circostanza, il Loader potrà iniettare il suo segnale di clock nel computer LDR-CLK.
 
-Presente che HALT, che permette di stoppare l'esecuzione del codice con l'istruzione BRK, Il cui microcode porta a uno questo segnale.
+Il segnale CLK-Start viene utilizzato dal Loader alla fine della programmazione per riattivare il modulo clock ed eseguire il programma caricato.
 
 [![Schema del modulo Clock](../../assets/clock/15-clock-schema.png "Schema del modulo Clock")](../../assets/clock/15-clock-schema.png)
 
@@ -27,7 +27,7 @@ Presente che HALT, che permette di stoppare l'esecuzione del codice con l'istruz
 
 ## Note sul microcode
 
-Verificare se ci sono note da inserire in questa sezione in relazione al contenuto della pagina.
+Il microcode dell'istruzione HLT del computer attiva l'omonimo segnale sul modulo di clock, interrompendo il funzionamento del programma. Per riprendere il funzionamento, È necessario superare la microistruzione corrente premendo il bottone step e poi è possibile riprendere la modalità a clock continuo premendo il pulsante Start/Stop.
 
 ## Link utili
 
@@ -35,4 +35,5 @@ Verificare se ci sono note da inserire in questa sezione in relazione al contenu
 
 ## TO DO
 
-- Verificare se sono necessarie note sul microcode ; potrebbe essere il caso di spiegare come la istruzione HLT possa fermare il computer
+- Verificare se ho scritto correttamente le note sul microcode.
+- notare che in questa pagina il nome "modulo di clock" e "clock" sono usati per descrivere... maiuscolo o minuscolo?
