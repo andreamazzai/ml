@@ -109,4 +109,5 @@ Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 - Includere appunti su acquisto dei materiali, cavi utilizzati
 - problemi di alimentazione
 - lkink al video dell'ALU
+- Controllare dove ho scritto computer BEAM oppure BEAM computer
 - non ho utilizzato HC perché... bla bla bla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla bla
