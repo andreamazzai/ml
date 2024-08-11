@@ -358,3 +358,7 @@ Invece dei più comuni dip-switch, ho utilizzato dei comodissimi Rocker Switch (
 [![Rocker Switch](../../assets/ram/20-ram-rocker.png "Rocker Switch"){:width="33%"}](../../assets/ram/20-ram-rocker.png)
 
 *Rocker Switch.*
+
+## TO DO
+
+- AGGIUNGERE IL MODULO **MAR** !!!!!!!!!!!!!!!!!!
