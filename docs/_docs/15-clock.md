@@ -49,13 +49,14 @@ Ecco un riassunto degli stati possibili:
 
 ## Link utili
 
-- I video di Ben Eater con la spiegazione del 555 e dei vari componenti
-Tom segnala di aver preso ispirazione da un thread su Reddit [How to add a decremental and incremental circuit to the ALU ?](https://www.reddit.com/r/beneater/comments/jwxke0/how_to_add_a_decremental_and_incremental_circuit/) per l'idea di pilotare il caricamento del [Program Counter](../programcounter/) dal registro dei Flag anziché gestirli con copie multiple del microcode come avveniva come sul SAP di Ben Eater.
-
-- Tom notava anche l'approccio del thread [Opcodes and Flag decoding circuit](https://www.reddit.com/r/beneater/comments/m76ijz/opcodes_and_flag_decoding_circuit/) per eseguire salti condizionali in hardware. Invece di pilotare la linea LOAD del Program Counter, il circuito dell'autore del thread si trova tra il Registro delle Istruzioni e la ROM e forza condizionatamente un'istruzione NOP o JMP a seconda dello stato dei flag. Gli opcode delle istruzioni di salto sono disposti in modo tale che il flag di interesse possa essere determinato dai bit in uscita dall'Instruction Register. Concetto interessante, ma Tom aveva già implementato una funzionalità simile con le linee di selezione dell'ALU hardwired all'IR, quindi questa modalità è stata riutilizzata anche per la gestione dei [salti condizionali](#i-salti-condizionali).
+- [Inside the vintage 74181 ALU chip: how it works and why it's so strange](https://www.righto.com/2017/03/inside-vintage-74181-alu-chip-how-it.html) di Ken Shirriff. Fondamentale per capire il perché dell'implementazione apparentemente così strana del chip.
+- [Demo of 74LS181 (74HCT181) ALU](https://www.youtube.com/watch?v=Fq0MIJjlGsw) e [Comparator Functions of 74LS181 (74HCT181) ALU](https://www.youtube.com/watch?v=jmROTNtoUGI): due ottimi video di David Courtney.
 
 ## TO DO
 
-- Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
-- Effetto non desiderato: "le istruzioni di salto condizionato non eseguite sprecano cicli di clock"… non si potrebbe semplicemente usare N per terminare anticipatamente l'istruzione? Lui sembra renderla un po' complicata
-- 29/01/2023 leggendo bene dice che dovrebbe essere possibile fare in modo che la logica elettronica dell'istruzione Jump vada ad attivare N se il salto non deve esserci… da verificare
+- /WE ↘↗
+- Descrivere comportamento HW **shift register** per le rotazioni
+- Parlare del bench di test sulla base di quanto appreso da David Courtney.
+- *Schema di uno degli 8 Flip-Flop del 74LS377.* -- **Da fare**: Valutare se anche questo ha un riflesso positivo sul discorso del glitch
+- https://bread80.com/2019/09/02/adding-adc-sbc-inc-dec-operations-to-ben-eaters-alu/#easy-footnote-4-43 da leggere per capire se buono
+- subito dopo il capitolo "Il registro H" capire "(da fare: in questo caso, ma anche nel caso delle istruzioni di shift / rotazione e forse anche CPX e CPY, verificare se non potessi usare D invece di H)"

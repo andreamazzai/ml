@@ -21,21 +21,20 @@ Dal [primo articolo letto](https://www.reddit.com/r/beneater/comments/crl270/,8_
 
 >>1. Memory Address register - after the expansion of course the MAR would have to be 16 bits wide. Here i was considering using 2 x LS273 8 bit flip-flop along with an AND gate to allow the chip to have Input Enable signal (that would be implemented by AND-ing the CLK with an Input signal, since the chip has no InputEnable and i was unable to find one that is 8 bit wide, has CLR and inputenable and did not want to use LS173 but might reconsider)
 
-Nel mio progetto a 8 bit si potrebbero semplicemente utilizzare due '173 a 4 bit continuando a sfruttare i segnali di Enable nativamente disponibili. Bisogna dire che sarebbe comunque possibile utilizzare anche il '273 a 8 bit utilizzando una porta AND per *costruire* un segnale di Enable artificiale: i segnali CLK e MI sarebbero gli ingressi della AND, mentre l'output della AND si collegherebbe all'ingresso CLK del FF, che così sarebbe attivato solo quando, oltre al CLK, fosse contemporaneamente presente anche il segnale MI.
-- **/PROG**: In Program Mode il MUX attiva gli ingressi I0a, I0b, I0c e I0d. In Run Mode sono attivi I1a, I1b, I1c e I1d.
-  - Za è normalmente HI attraverso la resistenza che lo collega a Vcc, ma passa a LO premendo il tasto di programmazione e attiva /WE, scrivendo sulla RAM.
-  - Zb è normalmente HI attraverso la resistenza che lo collega a Vcc, ma passa a LO premendo il tasto di programmazione e attiva il transceiver che interconnette RAM e dip-switch.
-  - Zc è fisso HI e disattiva il transceiver che interconnette RAM e bus.
-- **RR WR**: Read RAM e Write RAM non sono attivi.
-  - Za è fisso HI (perché la NAND su I1a ha un ingresso fisso LO) e la scrittura su RAM è inibita.
-  - Zb è fisso HI e inibisce il transceiver tra RAM e dip-switch.
-  - Zc è fisso HI e disattiva il transceiver che interconnette RAM e bus.
-- **RR /WR**: Read RAM non è attivo, Write RAM è attivo.
-  - Za è normalmente HI (perché la NAND su I1a ha un'ingresso LO), ma in corrispondenza dell'impulso di clock passa a LO e attiva /WE, scrivendo sulla RAM.
-  - Zb è fisso HI e inibisce il transceiver tra RAM e dip-switch.
-  - Zc è normalmente HI, dunque disattiva il transceiver che interconnette RAM e bus, ma in corrispondenza dell'impulso di clock passa a LO (perché Za passa a LO), attivando il transceiver.
-- **/RR WR**: Read RAM è attivo, Write RAM non è attivo.
-  - Za è fisso HI (perché la NAND su I1a ha un ingresso fisso LO) e la scrittura su RAM è inibita.
-  - Zb è fisso HI e inibisce il transceiver tra RAM e dip-switch.
-  - Zc è fisso LO e attiva il transceiver tra RAM e bus.
-- **/RR /WR**: Stato illegale.
+[![Schema logico dello Stack Pointer del computer BEAM](../../assets/sp/70-stack-pointer-schema.png "Schema logico dello Stack Pointer del computer BEAM"){:width="100%"}](../../assets/sp/70-stack-pointer-schema.png)
+
+*Schema logico dello Stack Pointer del computer BEAM.*
+
+## Link utili
+
+- [Inside the vintage 74181 ALU chip: how it works and why it's so strange](https://www.righto.com/2017/03/inside-vintage-74181-alu-chip-how-it.html) di Ken Shirriff. Fondamentale per capire il perché dell'implementazione apparentemente così strana del chip.
+- [Demo of 74LS181 (74HCT181) ALU](https://www.youtube.com/watch?v=Fq0MIJjlGsw) e [Comparator Functions of 74LS181 (74HCT181) ALU](https://www.youtube.com/watch?v=jmROTNtoUGI): due ottimi video di David Courtney.
+
+## TO DO
+
+- /WE ↘↗
+- Descrivere comportamento HW **shift register** per le rotazioni
+- Parlare del bench di test sulla base di quanto appreso da David Courtney.
+- *Schema di uno degli 8 Flip-Flop del 74LS377.* -- **Da fare**: Valutare se anche questo ha un riflesso positivo sul discorso del glitch
+- https://bread80.com/2019/09/02/adding-adc-sbc-inc-dec-operations-to-ben-eaters-alu/#easy-footnote-4-43 da leggere per capire se buono
+- subito dopo il capitolo "Il registro H" capire "(da fare: in questo caso, ma anche nel caso delle istruzioni di shift / rotazione e forse anche CPX e CPY, verificare se non potessi usare D invece di H)"
