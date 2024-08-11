@@ -5,10 +5,15 @@ excerpt: "Program Counter del BEAM computer"
 ---
 [![Program Counter del BEAM computer](../../assets/pc/35-beam-pc.png "Program Counter del BEAM computer"){:width="100%"}](../../assets/pc/35-beam-pc.png)
 
-Il Program Counter (PC) del BEAM Computer non presenta differenze sostanziali rispetto al PC del SAP Computer di Ben Eater.
+Il Program Counter (PC) del BEAM Computer presenta poche differenze rispetto al PC del SAP Computer di Ben Eater.
 
-- è ora un registro ad 8 bit anziché a 4 bit, perciò permette di indirizzare 256 byte
-- due Synchronous 4-Bit Binary Counters [74LS161](https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf) sono connessi in cascata secondo la modalità illustrata a pagina 21 del datasheet:
+E' ora un registro ad 8 bit anziché a 4 bit, perciò permette di indirizzare 256 byte:
+
+[![Schema logico del Program Counter del computer BEAM](../../assets/flags/30-flag-beam-schematics.png "Schema logico del Program Counter del computer BEAM"){:width="100%"}](../../assets/flags/30-flag-beam-schematics.png)
+
+*Schema logico del Program Counter del computer BEAM.*
+
+I due Synchronous 4-Bit Binary Counters [74LS161](https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf) sono connessi in cascata secondo la modalità illustrata a pagina 21 del datasheet:
 
 [![Contatori in cascata](../../assets/pc/35-program-counter-161-rco.png "Contatori in cascata"){:width="66%"}](../../assets/pc/35-program-counter-161-rco.png)
 
