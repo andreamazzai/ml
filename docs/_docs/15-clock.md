@@ -47,6 +47,10 @@ Ecco un riassunto degli stati possibili:
   - Zc è fisso LO e attiva il transceiver tra RAM e bus.
 - **/RR /WR**: Stato illegale.
 
+## Note sul microcode
+
+Verificare se ci sono note da inserire in questa sezione in relazione al contenuto della pagina.
+
 ## Link utili
 
 - [Inside the vintage 74181 ALU chip: how it works and why it's so strange](https://www.righto.com/2017/03/inside-vintage-74181-alu-chip-how-it.html) di Ken Shirriff. Fondamentale per capire il perché dell'implementazione apparentemente così strana del chip.
@@ -60,3 +64,4 @@ Ecco un riassunto degli stati possibili:
 - *Schema di uno degli 8 Flip-Flop del 74LS377.* -- **Da fare**: Valutare se anche questo ha un riflesso positivo sul discorso del glitch
 - https://bread80.com/2019/09/02/adding-adc-sbc-inc-dec-operations-to-ben-eaters-alu/#easy-footnote-4-43 da leggere per capire se buono
 - subito dopo il capitolo "Il registro H" capire "(da fare: in questo caso, ma anche nel caso delle istruzioni di shift / rotazione e forse anche CPX e CPY, verificare se non potessi usare D invece di H)"
+- Verificare se sono necessarienote sul microcode ; potrebbe essere il caso di spiegare come la istruzione HLT possa fermare il computer

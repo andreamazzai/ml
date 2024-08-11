@@ -19,8 +19,13 @@ I due Synchronous 4-Bit Binary Counters [74LS161](https://www.ti.com/lit/ds/syml
 
 ## Note sul microcode
 
-Verificare se ci sono note da inserire in questa sezione in relazioneal program counter.
+- Verificare se ci sono note da inserire in questa sezione in relazione al contenuto della pagina. Forse qualcosa relativo al fatto che le prime due micro - istruzioni sono sempre le stesseE un rimando al modulo dei Flag nel quale si spiega meglio come venga eseguito il salto a una nuova istruzione;
+inoltre Forse an- che un rimando alla pagina DXYche viene utilizzata per calcolare il nuovo valore del PC del salto condizionale
 
 ## Link utili
 
 - I [video](https://eater.net/8bit/pc) di Ben Eater che descrivono il funzionamento dei Flip-Flop e la costruzione del PC.
+
+## TO DO
+
+- Verificare se la sezione **Note sul microcode** sia necessaria o no
