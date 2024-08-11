@@ -9,7 +9,7 @@ Il Program Counter (PC) del BEAM Computer presenta poche differenze rispetto al 
 
 E' ora un registro ad 8 bit anziché a 4 bit, perciò permette di indirizzare 256 byte:
 
-[![Schema logico del Program Counter del computer BEAM](../../assets/flags/30-flag-beam-schematics.png "Schema logico del Program Counter del computer BEAM"){:width="100%"}](../../assets/flags/30-flag-beam-schematics.png)
+[![Schema logico del Program Counter del computer BEAM](../../assets/pc/35-program-counter-schema.png "Schema logico del Program Counter del computer BEAM"){:width="100%"}](../../assets/pc/35-program-counter-schema.png)
 
 *Schema logico del Program Counter del computer BEAM.*
 
