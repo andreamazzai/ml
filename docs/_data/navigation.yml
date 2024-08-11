@@ -77,7 +77,7 @@
       # - title: "> NQSAP di Tom Nisbet su GitHub"
       #   url: "<a href = "https://github.com/TomNisbet/nqsap" target = "_blank"></a>"
       - title: <a href = "https://github.com/TomNisbet/nqsap" target = "_blank">NQSAP di Tom Nisbet su GitHub</a>"
-        url: "<a href = "https://github.com/TomNisbet/nqsap" target = "_blank"></a>"
+        url: ""
 
 # <a href = "address" target = "_blank">testo</a>
 # <a href = "https://github.com/TomNisbet/nqsap" target = "_blank"></a>
