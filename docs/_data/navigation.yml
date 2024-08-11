@@ -75,4 +75,7 @@
       - title: "> SAP di Ben Eater"
         url: "https://eater.net/8bit/"
       - title: "> NQSAP di Tom Nisbet su GitHub"
-        url: "https://github.com/TomNisbet/nqsap"
+        url: "<a href = "https://github.com/TomNisbet/nqsap" target = "_blank"></a>"
+
+# <a href = "address" target = "_blank">testo</a>
+# <a href = "https://github.com/TomNisbet/nqsap" target = "_blank"></a>

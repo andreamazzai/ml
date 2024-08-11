@@ -93,7 +93,7 @@ Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 - Tom Nisbet che ha realizzato l'[NQSAP](https://https://tomnisbet.github.io/nqsap/) espandendo e migliorando in maniera sostanziale il progetto di Ben Eater;
 - il subreddit [r/beneater](https://www.reddit.com/r/beneater/) - in particolar modo [The8BitEnthusiast](https://www.reddit.com/user/The8BitEnthusiast/) e [Tom Nisbet](https://www.reddit.com/user/nib85/) - grazie!
 - Ken Shirrif per alcuni [interessantissimi articoli](https://www.righto.com/) su Overflow, 6502 e 74181 (e molto altro!);
-- Il sito [6502.org](http://6502.org) e il suo forum: documentazione dettagliata senza fronzoli e utenti davvero esperti.
+- il sito [6502.org](http://6502.org) e il suo forum: documentazione dettagliata senza fronzoli e utenti davvero esperti.
 
 ## Altri link
 
