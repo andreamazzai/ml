@@ -4,7 +4,7 @@ permalink: /docs/flags/
 excerpt: "Registro dei flag del BEAM computer"
 ---
 
-[![Registro dei Flag del BEAM](../../assets/flags/30-flag-beam.png "Registro dei Flag del BEAM"){:width="100%"}](../../assets/flags/30-flag-beam.png)
+[![Registro dei flag del BEAM computer](../../assets/flags/30-flag-beam.png "Registro dei flag del BEAM computer"){:width="100%"}](../../assets/flags/30-flag-beam.png)
 
 Più volte, analizzando l'NQSAP e leggendo la documentazione di Tom Nisbet, avevo trovato delle idee molto ingegnose; alcune di queste si trovano nel modulo dei Flag.
 

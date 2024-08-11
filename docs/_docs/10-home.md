@@ -7,7 +7,6 @@ header:
   overlay_image: /assets/beam.png
   overlay_filter: 0.5
 ---
-
 ## BEAM 8-bit computer
 
 <!-- TLDR: vai subito alla [documentazione del BEAM 8-bit computer](https://andreamazzai.github.io/beam/) su GitHub Pages -->

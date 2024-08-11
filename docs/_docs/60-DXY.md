@@ -3,6 +3,8 @@ title: "Registri D, X e Y"
 permalink: /docs/dxy/
 excerpt: "Registri indice del BEAM computer"
 ---
+[![Registri indice del BEAM computer](../../assets/dxy/60-beam-dxy.png "Registri indice del BEAM computer"){:width="100%"}](../../assets/dxy/60-beam-dxy.png)
+
 PLACEHOLDER
 
 Il limite principale del computer SAP di Ben Eater era sicuramente la modesta quantità di RAM indirizzabile, pari a 16 byte; era possibile caricare un semplice contatore da 0 a 255 e viceversa, oppure un piccolo algoritmo di Fibonacci, ma nulla di più. Questo è stato lo stimolo primario per la realizzazione di un computer più potente.
@@ -11,12 +13,10 @@ Il limite principale del computer SAP di Ben Eater era sicuramente la modesta qu
 
 All'approssimarsi del completamento della costruzione del SAP, ho iniziato a documentarmi su vari blog e forum per raccogliere idee su possibili miglioramenti ed espansioni.
 
-### Primi studi
+## Differenze tra Registri indice dell'NQSAP e del BEAM
 
-  - Zb è fisso HI e inibisce il transceiver tra RAM e dip-switch.
-  - Zc è normalmente HI, dunque disattiva il transceiver che interconnette RAM e bus, ma in corrispondenza dell'impulso di clock passa a LO (perché Za passa a LO), attivando il transceiver.
-- **/RR WR**: Read RAM è attivo, Write RAM non è attivo.
-  - Za è fisso HI (perché la NAND su I1a ha un ingresso fisso LO) e la scrittura su RAM è inibita.
-  - Zb è fisso HI e inibisce il transceiver tra RAM e dip-switch.
-  - Zc è fisso LO e attiva il transceiver tra RAM e bus.
-- **/RR /WR**: Stato illegale.
+Come si può vedere dallo schema del modulo ALU del computer BEAM, questo è quasi una copia 1:1 del modulo ALU del computer NQSAP: non avevo certamente la capacità di sviluppare autonomamente un modulo ALU così complesso e legato a doppio filo con altri moduli del computer, ma la comprensione completa del funzionamento dell'ALU sviluppata da Tom ha rappresentato comunque un traguardo molto importante.
+
+[![Schema logico dei registri indice del BEAM computer](../../assets/dxy/60-dxy-beam-schema.png "Schema logico dei registri indice del BEAM computer"){:width="100%"}](../../assets/dxy/60-dxy-beam-schema.png)
+
+*Schema logico dei registri indice del BEAM computer.*

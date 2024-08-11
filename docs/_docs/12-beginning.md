@@ -3,7 +3,7 @@ title: "Per iniziare"
 permalink: /docs/beginning/
 excerpt: "Per iniziare"
 ---
-[![Modulo RAM e MAR del BEAM](../../assets/ram/20-ram-beam.png "Modulo RAM e MAR del BEAM"){:width="100%"}](../../assets/ram/20-ram-beam.png)
+[![Per iniziare](../../assets/ram/20-ram-beam.png "Per iniziare"){:width="100%"}](../../assets/ram/20-ram-beam.png)
 
 ## Cosa devo includere in questa pagina?
 

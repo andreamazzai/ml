@@ -3,7 +3,7 @@ title: "Clock"
 permalink: /docs/clock/
 excerpt: "Circuito di Clock del BEAM computer"
 ---
-[![Circuito di Clock del BEAM COmputer](../../assets/clock/15-beam-clock.png "Circuito di Clock del BEAM COmputer"){:width="100%"}](../../assets/clock/15-beam-clock.png)
+[![Circuito di Clock del BEAM computer](../../assets/clock/15-beam-clock.png "Circuito di Clock del BEAM computer"){:width="100%"}](../../assets/clock/15-beam-clock.png)
 
 Il circuito di clock del computer BEAM riprende il modulo di clock progettato da Ben Eater ([link](https://eater.net/8bit/clock))per il computer SAP, semplificandone leggermente l'utilizzo mediante l'utilizzo di push Button anziché interruttori e aggiungendo qualche interazione con controlli esterni come quelli provenienti dal loader .
 

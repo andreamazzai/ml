@@ -3,7 +3,7 @@ title: "RAM e MAR"
 permalink: /docs/ram/
 excerpt: "Modulo di memoria del BEAM computer"
 ---
-[![Modulo RAM e MAR del BEAM](../../assets/ram/20-ram-beam.png "Modulo RAM e MAR del BEAM"){:width="100%"}](../../assets/ram/20-ram-beam.png)
+[![Modulo di memoria del BEAM computer](../../assets/ram/20-ram-beam.png "Modulo di memoria del BEAM computer"){:width="100%"}](../../assets/ram/20-ram-beam.png)
 
 Il limite principale del computer SAP di Ben Eater era sicuramente la modesta quantità di RAM indirizzabile, pari a 16 byte; era possibile caricare un semplice contatore da 0 a 255 e viceversa, oppure un piccolo algoritmo di Fibonacci, ma nulla di più. Questo è stato lo stimolo primario per la realizzazione di un computer più potente.
 
