@@ -72,11 +72,11 @@
     children:
       - title: "> BEAM su GitHub"
         url: "https://github.com/andreamazzai/beam"
-      - title: "> SAP di Ben Eater"
-        url: "https://eater.net/8bit/"
+      - title: <a href = "https://eater.net/8bit/" target = "_blank">SAP di Ben Eater</a>
+        url: ""
       # - title: "> NQSAP di Tom Nisbet su GitHub"
       #   url: "<a href = "https://github.com/TomNisbet/nqsap" target = "_blank"></a>"
-      - title: <a href = "https://github.com/TomNisbet/nqsap" target = "_blank">NQSAP di Tom Nisbet su GitHub</a>"
+      - title: <a href = "https://github.com/TomNisbet/nqsap" target = "_blank">NQSAP di Tom Nisbet su GitHub</a>
         url: ""
 
 # <a href = "address" target = "_blank">testo</a>
