@@ -7,11 +7,11 @@ excerpt: "Per iniziare"
 
 ## Cosa devo includere in questa pagina?
 
+**NOTA: PLACEHOLDER - PLACEHOLDER - PLACEHOLDER**
+
 - Per esempio Il circuito che permette di leggere o scrivere su un bus a 8 bit
 - evidenziare che non ho utilizzato i condensatori collegati all'alimentazione di ogni chip
 - i LED utilizzati includono la resistenza - giallo verde rosso; altri no.
-
-
 
 ### Primi studi
 

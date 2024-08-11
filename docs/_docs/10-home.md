@@ -89,7 +89,7 @@ Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 ## Crediti e ringraziamenti
 
-- Ben Eater per la sua grande capacità di creazione di [contenuti così interessanti](https://www.youtube.com/@BenEater/playlists/);
+- Ben Eater per la sua grande capacità di creazione di [contenuti così interessanti](https://www.youtube.com/@BenEater/playlists/) e in particolar modo per la playlist [Building an 8-bit breadboard computer!](https://www.youtube.com/playlist?list=PLowKtXNTBypGqImE405J2565dvjafglHU);
 - Tom Nisbet che ha realizzato l'[NQSAP](https://https://tomnisbet.github.io/nqsap/) espandendo e migliorando in maniera sostanziale il progetto di Ben Eater;
 - il subreddit [r/beneater](https://www.reddit.com/r/beneater/) - in particolar modo [The8BitEnthusiast](https://www.reddit.com/user/The8BitEnthusiast/) e [Tom Nisbet](https://www.reddit.com/user/nib85/) - grazie!
 - Ken Shirrif per alcuni [interessantissimi articoli](https://www.righto.com/) su Overflow, 6502 e 74181 (e molto altro!);
