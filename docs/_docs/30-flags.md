@@ -263,13 +263,15 @@ Si noti che la Truth Table della tabella richiederebbe i componenti evidenziati 
 
 *Schema rivisto con l'applicazione del teorema di De Morgan.*
 
-## Moduli Flag dell'NQSAP e del BEAM
+## Differenze tra Moduli Flag dell'NQSAP e del BEAM
 
 Il modulo Flag del computer BEAM è sostanzialmente una copia del modulo Flag del computer NQSAP; con le mie conoscenze non avrei saputo svilupparne una versione migliore, ma il fatto di averne compreso perfettamente tanto il funzionamento quanto l'integrazione con gli altri moduli del computer è stata una ottima lezione.
 
 [![Schema logico del modulo Flag del computer BEAM](../../assets/flags/30-flag-beam-schematics.png "Schema logico del modulo Flag del computer BEAM"){:width="100%"}](../../assets/flags/30-flag-beam-schematics.png)
 
 *Schema logico del modulo Flag del computer BEAM.*
+
+Da notare che il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Come descritto in maggior dettaglio nella sezione riservate al microcode, con soli 8 step non sarebbe stato possibile emulare le istruzioni del 6502 di salto condizionale, di scorrimento / rotazione e di salto a subroutine. Questa è in realtà una differenza architetturale più legata alla Control Logic, però il maggior numero di step disponibili ha un importante impatto su questo modulo e ha dunque sicuramente senso citare la differenza in questa sezione.
 
 ## Link utili
 
@@ -284,3 +286,4 @@ Il modulo Flag del computer BEAM è sostanzialmente una copia del modulo Flag de
 - Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
 - Effetto non desiderato: "le istruzioni di salto condizionato non eseguite sprecano cicli di clock"… non si potrebbe semplicemente usare N per terminare anticipatamente l'istruzione? Lui sembra renderla un po' complicata
 - 29/01/2023 leggendo bene dice che dovrebbe essere possibile fare in modo che la logica elettronica dell'istruzione Jump vada ad attivare N se il salto non deve esserci… da verificare
+- alla riga "La pagina dei registri D, X e Y descrive il calcolo del valore da inserire nel PC" mettere un hyperlink con link alla sezione dove facciol il calcolo d+x o d+y
