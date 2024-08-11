@@ -14,7 +14,7 @@
   docs:
   - title: "OVERVIEW"
     children:
-      - title: "< Il computer BEAM"
+      - title: "> Il computer BEAM"
         url: /
       # - title: "Why?"
       #   url: /docs/why/
@@ -56,8 +56,8 @@
     children:
       - title: "> Aritmetica Binaria"
         url: /docs/math/
-      - title: "> Instruction Summary"
-        url: /docs/in-summary/
+      # - title: "> Instruction Summary"
+      #   url: /docs/in-summary/
   #     - title: "Opcode Table"
   #       url: /docs/in-by-opcode/
   #     - title: "Mode Group Table"

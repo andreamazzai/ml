@@ -58,7 +58,7 @@ L'utente segnala che ci sono due modalità di scrittura; quella evidenziata da l
 
 Un altro aspetto che avevo notato immediatamente, ipotizzando l'uso del 62256, era l'impossibilità di mantenere la visibilità del contenuto della cella di RAM indirizzata dal MAR utilizzando i LED (o almeno così credevo): se con i '189 le porte di output erano sempre attive e potevo vedere in ogni momento il valore contenuto della cella di memoria correntemente indirizzata dal MAR, con il 62256 avrei avuto visibilità del contenuto della cella solo nel momento in cui la RAM veniva letta - e dunque non costantemente.
 
-[![Schema del modulo RAM di Ben Eater basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione ininterrotta del contenuto della locazione RAM indirizzata dal MAR](../../assets/ram/20-be-ram-detail.png "Schema del modulo RAM basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione continua del contenuto della locazione RAM indirizzata dal MAR"){:width="50%"}](../../assets/ram/20-be-ram-full.png)
+[![Schema del modulo RAM di Ben Eater basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione ininterrotta del contenuto della locazione RAM indirizzata dal MAR](../../assets/ram/20-be-ram-detail.png "Schema del modulo RAM basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione continua del contenuto della locazione RAM indirizzata dal MAR"){:width="66%"}](../../assets/ram/20-be-ram-full.png)
 
 *Nello schema si notano i 74189 con le porte di Input dedicate D1-D4 e le porte di Output dedicate O1-O4.*
 
@@ -362,8 +362,6 @@ Invece dei più comuni dip-switch, ho utilizzato dei comodissimi Rocker Switch (
 ## Link utili
 
 - La documentazione "Building the SAP-3 rev 3.3.pdf" scritta da rolf-electronics e disponibile su <a href = "https://github.com/rolf-electronics/The-8-bit-SAP-3" target = "_blank">GitHub</a>.
-
-- Tom notava anche l'approccio del thread [Opcodes and Flag decoding circuit](https://www.reddit.com/r/beneater/comments/m76ijz/opcodes_and_flag_decoding_circuit/) per eseguire salti condizionali in hardware. Invece di pilotare la linea LOAD del Program Counter, il circuito dell'autore del thread si trova tra l'IR e la ROM e forza condizionatamente un'istruzione NOP o JMP a seconda dello stato dei flag. Gli opcode delle istruzioni di salto sono disposti in modo tale che il flag di interesse possa essere determinato dai bit in uscita dall'IR. Concetto interessante, ma Tom aveva già implementato una funzionalità simile con le linee di selezione dell'ALU hardwired all'IR, che è stata riutilizzata anche per la gestione dei [salti condizionali](#i-salti-condizionali).
 
 ## TO DO
 
