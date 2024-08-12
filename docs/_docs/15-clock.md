@@ -5,7 +5,7 @@ excerpt: "Circuito di Clock del BEAM computer"
 ---
 [![Circuito di Clock del BEAM computer](../../assets/clock/15-beam-clock.png "Circuito di Clock del BEAM computer"){:width="100%"}](../../assets/clock/15-beam-clock.png)
 
-Il circuito di clock del computer BEAM riprende il modulo di clock progettato da Ben Eater per il computer SAP, semplificandone leggermente l'utilizzo grazie a pulsanti tattili anziché interruttori a scorrimento e aggiungendo qualche interazione con i controlli esterni provenienti dal [Loader](../loader).
+Il circuito di clock del computer BEAM riprende il modulo di clock progettato da Ben Eater per il computer SAP, utilizzando comodi pulsanti tattili anziché interruttori a scorrimento e aggiungendo qualche interazione con i controlli esterni provenienti dal [Loader](../loader).
 
 - Il primo 555 è utilizzato come generatore astabile con possibilità di selezionare la frequenza di funzionamento attraverso un potenziometro; un pulsante "Turbo" permette di bypassare temporaneamente la resistenza del potenziometro portando la frequenza di lavoro al valore massimo. Se si esegue qualche programma a bassa velocità di clock allo scopo di effettuare una analisi visiva degli output, questo pulsante diventa utile per superare qualche routine particolarmente ripetitiva o impegnativa senza dover agire sul potenziometro.
 - Il secondo 555 permette di eseguire singole microistruzioni ("Step").
@@ -14,6 +14,8 @@ Il circuito di clock del computer BEAM riprende il modulo di clock progettato da
 Una pressione del pulsante Step durante il normale funzionamento (astabile) ferma il computer alla microistruzione attuale e permette di proseguire in modalità "Step by Step" premendo ripetutamente lo stesso pulsante; premendo il pulsante Start/Stop, il computer riprende a lavorare col clock astabile.
 
 I pulsanti Start/Stop e Step sono stati duplicati anche in una zona più facilmente raggiungible del computer, cioè sotto alla Control Logic; in tale sede è stato incluso anche un pulsante di Reset.
+
+[![Pulsanti Start/Stop, Step, Reset](../../assets/clock/15-run-step-reset.png "Pulsanti Start/Stop, Step, Reset")](../../assets/clock/15-run-step-reset.png)
 
 ### Il Loader e il Clock
 
