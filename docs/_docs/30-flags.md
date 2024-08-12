@@ -19,13 +19,13 @@ Il registro dei Flag dell'NQSAP emula i 4 flag **NVZC** del 6502:
 - **Z**ero (Z)
 - **C**arry (C)
 
-E' completamente differente dal semplice registro dei Flag del computer SAP di Ben Eater, nel quale un unico Flip-Flop [74LS173](https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf) memorizzava i soli 2 flag C e Z nello stesso momento: la gestione delle istruzioni necessitava di 4 set di microcode, cioè uno per ogni combinazione dei segnali di flag portati agli ingressi delle EEPROM; ogni set di microcode era infatti sviluppato "su misura" per attivare in output i corretti segnali per la gestione di C e/o Z. Questo è ben spiegato nel video di Ben Eater [Conditional jump instructions](https://www.youtube.com/watch?v=Zg1NdPKoosU).
+E' completamente differente dal semplice registro dei Flag del computer SAP di Ben Eater, nel quale un unico Flip-Flop <a href = "https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf" target="_blank">74LS173</a> memorizzava i soli 2 flag C e Z nello stesso momento: la gestione delle istruzioni necessitava di 4 set di microcode, cioè uno per ogni combinazione dei segnali di flag portati agli ingressi delle EEPROM; ogni set di microcode era infatti sviluppato "su misura" per attivare in output i corretti segnali per la gestione di C e/o Z. Questo è ben spiegato nel video di Ben Eater <a href = "https://www.youtube.com/watch?v=Zg1NdPKoosU" target="_blank">Conditional jump instructions</a>.
 
 L'approccio di Tom era invece basato su una verifica logica eseguita in hardware: il microcode non variava a seconda dello stato dei flag, che non erano più direttamente connessi agli indirizzi delle ROM che attivano poi a loro volta diversi segnali di output in base all'indirizzo/flag presentato in ingresso!
 
 Analizzando ad esempio un'istruzione di salto condizionale legata al flag Z riscontravo che:
 
-- il microcode dell'istruzione di salto attivava un generico segnale "Jump Enable" connesso al pin 7 del Data Selector/Multiplexer [74LS151](https://www.ti.com/lit/ds/symlink/sn54s151.pdf) visibile in basso a destra nello schema generale;
+- il microcode dell'istruzione di salto attivava un generico segnale "Jump Enable" connesso al pin 7 del Data Selector/Multiplexer <a href = "https://www.ti.com/lit/ds/symlink/sn54s151.pdf" target = "_blank">74LS151</a> visibile in basso a destra nello schema generale;
 
 - la selezione del flag da mettere in uscita sul '151 dipendeva dalla codifica dell'istruzione in esecuzione, poiché i 3 bit Select S2, S1 ed S0 erano direttamente collegati all'Instruction Register, cioè *hardwired*, in maniera similare a quanto realizzato anche nel modulo ALU;
 
@@ -57,16 +57,16 @@ I miglioramenti derivanti da questa architettura sono:
 
 ## Componenti e funzionamento
 
-Un multiplexer (MUX) [74LS157](https://www.ti.com/lit/ds/symlink/sn74ls157.pdf) prende in input i valori dei flag V, Z e C selezionandone la provenienza:
+Un multiplexer (MUX) <a href = "https://www.ti.com/lit/ds/symlink/sn74ls157.pdf" target = "_blank">74LS157</a> prende in input i valori dei flag V, Z e C selezionandone la provenienza:
 
 1. **dal bus**; quando il '157 legge dal bus, è possibile caricare i registri dei flag leggendo valori arbitrari dalla memoria del computer (o, più precisamente, dalla zona di memoria adibita allo Stack) similarmente a quanto svolto dall'istruzione Pull Processor Status **PLP** del 6502;
 
 2. **da un computo**:
     - **V** attraverso un Data Selector/Multiplexer '151 che ricrea la funzione logica dell'Overflow verificando un eventuale cambio di segno nel risultato delle operazioni di somma o sottrazione dei numeri con segno (Signed);
-    - **Z** come risultato del comparatore [74LS688](https://www.ti.com/lit/ds/symlink/sn74ls688.pdf);
+    - **Z** come risultato del comparatore <a href = "https://www.ti.com/lit/ds/symlink/sn74ls688.pdf" target = "_blank">74LS688</a>;
     - **C** attraverso un altro '151 che seleziona la sorgente del Carry;
 
-V, Z e C escono dal MUX '157 e sono presentati a 3 dei 4 Flip-Flop disponibili in una coppia di [74LS74](https://www.ti.com/lit/ds/symlink/sn54ls74a.pdf).
+V, Z e C escono dal MUX '157 e sono presentati a 3 dei 4 Flip-Flop disponibili in una coppia di <a href="https://www.ti.com/lit/ds/symlink/sn54ls74a.pdf" target="_blank">74LS74</a>.
 
 Il flag **N**egative viene invece sempre letto direttamente dalla linea D7 del bus e caricato sul 4° Flip-Flop.
 
@@ -174,7 +174,7 @@ Il flag **Z**ero è attivo quando il valore presente nel bus è zero; anziché u
 
 ### Overflow
 
-Il flag O**V**erflow è calcolato utilizzando un '151 nella modalità descritta in ["74181 with V_Flag"](http://6502.org/users/dieter/v_flag/v_4.htm) sul sito 6502.org.
+Il flag O**V**erflow è calcolato utilizzando un '151 nella modalità descritta in <a href="http://6502.org/users/dieter/v_flag/v_4.htm" target="_blank">74181 with V_Flag</a> sul sito 6502.org.
 
 Avevo trovato la spiegazione molto criptica, o forse non propriamente adatta ai profani, tanto da impiegare alcune *decine* di ore per comprendere a fondo quanto enunciato rileggendo, cercando altre fonti, seguendo video di aritmetica binaria, facendo esercizi su carta e su uno spreadsheet.
 
@@ -277,9 +277,9 @@ Da notare che il computer NQSAP prevedeva 8 step per le microistruzioni, mentre 
 
 - I video di Ben Eater <a href = "https://www.youtube.com/watch?v=ObnosznZvHY" target = "_blank">CPU flags register</a> e <a href = "https://www.youtube.com/watch?v=Zg1NdPKoosU" target = "_blank">Conditional jump instructions</a>, che spiegano la costruzione del modulo dei Flag e le modifiche necessarie al microcode per la gestione delle istruzioni di salto condizionale. Si noterà la differenza con l'approccio dell'NQSAP, che non richiede microcode ad-hoc per ogni flag e non abbisogna di linee di indirizzamento EEPROM dedicate.
 
-- Tom segnala di aver preso ispirazione da un thread su Reddit [How to add a decremental and incremental circuit to the ALU ?](https://www.reddit.com/r/beneater/comments/jwxke0/how_to_add_a_decremental_and_incremental_circuit/) per l'idea di pilotare il caricamento del [Program Counter](../programcounter/) dal registro dei Flag anziché gestirli con copie multiple del microcode come avveniva come sul SAP di Ben Eater.
+- Tom segnala di aver preso ispirazione da un thread su Reddit <a href="https://www.reddit.com/r/beneater/comments/jwxke0/how_to_add_a_decremental_and_incremental_circuit/" target="_blank">How to add a decremental and incremental circuit to the ALU ?</a> per l'idea di pilotare il caricamento del [Program Counter](../programcounter/) dal registro dei Flag anziché gestirli con copie multiple del microcode come avveniva come sul SAP di Ben Eater.
 
-- Tom notava anche l'approccio del thread [Opcodes and Flag decoding circuit](https://www.reddit.com/r/beneater/comments/m76ijz/opcodes_and_flag_decoding_circuit/) per eseguire salti condizionali in hardware. Invece di pilotare la linea LOAD del Program Counter, il circuito dell'autore del thread si trova tra l'IR e la ROM e forza condizionatamente un'istruzione NOP o JMP a seconda dello stato dei flag. Gli opcode delle istruzioni di salto sono disposti in modo tale che il flag di interesse possa essere determinato dai bit in uscita dall'IR. Concetto interessante, ma Tom aveva già implementato una funzionalità simile con le linee di selezione dell'ALU hardwired all'IR, che è stata riutilizzata anche per la gestione dei [salti condizionali](#i-salti-condizionali).
+- Tom notava anche l'approccio del thread <a href="https://www.reddit.com/r/beneater/comments/m76ijz/opcodes_and_flag_decoding_circuit/" target="_blank">Opcodes and Flag decoding circuit</a> per eseguire salti condizionali in hardware. Invece di pilotare la linea LOAD del Program Counter, il circuito dell'autore del thread si trova tra l'IR e la ROM e forza condizionatamente un'istruzione NOP o JMP a seconda dello stato dei flag. Gli opcode delle istruzioni di salto sono disposti in modo tale che il flag di interesse possa essere determinato dai bit in uscita dall'IR. Concetto interessante, ma Tom aveva già implementato una funzionalità simile con le linee di selezione dell'ALU hardwired all'IR, che è stata riutilizzata anche per la gestione dei [salti condizionali](#i-salti-condizionali).
 
 ## TO DO
 

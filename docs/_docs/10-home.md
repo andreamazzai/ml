@@ -111,3 +111,4 @@ Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 - lkink al video dell'ALU
 - Controllare dove ho scritto computer BEAM oppure BEAM computer
 - non ho utilizzato HC perché... bla bla bla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla bla
+- sistemare il paragrafo BENEFICI

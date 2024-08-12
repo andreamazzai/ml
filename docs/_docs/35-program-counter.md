@@ -13,7 +13,7 @@ E' ora un registro ad 8 bit anziché a 4 bit, perciò permette di indirizzare 25
 
 *Schema logico del Program Counter del computer BEAM.*
 
-I due Synchronous 4-Bit Binary Counters [74LS161](https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf) sono connessi in cascata secondo la modalità illustrata a pagina 21 del datasheet:
+I due Synchronous 4-Bit Binary Counters <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">74LS161</a> sono connessi in cascata secondo la modalità illustrata a pagina 21 del datasheet:
 
 [![Contatori in cascata](../../assets/pc/35-program-counter-161-rco.png "Contatori in cascata"){:width="66%"}](../../assets/pc/35-program-counter-161-rco.png)
 
@@ -26,7 +26,7 @@ inoltre Forse an- che un rimando alla pagina DXYche viene utilizzata per calcola
 
 ## Link utili
 
-- I [video](https://eater.net/8bit/pc) di Ben Eater che descrivono il funzionamento dei Flip-Flop e la costruzione del PC.
+- I <a href="https://eater.net/8bit/pc" target="_blank">video</a> di Ben Eater che descrivono il funzionamento dei Flip-Flop e la costruzione del PC.
 
 ## TO DO
 
