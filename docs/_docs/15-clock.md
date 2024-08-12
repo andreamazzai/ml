@@ -15,13 +15,13 @@ Una pressione del pulsante Step durante il normale funzionamento (astabile) ferm
 
 I pulsanti Start/Stop e Step sono stati duplicati anche in una zona più facilmente raggiungible del computer, cioè sotto alla Control Logic; in tale sede è stato incluso anche un pulsante di Reset.
 
-[![Pulsanti Start/Stop, Step, Reset](../../assets/clock/15-run-step-reset.png "Pulsanti Start/Stop, Step, Reset")](../../assets/clock/15-run-step-reset.png)
+[![Pulsanti Start/Stop, Step, Reset](../../assets/clock/15-run-step-reset.png "Pulsanti Start/Stop, Step, Reset")]
 
 ### Il Loader e il Clock
 
 Sul modulo di clock sono presenti tre segnali provenienti dal Loader basato su Arduino: LDR-Active, LDR-CLK e CLK-Start.
 
-Il segnale **LDR-Active** allo stato HI permette al Loader di  prendere il controllo del circuito di clock, disattivandone completamente l'output e fermando l'esecuzione del programma. In questa circostanza, il Loader potrà iniettare nel computer il suo segnale di clock **LDR-CLK**, utilizzato per programmare la RAM.
+Il segnale **LDR-Active** allo stato HI permette al Loader di  prendere il controllo del circuito di clock, disattivandone completamente l'output e fermando l'esecuzione del programma. In questa circostanza, il Loader può iniettare nel computer il suo segnale di clock **LDR-CLK**, utilizzato per programmare la RAM.
 
 Il segnale **CLK-Start** viene utilizzato dal Loader alla fine della programmazione per riattivare il modulo di clock e far partire il programma appena caricato.
 
