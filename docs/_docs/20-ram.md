@@ -11,9 +11,9 @@ All'approssimarsi del completamento della costruzione del SAP, avevo iniziato a 
 
 ### Primi studi
 
-Il [canale Reddit](https://www.reddit.com/r/beneater/) dedicato ai progetti di Ben Eater è stato fondamentale in questo mio percorso.
+Il <a href = "https://www.reddit.com/r/beneater/" target = "_blank">canale Reddit</a> dedicato ai progetti di Ben Eater è stato fondamentale in questo mio percorso.
 
-Dal [primo articolo letto](https://www.reddit.com/r/beneater/comments/crl270/,8_bit_computer_memory_bootloader_and_display/) avevo tratto queste note:
+Dal <a href = "https://www.reddit.com/r/beneater/comments/crl270/,8_bit_computer_memory_bootloader_and_display/" target = "_blank">primo articolo letto</a> avevo tratto queste note:
 
 > Addressable memory - so the idea here is to have 16bit's of addressable memory (about 65KB). This would greatly expand the capabilities compared to the 16 bytes of Ben's PC. This would affect the following things
 
@@ -21,15 +21,15 @@ Dal [primo articolo letto](https://www.reddit.com/r/beneater/comments/crl270/,8_
 
 Questo utente desiderava fare una espansione radicale del computer, passando da 16 byte a 64K; il mio desiderio era quello di crescere fino a 256 byte (e non complicarmi troppo la vita con un bus a 16 bit), ma alcune informazioni erano state comunque molto utili per una comprensione generale della questione.
 
-Per indirizzare 64K di memoria serviva un registro MAR (Memory Address Register) a 16 bit (2^16 = 64K); anziché utilizzare 4 Flip-Flop a 4 bit [74LS173](https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf) come quelli utilizzati in origine nel SAP, sembrava più comodo utilizzare due registri Flip-Flop tipo D 74LS273 a 8 bit; uno svantaggio di questi ultimi, rispetto alla loro controparte a 4 bit, è che non presentavano un ingresso di Enable, mentre il disegno del computer doveva prevederlo, perché il MAR doveva leggere dal bus un indirizzo di memoria solo quando istruito a farlo - e non ad ogni ciclo di clock. Il segnale MI (Memory Address Register In) del SAP serviva infatti per caricare l'indirizzo sul MAR solo quando era necessario farlo: quando MI è attivo, il MAR memorizza il valore presente nel bus in corrispondenza del Rising Edge del clock. Senza un ingresso di Enable, il FF '273 andrebbe a "registrare" il dato in corrispondenza di ogni ciclo di clock e non solo quando fosse necessario.
+Per indirizzare 64K di memoria serviva un registro MAR (Memory Address Register) a 16 bit (2^16 = 64K); anziché utilizzare 4 Flip-Flop a 4 bit <a href = "https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf" target = "_blank">74LS173</a> come quelli utilizzati in origine nel SAP, sembrava più comodo utilizzare due registri Flip-Flop tipo D 74LS273 a 8 bit; uno svantaggio di questi ultimi, rispetto alla loro controparte a 4 bit, è che non presentavano un ingresso di Enable, mentre il disegno del computer doveva prevederlo, perché il MAR doveva leggere dal bus un indirizzo di memoria solo quando istruito a farlo - e non ad ogni ciclo di clock. Il segnale MI (Memory Address Register In) del SAP serviva infatti per caricare l'indirizzo sul MAR solo quando era necessario farlo: quando MI è attivo, il MAR memorizza il valore presente nel bus in corrispondenza del Rising Edge del clock. Senza un ingresso di Enable, il FF '273 andrebbe a "registrare" il dato in corrispondenza di ogni ciclo di clock e non solo quando fosse necessario.
 
 Nel mio progetto a 8 bit si potevano semplicemente utilizzare due '173 a 4 bit continuando a sfruttare i segnali di Enable nativamente disponibili. Bisogna dire che sarebbe stato comunque possibile utilizzare anche il '273 a 8 bit utilizzando una porta AND per *costruire* un segnale di Enable artificiale: i segnali CLK e MI connessi agli ingressi della AND, mentre l'output della AND connesso all'ingresso CLK del FF, che così si sarebbe attivato solo quando, oltre al CLK, fosse contemporaneamente presente anche il segnale MI.
 
-Il '273, al pari del '173, presenta un ingresso Clear / Reset (CLR), che nel MAR è necessario per resettare il registro - o almeno *credevo* fosse necessario. Sembrava anche interessante l'ipotesi alternativa di usare un registro a 8 bit [74LS377](https://datasheetspdf.com/download_new.php?id=375625), che include 8 FF con Enable; tuttavia avevo realizzato che **non** fosse possibile procedere in tal senso, perché nel MAR serviva anche il CLR, non presente in questo chip. In seguito ho realizzato che il MAR poteva funzionare perfettamente anche senza un segnale di Clear / Reset e il '377 sarebbe diventato uno dei chip più utilizzati nel BEAM.
+Il '273, al pari del '173, presenta un ingresso Clear / Reset (CLR), che nel MAR è necessario per resettare il registro - o almeno *credevo* fosse necessario. Sembrava anche interessante l'ipotesi alternativa di usare un registro a 8 bit <a href = "https://datasheetspdf.com/download_new.php?id=375625" target = "_blank">74LS377</a>, che include 8 FF con Enable; tuttavia avevo realizzato che **non** fosse possibile procedere in tal senso, perché nel MAR serviva anche il CLR, non presente in questo chip. In seguito ho realizzato che il MAR poteva funzionare perfettamente anche senza un segnale di Clear / Reset e il '377 sarebbe diventato uno dei chip più utilizzati nel BEAM.
 
 >> 2. Program counter - would have to be expanded to a 16 bit counter (should be trivial to do that) I currently have tons of 8 bit counters combined with a register (and the 4 bit 161 counters that Ben used)
 
-Come nel caso del MAR, per indirizzare 256 byte di RAM era necessario un registro Program Counter (PC) a 8 bit. Nel computer SAP era invece presente un contatore a 4 bit [74LS161](https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf) e dovevo pertanto cercare di combinarne due in cascata.
+Come nel caso del MAR, per indirizzare 256 byte di RAM era necessario un registro Program Counter (PC) a 8 bit. Nel computer SAP era invece presente un contatore a 4 bit <a href = "https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target = "_blank">74LS161</a> e dovevo pertanto cercare di combinarne due in cascata.
 
 Sarebbe stato comodo utilizzare un singolo contatore a 8 bit, ma tra i chip disponibili sul mercato non ne ho trovato uno che includesse anche l'ingresso LOAD. Il LOAD permette il caricamento parallelo sul PC di uno specifico indirizzo al quale il computer deve saltare (ad esempio, per eseguire un'istruzione di salto assoluto o branch relativo).
 
@@ -41,7 +41,7 @@ Dopo aver letto questo punto avevo iniziato a raccogliere i miei pensieri per l'
 
 ### Memorie con IO separati o IO comuni?
 
-Fino ad ora, avevo quasi sostanzialmente dato per scontato di continuare ad usare chip di memoria con porte di Input e Output separati ("dual-port"), esattamente come accade nel [74189](https://eater.net/datasheets/74189.pdf) utilizzato nel SAP. Tuttavia, in questo [post su Reddit](https://www.reddit.com/r/beneater/comments/hon6ar/74189_alternative/), un utente evidenziava difficoltà nell'approvvigionamento dei 74189 e chiedeva lumi sull'uso del [62256](https://www.alliancememory.com/wp-content/uploads/pdf/AS6C62256.pdf); ho così iniziato ad approfondire le caratteristiche di questo chip "single-port", aumentando la mia comprensione di queste due diverse architetture.
+Fino ad ora, avevo quasi sostanzialmente dato per scontato di continuare ad usare chip di memoria con porte di Input e Output separati ("dual-port"), esattamente come accade nel <a href = "https://eater.net/datasheets/74189.pdf" target = "_blank">74189</a> utilizzato nel SAP. Tuttavia, in questo <a href = "https://www.reddit.com/r/beneater/comments/hon6ar/74189_alternative/" target = "_blank">post su Reddit</a>, un utente evidenziava difficoltà nell'approvvigionamento dei 74189 e chiedeva lumi sull'uso del <a href = "https://www.alliancememory.com/wp-content/uploads/pdf/AS6C62256.pdf" target = "_blank">62256</a>; ho così iniziato ad approfondire le caratteristiche di questo chip "single-port", aumentando la mia comprensione di queste due diverse architetture.
 
 In origine avevo evidenziato questi pochi appunti presenti nel post, riflettendo sul fatto che l'approccio di questo utente alla gestione dei segnali di controllo mi sembrava un po' troppo semplificato, ma più in là nel tempo avevo realizzato che, tutto sommato, la scrittura sulla RAM non è *eccessivamente* complessa:
 
@@ -60,11 +60,11 @@ Un altro aspetto che avevo notato immediatamente, ipotizzando l'uso del 62256, e
 
 [![Schema del modulo RAM di Ben Eater basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione ininterrotta del contenuto della locazione RAM indirizzata dal MAR](../../assets/ram/20-be-ram-detail.png "Schema del modulo RAM basato su 74189: le porte nativamente designate per l'Output consentono la visualizzazione continua del contenuto della locazione RAM indirizzata dal MAR"){:width="66%"}](../../assets/ram/20-be-ram-full.png)
 
-*Nello schema si notano i 74189 con le porte di Input dedicate D1-D4 e le porte di Output dedicate O1-O4.*
+*Schema del modulo RAM di Ben Eater: si notano i 74189 con le porte di Input dedicate D1-D4 e le porte di Output dedicate O1-O4.*
 
 Quello che iniziavo a capire era che per utilizzare una RAM con Common IO dovevo fare un "doppio passaggio" o qualcosa di simile. Come faccio ad avere sempre visibile il contenuto della locazione di memoria anche nel momento in cui setto le porte di IO del chip in modalità input? Come faccio a mantenere la visibilità del contenuto della RAM quando questa non è attiva in output? Devo forse memorizzare il contenuto delle uscite della RAM in qualche latch e solo a quel punto disabilitare il chip prima di andarvi a scrivere? In seguito avrei capito che non era necessario un latch, ma che c'era un'altra strada.
 
-In [questo post](https://www.reddit.com/r/beneater/comments/uot8pk/ram_module_using_65256/) un utente esponeva un disegno che credevo potesse andare bene, ma [nel suo schema](https://imgur.com/upvYjUX) le uscite dei multiplexer (MUX) sono sempre attive (i [multiplexer 74LS157](https://datasheetspdf.com/download_new.php?id=488136) non sono tri-state) e potrebbero creare contenzioso con le uscite della RAM quando questa è attiva in output; la soluzione poteva essere quella di aggiungere un altro [bus transceiver 74LS245](https://datasheetspdf.com/download_new.php?id=375533), oppure di utilizzare dei [MUX tri-state 74LS257](https://datasheetspdf.com/download_new.php?id=935737); intuivo qualcosa, relativamente alla necessità di gestire i segnali di controllo della RAM in maniera più ampia, controllando le interazioni con i MUX e con il/i transceiver di interfacciamento verso il bus del computer.
+In <a href = "https://www.reddit.com/r/beneater/comments/uot8pk/ram_module_using_65256/" target = "_blank">questo post</a> un utente esponeva un disegno che credevo potesse andare bene, ma <a href = "https://imgur.com/upvYjUX" target = "_blank">nel suo schema</a> le uscite dei multiplexer (MUX) sono sempre attive (i <a href = "https://datasheetspdf.com/download_new.php?id=488136" target = "_blank">multiplexer 74LS157</a> non sono tri-state) e potrebbero creare contenzioso con le uscite della RAM quando questa è attiva in output; la soluzione poteva essere quella di aggiungere un altro <a href = "https://datasheetspdf.com/download_new.php?id=375533" target = "_blank">bus transceiver 74LS245</a>, oppure di utilizzare dei <a href = "https://datasheetspdf.com/download_new.php?id=935737" target = "_blank">MUX tri-state 74LS257</a>; intuivo qualcosa, relativamente alla necessità di gestire i segnali di controllo della RAM in maniera più ampia, controllando le interazioni con i MUX e con il/i transceiver di interfacciamento verso il bus del computer.
 
 [![Disegno su carta del modulo RAM e MAR per capire la migliore disposizione dei chip in base ai collegamenti necessari](../../assets/ram/20-ram-mar-drawing.png "Disegno su carta del modulo RAM e MAR per capire la migliore disposizione dei chip in base ai collegamenti necessari"){:width="66%"}](../../assets/ram/20-ram-mar-drawing.png)
 
@@ -95,7 +95,7 @@ Lo schema del modulo RAM di Rolf ne prevede invece due, uno "interno" e uno "est
 
 Un latch per memorizzare lo stato dei LED, come erroneamente ipotizzavo inizialmente, non era necessario.
 
-Proseguendo nello studio, ho trovato [questo schema](https://imgur.com/a/ruclh) dell'utente jaxey1631, che aveva lasciato un commento nel video di Ben Eater [Reprogramming CPU microcode with an Arduino](https://www.youtube.com/watch?v=JUVt_KYAp-I&lc=UgjusLoROw6az3gCoAEC):
+Proseguendo nello studio, ho trovato <a href = "https://imgur.com/a/ruclh" target = "_blank">questo schema</a> dell'utente jaxey1631, che aveva lasciato un commento nel video di Ben Eater <a href = "https://www.youtube.com/watch?v=JUVt_KYAp-I&lc=UgjusLoROw6az3gCoAEC" target = "_blank">Reprogramming CPU microcode with an Arduino</a>:
 
 [![RAM e MAR con doppio bus](../../assets/ram/20-ram-ruclh.png "RAM e MAR con doppio bus"){:width="100%"}](../../assets/ram/20-ram-ruclh.png)
 
@@ -123,17 +123,17 @@ Notare la configurazione del chip di RAM: i segnali CE ed OE sono sempre attivi,
 
 Da notare inoltre che anche questo utente non usa il CLR sui FF '273 di input del MAR - a pensarci, potrebbe realmente non servire, perché ogni volta che ho bisogno di accedere alla RAM, vado preventivamente a settare sul MAR l'indirizzo desiderato. Probabilmente il reset all'accensione era dunque più estetico che altro.
 
-E' stato in questo momento (agosto 2022) che ho scoperto l'**NQSAP**, inserendolo tra i miei appunti come "c'è questo [https://tomnisbet.github.io/nqsap/docs/ram/](https://tomnisbet.github.io/nqsap/docs/ram/) che sembra aver fatto delle belle modifiche al suo computer" 😁; ho deciso di seguire questo progetto perché permetteva di costruire un instruction set come quello del 6502 che, come scoprirò in seguito, richiederà un numero elevato di indirizzi per il microcode delle EEPROM.
+E' stato in questo momento (agosto 2022) che ho scoperto l'**NQSAP**, inserendolo tra i miei appunti come "c'è questo <a href = "https://tomnisbet.github.io/nqsap/docs/ram/" target = "_blank">https://tomnisbet.github.io/nqsap/docs/ram/</a> che sembra aver fatto delle belle modifiche al suo computer" 😁; ho deciso di seguire questo progetto perché permetteva di costruire un instruction set come quello del 6502 che, come scoprirò in seguito, richiederà un numero elevato di indirizzi per il microcode delle EEPROM.
 
-Tra i vari link sondati, c'era anche [questo post Reddit](https://www.reddit.com/r/beneater/comments/h8y28k/stepbystep_guide_to_upgrading_the_ram_with/), che molti utenti hanno trovato ben fatto, ma che io ho trovato particolarmente difficile da digerire in quanto mancante di uno schema.
+Tra i vari link sondati, c'era anche <a href = "https://www.reddit.com/r/beneater/comments/h8y28k/stepbystep_guide_to_upgrading_the_ram_with/" target = "_blank">questo post Reddit</a>, che molti utenti hanno trovato ben fatto, ma che io ho trovato particolarmente difficile da digerire in quanto mancante di uno schema.
 
-Per aggiungere un ulteriore link utile per la comprensione delle architetture del modulo di RAM, evidenzio questo [post su Reddit](https://www.reddit.com/r/beneater/comments/ad2uko/upgrading_the_ram_module_to_256_bytes/). Le spiegazioni sono molto ben fatte e utili. Il chip di RAM utilizzato è interessante perché si presenta come due RAM distinte, ognuna con accessi dedicati e un segnale di Busy per gestire le richieste parallele sulla stessa locazione. Altro aspetto degno di nota nell'implementazione di questo utente è la possibilità di aumentare fino a 256 il numero di istruzioni del computer, grazie alla scelta di utilizzare un byte intero per l'istruzione ed un eventuale byte successivo per l'operando, anziché avere un unico byte di cui i 4 Most Significant Bit (MSB) rappresentano l'opcode e di cui i 4 Least Significant Bit (LSB) sono l'operando, come nel SAP di Ben Eater.
+Per aggiungere un ulteriore link utile per la comprensione delle architetture del modulo di RAM, evidenzio questo <a href = "https://www.reddit.com/r/beneater/comments/ad2uko/upgrading_the_ram_module_to_256_bytes/" target = "_blank">post su Reddit</a>. Le spiegazioni sono molto ben fatte e utili. Il chip di RAM utilizzato è interessante perché si presenta come due RAM distinte, ognuna con accessi dedicati e un segnale di Busy per gestire le richieste parallele sulla stessa locazione. Altro aspetto degno di nota nell'implementazione di questo utente è la possibilità di aumentare fino a 256 il numero di istruzioni del computer, grazie alla scelta di utilizzare un byte intero per l'istruzione ed un eventuale byte successivo per l'operando, anziché avere un unico byte di cui i 4 Most Significant Bit (MSB) rappresentano l'opcode e di cui i 4 Least Significant Bit (LSB) sono l'operando, come nel SAP di Ben Eater.
 
 Un aspetto collaterale (ma importantissimo) dell'aumento del numero di istruzioni era la necessità di aumentare la dimensione delle EEPROM ospitanti il [microcode](../control): volendo gestire (fino a) 256 istruzioni, erano necessari 8 bit di istruzioni, 3 di step e 2 di flag = 13 pin totali, portanto si rendevano necessarie delle 28C64... e avevo dimenticato che mi sarebbe servito un bit aggiuntivo per la selezione delle due EEPROM! In quel momento, non sapevo ancora che avrei speso *intere settimane* a comprendere il fantastico modulo dei [Flag](../flags) dell'NQSAP di Tom Nisbet, che ha un approccio completamente diverso e che non necessita di segnali in uscita dalle EEPROM.
 
 ## Gestione della RAM
 
-Tra i post più utili relativi alla comprensione dei segnali di gestione di RAM e MAR per il modulo di memoria con IO comuni, c'è certamente il [Question about RAM replacement](https://www.reddit.com/r/beneater/comments/ut1oud/8bit_question_about_ram_replacement/), nel quale il moderatore The8BitEnthusiast invita a consultare la sua (*eccellente*, aggiungo io) realizzazione, che ho preso ad esempio e ispirazione.
+Tra i post più utili relativi alla comprensione dei segnali di gestione di RAM e MAR per il modulo di memoria con IO comuni, c'è certamente il <a href = "https://www.reddit.com/r/beneater/comments/ut1oud/8bit_question_about_ram_replacement/" target = "_blank">Question about RAM replacement</a>, nel quale il moderatore The8BitEnthusiast invita a consultare la sua (*eccellente*, aggiungo io) realizzazione, che ho preso ad esempio e ispirazione.
 
 [![Modulo RAM dell'utente Reddit The8BitEnthusiast](../../assets/ram/20-ram-the8bit_enthusiast.png "Modulo RAM dell'utente Reddit The8BitEnthusiast"){:width="100%"}](../../assets/ram/20-ram-the8bit_enthusiast.png)
 
@@ -288,7 +288,7 @@ A livello temporale questo è anche il momento ufficiale della nascita del nome 
 
 Dopo aver realizzato il disegno, mi sembrava di aver aggiunto più chip (per la logica) rispetto a prima = maggior complessità. Tuttavia, l'idea continuava a piacermi ed era un interessante esercizio logico per provare a sfruttare l'unico transceiver invertendone la direzione a seconda dell'operazione da fare.
 
-Avevo provato a chiedere un [consiglio](https://www.reddit.com/r/beneater/comments/10inkvs/8bit_computer_ram_module_would_this_work/) su Reddit e il solito The8BitEnthusiast, instancabile, mi aveva dato alcune indicazioni e una risposta tutto sommato positiva.
+Avevo provato a chiedere un <a href = "https://www.reddit.com/r/beneater/comments/10inkvs/8bit_computer_ram_module_would_this_work/" target = "_blank">consiglio</a> su Reddit e il solito The8BitEnthusiast, instancabile, mi aveva dato alcune indicazioni e una risposta tutto sommato positiva.
 
 Per analizzare tutti gli stati logici possibili avevo preparato una tabella di riepilogo con la quale verificare se il comportamento del modulo fosse in linea con le aspettative; la tabella mostrata in seguito è solo una parte di quella completa.
 
@@ -327,7 +327,7 @@ I due asterischi in tabella \*\* mi servivano a ricordare che dovevo stare parti
 
 *Terza versione del Modulo di memoria (RAM) del BEAM computer.*
 
-Riprendendo il datasheet del [62256](https://www.alliancememory.com/wp-content/uploads/pdf/AS6C62256.pdf) a pagina 6 troviamo entrambe le modalità di scrittura: quella indicata come "WRITE CYCLE 2 (CE# Controlled)" era stata utilizzata per le prime due revisioni del modulo RAM; l'altra, "WRITE CYCLE 1 (WE# Controlled)", è quella utilizzata per il disegno definitivo del modulo, perché mantenere /OE e /CE LO fissi sia per le letture sia per le scritture rappresentava una semplificazione importante.
+Riprendendo il datasheet del 62256, a pagina 6 troviamo entrambe le modalità di scrittura: quella indicata come "WRITE CYCLE 2 (CE# Controlled)" era stata utilizzata per le prime due revisioni del modulo RAM; l'altra, "WRITE CYCLE 1 (WE# Controlled)", è quella utilizzata per il disegno definitivo del modulo, perché mantenere /OE e /CE LO fissi sia per le letture sia per le scritture rappresentava una semplificazione importante.
 
 [![Write Cycles](../../assets/ram/20-ram-write-cycles.png "Write Cycles"){:width="100%"}](../../assets/ram/20-ram-write-cycles.png)
 
@@ -355,7 +355,7 @@ Ecco un riassunto degli stati possibili:
 
 ## Note
 
-Invece dei più comuni dip-switch, ho utilizzato dei comodissimi Rocker Switch ("a bilanciere") come quelli in figura; si trovano facilmente presso i distributori di [materiale elettronico](https://us.rs-online.com/product/te-connectivity/5435640-5/70156004/). Notare che i pin originali sono piuttosto corti e non fissano correttamente lo switch alla breadboard, pertanto ho aggiunto uno zoccolo per circuiti integrati.
+Invece dei più comuni dip-switch, ho utilizzato dei comodissimi Rocker Switch ("a bilanciere") come quelli in figura; si trovano facilmente presso i distributori di <a href = "https://us.rs-online.com/product/te-connectivity/5435640-5/70156004/" target = "_blank">materiale elettronico</a>. Notare che i pin originali sono piuttosto corti e non fissano correttamente lo switch alla breadboard, pertanto ho aggiunto uno zoccolo per circuiti integrati.
 
 [![Rocker Switch](../../assets/ram/20-ram-rocker.png "Rocker Switch"){:width="33%"}](../../assets/ram/20-ram-rocker.png)
 

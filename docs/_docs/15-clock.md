@@ -7,7 +7,7 @@ excerpt: "Circuito di Clock del BEAM computer"
 
 Il circuito di clock del computer BEAM riprende il modulo di clock progettato da Ben Eater per il computer SAP, utilizzando comodi pulsanti tattili anziché interruttori a scorrimento e aggiungendo qualche interazione con i controlli esterni provenienti dal [Loader](../loader).
 
-- Il primo 555 è utilizzato come generatore astabile con possibilità di selezionare la frequenza di funzionamento attraverso un potenziometro; un pulsante "Turbo" permette di bypassare temporaneamente la resistenza del potenziometro portando la frequenza di lavoro al valore massimo. Se si esegue qualche programma a bassa velocità di clock allo scopo di effettuare una analisi visiva degli output, questo pulsante diventa utile per superare qualche routine particolarmente ripetitiva o impegnativa senza dover agire sul potenziometro.
+- Il primo 555 è utilizzato come generatore astabile con possibilità di selezionare la frequenza di funzionamento attraverso un potenziometro; un pulsante "Turbo" permette di bypassare temporaneamente la resistenza del potenziometro portando la frequenza di lavoro al valore massimo. Se si esegue qualche programma a bassa velocità di clock allo scopo di effettuare una analisi visiva degli output, questo pulsante si comporta come un "Fast Forward".
 - Il secondo 555 permette di eseguire singole microistruzioni ("Step").
 - Il terzo 555 permette di avviare e fermare il clock del primo 555 utilizzando un comodo pulsante "Start/Stop", anziché un interruttore come avveniva sul circuito del SAP.
 
