@@ -7,9 +7,9 @@ excerpt: "Registri indice del BEAM computer"
 
 **PLACEHOLDER**
 
-Nel 6502 sono presenti due registri indice, X e Y, che possono facilmente essere riprodotti nel BEAM; sono registri indipendenti, che possono essere caricati e letti alla bisogna.
+Nel 6502 sono presenti due registri indice, X e Y, che possono facilmente essere riprodotti nel BEAM; sono registri indipendenti scritti e letti alla bisogna.
 
-Il registro D dell'NQSAP e del BEAM viene utilizzato a supporto delle istruzioni di salto condizionale e di quelle che eseguono operazioni in una locazione di memoria che è il risultato di un computo tra indirizzo di un specifica locazione di memoria di partenza e diversi modi di interpretazione dei valori assunti da X o Y:
+Il registro D dell'NQSAP e del BEAM viene utilizzato a supporto delle istruzioni di salto condizionale e di quelle che eseguono operazioni in una locazione di memoria che è il risultato di un computo tra indirizzo specificato nell'opcode e quattro diversi modi di interpretazione dei valori assunti da X o Y:
 
 - Salti condizionali
 - Indexed Addressing: Absolute, X
@@ -17,7 +17,7 @@ Il registro D dell'NQSAP e del BEAM viene utilizzato a supporto delle istruzioni
 - Pre-Indexed Indirect: Zero-Page, X
 - Post-Indexed Indirect: Zero-Page, Y
 
-Per eseguire il computo si usano dei normali Adder che eseguono la somma tra quanto viene caricato nel registro D e il valore contenuto nei registri indice X o Y. Super clever.
+Per eseguire il computo si usano dei normali <a href = "https://www.ti.com/lit/ds/symlink/sn54s283.pdf" target = "_blank">4-Bit Binary Full Adders With Fast Carry</a> che eseguono la somma tra quanto viene caricato nel registro D e il valore contenuto nei registri indice X o Y. Super clever.
 
 Il flusso logico tratto dalla <a href = "https://tomnisbet.github.io/nqsap/docs/dxy-registers/" target = "_blank">spiegazione di Tom Nisbet</a> chiarisce il funzionamento:
 
