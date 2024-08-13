@@ -17,17 +17,17 @@ Il registro D dell'NQSAP e del BEAM viene utilizzato a supporto delle istruzioni
 - Pre-Indexed Indirect: Zero-Page, X
 - Post-Indexed Indirect: Zero-Page, Y
 
-Per eseguire il computo si usano dei normali <a href = "https://www.ti.com/lit/ds/symlink/sn54s283.pdf" target = "_blank">4-Bit Binary Full Adders With Fast Carry</a> che eseguono la somma tra quanto viene caricato nel registro D e il valore contenuto nei registri indice X o Y. Super clever.
+Per eseguire il computo si usano dei normali 4-Bit Binary Full Adders With Fast Carry <a href = "https://www.ti.com/lit/ds/symlink/sn54s283.pdf" target = "_blank">74LS283</a> che eseguono la somma tra quanto viene caricato nel registro D e il valore contenuto nei registri indice X o Y. Super clever.
 
 Il flusso logico tratto dalla <a href = "https://tomnisbet.github.io/nqsap/docs/dxy-registers/" target = "_blank">spiegazione di Tom Nisbet</a> chiarisce il funzionamento:
 
-[![Registri D, X e Y in azione](../../assets/dxy/60-dxy-nqsap-tom-flow.png "Registri D, X e Y in azione"){:width="100%"}](../../assets/dxy/60-dxy-nqsap-tom-flow.png)
+[![Registri D, X e Y in azione](../../assets/dxy/60-dxy-nqsap-tom-flow.png "Registri D, X e Y in azione"){:width="66%"}]
 
 ### Utilizzo con le modalità di indirizzamento indicizzate
 
-Il contenuto del registro D può essere sommato al contenuto dei registri X, Y o nessuno (potrebbe risultare utile come ulteriore registro di appoggio per definire altre istruzioni personalizzate; tuttavia, l'emulazione delle istruzioni del 6502 può essere implementata con gli altri registri esistenti nel computer e questa modalità non viene utilizzata).
+Il contenuto del registro D può essere sommato al contenuto dei registri X, Y o nessuno (potrebbe risultare utile come ulteriore registro di appoggio per definire altre istruzioni personalizzate; tuttavia, l'emulazione delle istruzioni del 6502 può essere implementata con gli altri registri esistenti nel computer senza utilizzare questa modalità).
 
-Per selezionare se D deve essere sommato a X, Y o nulla si usano dei multiplexer (MUX) <a href = "https://www.ti.com/lit/ds/symlink/sn74ls157.pdf" target = "_blank">74LS157</a> pilotati dai segnali DY nell'NQSAP e DX/Y nel BEAM.
+Per selezionare se D deve essere sommato a X, Y o nulla, si usano dei multiplexer (MUX) <a href = "https://www.ti.com/lit/ds/symlink/sn74ls157.pdf" target = "_blank">74LS157</a> pilotati dai segnali DY nell'NQSAP e DX/Y nel BEAM.
 
 Negli appunti segnalavo che "... come per i registri A e B, anche qui uso dei Flip-Flop tipo D <a href="https://www.ti.com/lit/ds/symlink/sn54ls377.pdf" target="_blank">74LS377</a> anziché degli Octal D-Type Flip-Flop with 3-State Outputs <a href="https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf" target="_blank">74LS574</a> con la stessa necessità di emulare un Enable sfruttando una NOR con il segnale Write che arriva dalla ROM e il clock negato per attivare il Clock Enable di ingresso al momento giusto."
 
