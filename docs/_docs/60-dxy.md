@@ -7,7 +7,31 @@ excerpt: "Registri indice del BEAM computer"
 
 **PLACEHOLDER**
 
-Nel 6502 sono presenti due registri indice, X e Y, che possono facilmente essere riprodotti nel BEAM . • Vedi https://tomnisbet.github.io/nqsap/docs/dxy-registers/; praticamente per fare operazioni "OP $XX + X" o "OP $XX + Y" si usano gli Adder, come quelli del primo SAP (che però erano usati per fare la somma di dati, non di indirizzi). Si somma l'indirizzo $XX (che viene messo nel registro D) e gli indici X o Y. Super clever.
+Nel 6502 sono presenti due registri indice, X e Y, che possono facilmente essere riprodotti nel BEAM; sono registri indipendenti, che possono essere caricati e letti alla bisogna.
+
+Il registro D viene utilizzato a supporto delle istruzioni di salto condizionale e di quelle che eseguono operazioni in una locazione di memoria che è il risultato di un computo tra indirizzo di un specifica locazione di memoria di partenza e diversi modi di interpretazione dei valori assunti da X o Y:
+
+- Salti condizionali
+- Indexed Addressing: Absolute, X
+- Indexed Addressing: Absolute, Y
+- Pre-Indexed Indirect: Zero-Page, X
+- Post-Indexed Indirect: Zero-Page, Y
+
+Per eseguire il computo si usano dei normali Adder che eseguono la somma tra quanto viene caricato nel registro D e il valore contenuto nei registri indice X o Y. Super clever.
+
+
+
+
+
+ • Vedi https://tomnisbet.github.io/nqsap/docs/dxy-registers/; 
+Il flusso logico s
+
+Il flusso logico tratto dalla <a href = "https://tomnisbet.github.io/nqsap/docs/dxy-registers/" target = "_blank">spiegazione di Tom Nisbet</a> chiarisce il funzionamento:
+
+[![Registri D, X e Y in azione](../../assets/dxy/60-dxy-nqsap-tom-flow.png "Registri D, X e Y in azione"){:width="100%"}](../../assets/dxy/60-dxy-nqsap-tom-flow.png)
+
+60-dxy-nqsap-tom-flow
+
 • Come per registri A e B, anche qui uso dei 574 con la stessa necessità di emulare un Enable sfruttando una NOR con il segnale Write che arriva dalla ROM e il clock negato per attivare il Clock Enable di ingresso al momento giusto.
 • Nota che nell'NQSAP-PCB per X e Y utilizza dei FF 377 e non più dei FF 574…
 	§ … 12/06/2023 e potrei farlo anche io, così da risparmiare la NOR e collegare direttamente WX e WY ai FF '377, tanto sono sempre attivi e possono essere letti attraverso RX ed RY connessi ai 245 relativi
@@ -31,9 +55,6 @@ Nel 6502 sono presenti due registri indice, X e Y, che possono facilmente essere
 	○ indexed indirect (with X)
 	○ indirect indexed (with Y)
 
-![Alt text](image-1.png)
-
-![Alt text](image-2.png)
 • DY:
 	• se HI seleziona gli ingressi Y
 	• se LO seleziona gli ingressi X
@@ -50,8 +71,9 @@ All'approssimarsi del completamento della costruzione del SAP, ho iniziato a doc
 
 ## Differenze tra Registri indice dell'NQSAP e del BEAM
 
-Come si può vedere dallo schema del modulo ALU del computer BEAM, questo è quasi una copia 1:1 del modulo ALU del computer NQSAP: non avevo certamente la capacità di sviluppare autonomamente un modulo ALU così complesso e legato a doppio filo con altri moduli del computer, ma la comprensione completa del funzionamento dell'ALU sviluppata da Tom ha rappresentato comunque un traguardo molto importante.
+Sotto il punto di vista funzionale, gli schemi dei Registri indice dell'NQSAP e del BEAM sono identici: due registri un registro D che può essere due registri X e Y che possono essere sommati al registro D simili ; .
 
-[![Schema dei registri indice del BEAM computer](../../assets/dxy/60-dxy-beam-schema.png "Schema dei registri indice del BEAM computer"){:width="100%"}](../../assets/dxy/60-dxy-beam-schema.png)
+
+[![Schema dei Registri indice del BEAM computer](../../assets/dxy/60-dxy-beam-schema.png "Schema dei Registri indice del BEAM computer"){:width="100%"}](../../assets/dxy/60-dxy-beam-schema.png)
 
 *Schema dei registri indice del BEAM computer.*
