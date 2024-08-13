@@ -31,7 +31,7 @@ Notare che il registro D è "Write only", dunque non è possibile metterne il co
 
 ### Utilizzo per i salti condizionali
 
-Il salto condizionale, come evidente dal nome, viene eseguito se una determinata situazione è verificata. Nell'esempio seguente l'istruzione BCS è senz'altro eseguita, in quanto il Carry è certamente presente. Il valore dell'operando $03 viene sommato all'indirizzo dell'istruzione *successiva* a quella di salto, cioé $03 + $83 = $86, che sarà caricato nel Program Counter (PC).
+Un salto condizionale viene eseguito se una determinata situazione è verificata. Nell'esempio seguente, l'istruzione BCS è sicuramente eseguita. Il valore dell'operando $03 viene sommato all'indirizzo dell'istruzione *successiva* a quella di salto, cioé $03 + $83 = $86, che sarà caricato nel Program Counter (PC).
 
 ~~~text
 SEC         ; $80 - Set Carry Flag
@@ -42,9 +42,9 @@ INX         ; $85 - Questa istruzione sarà saltata
 LDA #$01    ; $86 - Questa istruzione verrà eseguita
 ~~~
 
-L'operando è un valore a 8 bit con segno (Signed), il che significa che può variare da -128 a +127. Questo significa che i salti condizionali possono saltare in avanti di 128 indirizzi e  all'indietro di 127.
+L'operando è un valore a 8 bit con segno (Signed) che può variare da -128 a +127, il che comporta che i salti condizionali possono saltare in avanti di 128 indirizzi e all'indietro di 127.
 
-Per tornare col salto condizionale a un indirizzo precedente a quello del salto, come in un loop, il valore dell'operando dovrà essere dunque, secondo la regola dei numeri Signed, un valore compreso tra $80 (-128) e $FF (-1), come visibile nella sezione [Numeri Unsigned e numeri Signed](../math/#Numeri-Unsigned-e-numeri-Signed) della pagina dedicata all'Aritmetica binaria.
+Per saltare a un indirizzo precedente a quello del salto, come in un comune contatore, il valore dell'operando dovrà essere dunque, secondo la regola dei numeri Signed, un valore compreso tra $80 (-128) e $FF (-1), come visibile nella sezione [Numeri Unsigned e numeri Signed](../math/#numeri-unsigned-e-numeri-signed) della pagina dedicata all'Aritmetica binaria.
 
 ~~~text
 LDX #$05    ; $80 - Carica il registro X con 5
