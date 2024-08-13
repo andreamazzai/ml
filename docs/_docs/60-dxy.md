@@ -5,8 +5,6 @@ excerpt: "Registri indice del BEAM computer"
 ---
 [![Registri indice del BEAM computer](../../assets/dxy/60-beam-dxy.png "Registri indice del BEAM computer"){:width="100%"}](../../assets/dxy/60-beam-dxy.png)
 
-**PLACEHOLDER**
-
 Nel 6502 sono presenti due registri indice, X e Y, che possono facilmente essere riprodotti nel BEAM; sono registri indipendenti scritti e letti alla bisogna.
 
 Il registro D dell'NQSAP e del BEAM viene utilizzato a supporto delle istruzioni di salto condizionale e di quelle che eseguono operazioni in una locazione di memoria che è il risultato di un computo tra indirizzo specificato nell'opcode e quattro diversi modi di interpretazione dei valori assunti da X o Y:
@@ -27,13 +25,14 @@ Il flusso logico tratto dalla <a href = "https://tomnisbet.github.io/nqsap/docs/
 
 Il contenuto del registro D può essere sommato al contenuto dei registri X, Y o nessuno (potrebbe risultare utile come ulteriore registro di appoggio per definire altre istruzioni personalizzate; tuttavia, l'emulazione delle istruzioni del 6502 può essere implementata con gli altri registri esistenti nel computer senza utilizzare questa modalità).
 
-Per selezionare se D deve essere sommato a X, Y o nulla, si usano dei multiplexer (MUX) <a href = "https://www.ti.com/lit/ds/symlink/sn74ls157.pdf" target = "_blank">74LS157</a> pilotati dai segnali DY nell'NQSAP e DX/Y nel BEAM.
+Per selezionare se D deve essere sommato a X, Y o nulla, si usano dei multiplexer (MUX) <a href = "https://www.ti.com/lit/ds/symlink/sn74ls157.pdf" target = "_blank">74LS157</a> pilotati dai segnali DY e DZ nell'NQSAP e DX/Y e DZ nel BEAM.
 
-Negli appunti segnalavo che "... come per i registri A e B, anche qui uso dei Flip-Flop tipo D <a href="https://www.ti.com/lit/ds/symlink/sn54ls377.pdf" target="_blank">74LS377</a> anziché degli Octal D-Type Flip-Flop with 3-State Outputs <a href="https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf" target="_blank">74LS574</a> con la stessa necessità di emulare un Enable sfruttando una NOR con il segnale Write che arriva dalla ROM e il clock negato per attivare il Clock Enable di ingresso al momento giusto."
+Negli appunti annotavo che "... come per gli altri registri del BEAM, anche qui uso dei Flip-Flop tipo D <a href="https://www.ti.com/lit/ds/symlink/sn54ls377.pdf" target="_blank">74LS377</a> anziché degli Octal D-Type Flip-Flop with 3-State Outputs <a href="https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf" target="_blank">74LS574</a>; si veda la sezione [L'ALU dell'NQSAP](../alu/#lalu-dellnqsap) per un chiarimento in tal senso.
+
+Ho conosciuto il 74LS377 studiando l'evoluzione dell'NQSAP, cioè l'<a href = "https://tomnisbet.github.io/nqsap-pcb/" target="_blank">NQSAP-PCB</a>, che Tom aveva ingegnerizzato su PCB anziché su breadboard.
 
 Notare che D è "Write only", dunque non è possibile metterne il contenuto in ouput sul bus. E' possibile leggere D portando il segnale DZ allo stato HI, disabilitando così le uscite dei '157 e causando gli adder a eseguire l'operazione D + 0 = D.
 
-Ho conosciuto il 74LS377 studiando l'evoluzione dell'NQSAP, cioè l'<a href = "https://tomnisbet.github.io/nqsap-pcb/" target="_blank">NQSAP-PCB</a>, che Tom aveva ingegnerizzato su PCB anziché su breadboard.
 
 ### Utilizzo per i salti relativi
 
@@ -49,6 +48,6 @@ Ho conosciuto il 74LS377 studiando l'evoluzione dell'NQSAP, cioè l'<a href = "h
 
 Sotto il punto di vista funzionale, gli schemi dei Registri indice dell'NQSAP e del BEAM sono identici: due registri un registro D che può essere due registri X e Y che possono essere sommati al registro D simili ; .
 
-[![Schema dei Registri indice del BEAM computer](../../assets/dxy/60-dxy-beam-schema.png "Schema dei Registri indice del BEAM computer"){:width="100%"}](../../assets/dxy/60-dxy-beam-schema.png)
+[![Schema dei Registri indice del BEAM computer](../../assets/dxy/60-beam-dxy-schema.png "Schema dei Registri indice del BEAM computer"){:width="100%"}](../../assets/dxy/60-beam-dxy-schema.png)
 
 *Schema dei registri indice del BEAM computer.*
