@@ -3,7 +3,7 @@ title: "Stack Register"
 permalink: /docs/stack/
 excerpt: "Stack Register del BEAM computer"
 ---
-[![Registro Stack Pointer del BEAM computer](../../assets/sp/70-beam-sp.png "Registro Stack Pointer del BEAM computer"){:width="100%"}](../../assets/sp/70-beam-sp.png)
+[![Stack Register del BEAM computer](../../assets/sp/70-beam-sp.png "Stack Register del BEAM computer"){:width="100%"}](../../assets/sp/70-beam-sp.png)
 
 • Stack Pointer. Vedi '169 74LS169 4-bit Synchronous Binary Up-Down Counter. 
 • Forse con un unico Counter a 4 bit posso fare uno SP da 16 indirizzi e se volessi farlo più grande me ne servirebbero due.
