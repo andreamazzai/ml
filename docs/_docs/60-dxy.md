@@ -35,7 +35,7 @@ Un salto condizionale viene eseguito se una determinata situazione è verificata
 
 ~~~text
 SEC         ; $80 - Set Carry Flag
-BCS $03     ; $81 - Salta a $86 se il Carry è settato
+BCS $03     ; $81 - Salta a $03 + $83 = $86 se il Carry è settato
 INX         ; $83 - Questa istruzione sarà saltata
 INX         ; $84 - Questa istruzione sarà saltata
 INX         ; $85 - Questa istruzione sarà saltata
@@ -44,7 +44,7 @@ LDA #$01    ; $86 - Questa istruzione verrà eseguita
 
 L'operando è un valore a 8 bit con segno (Signed) che può variare da -128 a +127, il che comporta che i salti condizionali possono saltare in avanti di 128 indirizzi e all'indietro di 127.
 
-Per saltare a un indirizzo precedente a quello del salto, come in un comune contatore, il valore dell'operando dovrà essere dunque, secondo la regola dei numeri Signed, un valore compreso tra $80 (-128) e $FF (-1), come visibile nella sezione [Numeri Unsigned e numeri Signed](../math/#numeri-unsigned-e-numeri-signed) della pagina dedicata all'Aritmetica binaria.
+Per saltare a un indirizzo precedente a quello del salto, il valore dell'operando dovrà essere - secondo la regola dei numeri Signed - un valore compreso tra $80 (-128) e $FF (-1), come visibile nella sezione [Numeri Unsigned e numeri Signed](../math/#numeri-unsigned-e-numeri-signed) della pagina dedicata all'Aritmetica binaria.
 
 ~~~text
 LDX #$05    ; $80 - Carica il registro X con 5
@@ -53,7 +53,7 @@ BNE $FD     ; $83 - Salta a $85 + $FD = $85 - $03 = $82 se X non è zero
 RTS         ; $85 - Ritorno da subroutine
 ~~~
 
-Poiché la configurazione degli Adder in questo modulo permette la sola esecuzione di addizioni, ci si potrebbe chiedere come sia possibile eseguire un salto all'indietro. Nell'NQSAP, così come nel BEAM, i registri sono a 8 bit e una scorciatoia per giungere al risultato desiderato è quello di semplicemente aggiungere l'operando al PC: nel caso specifico, $85 + $FD = $182 del quale rimarrà solo il $82 che verrà caricato nel PC.
+Poiché la configurazione degli Adder in questo modulo permette la sola esecuzione di addizioni, ci si potrebbe chiedere come si possa eseguire un salto all'indietro. Nell'NQSAP, così come nel BEAM, i registri sono a 8 bit: una semplice scorciatoia per giungere al risultato desiderato è quella di aggiungere l'operando al PC considerando indirizzo e operando come numeri Unsigned: nel caso specifico, $85 + $FD = $182. Il 9° bit (corrispondente al Carry) non viene preso in considerazione e il rimanente $82 verrà caricato nel PC.
 
 [![Schema dei registri indice dell'NQSAP](../../assets/dxy/60-nqsap-dxy-schema.png "Schema dei registri indice dell'NQSAP"){:width="100%"}](../../assets/dxy/60-nqsap-dxy-schema.png)
 
@@ -73,3 +73,4 @@ Per completezza, devo segnalare di aver conosciuto il 74LS377 studiando l'evoluz
 
 # TO DO
 - Scrivere forse un po meglio il fatto della lettura di D
+- e anche La descrizione del salto all'indietro " Il 9° bit (corrispondente al Carry) non viene preso in considerazione e il rimanente $82 verrà caricato nel PC."
