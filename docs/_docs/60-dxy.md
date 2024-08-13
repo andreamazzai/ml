@@ -21,7 +21,7 @@ Per eseguire il computo si usano dei normali 4-Bit Binary Full Adders With Fast 
 
 Il flusso logico tratto dalla <a href = "https://tomnisbet.github.io/nqsap/docs/dxy-registers/" target = "_blank">spiegazione di Tom Nisbet</a> chiarisce il funzionamento:
 
-[![Registri D, X e Y in azione](../../assets/dxy/60-dxy-nqsap-tom-flow.png "Registri D, X e Y in azione"){:width="66%"}]
+![Registri D, X e Y in azione](../../assets/dxy/60-dxy-nqsap-tom-flow.png "Registri D, X e Y in azione"){:width="66%"}
 
 ### Utilizzo con le modalità di indirizzamento indicizzate
 
