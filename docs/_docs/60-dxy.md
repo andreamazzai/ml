@@ -53,7 +53,9 @@ BNE $FD     ; $83 - Salta a $85 + $FD = $85 - $03 = $82 se X non è zero
 RTS         ; $85 - Ritorno da subroutine
 ~~~
 
-Poiché la configurazione degli Adder in questo modulo permette la sola esecuzione di addizioni, ci si potrebbe chiedere come si possa eseguire un salto all'indietro. Nell'NQSAP, così come nel BEAM, i registri sono a 8 bit: una semplice scorciatoia per giungere al risultato desiderato è quella di aggiungere l'operando al PC considerando indirizzo e operando come numeri Unsigned: nel caso specifico, $85 + $FD = $182. Il 9° bit (corrispondente al Carry) non viene preso in considerazione e il rimanente $82 verrà caricato nel PC.
+Poiché la configurazione utilizzata per gli Adder '283 permette la sola esecuzione di addizioni, ci si potrebbe chiedere come sia possibile eseguire un salto all'indietro. Nell'NQSAP, così come nel BEAM, i registri sono a 8 bit: una semplice scorciatoia per giungere al risultato desiderato è quella di aggiungere l'operando al PC considerando indirizzo e operando come numeri Unsigned: nel caso specifico, $85 + $FD = $182. Il 9° bit (corrispondente al Carry) non viene preso in considerazione e il rimanente $82 verrà caricato nel PC.
+
+Questa tecnica funziona correttamente grazie alla natura ciclica dell'indirizzo di memoria in un sistema a 8 bit.
 
 [![Schema dei registri indice dell'NQSAP](../../assets/dxy/60-nqsap-dxy-schema.png "Schema dei registri indice dell'NQSAP"){:width="100%"}](../../assets/dxy/60-nqsap-dxy-schema.png)
 
