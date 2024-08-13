@@ -1,7 +1,7 @@
 ---
 title: "Clock"
 permalink: /docs/clock/
-excerpt: "Circuito di Clock del BEAM computer"
+excerpt: "Circuito di clock del BEAM computer"
 ---
 [![Circuito di Clock del BEAM computer](../../assets/clock/15-beam-clock.png "Circuito di Clock del BEAM computer"){:width="100%"}](../../assets/clock/15-beam-clock.png)
 

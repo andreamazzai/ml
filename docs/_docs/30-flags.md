@@ -1,7 +1,7 @@
 ---
-title: "Flag"
+title: "Flags Register"
 permalink: /docs/flags/
-excerpt: "Registro dei flag del BEAM computer"
+excerpt: "Flags Register del BEAM computer"
 ---
 
 [![Registro dei flag del BEAM computer](../../assets/flags/30-flag-beam.png "Registro dei flag del BEAM computer"){:width="100%"}](../../assets/flags/30-flag-beam.png)

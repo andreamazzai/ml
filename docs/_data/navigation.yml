@@ -39,7 +39,7 @@
       - title: "> Output"
         url: /docs/output/
       - title: "> Stack Pointer"
-        url: /docs/stack-pointer/
+        url: /docs/stack/
       - title: "> Arduino Loader"
         url: /docs/loader/
   #     - title: "Ring Counter"
