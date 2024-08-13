@@ -7,13 +7,13 @@ excerpt: "Registri indice del BEAM computer"
 
 **PLACEHOLDER**
 
-• Vedi https://tomnisbet.github.io/nqsap/docs/dxy-registers/; praticamente per fare operazioni "OP $XX + X" o "OP $XX + Y" si usano gli Adder, come quelli del primo SAP (che però erano usati per fare la somma di dati, non di indirizzi). Si somma l'indirizzo $XX (che viene messo nel registro D) e gli indici X o Y. Super clever.
+Nel 6502 sono presenti due registri indice, X e Y, che possono facilmente essere riprodotti nel BEAM . • Vedi https://tomnisbet.github.io/nqsap/docs/dxy-registers/; praticamente per fare operazioni "OP $XX + X" o "OP $XX + Y" si usano gli Adder, come quelli del primo SAP (che però erano usati per fare la somma di dati, non di indirizzi). Si somma l'indirizzo $XX (che viene messo nel registro D) e gli indici X o Y. Super clever.
 • Come per registri A e B, anche qui uso dei 574 con la stessa necessità di emulare un Enable sfruttando una NOR con il segnale Write che arriva dalla ROM e il clock negato per attivare il Clock Enable di ingresso al momento giusto.
 • Nota che nell'NQSAP-PCB per X e Y utilizza dei FF 377 e non più dei FF 574…
 	§ … 12/06/2023 e potrei farlo anche io, così da risparmiare la NOR e collegare direttamente WX e WY ai FF '377, tanto sono sempre attivi e possono essere letti attraverso RX ed RY connessi ai 245 relativi
 	§ … e posso usare il 377 anche per D, che comunque è solo in ingresso (e dunque anche un 574 potrebbe essere OK, però con la complicazione del dover gestire il segnale di Enable ∨ /CLK)
 
-[![Schema dei registri indice dell'NQSAP](../../assets/dxy/60-dxy-beam-schema.png "Schema dei registri indice dell'NQSAP"){:width="100%"}](../../assets/dxy/60-dxy-beam-schema.png)
+[![Schema dei registri indice dell'NQSAP](../../assets/dxy/60-nqsap-dxy-schema.png "Schema dei registri indice dell'NQSAP"){:width="100%"}](../../assets/dxy/60-nqsap-dxy-schema.png)
 
 *Schema dei registri indice dell'NQSAP.*
 
