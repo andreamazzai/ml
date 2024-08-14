@@ -23,7 +23,7 @@ Il registro D dell'NQSAP e del BEAM viene utilizzato a supporto delle istruzioni
 
 ### Utilizzo con le modalità di indirizzamento indicizzate
 
-Il contenuto del registro D può essere sommato al contenuto dei registri X, Y o nessuno (potrebbe risultare utile come ulteriore registro di appoggio per definire altre istruzioni personalizzate; tuttavia, per emulare le istruzioni originali del 6502 non è necessario l'utilizzo di questa modalità).
+Il contenuto del registro D può essere sommato al contenuto dei registri X, Y o nessuno (in questo ultimo caso, potrebbe risultare utile come ulteriore registro di appoggio per definire altre istruzioni personalizzate; l'utilizzo di questa modalità non è invece necessario per emulare le istruzioni originali del 6502).
 
 Per selezionare se D deve essere sommato a X, Y o nulla, si usano dei multiplexer (MUX) <a href="https://www.ti.com/lit/ds/symlink/sn74ls157.pdf" target="_blank">74LS157</a> pilotati dai segnali DY e DZ nell'NQSAP e DX/Y e DZ nel BEAM.
 
