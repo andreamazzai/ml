@@ -17,15 +17,15 @@ Dopo diversi decenni dalla fine degli studi (diploma di scuola superiore ad indi
 
 ### Il primo progetto: 6502
 
-Verso la fine dell'anno ho scoperto casualmente il blog di <a href = "https://eater.net/" target = "_blank">Ben Eater</a> e i suoi <a href = "https://www.youtube.com/@BenEater/playlists" target = "_blank">video</a> e, memore del mio primo computer (Commodore 64, 1984) e del fatto che all'epoca avevo fatto un po' di programmazione in assembly, ho costruito il breadboard computer di Ben basato su 6502 e ho iniziato a leggere parecchi blog e forum sul tema, riesumando un po' di vecchie conoscenze.
+Verso la fine dell'anno ho scoperto casualmente il blog di <a href="https://eater.net/" target="_blank">Ben Eater</a> e i suoi <a href="https://www.youtube.com/@BenEater/playlists" target="_blank">video</a> e, memore del mio primo computer (Commodore 64, 1984) e del fatto che all'epoca avevo fatto un po' di programmazione in assembly, ho costruito il breadboard computer di Ben basato su 6502 e ho iniziato a leggere parecchi blog e forum sul tema, riesumando un po' di vecchie conoscenze.
 
 ### Computer a 8 bit in logica TTL: SAP
 
-Nei primi mesi del 2022, dopo aver completato i primi moduli base del computer 6502, ho seguito la <a href = "https://www.youtube.com/playlist?list=PLowKtXNTBypGqImE405J2565dvjafglHU" target = "_blank">playlist</a> del computer **SAP** (Simple As Possible) in logica TTL a 8-bit, al quale mi sono appassionato ancora di più. Durante la costruzione ho appreso moltissimo - sia per l'eccellente stile di esposizione di Ben, sia per il grande impegno che ho profuso nell'approfondimento della materia su altri siti e libri.
+Nei primi mesi del 2022, dopo aver completato i primi moduli base del computer 6502, ho seguito la <a href="https://www.youtube.com/playlist?list=PLowKtXNTBypGqImE405J2565dvjafglHU" target="_blank">playlist</a> del computer **SAP** (Simple As Possible) in logica TTL a 8-bit, al quale mi sono appassionato ancora di più. Durante la costruzione ho appreso moltissimo - sia per l'eccellente stile di esposizione di Ben, sia per il grande impegno che ho profuso nell'approfondimento della materia su altri siti e libri.
 
 ### Evoluzione del computer a 8 bit: BEAM
 
-Ho completato il SAP computer a settembre, ma già in precedenza avevo cominciato a studiare i miglioramenti e le espansioni fatte da altri follower di Ben, soprattutto in merito alla possibilità di automatizzare l'inserimento del programma da eseguire con un bootloader, nonché alla necessità di incrementare la RAM oltre i 16 byte; durante l'estate di quell'anno ho scoperto il fantastico progetto  <a href = "https://tomnisbet.github.io/nqsap/" target = "_blank">NQSAP</a> di **Tom Nisbet**: un computer a 8-bit basato su quello di Ben Eater, ma ingegnerizzato per emulare le istruzioni del 6502. Ho realizzato velocemente che sarebbe stato il mio successivo progetto, perché metteva insieme molti aspetti che trovavo di grande interesse:
+Ho completato il SAP computer a settembre, ma già in precedenza avevo cominciato a studiare i miglioramenti e le espansioni fatte da altri follower di Ben, soprattutto in merito alla possibilità di automatizzare l'inserimento del programma da eseguire con un bootloader, nonché alla necessità di incrementare la RAM oltre i 16 byte; durante l'estate di quell'anno ho scoperto il fantastico progetto  <a href="https://tomnisbet.github.io/nqsap/" target="_blank">NQSAP</a> di **Tom Nisbet**: un computer a 8-bit basato su quello di Ben Eater, ma ingegnerizzato per emulare le istruzioni del 6502. Ho realizzato velocemente che sarebbe stato il mio successivo progetto, perché metteva insieme molti aspetti che trovavo di grande interesse:
 
 1. evoluzione del computer di Ben Eater, col quale avevo iniziato a riacquistare confidenza con l'elettronica digitale
 2. emulazione del processore del mio primo computer, completa di registri indice, modalità di indirizzamento e Stack Pointer
@@ -97,8 +97,9 @@ Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 ## Altri link
 
-- Un [compendio della Micro Logic](https://www.atarimania.com/documents/6502%20(65xx)%20Microprocessor%20Instant%20Reference%20Card.pdf) incredibilmente utile, che in sole due pagine include opcode, modalità di indirizzamento, flag e istruzioni che li modificano, funzionamento delle istruzioni di scorrimento e molto altro. Insostituibile.
-- Un valido riferimento per l'analisi della relazione tra Control Logic (CL) ed IR è stata la pagina [6502 Instruction Set](https://www.masswerk.at/6502/6502_instruction_set.html) di Norbert Landsteiner, che invito a consultare anche per il [6502 Assembler](https://www.masswerk.at/6502/assembler.html) e il [Virtual 6502](https://www.masswerk.at/6502/) che ho utilizzato in fase di debug del microcode.
+- <a href="https://archive.org/details/Programming_the_6502_OCR)" target="_blank">Programming the 6502</a> di Rodnay Zaks.
+- Un <a href="https://www.atarimania.com/documents/6502%20(65xx)%20Microprocessor%20Instant%20Reference%20Card.pdf" target="_blank">compendio della Micro Logic</a> incredibilmente utile, che in sole due pagine include opcode, modalità di indirizzamento, flag e istruzioni che li modificano, funzionamento delle istruzioni di scorrimento e molto altro. Insostituibile.
+- Un valido riferimento per l'analisi della relazione tra Control Logic (CL) ed IR è stata la pagina <a href="https://www.masswerk.at/6502/6502_instruction_set.html" target="_blank">6502 Instruction Set</a> di Norbert Landsteiner, che invito a consultare anche per il <a href="https://www.masswerk.at/6502/assembler.html" target="_blank">6502 Assembler</a> e il <a href="https://www.masswerk.at/6502/" target="_blank">Virtual 6502</a> che ho utilizzato in fase di debug del microcode.
 
 ## TO DO
 

@@ -5,20 +5,20 @@ excerpt: "Registri indice del BEAM computer"
 ---
 [![Registri indice del BEAM computer](../../assets/dxy/60-beam-dxy.png "Registri indice del BEAM computer"){:width="100%"}](../../assets/dxy/60-beam-dxy.png)
 
-Nel microprocessore 6502 sono presenti due registri indice, X e Y, che possono facilmente essere riprodotti nel BEAM; sono registri indipendenti che possono essere scritti e letti alla bisogna.
+Nel microprocessore 6502 sono presenti due registri indice, X e Y, che possono facilmente essere riprodotti in un computer TTL; sono registri indipendenti che possono essere scritti e letti alla bisogna.
 
 Il registro D dell'NQSAP e del BEAM viene utilizzato a supporto delle istruzioni di salto condizionale e di quelle che eseguono operazioni in una locazione di memoria che è il risultato di un computo tra l'indirizzo base specificato nell'operando e quattro diversi modi di interpretazione dei valori assunti da X o Y:
 
-| Modalità | Agisce sulla locazione | Opcode | Risultato | Esempio |
-| - | - | - | - | - |  
-| Absolute, X | data dalla somma di operando e valore contenuto in X | LDA ($20, X) | A = valore contenuto nella locazione ($20 + X) | X = $3; A = A + valore in $23
-| Absolute, Y | data dalla somma di operando e valore contenuto in Y | LDA ($20, Y) | A = valore contenuto nella locazione ($20 + Y) | Y = $3; A = A + valore in $23
-| Indirect X | puntata dalla locazione puntata dalla somma dell'operando e del valore contenuto in X | LDA ($20, X) | A = valore contenuto nella locazione puntata dal pointer ($20 + X) | X = $3; $23 = $50; A = valore presente nella locazione $50 |
-| Indirect Y | puntata dalla somma della locazione puntata dall'operando e del valore contenuto in Y | LDA ($20), Y | A = A + valore contenuto nella locazione puntata dal pointer ($20) + Y | Y = $3; $20 = $60; A = valore presente nella locazione $63 |
+| Modalità           | Agisce sull'indirizzo                                                                  | Opcode       | Risultato                                                          | Esempio                                                       |
+| -                  | -                                                                                      | -            | -                                                                  | -                                                             |  
+| Absolute, X        | definito dalla somma di operando e valore contenuto in X                               | LDA ($20, X) | A = valore contenuto nella locazione ($20 + X)                     | X = #$03; A = valore presente nella locazione $23             |
+| Absolute, Y        | definito dalla somma di operando e valore contenuto in Y                               | LDA ($20, Y) | A = valore contenuto nella locazione ($20 + Y)                     | Y = #$03; A = valore presente nella locazione $23             |
+| Indexed Indirect X | definito nella locazione puntata dalla somma dell'operando e del valore contenuto in X | LDA ($20, X) | A = valore contenuto nella locazione puntata dal pointer ($20 + X) | X = #$03; $23 = #$50; A = valore presente nella locazione $50 |
+| Indirect Indexed Y | definito dalla somma della locazione puntata dall’operando e del valore contenuto in Y | LDA ($20), Y | A = valore contenuto nella locazione puntata dal pointer ($20) + Y | Y = #$03; $20 = #$60; A = valore presente nella locazione $63 |
 
-Per eseguire il computo si usano dei 4-Bit Binary Full Adders With Fast Carry <a href = "https://www.ti.com/lit/ds/symlink/sn54s283.pdf" target="_blank">74LS283</a> che eseguono la somma tra quanto viene caricato nel registro D e il valore contenuto nei registri indice X o Y.
+Per eseguire il computo si usano dei 4-Bit Binary Full Adders With Fast Carry <a href="https://www.ti.com/lit/ds/symlink/sn54s283.pdf" target="_blank">74LS283</a> che eseguono la somma tra quanto viene caricato nel registro D e il valore contenuto nei registri indice X o Y.
 
-Il flusso logico tratto dalla <a href = "https://tomnisbet.github.io/nqsap/docs/dxy-registers/" targe ="_blank">spiegazione di Tom Nisbet</a> chiarisce il funzionamento:
+Il flusso logico tratto dalla <a href="https://tomnisbet.github.io/nqsap/docs/dxy-registers/" targe ="_blank">spiegazione di Tom Nisbet</a> chiarisce il funzionamento:
 
 ![Registri D, X e Y in azione](../../assets/dxy/60-dxy-nqsap-tom-flow.png "Registri D, X e Y in azione"){:width="66%"}
 
@@ -26,7 +26,7 @@ Il flusso logico tratto dalla <a href = "https://tomnisbet.github.io/nqsap/docs/
 
 Il contenuto del registro D può essere sommato al contenuto dei registri X, Y o nessuno (potrebbe risultare utile come ulteriore registro di appoggio per definire altre istruzioni personalizzate; tuttavia, l'emulazione delle istruzioni del 6502 può essere implementata con gli altri registri esistenti nel computer senza utilizzare questa modalità).
 
-Per selezionare se D deve essere sommato a X, Y o nulla, si usano dei multiplexer (MUX) <a href = "https://www.ti.com/lit/ds/symlink/sn74ls157.pdf" target="_blank">74LS157</a> pilotati dai segnali DY e DZ nell'NQSAP e DX/Y e DZ nel BEAM.
+Per selezionare se D deve essere sommato a X, Y o nulla, si usano dei multiplexer (MUX) <a href="https://www.ti.com/lit/ds/symlink/sn74ls157.pdf" target="_blank">74LS157</a> pilotati dai segnali DY e DZ nell'NQSAP e DX/Y e DZ nel BEAM.
 
 Notare che il registro D è "Write only", dunque non è possibile metterne il contenuto in ouput sul bus. Tuttavia, è possibile leggere D portando il segnale DZ allo stato HI, disabilitando così le uscite dei '157 e causando gli Adder a eseguire l'operazione D + 0 = D.
 
@@ -68,7 +68,7 @@ Sotto il punto di vista funzionale, gli schemi dei Registri indice dell'NQSAP e 
 
 Negli appunti annotavo che "... come per gli altri registri del BEAM, anche qui uso dei Flip-Flop tipo D <a href="https://www.ti.com/lit/ds/symlink/sn54ls377.pdf" target="_blank">74LS377</a> anziché gli Octal D-Type Flip-Flop with 3-State Outputs <a href="https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf" target="_blank">74LS574</a> usati da Tom nell'NQSAP"; si veda la sezione [L'ALU dell'NQSAP](../alu/#lalu-dellnqsap) per un chiarimento in tal senso.
 
-Per completezza, devo segnalare di aver conosciuto il 74LS377 studiando l'<a href = "https://tomnisbet.github.io/nqsap-pcb/" target="_blank">NQSAP-PCB</a>, evoluzione dell’NQSAP che Tom aveva ingegnerizzato su PCB anziché su breadboard.
+Per completezza, devo segnalare di aver conosciuto il 74LS377 studiando l'<a href="https://tomnisbet.github.io/nqsap-pcb/" target="_blank">NQSAP-PCB</a>, evoluzione dell’NQSAP che Tom aveva ingegnerizzato su PCB anziché su breadboard.
 
 [![Schema dei Registri indice del BEAM computer](../../assets/dxy/60-beam-dxy-schema.png "Schema dei Registri indice del BEAM computer"){:width="100%"}](../../assets/dxy/60-beam-dxy-schema.png)
 
@@ -77,3 +77,4 @@ Per completezza, devo segnalare di aver conosciuto il 74LS377 studiando l'<a hre
 # TO DO
 - Scrivere forse un po meglio il fatto della lettura di D
 - e anche La descrizione del salto all'indietro " Il 9° bit (corrispondente al Carry) non viene preso in considerazione e il rimanente $82 verrà caricato nel PC."
+- È necessario ricordare che alcune modalità di indirizzamento sono ridondanti Perché il computer ha solamente 256 byte, come cè scritto altrove , come ad esempio zero page , x e Absolute Index , x , pertanto sono trattate come se fossero un'unica modalità di indirizzamento
