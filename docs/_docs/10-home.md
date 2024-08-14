@@ -113,3 +113,4 @@ Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 - non ho utilizzato HC perché... bla bla bla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla bla
 - sistemare il paragrafo BENEFICI
 - cosa non è stato emulato? IRQ, BCD
+- Spiegare che avevo preso il meglio da nqsap e da sua versione PCB, cioè dopo aver letto il primo avevo letto anche la documentazione del secondo nella quale Tom aveva effettuato diversi miglioramenti migliorie e ho cercato di prendere il meglio di tutte e due lemacchine 
