@@ -9,12 +9,16 @@ Nel microprocessore 6502 sono presenti due registri indice, X e Y, che possono f
 
 Il registro D dell'NQSAP e del BEAM viene utilizzato a supporto delle istruzioni di salto condizionale e di quelle che eseguono operazioni in una locazione di memoria che è il risultato di un computo tra l'indirizzo base specificato nell'operando e quattro diversi modi di interpretazione dei valori assunti da X o Y:
 
-| Modalità           | Agisce sull'indirizzo                                                                  | Opcode       | Risultato                                                          | Esempio                                                       |
+| Modalità           | Agisce sull'indirizzo                                                                  | Opcode       | Risultato                                                          | Esempio*                                                        |
 | -                  | -                                                                                      | -            | -                                                                  | -                                                             |  
 | Absolute, X        | definito dalla somma di operando e valore contenuto in X                               | LDA ($20, X) | A = valore contenuto nella locazione ($20 + X)                     | X = #$03; A = valore presente nella locazione $23             |
 | Absolute, Y        | definito dalla somma di operando e valore contenuto in Y                               | LDA ($20, Y) | A = valore contenuto nella locazione ($20 + Y)                     | Y = #$03; A = valore presente nella locazione $23             |
 | Indexed Indirect X | definito nella locazione puntata dalla somma dell'operando e del valore contenuto in X | LDA ($20, X) | A = valore contenuto nella locazione puntata dal pointer ($20 + X) | X = #$03; $23 = #$50; A = valore presente nella locazione $50 |
 | Indirect Indexed Y | definito dalla somma della locazione puntata dall’operando e del valore contenuto in Y | LDA ($20), Y | A = valore contenuto nella locazione puntata dal pointer ($20) + Y | Y = #$03; $20 = #$60; A = valore presente nella locazione $63 |
+
+\* $23 = #$50 significa che l'indirizzo $23 contiene il valore esadecimale 0x50:
+- la notazione $ fa riferimento a un indirizzo
+- la notazione #$ fa riferimento a un valore
 
 Per eseguire il computo si usano dei 4-Bit Binary Full Adders With Fast Carry <a href="https://www.ti.com/lit/ds/symlink/sn54s283.pdf" target="_blank">74LS283</a> che eseguono la somma tra quanto viene caricato nel registro D e il valore contenuto nei registri indice X o Y.
 
