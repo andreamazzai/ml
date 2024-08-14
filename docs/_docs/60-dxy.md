@@ -50,7 +50,7 @@ LDA #$01    ; $86 - Questa istruzione verrà eseguita
 
 L'operando è un valore a 8 bit con segno (Signed) che può variare da -128 a +127, il che comporta che i salti condizionali possono saltare in avanti di 128 indirizzi e all'indietro di 127.
 
-Per saltare a un indirizzo precedente a quello del salto, il valore dell'operando dovrà essere un valore compreso tra $80 (-128) e $FF (-1), secondo le regole visibile nella sezione [Numeri Unsigned e numeri Signed](../math/#numeri-unsigned-e-numeri-signed) della pagina dedicata all'Aritmetica binaria.
+Per saltare a un indirizzo precedente a quello del salto, il valore dell'operando dovrà essere un valore compreso tra $80 (-128) e $FF (-1), secondo le regole visibile nella sezione [Numeri Unsigned e numeri Signed](../math/#numeri-unsigned-e-numeri-signed) della pagina dedicata all'Aritmetica binaria (se aggiungo 0x01 all'indirizzo più grande 0xFF, ritorno all'indirizzo 0x00).
 
 ~~~text
 LDX #$05    ; $80 - Carica il registro X con 5
@@ -80,6 +80,4 @@ Per completezza, devo segnalare di aver conosciuto il 74LS377 studiando l'<a hre
 *Schema dei registri indice del BEAM computer.*
 
 # TO DO
-- Scrivere forse un po meglio il fatto della lettura di D
-- e anche La descrizione del salto all'indietro " Il 9° bit (corrispondente al Carry) non viene preso in considerazione e il rimanente $82 verrà caricato nel PC."
-- È necessario ricordare che alcune modalità di indirizzamento sono ridondanti Perché il computer ha solamente 256 byte, come cè scritto altrove , come ad esempio zero page , x e Absolute Index , x , pertanto sono trattate come se fossero un'unica modalità di indirizzamento
+- È necessario ricordare che alcune modalità di indirizzamento sono ridondanti Perché il computer ha solamente 256 byte, come cè scritto altrove , come ad esempio zero page , x e Absolute Index , x , pertanto sono trattate come se fossero un'unica modalità di indirizzamento Così come già descritto nella pagina xYZ
