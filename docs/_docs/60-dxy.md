@@ -16,20 +16,20 @@ Il registro D dell'NQSAP e del BEAM viene utilizzato a supporto delle istruzioni
 | Indexed Indirect X | nella locazione puntata dalla somma dell'operando e del valore contenuto in X | LDA ($20, X) | A = valore contenuto nella locazione puntata dal pointer ($20 + X) | X = #$03; $23 = #$50; A = valore presente nella locazione $50 |
 | Indirect Indexed Y | dalla somma tra locazione puntata dall’operando e valore contenuto in Y | LDA ($20), Y | A = valore contenuto nella locazione puntata dal pointer ($20) + Y | Y = #$03; $20 = #$60; A = valore presente nella locazione $63 |
 
-\* $23 = #$50 significa che l'indirizzo $23 contiene il valore esadecimale 0x50:
+\* $23 = #$50 significa che l'indirizzo $23 contiene il valore esadecimale #$50:
 
 - la notazione $ fa riferimento a un indirizzo
 - la notazione #$ fa riferimento a un valore
 
 ### Utilizzo con le modalità di indirizzamento indicizzate
 
-Il contenuto del registro D può essere sommato al contenuto dei registri X, Y o nessuno (in questo ultimo caso, potrebbe risultare utile come ulteriore registro di appoggio per definire altre istruzioni personalizzate; l'utilizzo di questa modalità non è invece necessario per emulare le istruzioni originali del 6502).
+Il contenuto del registro D può essere sommato al contenuto dei registri X, Y o nessuno (in questo ultimo caso, potrebbe risultare utile come ulteriore registro di appoggio per definire altre istruzioni personalizzate; l'utilizzo di questa modalità non è invece necessaria per emulare le istruzioni originali del 6502).
 
-Per selezionare se D deve essere sommato a X, Y o nulla, si usano dei multiplexer (MUX) <a href="https://www.ti.com/lit/ds/symlink/sn74ls157.pdf" target="_blank">74LS157</a> pilotati dai segnali DY e DZ nell'NQSAP e DX/Y e DZ nel BEAM.
-
-Notare che il registro D è "Write only", dunque non è possibile metterne il contenuto in ouput sul bus. Tuttavia, è possibile leggere D portando il segnale DZ allo stato HI, disabilitando così le uscite dei '157 e causando gli Adder a eseguire l'operazione D + 0 = D.
+Per selezionare se D debba essere sommato a X, Y o nulla, si usano dei multiplexer (MUX) <a href="https://www.ti.com/lit/ds/symlink/sn74ls157.pdf" target="_blank">74LS157</a> pilotati dai segnali DY e DZ nell'NQSAP e DX/Y e DZ nel BEAM.
 
 Per eseguire il computo si usano dei 4-Bit Binary Full Adders With Fast Carry <a href="https://www.ti.com/lit/ds/symlink/sn54s283.pdf" target="_blank">74LS283</a> che eseguono la somma tra quanto viene caricato nel registro D e il valore contenuto nei registri indice X o Y.
+
+Il risultato del computo può essere esportato sul bus col segnale RD. Notare che il registro D è "Write only", dunque non è possibile metterne direttamente il contenuto in ouput sul bus. Tuttavia, è possibile leggere il valore contenuto D portando il segnale DZ allo stato HI, disabilitando così le uscite dei '157 e causando gli Adder a eseguire l'operazione D + 0 = D.
 
 Il flusso logico tratto dalla <a href="https://tomnisbet.github.io/nqsap/docs/dxy-registers/" targe ="_blank">spiegazione di Tom Nisbet</a> chiarisce il funzionamento:
 

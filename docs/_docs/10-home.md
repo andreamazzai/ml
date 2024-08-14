@@ -115,3 +115,4 @@ Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 - sistemare il paragrafo BENEFICI
 - cosa non è stato emulato? IRQ, BCD
 - Spiegare che avevo preso il meglio da nqsap e da sua versione PCB, cioè dopo aver letto il primo avevo letto anche la documentazione del secondo nella quale Tom aveva effettuato diversi miglioramenti migliorie e ho cercato di prendere il meglio di tutte e due lemacchine 
+- Aritmetica binaria e tutti gli altri... se è il nome di qualcosa, va in maiuscolo, altrimenti no... ad esempio alla sezione **numeri signed** della pagina dedicata all'aritmetica binaria ==> In questo caso forse sarebbe meglio averlo in minuscolo
