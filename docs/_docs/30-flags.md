@@ -145,7 +145,7 @@ A questo punto della spiegazione si sarà notato che i FF '74 espongono i flag s
 
 L'utilizzo di una NOR all'uscita Z del '151 permette di gestire sia i salti condizionali (dunque da validare con una apposita verifica logica, cioè quella della presenza/assenza di un determinato flag), sia i salti incondizionati:
 
-- In caso di salto condizionale (BCS, BVC, BEQ eccetera), una verifica positiva di presenza/assenza del flag selezionato (normale o invertito) genera un'uscita HI sul '151 --> la NOR presenta dunque output LO ed attiva il caricamento dell'indirizzo del salto sul Program Counter. La pagina dei registri [D, X e Y](../dxy) descrive il calcolo del valore da inserire nel PC.
+- In caso di salto condizionale (BCS, BVC, BEQ eccetera), una verifica positiva di presenza/assenza del flag selezionato (normale o invertito) genera un'uscita HI sul '151 --> la NOR presenta dunque output LO ed attiva il caricamento dell'indirizzo del salto sul Program Counter. La pagina dei registri [D, X e Y](../dxy/#utilizzo-per-i-salti-condizionali) descrive il calcolo del valore da inserire nel PC.
 
 - In caso di salto incondizionato (JMP, JSR), il microcode dell'istruzione di salto attiva /WP (in logica invertita) che a sua volta attiva il caricamento sul PC del valore presente sul bus: (/PC-LOAD = NOT (x+1) = 0), pertanto il PC carica dal bus il suo nuovo valore.
 
@@ -166,7 +166,7 @@ Come detto precedentemente, il flag **N**egative è ricavato dal 7° bit del bus
 
 ### Zero
 
-Il flag **Z**ero è attivo quando il valore presente nel bus è zero; anziché usare una serie di AND per verificare se tutte le linee sono LO (come accadeva nel SAP), un singolo comparatore '688 può svolgere la stessa funzione. Notare che anche questo flag opera sul bus e non sui risultati della sola ALU.
+Il flag **Z**ero è attivo quando il valore presente nel bus è zero; anziché usare una serie di porte logiche NOR e AND per verificare se tutte le linee sono LO (come accadeva nel SAP), un singolo comparatore '688 può svolgere la stessa funzione. Notare che anche questo flag opera sul bus e non sui risultati della sola ALU.
 
 ![Comparatore 74LS688 per verifica dello stato zero sul bus](../../assets/flags/30-flag-688.png){:width="50%"}
 
@@ -279,11 +279,12 @@ Da notare che il computer NQSAP prevedeva 8 step per le microistruzioni, mentre 
 
 - Tom segnala di aver preso ispirazione da un thread su Reddit <a href="https://www.reddit.com/r/beneater/comments/jwxke0/how_to_add_a_decremental_and_incremental_circuit/" target="_blank">How to add a decremental and incremental circuit to the ALU ?</a> per l'idea di pilotare il caricamento del [Program Counter](../programcounter/) dal registro dei Flag anziché gestirli con copie multiple del microcode come avveniva come sul SAP di Ben Eater.
 
-- Tom notava anche l'approccio del thread <a href="https://www.reddit.com/r/beneater/comments/m76ijz/opcodes_and_flag_decoding_circuit/" target="_blank">Opcodes and Flag decoding circuit</a> per eseguire salti condizionali in hardware. Invece di pilotare la linea LOAD del Program Counter, il circuito dell'autore del thread si trova tra l'IR e la ROM e forza condizionatamente un'istruzione NOP o JMP a seconda dello stato dei flag. Gli opcode delle istruzioni di salto sono disposti in modo tale che il flag di interesse possa essere determinato dai bit in uscita dall'IR. Concetto interessante, ma Tom aveva già implementato una funzionalità simile con le linee di selezione dell'ALU hardwired all'IR, che è stata riutilizzata anche per la gestione dei [salti condizionali](#i-salti-condizionali).
+- Tom notava anche l'approccio del thread <a href="https://www.reddit.com/r/beneater/comments/m76ijz/opcodes_and_flag_decoding_circuit/" target="_blank">Opcodes and Flag decoding circuit</a> per eseguire salti condizionali in hardware. Invece di pilotare la linea LOAD del Program Counter, il circuito dell'autore del thread si trova tra l'IR e la EEPROM e forza condizionatamente un'istruzione NOP o JMP a seconda dello stato dei flag. Gli opcode delle istruzioni di salto sono disposti in modo tale che il flag di interesse possa essere determinato dai bit in uscita dall'IR. Concetto interessante, ma Tom aveva già implementato una funzionalità simile con le linee di selezione dell'ALU hardwired all'IR, che è stata riutilizzata anche per la gestione dei [salti condizionali](#i-salti-condizionali).
 
 ## TO DO
 
 - Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
 - Effetto non desiderato: "le istruzioni di salto condizionato non eseguite sprecano cicli di clock"… non si potrebbe semplicemente usare N per terminare anticipatamente l'istruzione? Lui sembra renderla un po' complicata
 - 29/01/2023 leggendo bene dice che dovrebbe essere possibile fare in modo che la logica elettronica dell'istruzione Jump vada ad attivare N se il salto non deve esserci… da verificare
-- alla riga "La pagina dei registri D, X e Y descrive il calcolo del valore da inserire nel PC" mettere un hyperlink con link alla sezione dove facciol il calcolo d+x o d+y
+- sistemare "l’output delle EEPROM non si modifica durante l’esecuzione della singola istruzione (ma nel SAP-1 come si comportava? 04/10/2022 l’ho compreso andando a rileggere gli appunti del BE 8 bit computer). Teoricamente, e l’avevo letto anche altrove, questo potrebbe essere un problema perché causa “glitching”."
+

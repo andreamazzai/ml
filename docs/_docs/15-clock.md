@@ -42,3 +42,4 @@ Il microcode dell'istruzione HLT attiva l'omonimo segnale sul modulo di clock, i
 
 - Verificare se ho scritto correttamente le note sul microcode.
 - notare che in questa pagina il nome "modulo di clock" e "clock" sono usati per descrivere... maiuscolo o minuscolo?
+- applicazione De Morgan alla fase finale del modulo?

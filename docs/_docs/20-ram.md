@@ -369,3 +369,4 @@ Invece dei più comuni dip-switch, ho utilizzato dei comodissimi Rocker Switch (
 
 - mettere dei link
 - "aumentare la dimensione delle EEPROM ospitanti il microcode: volendo gestire" ---------- il MICROCODE dovrà essere linkato alla sezione specifica della pagina della CL
+- dove parlo di "Ripple Mode Carry” e “Carry Look Ahead" mettere il link alla sezione da scrivere in Aritmetica Binaria
