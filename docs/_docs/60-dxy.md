@@ -69,7 +69,7 @@ Questa tecnica funziona correttamente grazie alla natura ciclica dell'indirizzo 
 
 ## Differenze tra Registri indice dell'NQSAP e del BEAM
 
-Sotto il punto di vista funzionale, gli schemi dei Registri indice dell'NQSAP e del BEAM sono identici.
+Dal punto di vista funzionale, gli schemi dei Registri indice dell'NQSAP e del BEAM sono identici.
 
 Negli appunti annotavo che "... come per gli altri registri del BEAM, anche qui uso dei Flip-Flop tipo D <a href="https://www.ti.com/lit/ds/symlink/sn54ls377.pdf" target="_blank">74LS377</a> anziché gli Octal D-Type Flip-Flop with 3-State Outputs <a href="https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf" target="_blank">74LS574</a> usati da Tom nell'NQSAP"; si veda la sezione [L'ALU dell'NQSAP](../alu/#lalu-dellnqsap) per un chiarimento in tal senso.
 

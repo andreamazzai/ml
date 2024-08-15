@@ -561,3 +561,4 @@ Per finire, da quanto visto fino ad ora possiamo dedurre un'altra regola: la som
 ## TO DO
 
 - Ripple Mode Carry e Carry Look Ahead --- Ne parliamo perché i '161 usati nel MAR e i '181 dell'ALU ne parlano nei datasheet.
+- Link a quel professore del montana

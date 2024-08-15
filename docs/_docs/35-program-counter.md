@@ -21,8 +21,10 @@ Il Carry Out di un contatore binario a 4 bit, attivo al raggiungimento del conte
 
 ## Note sul microcode
 
-- Verificare se ci sono note da inserire in questa sezione in relazione al contenuto della pagina. Forse qualcosa relativo al fatto che le prime due micro - istruzioni sono sempre le stesseE un rimando al modulo dei Flag nel quale si spiega meglio come venga eseguito il salto a una nuova istruzione;
-inoltre Forse an- che un rimando alla pagina DXYche viene utilizzata per calcolare il nuovo valore del PC del salto condizionale
+- Verificare se ci sono note da inserire in questa sezione in relazione al contenuto della pagina. Forse qualcosa relativo al fatto che le prime due micro
+- istruzioni sono sempre le stesseE un rimando al modulo dei Flag nel quale si spiega meglio come venga eseguito il salto a una nuova istruzione;
+- inoltre Forse anche un rimando alla pagina DXYche viene utilizzata per calcolare il nuovo valore del PC del salto condizionale
+- Verificare se nel datasheet si parla ripple carry out e anche l'atro tipo di carry e linkare eventualmente La sezione apposita nella pagina dell'aritmetica binaria
 
 ## Link utili
 
