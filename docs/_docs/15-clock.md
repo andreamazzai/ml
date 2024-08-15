@@ -35,7 +35,8 @@ Il microcode dell'istruzione HLT attiva l'omonimo segnale sul modulo di clock, i
 
 ## Link utili
 
-- I <a href = "https://eater.net/8bit/clock" target = "_blank">video</a> di Ben Eater che descrivono il funzionamento dei timer 555 e la costruzione del modulo di clock.
+- I <a href="https://eater.net/8bit/clock" target="_blank">video</a> di Ben Eater che descrivono il funzionamento dei timer 555 e la costruzione del modulo di clock.
+- <a href="https://todbot.com/blog/2010/01/02/momentary-button-as-onoff-toggle-using-555/" target="_blank">Un blog</a> che spiega come creare un circuito bistabile, che è quanto mi serviva per poter crere la funzione "Start/Stop" con pulsante anziché con interruttore.
 
 ## TO DO
 
