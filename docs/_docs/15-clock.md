@@ -21,7 +21,7 @@ I pulsanti Start/Stop e Step sono stati duplicati anche in una zona più facilme
 
 Sul modulo di clock sono presenti tre segnali provenienti dal Loader basato su Arduino: LDR-Active, LDR-CLK e CLK-Start.
 
-Il segnale **LDR-Active** allo stato HI permette al Loader di  prendere il controllo del circuito di clock, disattivandone completamente l'output e fermando l'esecuzione del programma. In questa circostanza, il Loader può iniettare nel computer il suo segnale di clock **LDR-CLK**, utilizzato per programmare la RAM.
+Il segnale **LDR-Active** allo stato HI permette al Loader di  prendere il controllo del circuito di clock, disattivandone completamente l'output e fermando l'esecuzione del programma. In questa circostanza, il Loader può iniettare nel computer il suo segnale di clock **LDR-CLK**, che viene utilizzato per programmare la RAM.
 
 Il segnale **CLK-Start** viene utilizzato dal Loader alla fine della programmazione per riattivare il modulo di clock e far partire il programma appena caricato.
 
@@ -31,7 +31,7 @@ Il segnale **CLK-Start** viene utilizzato dal Loader alla fine della programmazi
 
 ## Note sul microcode
 
-Il microcode dell'istruzione HLT attiva l'omonimo segnale sul modulo di clock, interrompendo il funzionamento del programma. Per riprendere il funzionamento nella modalità a clock continuo, è necessario superare la microistruzione corrente premendo il pulsante Step: a questo punto sarà possibile riavviare l'esecuzione del programma col pulsante Start/Stop.
+Il microcode dell'istruzione HLT attiva l'omonimo segnale sul modulo di clock, interrompendo il funzionamento del programma. Per riprendere il funzionamento nella modalità a clock continuo, è necessario superare la microistruzione corrente premendo il pulsante Step: a questo punto è possibile riavviare l'esecuzione del programma col pulsante Start/Stop.
 
 ## Link utili
 
