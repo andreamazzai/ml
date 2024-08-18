@@ -5,7 +5,7 @@ excerpt: "Circuito di clock del BEAM computer"
 ---
 [![Circuito di Clock del BEAM computer](../../assets/clock/15-beam-clock.png "Circuito di Clock del BEAM computer"){:width="100%"}](../../assets/clock/15-beam-clock.png)
 
-Il circuito di clock del computer BEAM riprende il modulo di clock progettato da Ben Eater per il computer SAP, utilizzando comodi pulsanti tattili anziché interruttori a scorrimento e aggiungendo qualche interazione con i controlli esterni provenienti dal [Loader](../loader).
+Il circuito di clock del computer BEAM riprende il modulo di clock progettato da Ben Eater per il computer SAP, utilizzando però solo comodi pulsanti tattili anziché interruttori a scorrimento e aggiungendo qualche interazione con segnali di controllo esterni provenienti dal [Loader](../loader).
 
 - Il primo 555 è utilizzato come generatore astabile con possibilità di selezionare la frequenza di funzionamento attraverso un potenziometro; un pulsante "Turbo" permette di bypassare temporaneamente la resistenza del potenziometro portando la frequenza di lavoro al valore massimo. Se si esegue qualche programma a bassa velocità di clock allo scopo di effettuare una analisi visiva degli output, questo pulsante si comporta come un "Fast Forward".
 - Il secondo 555 in modalità monostabile permette di eseguire singole microistruzioni ("Step").
@@ -36,7 +36,7 @@ Il microcode dell'istruzione HLT attiva l'omonimo segnale sul modulo di clock, i
 ## Link utili
 
 - I <a href="https://eater.net/8bit/clock" target="_blank">video</a> di Ben Eater che descrivono il funzionamento dei timer 555 e la costruzione del modulo di clock.
-- <a href="https://todbot.com/blog/2010/01/02/momentary-button-as-onoff-toggle-using-555/" target="_blank">Un blog</a> che spiega come creare un circuito bistabile, che è quanto mi serviva per poter crere la funzione "Start/Stop" con pulsante anziché con interruttore.
+- <a href="https://todbot.com/blog/2010/01/02/momentary-button-as-onoff-toggle-using-555/" target="_blank">Un blog</a> che spiega come creare un circuito bistabile, che ho utilizzato per crere la funzione "Start/Stop" con pulsante anziché con interruttore.
 
 ## TO DO
 
