@@ -17,13 +17,13 @@ Per confronto, affianchiamo anche lo schema della Control Logic del SAP computer
 
 *Schema della Control Logic del SAP computer.*
 
-Il numero maggiore di EEPROM dell'NQSAP indica chiaramente la disponibilità di un numero ben maggiore di segnali di controllo rispetto a quelli disponibili nel SAP Computer. La complessità dell'NQSAP e del BEAM computer è tale per cui i 16 segnali del SAP non sarebbero sufficienti per pilotare moduli complessi come ad esempio l'ALU e il registro dei Flag.
+La complessità dell'NQSAP è tale per cui i soli 16 segnali disponibili nella Control Logic del SAP non sarebbero stati sufficienti per pilotare moduli complessi come ad esempio l'ALU e il registro dei Flag; in conseguenza di questo, diventava necessario ampliare in maniera considerevole il numero di linee di controllo utilizzabili.
 
 ### I 74LS138
 
-Oltre all'incremento naturale dovuto al maggior numero di EEPROM utilizzate, una serie di 3-Line To 8-Line Decoders/Demultiplexers <a href = "https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target = "_blank">74LS138</a> permette di gestire fino a 15 segnali con solo 4 linee in uscita da una singola EEPROM.
+Per poter gestire l'elevato numero di segnali richiesti, è stato aumentato il numero di EEPROM e sono stati inseriti dei 3-Line To 8-Line Decoders/Demultiplexers <a href="https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target="_blank">74LS138</a>.
 
-Come visibile nello schema, ogni 138 presenta 3 pin di input e 3 pin di Enable; connettendo opportunamente i 3 pin di input e uno dei pin di Enable di ogni 138, è possibile pilotare ben 4 demultiplexer (per un totale di 30 segnali di output) usando solo gli 8 segnali in uscita da una singola EEPROM.
+Come visibile nello schema, ogni '138 presenta 3 pin di selezione e 3 pin di Enable; connettendo opportunamente i pin di ogni '138, è possibile pilotare ben quattro demultiplexer (per un totale di 30 segnali di output) usando solo gli 8 segnali in uscita da una singola EEPROM. In altre parole, i '138 fungono da *demoltiplicatori* e permettono di indirizzare un numero elevato di segnali a partire da un numero limitato di linee in ingresso.
 
 Perché fino a 30 segnali e non 32? Il microcode prevede delle microistruzioni nelle quali nessuno dei registri pilotati dai '138 deve essere attivo in quel momento, dunque almeno uno dei pin di output di ogni coppia di '138 dovrà essere scollegato. Ad esempio, nel caso dell'NQSAP, un output 0000.0000 della prima EEPROM attiverà il pin D0 del primo '138 e del terzo '138: entrambi i pin D0 sono scollegati, dunque sarà sufficiente mettere in output 0x00 sulla prima EEPROM per non attivare alcuno tra tutti i registri pilotati dai '138.
 
@@ -423,7 +423,7 @@ Altre referenze Tom Nisbet per Flags	• Question for all 74ls181 alu people on 
 
 ## Link utili
 
-- I video di Ben Eater che descrivono la <a href = "https://eater.net/8bit/control" target = "_blank">Control Logic e il microcode</a>.
+- I video di Ben Eater che descrivono la <a href="https://eater.net/8bit/control" target="_blank">Control Logic e il microcode</a>.
 
 ## TO DO
 
