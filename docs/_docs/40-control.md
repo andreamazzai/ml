@@ -9,35 +9,47 @@ excerpt: "Control Logic del BEAM computer"
 
 Attenzione : nello schema cè una led bar collegata al ring counter, Una led bar collegata alle uscite a - quattro a 11del bass delle rom, ma probabilmente qui manca un pezzettino di led bar per arrivare ai 12 indirizzi totaliindirizzatidai 12 pine in più manca la led bar del registro delle istruzioni
 
-21/09/2022 - Flags and Conditional Jumps NQSAP	https://tomnisbet.github.io/nqsap/docs/flags/
-Bisogna dire che più volte, leggendo il blog di Tom Nisbet, ho trovato delle idee molto clever.
-
 [![Schema della Control Logic dell'NQSAP](../../assets/control/40-control-logic-schema-nqsap.png "Schema logico della Control Logic dell'NQSAP"){:width="100%"}](../../assets/control/40-control-logic-schema-nqsap.png)
 
 *Schema logico della Control Logic dell'NQSAP, leggermente modificato al solo scopo di migliorarne la leggibilità.*
 
-Per confronto, visualizziamo anche lo schema del SAP computer di Ben Eater.
+Per confronto, affianchiamo anche lo schema del SAP computer di Ben Eater.
 
 [![Schema della Control Logic del SAP computer](../../assets/control/40-control-logic-schema-SAP.png "Schema logico della Control Logic del SAP computer"){:width="100%"}](../../assets/control/40-control-logic-schema-SAP.png)
 
 *Schema logico della Control Logic del SAP computer.*
 
-Il numero maggiore di EEPROM dell'NQSAP indica chiaramente la disponibilità di un numero ben maggiore di segnali di controllo rispetto a quelli disponibili nel SAP Computer. Oltre a questo, una serie di 3-Line To 8-Line Decoders/Demultiplexers <a href = "https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target = "_blank">74LS138</a> permette di gestire fino a 15 segnali con solo 4 linee in uscita da una singola EEPROM.
+Il numero maggiore di EEPROM dell'NQSAP indica chiaramente la disponibilità di un numero ben maggiore di segnali di controllo rispetto a quelli disponibili nel SAP Computer. La complessità dell'NQSAP e del BEAM computer è tale per cui i 16 segnali del SAP non sarebbero sufficienti per pilotare moduli complessi come ad esempio l'ALU e il registro dei Flag.
 
-Fare una spiegazione dei '138, 
+### I 74LS138
 
-	• Ogni 138 ha 3 input e 3 Enable; sfruttando i 3 input e uno dei 3 Enable piloto 4 DEMUX con solo 8 segnali in uscita dalla ROM3.
-	• Due 138 sono dedicati ai segnali Read
-	• Due 138 sono dedicati ai segnali Write
+Oltre all'incremento naturale dovuto al maggior numero di EEPROM utilizzate, una serie di 3-Line To 8-Line Decoders/Demultiplexers <a href = "https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target = "_blank">74LS138</a> permette di gestire fino a 15 segnali con solo 4 linee in uscita da una singola EEPROM.
 
-Attenzione che i 138 sono attivi LOW - Ma questo va bene , perché la maggior parte dei logici utilizza un segnale di ingresso allo stato logico bassoper poter essere attivata e questo a noi può fare comodo. praticamente 	• NB il 74LS138 viene utilizzato come sink e non source, dunque lo stato logico delle porte in uscita è normalmente 1
-		○ solo quella attiva è LO (e dunque il LED corrispondente collegato a Vcc si accende)
+Come visibile nello schema, ogni 138 presenta 3 pin di input e 3 pin di Enable; connettendo opportunamente i 3 pin di input e uno dei pin di Enable di ogni 138, è possibile pilotare ben 4 demultiplexer (per un totale di 30 segnali di output) usando solo gli 8 segnali in uscita da una singola EEPROM.
 
+Perché fino a 30 segnali e non 32? Il microcode prevede delle istruzioni nelle quali nessuno dei registri pilotati dai '138 devono essere attivi in quel momento, dunque almeno uno dei pin di output di ogni coppia di '138 dovrà essere scollegato.
 
-Notare inoltre che i 138 attivano un solo segnale alla volta virgola e dunque questo può andare benissimo per evitare situazioni di corto circuito attivando più linee di uscita o di ingresso contemporaneamente nei vari registri del computer .	• Dunque in questo modo ho la certezza di non poter attivare per errore due segnali Read   contemporaneamente, Mentre per la scrittura diverso , perché potrei dover scrivere su più registri contemporaneamente virgola e questo è assolutamente fattibile , vedi ad esempio il caso di a più h, aggiungere il link verso la pagina ALU
+Ad esempio, nel caso dell'NQSAP, un output 0000.0000 della prima EEPROM attiverà il pin D0 del primo dei '138 e il pin D0 del terzo '138: entrambi i pin D0 sono scollegati, dunque Sarà sufficiente mettere in output 0x00 sulla prima EEPROM per ottenere uno stato di disattivazione di tutti i registri pilotati dai '138.
 
+Le uscite dei '138 sono allo stato LO quando attive, circostanza che risulta molto comoda per la gestione dei segnali nei registri, in quanto la maggior parte di essi utilizza ingressi attivi allo stato LO (ad esempio i 74LS377, **da verificare**). Praticamente i '138 vengono utilizzati come sink e non source, dunque lo stato logico delle porte in uscita è normalmente HI:
+
+- una prima coppia di '138 è dedicata ai segnali Read;
+- una seconda coppia di '138 è dedicata ai segnali Write;
+- solo una porta per ogni coppia di registri può essere allo stato LO; tutte le altre si trovano allo stato HI.
+
+Si può notare nello schema che tutti i registri del computer sono indirizzati con i DEMUX; fa eccezione il registro H, il quale, come esposto anche nella pagina **link XYZ** della ALU, deve avere la possibilità di essere scritto parallelamente al registro A; tra l'altro, essendo il registro H un registro a scorrimento e necessitando di due segnali di ingresso (HL ed HR), una sua gestione mediante '138 sarebbe oltremodo complicata e risulta preferibile indirizzarlo mediante segnali dedicati in uscita da un'altra EEPROM.
+
+Poiché i 138 attivano un solo output alla volta, si ottiene una involontaria **ottimizzazione / semplificazione** nei segnali di lettura dei registri, perché non sarà mai possibile attivare più di un registro contemporaneamente, evitando così possibili cortocircuiti tra uscite allo stato HI e uscite allo stato LO: abbiamo la certezza di non poter attivare per errore due segnali Read contemporaneamente.
+
+Per la scrittura è diverso, perché potrei dover scrivere su più registri contemporaneamente  e questo non genererebbe contenzionso sul bus (cercare un esempio di isturzione che scrive in due registri contemporaneamente, ma non H)
 
 Altre 3 ROM hanno segnali che possono essere attivi anch allo stesso tempo.
+
+in altre parole, una prima EEPROM gestisce 4 '138, che pilotano:
+
+- i segnali di *lettura* di tutti i registri, eccetto il registro H;
+- i segnali di *scrittura* di tutti i registri, eccetto il registro H e il registro dei Flag.
+
 
 	• 15/06/2023: ho deciso di fare come Tom e mettere alla fine di ogni istruzione una microistruzione di reset così da poter anticipare la fine dell'istruzione e passare alla prossima senza dover aspettare tutti i cicli a vuoto.
 
@@ -156,7 +168,9 @@ Non capendo come potesse essere aggiornata una CPU, dal momento che si tratta di
 
 Ritornando alla dimensione delle EEPROM da utilizzare per il microcode, nei miei appunti trovo traccia di diverse revisioni, ad esempio:
 
-- mi servono EEPROM 28C64 per avere 256 (8 bit) istruzioni + 3 step + 2 flag, ma dimenticavo che avendo due ROM gemelle dovevo gestirne anche la selezione e dunque aggiungere un ulteriore bit, pertanto mi servirebbero delle 28C128;
+- come notavo anche nelal costruzione del modulo RAM in cui si indicavano le 256 istruzioni, notavo che servivano 28c64. ram/#mux-program-mode-e-run-modeerano necessari 8 bit di istruzioni, 3 di step e 2 di flag = 13 pin totali, portanto si rendevano necessarie delle 28C64… e avevo dimenticato che mi sarebbe servito un bit aggiuntivo per la selezione delle due EEPROM
+
+mi servono EEPROM 28C64 per avere 256 (8 bit) istruzioni + 3 step + 2 flag, ma dimenticavo che avendo due ROM gemelle dovevo gestirne anche la selezione e dunque aggiungere un ulteriore bit, pertanto mi servirebbero delle 28C128;
 - avrei potuto però ridurre il numero di istruzioni a 64, dunque mi sarebbero bastati 6 bit per indirizzarle e ridurre così il numero totale di indirizzi richiesti...
 - ... ma forse mi sarebbero serviti altri segnali di controllo oltre ai 16  disponibili in due ROM e dunque me ne sarebbe servita una terza... e dunque due bit di indirizzamento
 
