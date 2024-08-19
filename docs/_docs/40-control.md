@@ -21,34 +21,40 @@ La complessità dell'NQSAP è tale per cui i soli 16 segnali disponibili nella C
 
 ### I 74LS138
 
-Per poter gestire l'elevato numero di segnali richiesti, è stato aumentato il numero di EEPROM e sono stati inseriti dei 3-Line To 8-Line Decoders/Demultiplexers <a href="https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target="_blank">74LS138</a>.
+L'aumento del numero di EEPROM e l'inserimento di 3-Line To 8-Line Decoders/Demultiplexers <a href="https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target="_blank">74LS138</a> ha permesso di gestire l'elevato numero di segnali richiesti dall'NQSAP.
 
-Come visibile nello schema, ogni '138 presenta 3 pin di selezione e 3 pin di Enable; connettendo opportunamente i pin di ogni '138, è possibile pilotare ben quattro demultiplexer (per un totale di 30 segnali di output) usando solo gli 8 segnali in uscita da una singola EEPROM. In altre parole, i '138 fungono da *demoltiplicatori* e permettono di indirizzare un numero elevato di segnali a partire da un numero limitato di linee in ingresso.
+Come visibile nello schema, ogni DEMUX '138 presenta 8 pin di output, 3 pin di selezione e 3 pin di Enable; connettendo opportunamente i pin di selezione ed Enable, è possibile pilotare ben quattro '138 (per un totale di 32 segnali di output) usando solo 8 segnali in uscita da una singola EEPROM. In altre parole, i '138 fungono da *demoltiplicatori* e permettono di indirizzare un numero elevato di segnali a partire da un numero limitato di linee in ingresso.
 
-Perché fino a 30 segnali e non 32? Il microcode prevede delle microistruzioni nelle quali nessuno dei registri pilotati dai '138 deve essere attivo in quel momento, dunque almeno uno dei pin di output di ogni coppia di '138 dovrà essere scollegato. Ad esempio, nel caso dell'NQSAP, un output 0000.0000 della prima EEPROM attiverà il pin D0 del primo '138 e del terzo '138: entrambi i pin D0 sono scollegati, dunque sarà sufficiente mettere in output 0x00 sulla prima EEPROM per non attivare alcuno tra tutti i registri pilotati dai '138.
+Quando attive, le uscite dei '138 presentano uno stato LO; questa circostanza risulta molto comoda per la gestione dei segnali del computer, in quanto molti dei chip utilizzano ingressi di Enable invertiti (ad esempio i transceiver 74LS245 e i registri 74LS377).
 
-Le uscite dei '138 sono allo stato LO quando attive, circostanza che risulta molto comoda per la gestione dei segnali nei registri, in quanto molti dei chip utilizza ingressi negati (ad esempio 74LS245 e 74LS377). Praticamente i '138 vengono utilizzati come sink e non source, dunque lo stato logico delle porte in uscita è normalmente HI:
+I '138 presentano un solo output attivo alla volta; la configurazione dei pin di selezione ed Enable adottata nello schema permette di creare due coppie di '138, ognuna delle quali presenta un solo output attivo alla volta:
 
-- una prima coppia di '138 è dedicata ai segnali Read;
-- una seconda coppia di '138 è dedicata ai segnali Write;
-- solo una porta per ogni coppia di registri può essere allo stato LO; tutte le altre si trovano allo stato HI.
+- una coppia è dedicata ai segnali di lettura dai registri;
+- una coppia è dedicata ai segnali di scrittura sui registri.
 
-Si può notare nello schema che tutti i registri del computer sono indirizzati con i DEMUX; fa eccezione il registro H, il quale, come esposto anche nella pagina **link XYZ** della ALU, deve avere la possibilità di essere scritto parallelamente al registro A; tra l'altro, essendo il registro H un registro a scorrimento e necessitando di due segnali di ingresso (HL ed HR), una sua gestione mediante '138 sarebbe oltremodo complicata e risulta preferibile indirizzarlo mediante segnali dedicati in uscita da un'altra EEPROM.
+Un effetto collaterale positivo in questo tipo di gestione sta nel fatto che risulterà impossibile attivare più di un registro Read contemporaneamente, evitando così possibili involontari cortocircuiti tra uscite allo stato HI e uscite allo stato LO.
 
-Poiché i 138 attivano un solo output alla volta, si ottiene una involontaria **ottimizzazione / semplificazione** nei segnali di lettura dei registri, perché non sarà mai possibile attivare più di un registro contemporaneamente, evitando così possibili cortocircuiti tra uscite allo stato HI e uscite allo stato LO: abbiamo la certezza di non poter attivare per errore due segnali Read contemporaneamente.
+Il ragionamento per le scritture è diverso, perché è invece realmente necessario essere in grado di scrivere su più registri contemporaneamente. Un operazione di questo tipo non causa contenzioso sul bus ed è utilizzata, ad esempio, dall'istruzione di somma ADC, che prevede uno step che scrive contemporaneamente sul registro A e sul registro dei Flag.
 
-Per la scrittura è diverso, perché potrei dover scrivere su più registri contemporaneamente  e questo non genererebbe contenzionso sul bus (cercare un esempio di isturzione che scrive in due registri contemporaneamente, ma non H)
+Nello schema si può notare che tutti i registri del computer che *non hanno* la necessità di essere attivi contemporaneamente - tanto in lettura quanto in scrittura - sono indirizzati con i DEMUX.
 
-Altre 3 ROM hanno segnali che possono essere attivi anch allo stesso tempo.
+Sono invece indispensabili segnali di controllo provenienti direttamente dalle EEPROM in tre casi:
 
-in altre parole, una prima EEPROM gestisce 4 '138, che pilotano:
+- quando un registro presenta più segnali di ingresso che possono essere attivi contemporaneamente (ad esempio il registro dei [Flag](../flags/#componenti-e-funzionamento), oppure il registro [H](../alu/#il-registro-h));
+- quando è necessario poter scrivere su più registri contemporaneamente (ad esempio A e H, oppure Flag e A, oppure Flag e H*);
+- quando occorrono altri segnali di controllo totalmente indipendenti (ad esempio per lo Stack, oppure per la gestione del [Carry Input](../flags/#il-carry-e-i-registri-h-e-alu) per ALU ed H).
 
-- i segnali di *lettura* di tutti i registri, eccetto il registro H;
-- i segnali di *scrittura* di tutti i registri, eccetto il registro H e il registro dei Flag.
+\* In questo secondo caso, i segnali provenienti direttamente dalle EEPROM devono essere utilizzati per attivare i registri che *hanno* la necessità di poter essere attivi contemporaneamente ad un altro registro connesso ai '138 e che è dunque, per natura, mutualmente esclusivo rispetto agli altri registri pilotati dai '138.
+
+Riassumendo:
+
+- una prima EEPROM gestisce 4 '138, che pilotano i segnali di *lettura* di tutti i registri e i segnali di *scrittura* di tutti i registri, eccetto H, Flag ed altri segnali che devono essere totalmente indipendenti;
+- altre tre EEPROM gestiscono tutti gli altri segnali.
+
+Notare che i segnali di uscita dai '138 realmente utilizzabili sono 30 e non 32, perché il microcode deve prevedere delle microistruzioni nelle quali nessuno dei registri pilotati dai '138 debba essere attivo in quel momento, dunque almeno uno dei pin di output di ogni coppia di '138 dovrà essere scollegato. Ad esempio, nel caso dell'NQSAP, un output 0000.0000 della prima EEPROM attiverà il pin D0 del primo '138 e del terzo '138: entrambi i pin D0 sono scollegati, dunque sarà sufficiente mettere in output 0x00 sulla prima EEPROM per non attivare alcuno tra tutti i registri pilotati dai '138.
 
 
 	• 15/06/2023: ho deciso di fare come Tom e mettere alla fine di ogni istruzione una microistruzione di reset così da poter anticipare la fine dell'istruzione e passare alla prossima senza dover aspettare tutti i cicli a vuoto.
-
 
 ### tabella segnali
 
@@ -68,22 +74,7 @@ CC e CS per selezionare che tipo di Carry dobbiamo presentare all'ALU e ad H (qu
 
 • Se /LDR-ACTIVE viene attivato (LO), LDR-ACTIVE passa a HI e disattiva le ROM2 e ROM3 collegate via /OE.
 
-
 ## CONTROL LOGIC PART 1
-
-8-bit CPU control logic: Part 1
-Prima cosa che facciamo è leggere un comando e metterlo nell'Instruction Register, che tiene traccia del comando che stiamo eseguendo.
-
-• Prima fase: FETCH. Poiché la prima istruzione sta nell'indirizzo 0, devo mettere 0 dal Program Counter PC (comando CO esporta il PC sul bus) al Memory Address Register MAR (comando MI legge dal bus e setta l'indirizzo sulla RAM) così da poter indirizzare la RAM e leggere il comando.
-• Una volta che ho la RAM attiva all'indirizzo zero, copio il contenuto della RAM nell'Instruction Register IR passando dal bus (comando RO e comando II).
-• Poi incrementiamo il PC col comando Counter Enable CE (nel video successivo il CE viene inserito nella microistruzione con RO II).
-• Ora eseguiamo l'istruzione LDA 14, che prende il contenuto della cella 14 e lo scrive in A. Dunque poiché il valore 14 sono i 4 LSB del comando, sono i led gialli dell'IR e col comando Instruction Register Out IO ne copio il valore nel bus e poi, caricando MI, indirizzo la cella di memoria 14 che è quella che contiene il valore (28 nel mio caso) che esporto nel bus col comando RAM Out RO e che caricherò in A col comando AI. 
-
-• ADD 15 ha sempre una prima fase di Fetch, uguale per tutte le istruzioni, e poi come sopra il valore 15 è quello della cella 15 e dunque Instruction Register Out IO che posiziona sul bus i 4 LSb del comando ADD 15, poi MI così setto l'indirizzo 15 della RAM, il cui contenuto metto sul bus col comando RAM Out RO e lo carico in B con BI così avrò a disposizione la somma di A e B, che metto sul bus con EO e che ricarico in A con AI. 
-
-• Prossima istruzione all'indirizzo 3 è OUT che mette sul display il risultato della somma che avevo latchato in A. La prima fase di Fetch è uguale alle altre. Poi faccio AO per mettere A sul bus e OI. 
-
-## CONTROL LOGIC PART 2
 
 Le istruzioni sono fatte di più step, chiamati microistruzioni. La Control Logic deve settare correttamente la Control Word per ogni microistruzione così quando arriva il clock questa viene eseguita. Dobbiamo dunque sapere sempre quale istruzione stiamo eseguendo e a che step siamo. Ci serve un contatore per tracciare la microistruzione. Usiamo 74LS161 che può contare da 0 a 15.
 
@@ -122,40 +113,13 @@ A questo punto abbiamo nell'Instruction Register l'istruzione attualmente in ese
 E poiché CE può essere inserito nella stessa microistruzione di RO e II possiamo ridurre la lunghezza delle microistruzioni a un massimo di 5 (step 0-4).
 
 
+## Foirse interessante da tenere, espandere, collegare ad altri paragrafi
 
-## 8-bit CPU control logic: Part 3
-La fase Fetch è uguale per tutte le istruzioni, dunque istruzione XXXX e imposto solo gli step.
-Per LDA uso il valore 0001 e imposto gli step con le microistruzioni opportune.
-Per ADD uso il valore 0010 e imposto gli step con le microistruzioni opportune.
-Per OUT uso il valore 1110 e imposto gli step con le microistruzioni opportune.
+Praticamente ora abbiamo il contatore delle microistruzioni (T0-T4) e il contatore dell'istruzione (Instruction Register MSB). Posso creare una **combinational logic** che, a seconda dell'istruzione che ho caricato nell'Instruction Register + il T0/4 dove mi trovo mi permetta di avere in uscita i segnali corretti da applicare al computer. 
 
-Praticamente ora abbiamo il contatore delle microistruzioni (T0-T4) e il contatore dell'istruzione (Instruction Register MSB). Posso creare una combinational logic che, a seconda dell'istruzione che ho caricato nell'Instruction Register + il T0/4 dove mi trovo mi permetta di avere in uscita i segnali corretti da applicare al computer. Praticamente ho due fasi:
+Praticamente ho due fasi:
 • Fetch, in cui carico l'istruzione dalla RAM nell'Instruction Register
 • Dopo la fase di Fetch so "cosa devo fare", perché a questo punto ho l'istruzione nell'Instruction Register
-
-
-
-
-
-
-
-
-
-03/07/2022 Dunque programmo tutte le istruzioni e gli step: ma ho un problema.
-Ho programmato le due EEPROM seguendo la mia sequenza scritta sul quaderno, ma in corrispondenza dello step T2 vedevo ben 4 led accesi nel primo byte. Ho riprogrammato la EEPROM, ma mi sono accorto che toccandola gli output variavano in maniera piuttosto ballerina. In effetti era accaduto anche lo stesso nello step T1 e l'ho riprogrammata pensando ancora a un errore di programmazione, ma evidentemente accade che se tocco la EEPROM gli output cambiano e questo si riflette nell'esecuzione del "programma". Devo capire qual è il problema.
-Provo a usare il programmatore di TL866 per vedere se va bene e cancellarla. La diagnostica è OK.
-
-05/07/2022 ho provato a debuggare il programmatore "manuale" e stavolta il tutto funziona. Prima ho tolto i cavetti fissi e li ho sostituiti con jumper e poi ho provato anche a sostituire il dip-switch, ma non ho capito esattamente quando il tutto si è messo a funzionare. Fatto sta che ho provato a programmare anche un solo byte alla volta e poi a leggere la EEPROM sul TL866 per verificare se memorizzavo o no… a un certo punto ho avuto l'impressione che il problema fosse che lasciavo /OE a ground quando stavo programmando la EEPROM, ma la giornata precedente mi pareva di aver controllato più e più volte. Se ci penso, credo che siano i cavetti… devo provare a rimetterli giù.
-
-Ho fatto la sequenza passo-passo e tutto ha funzionato 😁😁😁… tranne che non si fermava all'HALT, dunque mi sono ricordato che c'era un discorso di clock negativo da dare al contatore delle microistruzioni e ora funziona… da approfondire come funziona
-
-
-
-
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-
 
 La realizzazione del comuter SAP mi ha permesso finalmente di capire cosa sia il microcode di un computer moderno.
 
@@ -164,15 +128,20 @@ Non capendo come potesse essere aggiornata una CPU, dal momento che si tratta di
 
 Ritornando alla dimensione delle EEPROM da utilizzare per il microcode, nei miei appunti trovo traccia di diverse revisioni, ad esempio:
 
+
+
+
 - come notavo anche nelal costruzione del modulo RAM in cui si indicavano le 256 istruzioni, notavo che servivano 28c64. ram/#mux-program-mode-e-run-modeerano necessari 8 bit di istruzioni, 3 di step e 2 di flag = 13 pin totali, portanto si rendevano necessarie delle 28C64… e avevo dimenticato che mi sarebbe servito un bit aggiuntivo per la selezione delle due EEPROM
 
 mi servono EEPROM 28C64 per avere 256 (8 bit) istruzioni + 3 step + 2 flag, ma dimenticavo che avendo due ROM gemelle dovevo gestirne anche la selezione e dunque aggiungere un ulteriore bit, pertanto mi servirebbero delle 28C128;
+
 - avrei potuto però ridurre il numero di istruzioni a 64, dunque mi sarebbero bastati 6 bit per indirizzarle e ridurre così il numero totale di indirizzi richiesti...
+
 - ... ma forse mi sarebbero serviti altri segnali di controllo oltre ai 16  disponibili in due ROM e dunque me ne sarebbe servita una terza... e dunque due bit di indirizzamento
 
 Posso sicuramente dire che avevo le idee ancora confuse.
 
-## ring counter
+## Ring Counter
 
 • Ring Counter. Vedi spiegazione per resettare in maniera sincrona il 74LS161 sulla pagina dei chip
 	• Praticamente usando il '161:
@@ -192,7 +161,7 @@ CEP e CET sono a +Vcc
 
 ## Instruction Register
 
-24/08/2022
+Per poter emulare le istruzioni del 6502, 
 	• Devo aumentare il numero di linee da 4 a 8 verso la Control Logic
 	• 25/08/2022 In realtà l'ho portato a 6 in modo da risparmiare qualche linea (però ho sempre un buon numero, 2^6 = 64) di istruzioni possibili) e poter usare le EEPROM 28C64
 	• 14/06/2023 importante: ho deciso di seguire quanto fatto da TOM e poter avere 256 operazioni, dunque le linee sono sicuramente:
@@ -428,3 +397,4 @@ Altre referenze Tom Nisbet per Flags	• Question for all 74ls181 alu people on 
 ## TO DO
 
 - aggiornare lo schema Kicad con le le bar a 8 segmenti e aggiornare questa pagina con lo schema aggiornato
+- Evidenziare la nomenclatura dei segnali da fare nella pagina della control logic : l'approccio di ben era centri con rispetto al modulo , mentre l'approccio del computer NQSAP è relativo al computer nella sua interezza
