@@ -9,13 +9,13 @@ excerpt: "Control Logic del BEAM computer"
 
 [![Schema della Control Logic dell'NQSAP](../../assets/control/40-control-logic-schema-nqsap.png "Schema logico della Control Logic dell'NQSAP"){:width="100%"}](../../assets/control/40-control-logic-schema-nqsap.png)
 
-*Schema logico della Control Logic dell'NQSAP, leggermente modificato al solo scopo di migliorarne la leggibilità.*
+*Schema della Control Logic dell'NQSAP, leggermente modificato al solo scopo di migliorarne la leggibilità.*
 
-Per confronto, affianchiamo anche lo schema del SAP computer di Ben Eater.
+Per confronto, affianchiamo anche lo schema della Control Logic del SAP computer di Ben Eater.
 
 [![Schema della Control Logic del SAP computer](../../assets/control/40-control-logic-schema-SAP.png "Schema logico della Control Logic del SAP computer"){:width="100%"}](../../assets/control/40-control-logic-schema-SAP.png)
 
-*Schema logico della Control Logic del SAP computer.*
+*Schema della Control Logic del SAP computer.*
 
 Il numero maggiore di EEPROM dell'NQSAP indica chiaramente la disponibilità di un numero ben maggiore di segnali di controllo rispetto a quelli disponibili nel SAP Computer. La complessità dell'NQSAP e del BEAM computer è tale per cui i 16 segnali del SAP non sarebbero sufficienti per pilotare moduli complessi come ad esempio l'ALU e il registro dei Flag.
 
@@ -418,20 +418,12 @@ Altre referenze Tom Nisbet per Flags	• Question for all 74ls181 alu people on 
 
 ## Note
 
-Attenzione : nello schema cè una led bar collegata al ring counter, Una led bar collegata alle uscite a - quattro a 11del bass delle rom, ma probabilmente qui manca un pezzettino di led bar per arrivare ai 12 indirizzi totaliindirizzatidai 12 pine in più manca la led bar del registro delle istruzioni
-
-
-Invece dei più comuni dip-switch, ho utilizzato dei comodissimi Rocker Switch ("a bilanciere") come quelli in figura; si trovano facilmente presso i distributori di <a href="https://us.rs-online.com/product/te-connectivity/5435640-5/70156004/" target="_blank">materiale elettronico</a>. Notare che i pin originali sono piuttosto corti e non fissano correttamente lo switch alla breadboard, pertanto ho aggiunto uno zoccolo per circuiti integrati.
-
-[![Rocker Switch](../../assets/ram/20-ram-rocker.png "Rocker Switch"){:width="33%"}](../../assets/ram/20-ram-rocker.png)
-
-*Rocker Switch.*
+- Attenzione : nello schema cè una led bar collegata al ring counter, Una led bar collegata alle uscite a - quattro a 11del bass delle rom, ma probabilmente qui manca un pezzettino di led bar per arrivare ai 12 indirizzi totaliindirizzatidai 12 pine in più manca la led bar del registro delle istruzioni
+- Il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Come descritto in maggior dettaglio nella sezione riservate al microcode, con soli 8 step non sarebbe stato possibile emulare alcune delle istruzioni del 6502, come quelle di salto relativo ed altre. Questa è in realtà una differenza architetturale più legata alla Control Logic, però l’impatto principale sul numero di step disponibili si riflette in particolar modo sull’ALU ed ha dunque sicuramente senso citarla in questa sezione.
 
 ## Link utili
 
 - I video di Ben Eater che descrivono la <a href = "https://eater.net/8bit/control" target = "_blank">Control Logic e il microcode</a>.
-
-Il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Come descritto in maggior dettaglio nella sezione riservate al microcode, con soli 8 step non sarebbe stato possibile emulare alcune delle istruzioni del 6502, come quelle di salto relativo ed altre. Questa è in realtà una differenza architetturale più legata alla Control Logic, però l’impatto principale sul numero di step disponibili si riflette in particolar modo sull’ALU ed ha dunque sicuramente senso citarla in questa sezione.
 
 ## TO DO
 
