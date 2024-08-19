@@ -25,7 +25,6 @@ Peraltro il registroha del computer NQSAP ed è del computer be AM sono molto si
 
 [![Schema del Registro A del BEAM computer](../../assets/alu/45-a-beam-schema.png "Schema del Registro A del BEAM computer"){:width="100%"}](../../assets/alu/45-a-beam-schema.png)
 
-
 ## L'ALU dell'NQSAP
 
 Tra le caratteristiche che spiccavano nello schema dell'ALU dell'NQSAP, notavo soprattutto un numero elevato di chip - tra i quali gli Shift Register 74LS194 - e un modo particolare di indirizzare i '181, che erano "strettamente legati" all'istruzione presente nell'Instruction Register della [Control Logic](../control). Anche il legame con la Control Logic è stato tra i più complessi da analizzare e comprendere, ma quello con il modulo dei Flag non è meno importante e la sua comprensione è stata altrettanto difficile: ad ogni operazione dell'ALU (e non solo) corrisponde infatti un'azione sul registro dei Flag.

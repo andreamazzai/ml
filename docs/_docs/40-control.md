@@ -5,9 +5,7 @@ excerpt: "Control Logic del BEAM computer"
 ---
 [![Control Logic del BEAM computer](../../assets/control/40-beam-control.png "Control Logic del BEAM computer"){:width="100%"}](../../assets/control/40-beam-control.png)
 
-**PLACEHOLDER**
-
-Attenzione : nello schema cè una led bar collegata al ring counter, Una led bar collegata alle uscite a - quattro a 11del bass delle rom, ma probabilmente qui manca un pezzettino di led bar per arrivare ai 12 indirizzi totaliindirizzatidai 12 pine in più manca la led bar del registro delle istruzioni
+**WORK IN PROGRESS**
 
 [![Schema della Control Logic dell'NQSAP](../../assets/control/40-control-logic-schema-nqsap.png "Schema logico della Control Logic dell'NQSAP"){:width="100%"}](../../assets/control/40-control-logic-schema-nqsap.png)
 
@@ -27,11 +25,9 @@ Oltre all'incremento naturale dovuto al maggior numero di EEPROM utilizzate, una
 
 Come visibile nello schema, ogni 138 presenta 3 pin di input e 3 pin di Enable; connettendo opportunamente i 3 pin di input e uno dei pin di Enable di ogni 138, è possibile pilotare ben 4 demultiplexer (per un totale di 30 segnali di output) usando solo gli 8 segnali in uscita da una singola EEPROM.
 
-Perché fino a 30 segnali e non 32? Il microcode prevede delle istruzioni nelle quali nessuno dei registri pilotati dai '138 devono essere attivi in quel momento, dunque almeno uno dei pin di output di ogni coppia di '138 dovrà essere scollegato.
+Perché fino a 30 segnali e non 32? Il microcode prevede delle microistruzioni nelle quali nessuno dei registri pilotati dai '138 deve essere attivo in quel momento, dunque almeno uno dei pin di output di ogni coppia di '138 dovrà essere scollegato. Ad esempio, nel caso dell'NQSAP, un output 0000.0000 della prima EEPROM attiverà il pin D0 del primo '138 e del terzo '138: entrambi i pin D0 sono scollegati, dunque sarà sufficiente mettere in output 0x00 sulla prima EEPROM per non attivare alcuno tra tutti i registri pilotati dai '138.
 
-Ad esempio, nel caso dell'NQSAP, un output 0000.0000 della prima EEPROM attiverà il pin D0 del primo dei '138 e il pin D0 del terzo '138: entrambi i pin D0 sono scollegati, dunque Sarà sufficiente mettere in output 0x00 sulla prima EEPROM per ottenere uno stato di disattivazione di tutti i registri pilotati dai '138.
-
-Le uscite dei '138 sono allo stato LO quando attive, circostanza che risulta molto comoda per la gestione dei segnali nei registri, in quanto la maggior parte di essi utilizza ingressi attivi allo stato LO (ad esempio i 74LS377, **da verificare**). Praticamente i '138 vengono utilizzati come sink e non source, dunque lo stato logico delle porte in uscita è normalmente HI:
+Le uscite dei '138 sono allo stato LO quando attive, circostanza che risulta molto comoda per la gestione dei segnali nei registri, in quanto molti dei chip utilizza ingressi negati (ad esempio 74LS245 e 74LS377). Praticamente i '138 vengono utilizzati come sink e non source, dunque lo stato logico delle porte in uscita è normalmente HI:
 
 - una prima coppia di '138 è dedicata ai segnali Read;
 - una seconda coppia di '138 è dedicata ai segnali Write;
@@ -420,9 +416,23 @@ Altre referenze Tom Nisbet per Flags	• Question for all 74ls181 alu people on 
 
 *Schema del modulo Control Logic.*
 
+## Note
+
+Attenzione : nello schema cè una led bar collegata al ring counter, Una led bar collegata alle uscite a - quattro a 11del bass delle rom, ma probabilmente qui manca un pezzettino di led bar per arrivare ai 12 indirizzi totaliindirizzatidai 12 pine in più manca la led bar del registro delle istruzioni
+
+
+Invece dei più comuni dip-switch, ho utilizzato dei comodissimi Rocker Switch ("a bilanciere") come quelli in figura; si trovano facilmente presso i distributori di <a href="https://us.rs-online.com/product/te-connectivity/5435640-5/70156004/" target="_blank">materiale elettronico</a>. Notare che i pin originali sono piuttosto corti e non fissano correttamente lo switch alla breadboard, pertanto ho aggiunto uno zoccolo per circuiti integrati.
+
+[![Rocker Switch](../../assets/ram/20-ram-rocker.png "Rocker Switch"){:width="33%"}](../../assets/ram/20-ram-rocker.png)
+
+*Rocker Switch.*
+
 ## Link utili
 
 - I video di Ben Eater che descrivono la <a href = "https://eater.net/8bit/control" target = "_blank">Control Logic e il microcode</a>.
 
-
 Il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Come descritto in maggior dettaglio nella sezione riservate al microcode, con soli 8 step non sarebbe stato possibile emulare alcune delle istruzioni del 6502, come quelle di salto relativo ed altre. Questa è in realtà una differenza architetturale più legata alla Control Logic, però l’impatto principale sul numero di step disponibili si riflette in particolar modo sull’ALU ed ha dunque sicuramente senso citarla in questa sezione.
+
+## TO DO
+
+- aggiornare lo schema Kicad con le le bar a 8 segmenti e aggiornare questa pagina con lo schema aggiornato
