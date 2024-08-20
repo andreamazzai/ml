@@ -19,24 +19,24 @@ Per confronto, affianchiamo anche lo schema della Control Logic del SAP computer
 
 La complessità dell'NQSAP è tale per cui i soli 16 segnali disponibili nella Control Logic del SAP non sarebbero stati sufficienti per pilotare moduli complessi come ad esempio l'ALU e il registro dei Flag; in conseguenza di questo, diventava necessario ampliare in maniera considerevole il numero di linee di controllo utilizzabili.
 
-### I 74LS138
+### I 74LS138 per la gestione dei segnali
 
-L'aumento del numero di EEPROM e l'inserimento di 3-Line To 8-Line Decoders/Demultiplexers <a href="https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target="_blank">74LS138</a> ha permesso di gestire l'elevato numero di segnali richiesti dall'NQSAP.
+L'aumento del numero di EEPROM e l'inserimento di quattro 3-Line To 8-Line Decoders/Demultiplexers <a href="https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target="_blank">74LS138</a> (DEMUX) ha permesso di gestire l'elevato numero di segnali richiesti dall'NQSAP.
 
-Come visibile nello schema, ogni DEMUX '138 presenta 8 pin di output, 3 pin di selezione e 3 pin di Enable; connettendo opportunamente i pin di selezione ed Enable, è possibile pilotare ben quattro '138 (per un totale di 32 segnali di output) usando solo 8 segnali in uscita da una singola EEPROM. In altre parole, i '138 fungono da *demoltiplicatori* e permettono di indirizzare un numero elevato di segnali a partire da un numero limitato di linee in ingresso.
+Come visibile nello schema, ogni '138 presenta 8 pin di output, 3 pin di selezione e 3 pin di Enable; connettendo opportunamente i pin di selezione ed Enable, è possibile pilotare ben quattro '138 (per un totale di 32 segnali di output) usando solo 8 segnali in uscita da una singola EEPROM. In altre parole, i '138 fungono da *demoltiplicatori* e permettono di indirizzare un numero elevato di segnali a partire da un numero limitato di linee in ingresso.
 
-Quando attive, le uscite dei '138 presentano uno stato LO; questa circostanza risulta molto comoda per la gestione dei segnali del computer, in quanto molti dei chip utilizzano ingressi di Enable invertiti (ad esempio i transceiver 74LS245 e i registri 74LS377).
+Quando attive, le uscite dei '138 presentano uno stato LO; questa circostanza risulta molto comoda per la gestione dei segnali del computer, in quanto molti dei chip presenti nei vari moduli utilizzano ingressi di Enable invertiti (ad esempio i transceiver 74LS245 e i registri 74LS377).
 
 I '138 presentano un solo output attivo alla volta; la configurazione dei pin di selezione ed Enable adottata nello schema permette di creare due coppie di '138, ognuna delle quali presenta un solo output attivo alla volta:
 
-- una coppia è dedicata ai segnali di lettura dai registri;
-- una coppia è dedicata ai segnali di scrittura sui registri.
+- una coppia dedicata ai segnali di lettura dai registri;
+- una coppia dedicata ai segnali di scrittura sui registri.
 
-Un effetto collaterale positivo in questo tipo di gestione sta nel fatto che risulterà impossibile attivare più di un registro Read contemporaneamente, evitando così possibili involontari cortocircuiti tra uscite allo stato HI e uscite allo stato LO.
+Un effetto collaterale positivo in questo tipo di gestione sta nel fatto che risulterà impossibile attivare più di un registro Read contemporaneamente, evitando così possibili involontari cortocircuiti tra uscite allo stato HI e uscite allo stato LO di moduli diversi.
 
 Il ragionamento per le scritture è diverso, perché è invece realmente necessario essere in grado di scrivere su più registri contemporaneamente. Un operazione di questo tipo non causa contenzioso sul bus ed è utilizzata, ad esempio, dall'istruzione di somma ADC, che prevede uno step che scrive contemporaneamente sul registro A e sul registro dei Flag.
 
-Nello schema si può notare che tutti i registri del computer che *non hanno* la necessità di essere attivi contemporaneamente - tanto in lettura quanto in scrittura - sono indirizzati con i DEMUX.
+Nello schema si può notare che tutti i registri del computer che *non hanno tra loro* la necessità di essere attivi contemporaneamente - tanto in lettura quanto in scrittura - sono indirizzati con i DEMUX.
 
 Sono invece indispensabili segnali di controllo provenienti direttamente dalle EEPROM in tre casi:
 
@@ -44,17 +44,15 @@ Sono invece indispensabili segnali di controllo provenienti direttamente dalle E
 - quando è necessario poter scrivere su più registri contemporaneamente (ad esempio A e H, oppure Flag e A, oppure Flag e H*);
 - quando occorrono altri segnali di controllo totalmente indipendenti (ad esempio per lo Stack, oppure per la gestione del [Carry Input](../flags/#il-carry-e-i-registri-h-e-alu) per ALU ed H).
 
-\* In questo secondo caso, i segnali provenienti direttamente dalle EEPROM devono essere utilizzati per attivare i registri che *hanno* la necessità di poter essere attivi contemporaneamente ad un altro registro connesso ai '138 e che è dunque, per natura, mutualmente esclusivo rispetto agli altri registri pilotati dai '138.
+\* In questo secondo caso, i segnali provenienti direttamente dalle EEPROM devono essere utilizzati per attivare i registri che *hanno* la necessità di poter essere attivi in contemporanea con un altro registro connesso ai '138 e che è dunque, per natura, mutualmente esclusivo rispetto agli altri registri pilotati dai '138.
 
 Riassumendo:
 
-- una prima EEPROM gestisce 4 '138, che pilotano i segnali di *lettura* di tutti i registri e i segnali di *scrittura* di tutti i registri, eccetto H, Flag ed altri segnali che devono essere totalmente indipendenti;
+- una prima EEPROM gestisce quattro DEMUX che pilotano i segnali di *lettura* di tutti i registri, i segnali di *scrittura* di tutti i registri (eccetto H e Flag) ed alcuni altri segnali di controllo;
 - altre tre EEPROM gestiscono tutti gli altri segnali.
 
-Notare che i segnali di uscita dai '138 realmente utilizzabili sono 30 e non 32, perché il microcode deve prevedere delle microistruzioni nelle quali nessuno dei registri pilotati dai '138 debba essere attivo in quel momento, dunque almeno uno dei pin di output di ogni coppia di '138 dovrà essere scollegato. Ad esempio, nel caso dell'NQSAP, un output 0000.0000 della prima EEPROM attiverà il pin D0 del primo '138 e del terzo '138: entrambi i pin D0 sono scollegati, dunque sarà sufficiente mettere in output 0x00 sulla prima EEPROM per non attivare alcuno tra tutti i registri pilotati dai '138.
+Notare che i segnali di uscita dei '138 realmente utilizzabili sono 30 e non 32, perché il microcode deve prevedere casi nei quali nessuno dei registri pilotati dai '138 debba essere attivo; in questa circostanza, uno dei pin di output di ogni coppia di '138 dovrà essere scollegato. Ad esempio, nel caso dell'NQSAP, un output 0000.0000 della prima EEPROM attiverà i pin D0 del primo '138 e del terzo '138: entrambi i pin sono scollegati, dunque sarà sufficiente mettere in output 0x00 sulla prima EEPROM per non attivare alcuno tra tutti i registri gestiti dai '138.
 
-
-	• 15/06/2023: ho deciso di fare come Tom e mettere alla fine di ogni istruzione una microistruzione di reset così da poter anticipare la fine dell'istruzione e passare alla prossima senza dover aspettare tutti i cicli a vuoto.
 
 ### tabella segnali
 
@@ -79,43 +77,23 @@ CC e CS per selezionare che tipo di Carry dobbiamo presentare all'ALU e ad H (qu
 Le istruzioni sono fatte di più step, chiamati microistruzioni. La Control Logic deve settare correttamente la Control Word per ogni microistruzione così quando arriva il clock questa viene eseguita. Dobbiamo dunque sapere sempre quale istruzione stiamo eseguendo e a che step siamo. Ci serve un contatore per tracciare la microistruzione. Usiamo 74LS161 che può contare da 0 a 15.
 
 NB: Dobbiamo settare la Control Logic tra un clock e l'altro… come a dire che la Control Logic deve "essere pronta" prima che l'istruzione venga eseguita: possiamo usare un NOT per invertire il clock e usare questo per gestire il 74LS161 della Control Logic.
-	• I registri sono aggiornati al Rising Edge del CLK, che corrisponde al Falling Edge del /CLK.
-	• Le microistruzioni sono aggiornate al Falling Edge del CLK, che corrisponde al Rising Edge del /CLK.
-	• CLK gestisce tutti i registri principali: PC, MAR, RAM, IR, A, B, Flag: al Rising Edge del CLK, avvengono le azioni di caricamento dei registri. Quando c'è il segnale CE Counter Enable attivo, il PC viene incrementato al Rising Edge e l'indirizzo viene aumentato di uno.
-	• /CLK gestisce il Ring Counter e di conseguenza la Control Logic: è sfasato di 180°, dunque al Falling Edge di CLK corrisponde il Rising Edge di /CLK
-		○ All'accensione del computer
-			§ PC è 0 e RC (Ring Counter) è 0
-			§ la CL presenta CO|MI in uscita
-			§ il 245 del PC è attivo in output
-			§ il 245 del MAR è attivo in input.
-		○ Arriva il Rising Edge del CLK
-			§ il FF 173 del MAR carica (MI) l'indirizzo di memoria presentatogli (CO) dal PC
-		○ Arriva il Falling Edge del CLK, che corrisponde al Rising Edge del /CLK
-			§ RC si incrementa e la CL presenta la microistruzione successiva RO|II|CE
-				□ la RAM è attiva in output
-				□ IR è attivo in input
-				□ PC è attivato per contare
-		○ Arriva il Rising Edge del CLK
-			§ il FF 173 dell'IR carica (II) il valore presentato dalla cella di RAM (RO) indirizzata dal MAR
-			§ PC si incrementa (CE)
-		○ Arriva il Falling Edge del CLK, che corrisponde al Rising Edge del /CLK
-			§ RC si incrementa e la CL presenta la microistruzione successiva IO|AI
-				□ IR mette in output
-					® i 4 MSB che vanno ad indirizzare le EEPROM della CL
-					® i 4 LSb che vanno sul bus; immaginiamo ad esempio istruzione immediata LDA #$05
-				□ il 245 del Registro A è attivo in input
-		○ Arriva il Rising Edge del CLK
-			§ il FF 173 del Registro A carica (AI) il valore presentato sul bus (IO) dall'Instruction Register 
+
+- I registri sono aggiornati al Rising Edge del CLK, che corrisponde al Falling Edge del /CLK. CLK gestisce tutti i registri principali: PC, MAR, RAM, IR, A, B, Flag: al Rising Edge del CLK, avvengono le azioni di caricamento dei registri. Quando c'è il segnale CE Counter Enable attivo, il PC viene incrementato al Rising Edge e l'indirizzo viene aumentato di uno.
+
+- Le microistruzioni sono aggiornate al Falling Edge del CLK, che corrisponde al Rising Edge del /CLK.
+
+• /CLK gestisce il Ring Counter e di conseguenza la Control Logic: è sfasato di 180°, dunque al Falling Edge di CLK corrisponde il Rising Edge di /CLK
 
 Il 74LS138 è un decoder che può prendere i 3 bit (ce ne bastano 3 per gestire 8 cicli, visto che gli step delle microistruzioni sono al massimo 6) e convertirli in singoli bit che rappresentano lo step della microistruzione corrente e poi uno di questi, l'ultimo, che resetta il 74LS161 in modo da risparmiare i cicli di clock inutilizzati.
 
 A questo punto abbiamo nell'Instruction Register l'istruzione attualmente in esecuzione e nel contatore lo step, che rappresenta la microistruzione. Possiamo usare una Combinational Logic per settare i nostri segnali da abilitare per ogni microistruzione. Per esempio quando siamo in T0, che è la prima microistruzione, prendiamo l'uscita del 74LS138, la neghiamo con un NOT per portarla positiva e attiviamo CO e MI e poi Clock. Alla successiva attiviamo RO e II  e poi Clock e alla successiva attiviamo CE e poi Clock.
 E poiché CE può essere inserito nella stessa microistruzione di RO e II possiamo ridurre la lunghezza delle microistruzioni a un massimo di 5 (step 0-4).
 
+15/06/2023: ho deciso di fare come Tom e mettere alla fine di ogni istruzione una microistruzione di reset così da poter anticipare la fine dell'istruzione e passare alla prossima senza dover aspettare tutti i cicli a vuoto. Spiegare il legame con il funzionamento del 161 , che permette di caricare zero sui suoi ingressi, ed è il metodo che viene utilizzato per resettare il ring counter e riportarlo allo step t zero.
 
-## Foirse interessante da tenere, espandere, collegare ad altri paragrafi
+## Forse interessante da tenere, espandere, collegare ad altri paragrafi
 
-Praticamente ora abbiamo il contatore delle microistruzioni (T0-T4) e il contatore dell'istruzione (Instruction Register MSB). Posso creare una **combinational logic** che, a seconda dell'istruzione che ho caricato nell'Instruction Register + il T0/4 dove mi trovo mi permetta di avere in uscita i segnali corretti da applicare al computer. 
+Praticamente ora abbiamo il contatore delle microistruzioni (T0-T4) e il contatore dell'istruzione (Instruction Register MSB). Posso creare una **combinational logic** che, a seconda dell'istruzione che ho caricato nell'Instruction Register + il T0/4 dove mi trovo mi permetta di avere in uscita i segnali corretti da applicare al computer.
 
 Praticamente ho due fasi:
 • Fetch, in cui carico l'istruzione dalla RAM nell'Instruction Register
@@ -127,9 +105,6 @@ La realizzazione del comuter SAP mi ha permesso finalmente di capire cosa sia il
 Non capendo come potesse essere aggiornata una CPU, dal momento che si tratta di un componente non programmabile virgola non riuscivo a comprendere come fosse possibile arginare i problemi di sicurezza; con il microcode ho capito
 
 Ritornando alla dimensione delle EEPROM da utilizzare per il microcode, nei miei appunti trovo traccia di diverse revisioni, ad esempio:
-
-
-
 
 - come notavo anche nelal costruzione del modulo RAM in cui si indicavano le 256 istruzioni, notavo che servivano 28c64. ram/#mux-program-mode-e-run-modeerano necessari 8 bit di istruzioni, 3 di step e 2 di flag = 13 pin totali, portanto si rendevano necessarie delle 28C64… e avevo dimenticato che mi sarebbe servito un bit aggiuntivo per la selezione delle due EEPROM
 
@@ -398,3 +373,5 @@ Altre referenze Tom Nisbet per Flags	• Question for all 74ls181 alu people on 
 
 - aggiornare lo schema Kicad con le le bar a 8 segmenti e aggiornare questa pagina con lo schema aggiornato
 - Evidenziare la nomenclatura dei segnali da fare nella pagina della control logic : l'approccio di ben era centri con rispetto al modulo , mentre l'approccio del computer NQSAP è relativo al computer nella sua interezza
+- non trovo riferimenti ad HL e HR in nessuna pagina; Poiché in questa pagina sto parlando del fatto che per alcuni registri sono necessari più segnali di controllo , come nel caso del registro h virgola che necessita di HLanche di HR volevo fare un link al registro h nella pagina del modulo ALU , ma vedo che anche lì non cè nessuna indicazione di HL anche di HR ("quando un registro presenta più segnali di ingresso che possono essere attivi contemporaneamente (ad esempio il registro dei Flag, oppure il registro H");)
+

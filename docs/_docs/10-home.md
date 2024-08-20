@@ -110,7 +110,7 @@ Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 - Includere appunti su acquisto dei materiali, cavi utilizzati
 - problemi di alimentazione
 - lkink al video dell'ALU
-- Controllare dove ho scritto computer BEAM oppure BEAM computer
+- Controllare dove ho scritto computer BEAM oppure BEAM computer e SAP e NQSAP su tutte le pagine e sugli schemi elettrici
 - non ho utilizzato HC perché... bla bla bla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla bla
 - sistemare il paragrafo BENEFICI
 - cosa non è stato emulato? IRQ, BCD
