@@ -70,7 +70,7 @@ A luglio 2023 ho cercato di ricomporre tutto ciò che avevo appreso e ho provato
 
 La fase costruttiva è iniziata a ottobre 2023 e si è conclusa nei primi giorni di maggio 2024. Il risultato è quello visibile in foto.
 
-In queste pagine si trova la documentazione dettagliata dei moduli, corredata da una serie di note e appunti.
+In queste pagine si trovano analisi dei moduli dell'NQSAP, quanto ho imparato ed applicato nella realizzazione del BEAM, differenze tra i due sistemi, note, appunti e approfondimenti.
 
 [![BEAM Breadboard Computer](assets/beam.png "BEAM breadboard computer"){:width="66%"}](assets/beam.png)
 

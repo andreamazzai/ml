@@ -11,10 +11,36 @@ excerpt: "Control Logic del BEAM computer"
 
 *Schema della Control Logic dell'NQSAP, leggermente modificato al solo scopo di migliorarne la leggibilità.*
 
-Per confronto, affianchiamo anche lo schema della Control Logic del SAP computer di Ben Eater.
+In questa pagina si analizza la Control Logic dell'NQSAP, si evidenziano le differenze con la Control Logic del SAP computer di Ben Eater e si fanno approfondimenti sugli argomenti che avevo trovato più ostici e più interessanti.
+
+In generale, la gestione delle istruzioni consta di tre capisaldi: registro delle istruzioni, ring counter e microcode.
+
+Nell'NQSAP e nel BEAM l'Instruction Register (IR) fa parte dello schema della Control Logic, mentre per il SAP Ben Eater aveva separato i due schemi.
+
+Una prima, fondamentale differenza tra IR del sap ed IR dell'NQSAP e del BEAM è che il primo presentava istruzioni lunghe un byte che al loro interno includevano sia l'istruzione stessa sia l'operando:
+
+- i 4 bit meno significativi per l'operando;
+- i 4 bit più significativi per l'istruzione.
+
+Nell'immagine seguente, tratta dal video <a href="https://youtu.be/JUVt_KYAp-I?t=1837" target="_blank">Reprogramming CPU microcode with an Arduino</a> di Ben Eater, si vede come ogni byte di un semplice programma di somma e sottrazione includa sia l'operazione sia l'operando:
+
+[![Somma e sottrazione nel SAP](../../assets/control/40-lda-15-add-14.png "Somma e sottrazione nel SAP"){:width="66%"}]
+
+| Mnemonico | Indirizzo | Istruzione.Operando |
+| -         | -         | -                   |
+| LDA 15    | 0000      |       0001.1111     |
+| ADD 15    | 0001      |       0010.1110     |
+| SUB 13    | 0010      |       0011.1101     |
+| OUT       | 0011      |       1110.0000     |
+| HLT       | 0100      |       1111.0000     |
+|           |    .      |                     |
+|           |    .      |                     |
+|           |    .      |                     |
+| 7         |    .      |       0000.0111     |
+| 6         |    .      |       0000.0110     |
+| 5         |    .      |       0000.0101     |
 
 [![Schema della Control Logic del SAP computer](../../assets/control/40-control-logic-schema-SAP.png "Schema logico della Control Logic del SAP computer"){:width="100%"}](../../assets/control/40-control-logic-schema-SAP.png)
-
 *Schema della Control Logic del SAP computer.*
 
 La complessità dell'NQSAP è tale per cui i soli 16 segnali disponibili nella Control Logic del SAP non sarebbero stati sufficienti per pilotare moduli complessi come ad esempio l'ALU e il registro dei Flag; in conseguenza di questo, diventava necessario ampliare in maniera considerevole il numero di linee di controllo utilizzabili.
@@ -53,8 +79,7 @@ Riassumendo:
 
 Notare che i segnali di uscita dei '138 realmente utilizzabili sono 30 e non 32, perché il microcode deve prevedere casi nei quali nessuno dei registri pilotati dai '138 debba essere attivo; in questa circostanza, uno dei pin di output di ogni coppia di '138 dovrà essere scollegato. Ad esempio, nel caso dell'NQSAP, un output 0000.0000 della prima EEPROM attiverà i pin D0 del primo '138 e del terzo '138: entrambi i pin sono scollegati, dunque sarà sufficiente mettere in output 0x00 sulla prima EEPROM per non attivare alcuno tra tutti i registri gestiti dai '138.
 
-
-### tabella segnali
+## Tabella segnali dell'NQSAP e del BEAM
 
 È forse utile fare qui una tabella cheriassume tutti i vari segnali utilizzati nel computer ?
 
@@ -135,6 +160,7 @@ Posso sicuramente dire che avevo le idee ancora confuse.
 CEP e CET sono a +Vcc
 
 ## Instruction Register
+
 
 Per poter emulare le istruzioni del 6502, 
 	• Devo aumentare il numero di linee da 4 a 8 verso la Control Logic
@@ -356,9 +382,19 @@ Altre referenze Tom Nisbet per Flags	• Question for all 74ls181 alu people on 
 	• How to add a decremental and incremental circuit to the ALU ? on reddit inspired the idea to drive the PC load line from the flags instead of running the flags through the microcode.
 	• Opcodes and Flag decoding circuit on reddit has a different approach to conditional jumps using hardware. Instead of driving the LOAD line of the PC, the circuit sits between the Instruction Register and the ROM and conditionally jams a NOP or JMP instruction to the microcode depending on the state of the flags. One interesting part of the design is that the opcodes of the jump instructions are arranged so that the flag of interest can be determined by bits from the IR. NQSAP already did something similar with the ALU select lines, so the concept was used again for the conditional jump select lines.
 
-[![Schema del modulo Control Logic](../../assets/control/40-control-logic-schema.png "Schema del modulo Control Logic"){:width="100%"}](../../assets/control/40-control-logic-schema.png)
+[![Schema della control logic del BEAM](../../assets/control/40-control-logic-schema.png "Schema della control logic del BEAM"){:width="100%"}](../../assets/control/40-control-logic-schema.png)
 
-*Schema del modulo Control Logic.*
+*Schema della control logic del BEAM.*
+
+## Differenze tra Moduli Flag dell'NQSAP e del BEAM
+
+La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato da Tom Nisbet nell'NQSAP. Una differenza sostanziale sta nell'Instruction Register, che è sviluppato in modalità bufferizzata, come fatto da Tom nell'NQSAP PCB per rimediare ai problemi di Glitching.
+
+[![Schema logico del modulo Flag del computer BEAM](../../assets/flags/30-flag-beam-schematics.png "Schema logico del modulo Flag del computer BEAM"){:width="100%"}](../../assets/flags/30-flag-beam-schematics.png)
+
+*Schema logico del modulo Flag del computer BEAM.*
+
+Come indicato anche nella pagina dell'ALU, bisogna notare che il computer NQSAP prevedeva solo 8 step per le microistruzioni. Poiché per emulare le istruzioni del 6502 di salto condizionale, di scorrimento / rotazione e di salto a subroutine servono più step, sul computer BEAM sono stati previsti 16 step.
 
 ## Note
 
@@ -374,4 +410,5 @@ Altre referenze Tom Nisbet per Flags	• Question for all 74ls181 alu people on 
 - aggiornare lo schema Kicad con le le bar a 8 segmenti e aggiornare questa pagina con lo schema aggiornato
 - Evidenziare la nomenclatura dei segnali da fare nella pagina della control logic : l'approccio di ben era centri con rispetto al modulo , mentre l'approccio del computer NQSAP è relativo al computer nella sua interezza
 - non trovo riferimenti ad HL e HR in nessuna pagina; Poiché in questa pagina sto parlando del fatto che per alcuni registri sono necessari più segnali di controllo , come nel caso del registro h virgola che necessita di HLanche di HR volevo fare un link al registro h nella pagina del modulo ALU , ma vedo che anche lì non cè nessuna indicazione di HL anche di HR ("quando un registro presenta più segnali di ingresso che possono essere attivi contemporaneamente (ad esempio il registro dei Flag, oppure il registro H");)
-
+- far notare che il led che mostra gli step sono 8+1 e non 16, furbata,
+- Ho aggiunto anche una barra a led per mostrare l'indirizzo correntemente In input sulle EEPROM

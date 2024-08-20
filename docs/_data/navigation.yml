@@ -16,12 +16,12 @@
     children:
       - title: "> Il computer BEAM"
         url: /
-      # - title: "Why?"
-      #   url: /docs/why/
-  - title: "COSTRUZIONE"
-    children:
       - title: "> Per iniziare"
         url: /docs/beginning/
+      # - title: "Why?"
+      #   url: /docs/why/
+  - title: "MODULI"
+    children:
       - title: "> Clock"
         url: /docs/clock/
       - title: "> RAM e MAR"
@@ -42,6 +42,8 @@
         url: /docs/stack/
       - title: "> Arduino Loader"
         url: /docs/loader/
+      - title: "> EEPROM Programmer"
+        url: /docs/eeprom-programmer/
   #     - title: "Ring Counter"
   #       url: /docs/ring-counter/
   #     - title: "Control"
