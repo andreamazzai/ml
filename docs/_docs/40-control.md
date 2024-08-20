@@ -74,7 +74,7 @@ Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF d
 
 ### Ring Counter
 
-Come indicato anche nella pagina dell'ALU, bisogna notare che il computer NQSAP prevedeva solo 8 step per le microistruzioni. Poiché per emulare le istruzioni del 6502 di salto condizionale, di scorrimento / rotazione e di salto a subroutine servono più step, sul computer BEAM sono stati previsti 16 step.
+Come indicato anche nella sezione [Differenze](.../alu/#differenze-tra-moduli-alu-dellnqsap-e-del-beam) della pagina dell'ALU, bisogna notare che il computer NQSAP prevedeva solo 8 step per le microistruzioni. Per emulare le istruzioni del 6502 di salto condizionale, di scorrimento / rotazione e di salto a subroutine servono più step, pertanto, sul computer BEAM ne sono stati previsti 16.
 
 ### I 74LS138 per la gestione dei segnali
 
