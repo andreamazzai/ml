@@ -11,34 +11,64 @@ excerpt: "Control Logic del BEAM computer"
 
 *Schema della Control Logic dell'NQSAP, leggermente modificato al solo scopo di migliorarne la leggibilità.*
 
-In questa pagina si analizza la Control Logic dell'NQSAP, si evidenziano le differenze con la Control Logic del SAP computer di Ben Eater e si fanno approfondimenti sugli argomenti che avevo trovato più ostici e più interessanti.
+In questa pagina si analizzano le Control Logic dell'NQSAP e del BEAM, si evidenziano le differenze con la Control Logic del SAP computer di Ben Eater e si fanno approfondimenti sugli argomenti che avevo trovato più ostici e più interessanti.
 
 In generale, la gestione delle istruzioni consta di tre capisaldi: registro delle istruzioni, ring counter e microcode.
 
-Nell'NQSAP e nel BEAM l'Instruction Register (IR) fa parte dello schema della Control Logic, mentre per il SAP Ben Eater aveva separato i due schemi.
+### Instruction Register
 
-Una prima, fondamentale differenza tra IR del sap ed IR dell'NQSAP e del BEAM è che il primo presentava istruzioni lunghe un byte che al loro interno includevano sia l'istruzione stessa sia l'operando:
+Nell'NQSAP e nel BEAM l'Instruction Register (IR) è incluso nello schema della Control Logic, mentre negli schemi del SAP l'IR era su un foglio separato.
 
-- i 4 bit meno significativi per l'operando;
-- i 4 bit più significativi per l'istruzione.
+L'Instruction Register del SAP presentava istruzioni lunghe un byte che al loro interno includevano sia l'istruzione stessa sia l'operando:
+
+- i 4 bit meno significativi erano riservatia all'operando;
+- i 4 bit più significativi erano dedicati all'istruzione.
 
 Nell'immagine seguente, tratta dal video <a href="https://youtu.be/JUVt_KYAp-I?t=1837" target="_blank">Reprogramming CPU microcode with an Arduino</a> di Ben Eater, si vede come ogni byte di un semplice programma di somma e sottrazione includa sia l'operazione sia l'operando:
 
-[![Somma e sottrazione nel SAP](../../assets/control/40-lda-15-add-14.png "Somma e sottrazione nel SAP"){:width="66%"}]
+![Somma e sottrazione nel SAP](../../assets/control/40-lda-15-add-14.png "Somma e sottrazione nel SAP"){:width="50%"}
+
+Ad esempio:
+
+- L'istruzione LDA 15 all'indirizzo di memoria 0000 è composta dai 4 bit MSB 0001 che nel microcode definiscono un'operazione di caricamento accumulatore e dai 4 bit LSB 1111 che indicano l'indirizzo di memoria 15 nel quale è presente il valore da caricare nell'accumulatore A.
+- L'istruzione ADD 14 all'indirizzo di memoria 1 è composta dai 4 bit MSB 0010 che nel microcode definiscono un'operazione di somma e dai 4 bit LSB 1110 che indicano l'indirizzo di memoria 14 nel quale è presente il valore da sommare al valore già presente nell'accumulatore A.
 
 | Mnemonico | Indirizzo | Istruzione.Operando |
 | -         | -         | -                   |
 | LDA 15    | 0000      |       0001.1111     |
-| ADD 15    | 0001      |       0010.1110     |
+| ADD 14    | 0001      |       0010.1110     |
 | SUB 13    | 0010      |       0011.1101     |
 | OUT       | 0011      |       1110.0000     |
 | HLT       | 0100      |       1111.0000     |
 |           |    .      |                     |
 |           |    .      |                     |
 |           |    .      |                     |
-| 7         |    .      |       0000.0111     |
-| 6         |    .      |       0000.0110     |
-| 5         |    .      |       0000.0101     |
+| 7         | 1101      |       0000.0111     |
+| 6         | 1110      |       0000.0110     |
+| 5         | 1111      |       0000.0101     |
+
+Una fondamentale differenza tra Instruction Register del SAP ed Instruction Register dell'NQSAP e del BEAM è che
+
+Il 6502 ha un set di istruzioni relativamente piccolo, composto da 56 istruzioni di base. Tuttavia, queste istruzioni possono essere utilizzate in diverse modalità di indirizzamento, il che porta il numero totale di combinazioni possibili a circa 150.
+
+Per poter gestire questo numero di istruzioni, l'opcode occuperà un intero byte e l'architettura del computer dovrà presentare istruzioni di lunghezza diversa:
+
+- un solo byte per le istruzioni con indirizzamento Implicito e Accumulatore, che non hanno dunque bisogno di opcode;
+- due o tre* byte per tutte le altre istruzioni che hanno bisogno di un operando nella forma di indirizzo di memoria o di valore assoluto.
+
+\* Notare che in un computer con 256 byte di RAM le modalità di indirizzamento con 3 byte non sono necesarie, perché un operando della lunghezza di un unico byte è in grado di indirizzare tutta la memoria del computer, come brevemente discusso anche nella sezione [Indirizzamenti](alu/#indirizzamenti) della pagina dedicata all'ALU.
+
+In conseguenza di questo:
+
+- Il bus tra IR e CL deve avere 8 bit
+- sono necessarie EEPROM 28C256 da 32K con 15 indirizzi:
+  - 8 per le istruzioni (256) ==> Instruction Register da 8 bit
+  - 4 per le microistruzioni (16)
+  - 2 per selezionare le ROM
+  - Ne resta uno libero e dunque teoricamente potrebbero essere sufficienti EEPROM da 128Kb, che però <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">non sono prodotte</a> con l'interfaccia parallela.
+
+Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF da 8 registri in cascata, così il primo viene aggiornato al normale caricamento dell'IR (che corrisponderebbe a T7 (step 1), ma causando un glitch sulla ROM)… invece di collegare il FF agli ingressi delle ROM, viene collegato a un altro FF che viene caricato col Falling Edge del CLK / Rising Edge del CLK, così le uscite delle ROM vengono aggiornate alla fine della microistruzione quando i segnali sono stabili 😁
+
 
 [![Schema della Control Logic del SAP computer](../../assets/control/40-control-logic-schema-SAP.png "Schema logico della Control Logic del SAP computer"){:width="100%"}](../../assets/control/40-control-logic-schema-SAP.png)
 *Schema della Control Logic del SAP computer.*
@@ -103,7 +133,9 @@ Le istruzioni sono fatte di più step, chiamati microistruzioni. La Control Logi
 
 NB: Dobbiamo settare la Control Logic tra un clock e l'altro… come a dire che la Control Logic deve "essere pronta" prima che l'istruzione venga eseguita: possiamo usare un NOT per invertire il clock e usare questo per gestire il 74LS161 della Control Logic.
 
-- I registri sono aggiornati al Rising Edge del CLK, che corrisponde al Falling Edge del /CLK. CLK gestisce tutti i registri principali: PC, MAR, RAM, IR, A, B, Flag: al Rising Edge del CLK, avvengono le azioni di caricamento dei registri. Quando c'è il segnale CE Counter Enable attivo, il PC viene incrementato al Rising Edge e l'indirizzo viene aumentato di uno.
+- I registri sono aggiornati al Rising Edge del CLK, che corrisponde al Falling Edge del /CLK. 
+CLK gestisce tutti i registri principali: PC, MAR, RAM, IR, A, B, Flag: al Rising Edge del CLK, avvengono le azioni di caricamento dei registri. 
+Quando c'è il segnale CE Counter Enable attivo, il PC viene incrementato al Rising Edge e l'indirizzo viene aumentato di uno.
 
 - Le microistruzioni sono aggiornate al Falling Edge del CLK, che corrisponde al Rising Edge del /CLK.
 
@@ -126,12 +158,14 @@ Praticamente ho due fasi:
 
 La realizzazione del comuter SAP mi ha permesso finalmente di capire cosa sia il microcode di un computer moderno.
 
-È piuttosto comune leggere ad esempio che è necessario aggiornare il bios dei server per indirizzare falle di sicurezza che sono state scoperte e che potrebbero essere utilizzate dagli hacker per puntini puntini puntini nuovo paragrafo
-Non capendo come potesse essere aggiornata una CPU, dal momento che si tratta di un componente non programmabile virgola non riuscivo a comprendere come fosse possibile arginare i problemi di sicurezza; con il microcode ho capito
+È piuttosto comune leggere ad esempio che è necessario aggiornare il bios dei server per indirizzare falle di sicurezza che sono state scoperte e che potrebbero essere utilizzate dagli hacker per ... 
+Non capendo come potesse essere aggiornata una CPU, dal momento che si tratta di un componente non programmabile , non riuscivo a comprendere come fosse possibile arginare i problemi di sicurezza; con il microcode ho capito
 
 Ritornando alla dimensione delle EEPROM da utilizzare per il microcode, nei miei appunti trovo traccia di diverse revisioni, ad esempio:
 
-- come notavo anche nelal costruzione del modulo RAM in cui si indicavano le 256 istruzioni, notavo che servivano 28c64. ram/#mux-program-mode-e-run-modeerano necessari 8 bit di istruzioni, 3 di step e 2 di flag = 13 pin totali, portanto si rendevano necessarie delle 28C64… e avevo dimenticato che mi sarebbe servito un bit aggiuntivo per la selezione delle due EEPROM
+- come notavo anche nelal costruzione del modulo RAM in cui si indicavano le 256 istruzioni, notavo che servivano 28c64. ram/#mux-program-mode-e-run-mode 
+
+erano necessari 8 bit di istruzioni, 3 di step e 2 di flag = 13 pin totali, portanto si rendevano necessarie delle 28C64… e avevo dimenticato che mi sarebbe servito un bit aggiuntivo per la selezione delle due EEPROM
 
 mi servono EEPROM 28C64 per avere 256 (8 bit) istruzioni + 3 step + 2 flag, ma dimenticavo che avendo due ROM gemelle dovevo gestirne anche la selezione e dunque aggiungere un ulteriore bit, pertanto mi servirebbero delle 28C128;
 
@@ -143,17 +177,18 @@ Posso sicuramente dire che avevo le idee ancora confuse.
 
 ## Ring Counter
 
-• Ring Counter. Vedi spiegazione per resettare in maniera sincrona il 74LS161 sulla pagina dei chip
+Vedi spiegazione per resettare in maniera sincrona il 74LS161 sulla pagina dei chip
 	• Praticamente usando il '161:
 		○ con /CLR, che è asincrono, faccio il reset "hardware"
 			§ 17/06/2023 Tom segnala che questo segnale asincrono non è invece ideale per pulire il Ring Counter utilizzando il microcode perché, essendo appunto asincrono, non sarebbe gestito dal clock: infatti, non appena attivato, andrebbe a resettare il ciclo di microistruzione esattamente all'inizio invece che quando arriva il impulso di clock!
 			§ 04/07/2023 Va invece benissimo per fare il reset del Program Counter 😁 anche col clock stoppato
 			§ A dire il vero si potrebbe comunque utilizzare questo segnale, ma significherebbe dover aggiungere una microistruzione dedicata al reset alla fine di tutte le altre microistruzioni. Utilizzando una modalità di reset sincrona su questo chip si potrebbe invece aggiungere il segnale di reset all'ultima microistruzione del ciclo.
 		○ con il /LOAD ("N") e tutti i pin di input a 0, il Ring Counter si resetta in sincrono con il /CLK 😁. Assomiglia un po' al JUMP del Program Counter. Notare il /CLK, che è invertito rispetto al CLK principale e che dunque permette di lasciar terminare l'esecuzione della microistruzione corrente prima di fare il LOAD.
-	• Importante: decidere se fare 8 step (3 bit) o 16 step (4 bit) --> 14/06/2023 ho deciso di passare a 16 step
+
 		○ questo forse significa che poiché il '138 è un decoder 3-to-8 devo metterne due "in cascata"? Posso farlo?
-		○ Nell'NQSAP-PCB Tom mette 16 step
-		○ 3 uscite del 161 vanno al 138 per pilotare 8 led (2^3 = 8); per il 9° LED Tom è il solito furbo: invece di mettere due 138 per pilotare 16 led, aggiunge un led al quarto pin del 161, così ad esempio 11 = 3 + 8 e dunque si accendono il 3* led di 8 pilotato dal 138 e quello dell'"Extended Time" pilotato dal 161
+		
+3 uscite del 161 vanno al 138 per pilotare 8 led (2^3 = 8); per il 9° LED Tom è il solito furbo: invece di mettere due 138 per pilotare 16 led, aggiunge un led al quarto pin del 161, così ad esempio 11 = 3 + 8 e dunque si accendono il 3* led di 8 pilotato dal 138 e quello dell'"Extended Time" pilotato dal 161
+
 	• Gli ingressi D0-D3 sono tutti a 0, così quando arriva il /LOAD (o /PE) sincrono (segnale "N" per Tom), il conteggio ricomincia da zero
 	• Le uscite Q0-Q2 del 161 vanno a MA0-MA2 per avere 8 step di microistruzioni, ma se aggiungo un quarto pin al contatore, posso avere 16 step
 	• Il /LOAD arriva da N 17 della ROM0
@@ -162,19 +197,6 @@ CEP e CET sono a +Vcc
 ## Instruction Register
 
 
-Per poter emulare le istruzioni del 6502, 
-	• Devo aumentare il numero di linee da 4 a 8 verso la Control Logic
-	• 25/08/2022 In realtà l'ho portato a 6 in modo da risparmiare qualche linea (però ho sempre un buon numero, 2^6 = 64) di istruzioni possibili) e poter usare le EEPROM 28C64
-	• 14/06/2023 importante: ho deciso di seguire quanto fatto da TOM e poter avere 256 operazioni, dunque le linee sono sicuramente:
-		• Le EEPROM 28256 da 32 K hanno 15 indirizzi.
-			□ 8 per le istruzioni (256) ==> Instruction Register da 8 bit
-			□ 4 per le microistruzioni (16)
-			□ 2 per selezionare le ROM
-			□ Ne resta uno libero.
-		○ 03/09/2022 Mi chiedo se il XCVR 74LS245 sia ancora necessario… ora che l'operando non è più parte dell'istruzione stessa, ma è separato, non lo devo esporre sul bus dall'Instruction Register attivando il pin IO (Instruction Register Out)… 😁 03/12/2022 più ci guardo e più sembra che non sia necessario
-		○ e forse posso risparmiare un segnale, visto che IO non mi serve più, perché non devo più rimettere sul bus i 4 LSB dell'IR che in passato fungevano da operando
-		○ Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF da 8 registri in cascata, così il primo viene aggiornato al normale caricamento dell'IR (che corrisponderebbe a T7 (step 1), ma causando un glitch sulla ROM)… invece di collegare il FF agli ingressi delle ROM, viene collegato a un altro FF che viene caricato col Falling Edge del CLK / Rising Edge del CLK, così le uscite delle ROM vengono aggiornate alla fine della microistruzione quando i segnali sono stabili 😁
-14/06/2023 Da capire bene!
 
 
 
@@ -225,38 +247,14 @@ In seguito ho compreso il decoder 3-8 che usa Tom Nisbet per poter gestire tanti
 8-bit CPU control logic: Part 2
 https://www.youtube.com/watch?v=X7rCxs1ppyY
 
-Le istruzioni sono fatte di più step, chiamati microistruzioni. La Control Logic deve settare correttamente la Control Word per ogni microistruzione così quando arriva il clock questa viene eseguita. Dobbiamo dunque sapere sempre quale istruzione stiamo eseguendo e a che step siamo. Ci serve un contatore per tracciare la microistruzione. Usiamo 74LS161 che può contare da 0 a 15.
-
 NB: Dobbiamo settare la Control Logic tra un clock e l'altro… come a dire che la Control Logic deve "essere pronta" prima che l'istruzione venga eseguita: possiamo usare un NOT per invertire il clock e usare questo per gestire il 74LS161 della Control Logic.
+
 	• I registri sono aggiornati al Rising Edge del CLK, che corrisponde al Falling Edge del /CLK.
 	• Le microistruzioni sono aggiornate al Falling Edge del CLK, che corrisponde al Rising Edge del /CLK.
 	• CLK gestisce tutti i registri principali: PC, MAR, RAM, IR, A, B, Flag: al Rising Edge del CLK, avvengono le azioni di caricamento dei registri. Quando c'è il segnale CE Counter Enable attivo, il PC viene incrementato al Rising Edge e l'indirizzo viene aumentato di uno.
 	• /CLK gestisce il Ring Counter e di conseguenza la Control Logic: è sfasato di 180°, dunque al Falling Edge di CLK corrisponde il Rising Edge di /CLK
-		○ All'accensione del computer
-			§ PC è 0 e RC (Ring Counter) è 0
-			§ la CL presenta CO|MI in uscita
-			§ il 245 del PC è attivo in output
-			§ il 245 del MAR è attivo in input.
-		○ Arriva il Rising Edge del CLK
-			§ il FF 173 del MAR carica (MI) l'indirizzo di memoria presentatogli (CO) dal PC
-		○ Arriva il Falling Edge del CLK, che corrisponde al Rising Edge del /CLK
-			§ RC si incrementa e la CL presenta la microistruzione successiva RO|II|CE
-				□ la RAM è attiva in output
-				□ IR è attivo in input
-				□ PC è attivato per contare
-		○ Arriva il Rising Edge del CLK
-			§ il FF 173 dell'IR carica (II) il valore presentato dalla cella di RAM (RO) indirizzata dal MAR
-			§ PC si incrementa (CE)
-		○ Arriva il Falling Edge del CLK, che corrisponde al Rising Edge del /CLK
-			§ RC si incrementa e la CL presenta la microistruzione successiva IO|AI
-				□ IR mette in output
-					® i 4 MSB che vanno ad indirizzare le EEPROM della CL
-					® i 4 LSb che vanno sul bus; immaginiamo ad esempio istruzione immediata LDA #$05
-				□ il 245 del Registro A è attivo in input
-		○ Arriva il Rising Edge del CLK
-			§ il FF 173 del Registro A carica (AI) il valore presentato sul bus (IO) dall'Instruction Register 
 
-Il 74LS138 è un decoder che può prendere i 3 bit (ce ne bastano 3 per gestire 8 cicli, visto che gli step delle microistruzioni sono al massimo 6) e convertirli in singoli bit che rappresentano lo step della microistruzione corrente e poi uno di questi, l'ultimo, che resetta il 74LS161 in modo da risparmiare i cicli di clock inutilizzati.Control Logic
+Control Logic
 8-bit CPU control logic: Part 1 
 https://www.youtube.com/watch?v=dXdoim96v5A
 
