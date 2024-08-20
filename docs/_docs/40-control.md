@@ -3,17 +3,17 @@ title: "Control Logic"
 permalink: /docs/control/
 excerpt: "Control Logic del BEAM computer"
 ---
+**WORK IN PROGRESS**
+
 [![Control Logic del BEAM computer](../../assets/control/40-beam-control.png "Control Logic del BEAM computer"){:width="100%"}](../../assets/control/40-beam-control.png)
 
-**WORK IN PROGRESS**
+Questa pagina descrive le Control Logic dell'NQSAP e del BEAM, evidenzia le differenze con la Control Logic del SAP computer di Ben Eater e approfondisce gli argomenti che avevo trovato più ostici e più interessanti.
+
+In generale, la gestione delle istruzioni consta di tre capisaldi: Instruction Register, Ring Counter e Microcode.
 
 [![Schema della Control Logic dell'NQSAP](../../assets/control/40-control-logic-schema-nqsap.png "Schema logico della Control Logic dell'NQSAP"){:width="100%"}](../../assets/control/40-control-logic-schema-nqsap.png)
 
 *Schema della Control Logic dell'NQSAP, leggermente modificato al solo scopo di migliorarne la leggibilità.*
-
-In questa pagina si analizzano le Control Logic dell'NQSAP e del BEAM, si evidenziano le differenze con la Control Logic del SAP computer di Ben Eater e si fanno approfondimenti sugli argomenti che avevo trovato più ostici e più interessanti.
-
-In generale, la gestione delle istruzioni consta di tre capisaldi: Instruction Register, Ring Counter e Microcode.
 
 ### Instruction Register
 
@@ -65,7 +65,7 @@ Conseguentemente:
   - 2 pin di indirizzi per selezionare le ROM
   - resterebbe un pin libero e dunque teoricamente potrebbero essere sufficienti EEPROM da 128Kb, che però <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">non sono in commercio</a> con l'interfaccia parallela.
 
-Qui devo iniziare a parlare della differenza tra il registro delle istruzioni dello NQSAP e del Beam. Segnalare che avevo certamente letto tutto su n QSP , ma avevo anche cercato di comprendere le differenze nella versione PCB avevo compreso chela bufferizzazione avrebbe compotato diversi vantaggi , cosa che ho applicato al BAM .
+**Qui devo iniziare a parlare della differenza tra il registro delle istruzioni dello NQSAP e del Beam. Segnalare che avevo certamente letto tutto su n QSP , ma avevo anche cercato di comprendere le differenze nella versione PCB avevo compreso chela bufferizzazione avrebbe compotato diversi vantaggi , cosa che ho applicato al BAM .**
 
 Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF da 8 registri in cascata, così il primo viene aggiornato al normale caricamento dell'IR (che corrisponderebbe a T7 (step 1), ma causando un glitch sulla ROM)… invece di collegare il FF agli ingressi delle ROM, viene collegato a un altro FF che viene caricato col Falling Edge del CLK / Rising Edge del CLK, così le uscite delle ROM vengono aggiornate alla fine della microistruzione quando i segnali sono stabili 😁
 
