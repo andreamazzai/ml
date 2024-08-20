@@ -13,16 +13,16 @@ excerpt: "Control Logic del BEAM computer"
 
 In questa pagina si analizzano le Control Logic dell'NQSAP e del BEAM, si evidenziano le differenze con la Control Logic del SAP computer di Ben Eater e si fanno approfondimenti sugli argomenti che avevo trovato più ostici e più interessanti.
 
-In generale, la gestione delle istruzioni consta di tre capisaldi: registro delle istruzioni, ring counter e microcode.
+In generale, la gestione delle istruzioni consta di tre capisaldi: Instruction Register, Ring Counter e Microcode.
 
 ### Instruction Register
 
-Nell'NQSAP e nel BEAM l'Instruction Register (IR) è incluso nello schema della Control Logic, mentre negli schemi del SAP l'IR era su un foglio separato.
+Nell'NQSAP e nel BEAM l'Instruction Register (IR) è incluso nello schema della Control Logic, mentre negli schemi del SAP stava su un foglio separato.
 
 L'Instruction Register del SAP presentava istruzioni lunghe un byte che al loro interno includevano sia l'istruzione stessa sia l'operando:
 
-- i 4 bit meno significativi erano riservatia all'operando;
-- i 4 bit più significativi erano dedicati all'istruzione.
+- i 4 bit più significativi erano dedicati all'istruzione;
+- i 4 bit meno significativi erano riservati all'operando.
 
 Nell'immagine seguente, tratta dal video <a href="https://youtu.be/JUVt_KYAp-I?t=1837" target="_blank">Reprogramming CPU microcode with an Arduino</a> di Ben Eater, si vede come ogni byte di un semplice programma di somma e sottrazione includa sia l'operazione sia l'operando:
 
@@ -30,8 +30,8 @@ Nell'immagine seguente, tratta dal video <a href="https://youtu.be/JUVt_KYAp-I?t
 
 Ad esempio:
 
-- L'istruzione LDA 15 all'indirizzo di memoria 0000 è composta dai 4 bit MSB 0001 che nel microcode definiscono un'operazione di caricamento accumulatore e dai 4 bit LSB 1111 che indicano l'indirizzo di memoria 15 nel quale è presente il valore da caricare nell'accumulatore A.
-- L'istruzione ADD 14 all'indirizzo di memoria 1 è composta dai 4 bit MSB 0010 che nel microcode definiscono un'operazione di somma e dai 4 bit LSB 1110 che indicano l'indirizzo di memoria 14 nel quale è presente il valore da sommare al valore già presente nell'accumulatore A.
+- L'istruzione LDA 15 all'indirizzo di memoria 0000 è composta dai 4 bit più significativi (MSB) 0001 (che nel microcode definiscono un'operazione di caricamento accumulatore) e dai 4 bit meno significativi (LSB) 1111, che indicano l'indirizzo di memoria 15, nel quale è presente il valore 5 da caricare nell'accumulatore A.
+- L'istruzione ADD 14 all'indirizzo di memoria 0001 è composta dai 4 bit MSB 0010 (che nel microcode definiscono un'operazione di somma) e dai 4 bit LSB 1110, che indicano l'indirizzo di memoria 14, nel quale è presente il valore 6 da sommare al valore già presente nell'accumulatore A.
 
 | Mnemonico | Indirizzo | Istruzione.Operando |
 | -         | -         | -                   |
@@ -47,35 +47,36 @@ Ad esempio:
 | 6         | 1110      |       0000.0110     |
 | 5         | 1111      |       0000.0101     |
 
-Una fondamentale differenza tra Instruction Register del SAP ed Instruction Register dell'NQSAP e del BEAM è che
+Una fondamentale differenza tra Instruction Register del SAP ed Instruction Register dell'NQSAP e del BEAM è la grandezza. Il 6502 ha un set di istruzioni relativamente piccolo, composto da 56 istruzioni di base; tuttavia, queste istruzioni possono essere utilizzate in diverse modalità di indirizzamento, il che porta il numero totale di combinazioni possibili a circa 150.
 
-Il 6502 ha un set di istruzioni relativamente piccolo, composto da 56 istruzioni di base. Tuttavia, queste istruzioni possono essere utilizzate in diverse modalità di indirizzamento, il che porta il numero totale di combinazioni possibili a circa 150.
-
-Per poter gestire questo numero di istruzioni, l'opcode occuperà un intero byte e l'architettura del computer dovrà presentare istruzioni di lunghezza diversa:
+Per poter gestire questo numero di istruzioni, l'opcode occuperà un intero byte e l'architettura del computer dovrà presentare un Instruction Register adeguato e la possibilità di gestire istruzioni di lunghezza diversa:
 
 - un solo byte per le istruzioni con indirizzamento Implicito e Accumulatore, che non hanno dunque bisogno di opcode;
-- due o tre* byte per tutte le altre istruzioni che hanno bisogno di un operando nella forma di indirizzo di memoria o di valore assoluto.
+- due o tre* byte per tutte le altre istruzioni che hanno bisogno di un operando (a due o tre* byte per definire un indirizzo; a un solo byte per definire un valore assoluto).
 
-\* Notare che in un computer con 256 byte di RAM le modalità di indirizzamento con 3 byte non sono necesarie, perché un operando della lunghezza di un unico byte è in grado di indirizzare tutta la memoria del computer, come brevemente discusso anche nella sezione [Indirizzamenti](alu/#indirizzamenti) della pagina dedicata all'ALU.
+\* Notare che in un computer con 256 byte di RAM le modalità di indirizzamento con 3 byte non sono necessarie, perché un operando della lunghezza di un unico byte è in grado di indirizzare tutta la memoria del computer, come brevemente discusso anche nella sezione [Indirizzamenti](alu/#indirizzamenti) della pagina dedicata all'ALU.
 
-In conseguenza di questo:
+Conseguentemente:
 
-- Il bus tra IR e CL deve avere 8 bit
-- sono necessarie EEPROM 28C256 da 32K con 15 indirizzi:
-  - 8 per le istruzioni (256) ==> Instruction Register da 8 bit
-  - 4 per le microistruzioni (16)
+- il bus tra Instruction Register e Control Logic deve avere un'ampiezza di 8 bit;
+- sono necessarie EEPROM 28C256 da 256Kb con 15 pin per gli indirizzi:
+  - 8 per le istruzioni (2^8 = 256 istruzioni)
+  - 4 per le microistruzioni (2^4 = 16 step)
   - 2 per selezionare le ROM
-  - Ne resta uno libero e dunque teoricamente potrebbero essere sufficienti EEPROM da 128Kb, che però <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">non sono prodotte</a> con l'interfaccia parallela.
+  - resterebbe un pin libero e dunque teoricamente potrebbero essere sufficienti EEPROM da 128Kb, che però <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">non sono prodotte</a> con l'interfaccia parallela.
 
 Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF da 8 registri in cascata, così il primo viene aggiornato al normale caricamento dell'IR (che corrisponderebbe a T7 (step 1), ma causando un glitch sulla ROM)… invece di collegare il FF agli ingressi delle ROM, viene collegato a un altro FF che viene caricato col Falling Edge del CLK / Rising Edge del CLK, così le uscite delle ROM vengono aggiornate alla fine della microistruzione quando i segnali sono stabili 😁
-
 
 [![Schema della Control Logic del SAP computer](../../assets/control/40-control-logic-schema-SAP.png "Schema logico della Control Logic del SAP computer"){:width="100%"}](../../assets/control/40-control-logic-schema-SAP.png)
 *Schema della Control Logic del SAP computer.*
 
-La complessità dell'NQSAP è tale per cui i soli 16 segnali disponibili nella Control Logic del SAP non sarebbero stati sufficienti per pilotare moduli complessi come ad esempio l'ALU e il registro dei Flag; in conseguenza di questo, diventava necessario ampliare in maniera considerevole il numero di linee di controllo utilizzabili.
+### Ring Counter
+
+Come indicato anche nella pagina dell'ALU, bisogna notare che il computer NQSAP prevedeva solo 8 step per le microistruzioni. Poiché per emulare le istruzioni del 6502 di salto condizionale, di scorrimento / rotazione e di salto a subroutine servono più step, sul computer BEAM sono stati previsti 16 step.
 
 ### I 74LS138 per la gestione dei segnali
+
+La complessità dell'NQSAP è tale per cui i soli 16 segnali disponibili nella Control Logic del SAP non sarebbero stati sufficienti per pilotare moduli complessi come ad esempio l'ALU e il registro dei Flag; in conseguenza di questo, diventava necessario ampliare in maniera considerevole il numero di linee di controllo utilizzabili.
 
 L'aumento del numero di EEPROM e l'inserimento di quattro 3-Line To 8-Line Decoders/Demultiplexers <a href="https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target="_blank">74LS138</a> (DEMUX) ha permesso di gestire l'elevato numero di segnali richiesti dall'NQSAP.
 
@@ -111,19 +112,57 @@ Notare che i segnali di uscita dei '138 realmente utilizzabili sono 30 e non 32,
 
 ## Tabella segnali dell'NQSAP e del BEAM
 
-È forse utile fare qui una tabella cheriassume tutti i vari segnali utilizzati nel computer ?
+È forse utile fare qui una tabella che riassume tutti i vari segnali utilizzati nel computer ?
 
-	• C0 e C1 *** sono usati per determinare se il Carry da salvare nel Flags Register deve venire dal Carry dell'ALU o da H (H-MSB o H-LSB) (dall'ALU per operazioni matematiche o da H per operazioni di Shift)
-	• DY e DZ, usati nel modulo D, X e Y
-		○ per selezionare (con DY) se usare index di X o Y, oppure
-		○ se utilizzare solo D (attivando DZ)
+| NQSAP  | BEAM     | Descrizione                                                                              |
+| ------ | -------- | -----------                                                                              |
+| C0-C1  | C0-C1    | Utilizzati per determinare se il Carry da salvare nel Flag Register debba provenire dal Carry Output dell'ALU (operazioni aritmetice) o da H (operazioni di scorrimento e rotazione) |
+| CC-CS  | CC-CS    | Utilizzati per selezionare quale Carry presentare all'ALU e ad H (quello effettivamente presente in Flag C, oppure 0 o 1 fisse); [vedere spiegazione](../flags/#il-carry-e-i-registri-h-e-alu) |
+| DY-DZ  | DX/Y-DZ  | DX/Y HI espone X, LO espone Y agli adder; DZ non espone X e Y agli adder                 |
+| HL-HR  | HL-HR    | Definiscono l'operazione da eseguire sul registro H (caricamento parallelo, rotazione a destra o sinistra)      |
+| FN     | FN       | Caricamento del Flag N nel registro dei flag                                             |
+| FV     | FV       | Caricamento del Flag V nel registro dei flag                                             |
+| FZ     | FZ       | Caricamento del Flag Z nel registro dei flag                                             |
+| FC     | FC       | Caricamento del Flag C nel registro dei flag                                             |
+| FS     | FB       | Selezione dell'origine dei Flag da caricare nel registro dei Flag (computo oppure RAM)   |
+| SCE*   | SE       | Abilita la scrittura dello Stack Pointer                                                 |
+| SPI*   | SU/D     | Indica se lo Stack Pointer deve contare verso l'alto (stato HI) o verso il basso (stato LO)           |
+| EO     | Sum Out  | L'adder computa A+B e il suo risultato viene esposto sul bus                             |
+| LF     | LF       |                                                                                          |
+| WI     | WIR      | Abilita la scrittura dell'Instruction Register                                           |
+| N      | NI       | Next Instruction                                                                         |
+| JE     | PCJ      | Carica il Program Counter                                                                |
+| PI     | PCI      | Incrementa il Program Counter                                                            |
+
+| RR     | PCI      | Incrementa il Program Counter                                                            |
+| RA     | PCI      | Incrementa il Program Counter                                                            |
+| RB     | PCI      | Incrementa il Program Counter                                                            |
+| RL     | PCI      | Incrementa il Program Counter                                                            |
+| RS     | PCI      | Incrementa il Program Counter                                                            |
+| RP     | PCI      | Incrementa il Program Counter                                                            |
+| RD     | PCI      | Incrementa il Program Counter                                                            |
+| RX     | PCI      | Incrementa il Program Counter                                                            |
+| RY     | PCI      | Incrementa il Program Counter                                                            |
+| RH     | PCI      | Incrementa il Program Counter                                                            |
+| RF     | PCI      | Incrementa il Program Counter                                                            |
+
+| WR     | PCI      | Incrementa il Program Counter                                                            |
+| WA     | PCI      | Incrementa il Program Counter                                                            |
+| WB     | PCI      | Incrementa il Program Counter                                                            |
+| WS     | PCI      | Incrementa il Program Counter                                                            |
+| WP     | PCI      | Incrementa il Program Counter                                                            |
+| WD     | PCI      | Incrementa il Program Counter                                                            |
+| WM     | PCI      | Incrementa il Program Counter                                                            |
+| WX     | PCI      | Incrementa il Program Counter                                                            |
+| WY     | PCI      | Incrementa il Program Counter                                                            |
+| WO     | O        | Incrementa il Program Counter                                                            |
+
+\* Deduzione
+
+	• C0 e C1 *** 
 sono condivisi con C0 e C1 ***
 
 SE Stack Enable, vedi pagina Stack Pointer, condivisi con C0 e C1*** (chiamiamoli SU Stack Up e SD Stack Down) per definire se fare conteggio Up o Down
-
-CC e CS per selezionare che tipo di Carry dobbiamo presentare all'ALU e ad H (quello effettivamente presente in FLAG C, oppure 0, oppure 1), vedi spiegazione in Flags
-
-• Gli indirizzi più alti delle ROM sono utilizzati per selezionarle (hardwired)
 
 • Se /LDR-ACTIVE viene attivato (LO), LDR-ACTIVE passa a HI e disattiva le ROM2 e ROM3 collegate via /OE.
 
@@ -164,16 +203,6 @@ Non capendo come potesse essere aggiornata una CPU, dal momento che si tratta di
 Ritornando alla dimensione delle EEPROM da utilizzare per il microcode, nei miei appunti trovo traccia di diverse revisioni, ad esempio:
 
 - come notavo anche nelal costruzione del modulo RAM in cui si indicavano le 256 istruzioni, notavo che servivano 28c64. ram/#mux-program-mode-e-run-mode 
-
-erano necessari 8 bit di istruzioni, 3 di step e 2 di flag = 13 pin totali, portanto si rendevano necessarie delle 28C64… e avevo dimenticato che mi sarebbe servito un bit aggiuntivo per la selezione delle due EEPROM
-
-mi servono EEPROM 28C64 per avere 256 (8 bit) istruzioni + 3 step + 2 flag, ma dimenticavo che avendo due ROM gemelle dovevo gestirne anche la selezione e dunque aggiungere un ulteriore bit, pertanto mi servirebbero delle 28C128;
-
-- avrei potuto però ridurre il numero di istruzioni a 64, dunque mi sarebbero bastati 6 bit per indirizzarle e ridurre così il numero totale di indirizzi richiesti...
-
-- ... ma forse mi sarebbero serviti altri segnali di controllo oltre ai 16  disponibili in due ROM e dunque me ne sarebbe servita una terza... e dunque due bit di indirizzamento
-
-Posso sicuramente dire che avevo le idee ancora confuse.
 
 ## Ring Counter
 
@@ -284,11 +313,6 @@ Dopo la fase di Fetch so "cosa devo fare", perché a questo punto ho l'istruzion
 
 
 
-Il Flags Register emula quello del 6502 con questi flag:
-• Zero
-• Carry
-• OVerflow che non mi è chiarissimo cosa sia
-• Negative
 
 E' differente dall'8-bit computer originario, dove un unico FF '173 memorizzava entrambi i flag nello stesso momento - e dunque, ricordo qualcosa, si era ripetuta per 4 volte la programmazione delle EEPROM perché avendo due flag C ed F le combinazioni possibili sono 4 (00, 01, 10, 11) e dunque avevo bisogno di 4 set di microcode, uno per ogni combinazione degli indirizzi in ingresso C ed F. Da verificare.
 		23/10/2022 In questo nuovo caso le istruzioni non variano a seconda dello stato dei flag, che non sono più Input alle ROM che poi variavano l'output in base all'indirizzo/flag presentato in ingresso! Nella configurazione sviluppata da Tom, a un certo punto nel codice si trova un'istruzione di salto condizionale legata a un flag, magari JZ: ad essa corrisponde un segnale in uscita di JUMP (uguale per tutte le istruzioni) che attiva con /E il Selector 151; la selezione del flag da mettere in uscita dipende dal microcode (i 3 bit Select del 151 sono direttamente collegati all'Instruction Register) perciò se per esempio l'istruzione di JZ Jump on Zero è 010 questo andrà a selezionare il pin I2 di ingresso del 151 che, se attivo (cioè output FF del flag Z = 1), andrà ad abilitare il PC-LOAD e permettere il caricamento del nuovo indirizzo nel PC 😎
@@ -314,7 +338,6 @@ MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE
 		○ #define F1    RP | WM | PI  // Instruction fetch step 1: instruction address from PC to MAR
 #define F2    RR | WI       // Instruction fetch step 2: instruction from RAM to IR
 
-- • Le istruzioni di Branch Relative consumano molti cicli, perciò Tom ha aggiunto anche delle istruzioni di Jump Relative. Evidenziare che ho risolto questa problematica facendo un instruction register a 16 step
 
 
 
@@ -392,7 +415,9 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 
 *Schema logico del modulo Flag del computer BEAM.*
 
-Come indicato anche nella pagina dell'ALU, bisogna notare che il computer NQSAP prevedeva solo 8 step per le microistruzioni. Poiché per emulare le istruzioni del 6502 di salto condizionale, di scorrimento / rotazione e di salto a subroutine servono più step, sul computer BEAM sono stati previsti 16 step.
+- Le istruzioni di Branch Relative consumano molti cicli, perciò Tom ha aggiunto anche delle istruzioni di Jump Relative. Evidenziare che ho risolto questa problematica facendo un instruction register a 16 step
+
+- Come già discusso, il BEAM prevede 16 step per le microistruzioni anziché solo 8. Anche l'NQSAP-PCB, evoluzione dell'NQSAP, prevede 16 step.
 
 ## Note
 

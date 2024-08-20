@@ -38,7 +38,7 @@
         url: /docs/dxy/
       - title: "> Output"
         url: /docs/output/
-      - title: "> Stack"
+      - title: "> Stack Pointer"
         url: /docs/stack/
       - title: "> Arduino Loader"
         url: /docs/loader/

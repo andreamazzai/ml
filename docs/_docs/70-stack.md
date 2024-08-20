@@ -1,9 +1,9 @@
 ---
-title: "Stack Register"
+title: "Stack Pointer"
 permalink: /docs/stack/
-excerpt: "Stack Register del BEAM computer"
+excerpt: "Stack Pointer del BEAM computer"
 ---
-[![Stack Register del BEAM computer](../../assets/sp/70-beam-sp.png "Stack Register del BEAM computer"){:width="100%"}](../../assets/sp/70-beam-sp.png)
+[![Stack Pointer del BEAM computer](../../assets/sp/70-beam-sp.png "Stack Pointer del BEAM computer"){:width="100%"}](../../assets/sp/70-beam-sp.png)
 
 • Stack Pointer. Vedi '169 74LS169 4-bit Synchronous Binary Up-Down Counter. 
 • Forse con un unico Counter a 4 bit posso fare uno SP da 16 indirizzi e se volessi farlo più grande me ne servirebbero due.
@@ -153,8 +153,4 @@ BO PI move the B register value into the PC, effectively jumping to the subrouti
 ## TO DO
 
 - /WE ↘↗
-- Descrivere comportamento HW **shift register** per le rotazioni
-- Parlare del bench di test sulla base di quanto appreso da David Courtney.
-- *Schema di uno degli 8 Flip-Flop del 74LS377.* -- **Da fare**: Valutare se anche questo ha un riflesso positivo sul discorso del glitch
-- https://bread80.com/2019/09/02/adding-adc-sbc-inc-dec-operations-to-ben-eaters-alu/#easy-footnote-4-43 da leggere per capire se buono
-- subito dopo il capitolo "Il registro H" capire "(da fare: in questo caso, ma anche nel caso delle istruzioni di shift / rotazione e forse anche CPX e CPY, verificare se non potessi usare D invece di H)"
+- controllare se il mio SP funziona correttamente; vedo che Tom ha usato dei cablaggi diversi per i pin 7 e 10   20-08-2024
