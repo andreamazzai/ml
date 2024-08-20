@@ -47,23 +47,25 @@ Ad esempio:
 | 6         | 1110      |       0000.0110     |
 | 5         | 1111      |       0000.0101     |
 
-Una fondamentale differenza tra Instruction Register del SAP ed Instruction Register dell'NQSAP e del BEAM è la grandezza. Il 6502 ha un set di istruzioni relativamente piccolo, composto da 56 istruzioni di base; tuttavia, queste istruzioni possono essere utilizzate in diverse modalità di indirizzamento, il che porta il numero totale di combinazioni possibili a circa 150.
+Una fondamentale differenza tra Instruction Register del SAP ed Instruction Register dell'NQSAP e del BEAM è la grandezza. Il 6502 ha un set di istruzioni *relativamente* piccolo, composto da 56 istruzioni di base; tuttavia, queste istruzioni possono essere utilizzate in diverse modalità di indirizzamento, il che porta il numero totale di combinazioni possibili a circa 150.
 
-Per poter gestire questo numero di istruzioni, l'opcode occuperà un intero byte e l'architettura del computer dovrà presentare un Instruction Register adeguato e la possibilità di gestire istruzioni di lunghezza diversa:
+Per poter gestire questo numero di istruzioni, l'opcode richiede un intero byte e l'architettura del computer deve presentare un Instruction Register adeguato e la possibilità di gestire istruzioni di lunghezza diversa:
 
 - un solo byte per le istruzioni con indirizzamento Implicito e Accumulatore, che non hanno dunque bisogno di opcode;
 - due o tre* byte per tutte le altre istruzioni che hanno bisogno di un operando (a due o tre* byte per definire un indirizzo; a un solo byte per definire un valore assoluto).
 
-\* Notare che in un computer con 256 byte di RAM le modalità di indirizzamento con 3 byte non sono necessarie, perché un operando della lunghezza di un unico byte è in grado di indirizzare tutta la memoria del computer, come brevemente discusso anche nella sezione [Indirizzamenti](alu/#indirizzamenti) della pagina dedicata all'ALU.
+\* Notare che in un computer con 256 byte di RAM le modalità di indirizzamento con 3 byte non sono necessarie, perché un operando della lunghezza di un unico byte è in grado di indirizzare tutta la memoria del computer, come brevemente discusso anche nella sezione [Indirizzamenti](../alu/#indirizzamenti) della pagina dedicata all'ALU.
 
 Conseguentemente:
 
-- il bus tra Instruction Register e Control Logic deve avere un'ampiezza di 8 bit;
+- il bus tra Instruction Register e Control Logic deve avere un'ampiezza di 8 bit e non più di soli 4 bit come nel SAP;
 - sono necessarie EEPROM 28C256 da 256Kb con 15 pin per gli indirizzi:
-  - 8 per le istruzioni (2^8 = 256 istruzioni)
-  - 4 per le microistruzioni (2^4 = 16 step)
-  - 2 per selezionare le ROM
-  - resterebbe un pin libero e dunque teoricamente potrebbero essere sufficienti EEPROM da 128Kb, che però <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">non sono prodotte</a> con l'interfaccia parallela.
+  - 8 pin di indirizzi per le istruzioni (2^8 = 256 istruzioni)
+  - 4 pin di indirizzi per le microistruzioni (2^4 = 16 step)
+  - 2 pin di indirizzi per selezionare le ROM
+  - resterebbe un pin libero e dunque teoricamente potrebbero essere sufficienti EEPROM da 128Kb, che però <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">non sono in commercio</a> con l'interfaccia parallela.
+
+Qui devo iniziare a parlare della differenza tra il registro delle istruzioni dello NQSAP e del Beam. Segnalare che avevo certamente letto tutto su n QSP , ma avevo anche cercato di comprendere le differenze nella versione PCB avevo compreso chela bufferizzazione avrebbe compotato diversi vantaggi , cosa che ho applicato al BAM .
 
 Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF da 8 registri in cascata, così il primo viene aggiornato al normale caricamento dell'IR (che corrisponderebbe a T7 (step 1), ma causando un glitch sulla ROM)… invece di collegare il FF agli ingressi delle ROM, viene collegato a un altro FF che viene caricato col Falling Edge del CLK / Rising Edge del CLK, così le uscite delle ROM vengono aggiornate alla fine della microistruzione quando i segnali sono stabili 😁
 
