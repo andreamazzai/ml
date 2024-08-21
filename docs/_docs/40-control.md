@@ -3,21 +3,19 @@ title: "Control Logic"
 permalink: /docs/control/
 excerpt: "Control Logic del BEAM computer"
 ---
-**WORK IN PROGRESS**
+## WORK IN PROGRESS
 
 [![Control Logic del BEAM computer](../../assets/control/40-beam-control.png "Control Logic del BEAM computer"){:width="100%"}](../../assets/control/40-beam-control.png)
 
 Questa pagina descrive le Control Logic dell'NQSAP e del BEAM, evidenzia le differenze con la Control Logic del SAP computer di Ben Eater e approfondisce gli argomenti che avevo trovato più ostici e più interessanti.
 
-In generale, la gestione delle istruzioni consta di tre capisaldi: Instruction Register, Ring Counter e Microcode.
+In generale, la gestione delle istruzioni consta di tre capisaldi: **Instruction Register**, **Ring Counter** e **Microcode**.
 
 [![Schema della Control Logic dell'NQSAP](../../assets/control/40-control-logic-schema-nqsap.png "Schema logico della Control Logic dell'NQSAP"){:width="100%"}](../../assets/control/40-control-logic-schema-nqsap.png)
 
 *Schema della Control Logic dell'NQSAP, leggermente modificato al solo scopo di migliorarne la leggibilità.*
 
 ### Instruction Register
-
-Nell'NQSAP e nel BEAM l'Instruction Register (IR) è incluso nello schema della Control Logic, mentre negli schemi del SAP stava su un foglio separato.
 
 L'Instruction Register del SAP presentava istruzioni lunghe un byte che al loro interno includevano sia l'istruzione stessa sia l'operando:
 
@@ -33,25 +31,8 @@ Ad esempio:
 - L'istruzione LDA 15 all'indirizzo di memoria 0000 è composta dai 4 bit più significativi (MSB) 0001 (che nel microcode definiscono un'operazione di caricamento accumulatore) e dai 4 bit meno significativi (LSB) 1111, che indicano l'indirizzo di memoria 15, nel quale è presente il valore 5 da caricare nell'accumulatore A.
 - L'istruzione ADD 14 all'indirizzo di memoria 0001 è composta dai 4 bit MSB 0010 (che nel microcode definiscono un'operazione di somma) e dai 4 bit LSB 1110, che indicano l'indirizzo di memoria 14, nel quale è presente il valore 6 da sommare al valore già presente nell'accumulatore A.
 
-~~~text
-|-----------|-----------|---------------------|
 | Mnemonico | Indirizzo | Istruzione.Operando |
-|-----------|-----------|---------------------|
-| LDA 15    | 0000      |       0001.1111     |
-| ADD 14    | 0001      |       0010.1110     |
-| SUB 13    | 0010      |       0011.1101     |
-| OUT       | 0011      |       1110.0000     |
-| HLT       | 0100      |       1111.0000     |
-|           |    .      |                     |
-|           |    .      |                     |
-|           |    .      |                     |
-| 7         | 1101      |       0000.0111     |
-| 6         | 1110      |       0000.0110     |
-| 5         | 1111      |       0000.0101     |
-|-----------|-----------|---------------------|
-~~~
-
-| Mnemonico | Indirizzo | Istruzione.Operando |
+| -         | -         | -                   |
 | -         | -         | -                   |
 | LDA 15    | 0000      |       0001.1111     |
 | ADD 14    | 0001      |       0010.1110     |
@@ -65,13 +46,14 @@ Ad esempio:
 | 6         | 1110      |       0000.0110     |
 | 5         | 1111      |       0000.0101     |
 
+*Rappresentazione di un programma di somma, sottrazione e output caricato nei 16 byte della memoria del SAP.*
 
 Una fondamentale differenza tra Instruction Register del SAP ed Instruction Register dell'NQSAP e del BEAM è la dimensione. Il 6502 ha un set di istruzioni *relativamente* piccolo, composto da 56 istruzioni di base; tuttavia, queste istruzioni possono essere utilizzate in diverse modalità di indirizzamento, il che porta il numero totale di combinazioni possibili a circa 150.
 
-Per poter gestire questo numero di istruzioni, l'opcode richiede un intero byte e l'architettura del computer deve presentare un Instruction Register adeguato e la possibilità di gestire istruzioni di lunghezza diversa:
+Per poter gestire questo numero di istruzioni, l'opcode richiede un intero byte; inoltre, l'architettura del computer deve presentare un Instruction Register adeguato, nonché la possibilità di gestire istruzioni di lunghezza diversa:
 
-- un solo byte per le istruzioni con indirizzamento Implicito e Accumulatore, che non hanno dunque bisogno di opcode;
-- due o tre\* byte per tutte le altre istruzioni che hanno bisogno di un operando (a due o tre* byte per definire un indirizzo; a due byte per definire un valore assoluto).
+- un solo byte per le istruzioni con indirizzamento Implicito e Accumulatore, che non hanno dunque bisogno di un operando;
+- due o tre\* byte per tutte le altre istruzioni che hanno bisogno di un operando (istruzioni a due o tre* byte per definire un indirizzo; istruzioni a due byte per definire un valore assoluto).
 
 \* Notare che in un computer con 256 byte di RAM le modalità di indirizzamento con 3 byte non sono necessarie, perché un operando della lunghezza di un unico byte è in grado di indirizzare tutta la memoria del computer, come brevemente discusso anche nella sezione [Indirizzamenti](../alu/#indirizzamenti) della pagina dedicata all'ALU.
 
@@ -82,7 +64,7 @@ Conseguentemente:
   - 8 pin di indirizzi per le istruzioni (2^8 = 256 istruzioni)
   - 4 pin di indirizzi per le microistruzioni (2^4 = 16 step)
   - 2 pin di indirizzi per selezionare le ROM
-  - resterebbe un pin libero e dunque teoricamente potrebbero essere sufficienti EEPROM da 128Kb, che però non esistono in commercio <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">con l'interfaccia parallela</a>.
+  - rimane un pin inutilizzato, tanto da pensare di poter utilizzare EEPROM da 128Kb, che però non esistono in commercio <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">con l'interfaccia parallela</a>.
 
 **Qui devo iniziare spiegare come è fatto l'IR dell'NQSAP e a parlare della differenza tra il registro delle istruzioni dello NQSAP e del Beam. Segnalare che avevo certamente letto tutto su n QSP , ma avevo anche cercato di comprendere le differenze nella versione PCB avevo compreso chela bufferizzazione avrebbe compotato diversi vantaggi , cosa che ho applicato al BAM .**
 
@@ -94,17 +76,27 @@ Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF d
 
 ### Ring Counter
 
-Le istruzioni di un microprocessore sono composte da un certo numero di step, più precisamente chiamati microistruzioni. La Control Logic deve settare correttamente la Control Word per ogni microistruzione, così che questa possa essere correttamente eseguita in corrispondenza dell'impulso di clock.
+Le istruzioni di un microprocessore sono composte da un certo numero di step, più precisamente chiamati *microistruzioni*. La Control Logic deve settare correttamente la *Control Word* prima dell'esecuzione di ogni microistruzione, così che questa possa poi essere correttamente eseguita in corrispondenza di un opportuno impulso di clock (che nel nostro caso è il Rising Edge del CLK).
 
-In un computer è sempre necessario sapere sempre quale istruzione stiamo eseguendo - e di questa abbiamo indicazioni dall'Instruction Register - e quale è lo step correntemente in esecuzione. Per fare questo, si utilizza il Ring Counter. Per tracciare la microistruzione, sia il SAP sia l'NQSAP utilizzano un contatore 74LS161, in grado di contare da 0 a 15.
+La Control Word è una stringa di bit utilizzata in una Control Logic per governare e coordinare il comportamento dei vari componenti del processore durante l'esecuzione di una microistruzione.
 
-La Control Logic deve essere settata tra un clock e l'altro; in altre parole, la Control Logic deve approntare la Control Word prima che lo step venga eseguito in corrispondenza del ciclo di clock. Gli step vengono eseguiti in corrispondenza del raising edge del segnale di clock ,; per settare la control Word col giusto anticipo è possibile utilizzare un inverter per pilotare il clock del contatore virgola in modo tale che questo effettui l'operazione di settaggio della control Word con uno sfasamento rispetto al clock originario virgola e dunque in corrispondenza del falling edgedel clock .
+In una CPU è sempre necessario conoscere in ogni momento quale sia l'istruzione in esecuzione - ne riceviamo indicazioni dall'Instruction Register - e quale sia lo step correntemente attivo, per conoscere il quale ci viene in aiuto il Ring Counter. Tanto il SAP quanto l'NQSAP e il BEAM sviluppano il Ring Counter attorno a un contatore <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">74LS161</a>, in grado di contare da 0 a 15, e a un DEMUX 74LS138, che ci aiuta ad avere riscontro visivo sullo step in esecuzione.
 
-- I registri del computer sono infatti aggiornati al Rising Edge del CLK. CLK gestisce tutti i registri principali: PC, MAR, RAM, IR, A, B, Flag: al Rising Edge del CLK, avvengono le azioni di caricamento dei registri. 
+Nella durata di un ciclo di clock, due sono i momenti essenziali: il Rising Edge (passaggio del segnale dallo stato logico LO allo stato logico HI) e il Falling Edge (viceversa).
+
+- I registri della CPU sono tipicamente aggiornati al *Rising Edge* del CLK, in quanto la maggior parte dei chip modifica il proprio stato proprio in coincidenza della transizione del CLK dallo stato logico LO allo stato logico HI. Fanno parte di questo momento tutti i registri principali del computer: PC, MAR, RAM, IR, A, B, H, Flag: al Rising Edge del CLK, avvengono le azioni di caricamento.
+
+Come anticipato, la Control Logic deve settare correttamente la *Control Word* prima dell'esecuzione di ogni microistruzione, così che questa possa poi essere correttamente eseguita in corrispondenza del Rising Edge del CLK.
+
+Responsabile della tracciatura della Control Word è il Ring Counter.
+
+Si può dire che la Control Logic debba essere settata tra un Rising Edge del clock e l'altro; in altre parole, la Control Logic deve approntare la Control Word con sufficiente anticipo rispetto al Rising Edge del CLK. Per fare questo, è possibile utilizzare un inverter per pilotare il clock del Ring Counte, così che questo possa effettuare l'operazione di settaggio della Control Word in corrispondenza del Falling Edge del clock.
+
 Ad esempio, quando c'è il segnale CE Counter Enable attivo, il PC viene incrementato al Rising Edge e l'indirizzo viene aumentato di uno.
-- Le microistruzioni sono invece aggiornate al Falling Edge del CLK: /CLK gestisce il Ring Counter e di conseguenza la Control Logic: è sfasato di 180°, dunque al Falling Edge di CLK corrisponde il Rising Edge di /CLK
 
 Il 74LS138 è un decoder che può prendere i 3 bit (ce ne bastano 3 per gestire 8 cicli, visto che gli step delle microistruzioni sono al massimo 6) e convertirli in singoli bit che rappresentano lo step della microistruzione corrente e poi uno di questi, l'ultimo, che resetta il 74LS161 in modo da risparmiare i cicli di clock inutilizzati.
+
+Come si vede nello schema dell'n Q sub non vi è più un controllo del reset del contatore da parte del 138.
 
 A questo punto abbiamo nell'Instruction Register l'istruzione attualmente in esecuzione e nel contatore lo step, che rappresenta la microistruzione. Possiamo usare una Combinational Logic per settare i nostri segnali da abilitare per ogni microistruzione. Per esempio quando siamo in T0, che è la prima microistruzione, prendiamo l'uscita del 74LS138, la neghiamo con un NOT per portarla positiva e attiviamo CO e MI e poi Clock. Alla successiva attiviamo RO e II  e poi Clock e alla successiva attiviamo CE e poi Clock.
 E poiché CE può essere inserito nella stessa microistruzione di RO e II possiamo ridurre la lunghezza delle microistruzioni a un massimo di 5 (step 0-4).
@@ -146,20 +138,23 @@ come si può vedere nello schema del SAP, il contatore '161 presente le sue usci
 
 *Ring Counter del SAP.*
 
-Per indirizzare questa questione e migliorare le prestazioni del computer , tutte le istruzioni dell'NQSAP presentano una microistruzione finale "**N**", che attiva un segnale **NI** che attiva l'ingresso di caricamento del '161, che, avendo tutti i suoi input allo stato zero, sarà praticamente resettato. Perché non collegare l'ingresso m al reset del contatore puntointerrogativo così facendo , se si facesse in questo modo , il contatore verrebbe resettato all'inizio di ogni ultimo microistruzione , pertanto si dovrebbe creare una micro istruzione aggiuntiva per tutte le istruzioni anziché poter avere l'istruzione micron direttamente integrata insieme alle ultime istruzioni micro di ogni istruzione , risparmiando così un ciclo macchino .questo perché il contatore è sincrono virgola e significa che dunque il suo reset avverrebbe in qualsiasi momento , indipendentemente dallo stato del clock.volevo dire asincrono .e allora perché non utilizzare un contatore sincrono ? non lo possiamo fare perchéavremmo problemi con il reset vero e proprio. 
+Per indirizzare questa questione e migliorare le prestazioni del computer, all'ultimo step di tutte le istruzioni dell'NQSAP e del BEAM viene aggiunta l' finale "**N**", che su una EEPROM attiva un segnale **NI** che attiva a sua il pin di Load del '161, che, avendo tutti i suoi input a 0, sarà praticamente resettato.
 
-15/06/2023: ho deciso di fare come Tom e mettere alla fine di ogni istruzione una microistruzione di reset così da poter anticipare la fine dell'istruzione e passare alla prossima senza dover aspettare tutti i cicli a vuoto. Spiegare il legame con il funzionamento del 161 , che permette di caricare zero sui suoi ingressi, ed è il metodo che viene utilizzato per resettare il ring counter e riportarlo allo step t zero.
+Perché non collegare l'output NI della EEPROM al pin di reset del contatore?
 
-Vedi spiegazione per resettare in maniera sincrona il 74LS161 sulla pagina dei chip
-	• Praticamente usando il '161:
-		○ con /CLR, che è asincrono, faccio il reset "hardware"
-			§ 17/06/2023 Tom segnala che questo segnale asincrono non è invece ideale per pulire il Ring Counter utilizzando il microcode perché, essendo appunto asincrono, non sarebbe gestito dal clock: infatti, non appena attivato, andrebbe a resettare il ciclo di microistruzione esattamente all'inizio invece che quando arriva il impulso di clock!
-			§ 04/07/2023 Va invece benissimo per fare il reset del Program Counter 😁 anche col clock stoppato
-			§ A dire il vero si potrebbe comunque utilizzare questo segnale, ma significherebbe dover aggiungere una microistruzione dedicata al reset alla fine di tutte le altre microistruzioni. Utilizzando una modalità di reset sincrona su questo chip si potrebbe invece aggiungere il segnale di reset all'ultima microistruzione del ciclo.
-		○ con il /LOAD ("N") e tutti i pin di input a 0, il Ring Counter si resetta in sincrono con il /CLK 😁. Assomiglia un po' al JUMP del Program Counter. Notare il /CLK, che è invertito rispetto al CLK principale e che dunque permette di lasciar terminare l'esecuzione della microistruzione corrente prima di fare il LOAD.
+Se si facesse in questo modo, il contatore verrebbe resettato non appena la microistruzione contenente N fosse eseguita, non permettendo l'esecuzione completa di quanto stabilito con la Control Word , pertanto si dovrebbe creare una micro istruzione aggiuntiva per tutte le istruzioni anziché poter avere l'istruzione micron direttamente integrata insieme alle ultime istruzioni micro di ogni istruzione , risparmiando così un ciclo macchino .questo perché il contatore è sincrono virgola e significa che dunque il suo reset avverrebbe in qualsiasi momento , indipendentemente dallo stato del clock.volevo dire asincrono .e allora perché non utilizzare un contatore sincrono ? non lo possiamo fare perchéavremmo problemi con il reset vero e proprio. 
 
-		○ questo forse significa che poiché il '138 è un decoder 3-to-8 devo metterne due "in cascata"? Posso farlo?
-		
+In altre parole, possiamo mettere anticipatamente fine ad ogni istruzione inserendo nell'ultimo step un  reset del Ring Counter così da non dover aspettare l'esecuzine di eventuali step vuoti (alla data, la lunghezza massima delle istruzioni è di 10 step).
+
+Spiegare il legame con il funzionamento del 161, che permette di caricare zero sui suoi ingressi, ed è il metodo che viene utilizzato per resettare il ring counter e riportarlo allo step t zero.
+
+Praticamente usando il '161:
+- con /CLR, che è asincrono, faccio il reset "hardware"
+  - 17/06/2023 Tom segnala che questo segnale asincrono non è invece ideale per pulire il Ring Counter utilizzando il microcode perché, essendo appunto asincrono, non sarebbe gestito dal clock: infatti, non appena attivato, andrebbe a resettare il ciclo di microistruzione esattamente all'inizio invece che quando arriva il impulso di clock!
+  - 04/07/2023 Va invece benissimo per fare il reset del Program Counter 😁 anche col clock stoppato
+  - A dire il vero si potrebbe comunque utilizzare questo segnale, ma significherebbe dover aggiungere una microistruzione dedicata al reset alla fine di tutte le altre microistruzioni. Utilizzando una modalità di reset sincrona su questo chip si potrebbe invece aggiungere il segnale di reset all'ultima microistruzione del ciclo.
+- con il /LOAD ("N") e tutti i pin di input a 0, il Ring Counter si resetta in sincrono con il /CLK 😁. Assomiglia un po' al JUMP del Program Counter. Notare il /CLK, che è invertito rispetto al CLK principale e che dunque permette di lasciar terminare l'esecuzione della microistruzione corrente prima di fare il LOAD.
+
 3 uscite del 161 vanno al 138 per pilotare 8 led (2^3 = 8); per il 9° LED Tom è il solito furbo: invece di mettere due 138 per pilotare 16 led, aggiunge un led al quarto pin del 161, così ad esempio 11 = 3 + 8 e dunque si accendono il 3* led di 8 pilotato dal 138 e quello dell'"Extended Time" pilotato dal 161
 
 	• Gli ingressi D0-D3 sono tutti a 0, così quando arriva il /LOAD (o /PE) sincrono (segnale "N" per Tom), il conteggio ricomincia da zero
@@ -472,12 +467,11 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 
 ## Link utili
 
-- I video di Ben Eater che descrivono la <a href="https://eater.net/8bit/control" target="_blank">Control Logic e il microcode</a>.
+- I video di Ben Eater che descrivono la <a href="https://eater.net/8bit/control" target="_blank">Control Logic e il Microcode</a>.
 
 ## TO DO
 
 - aggiornare lo schema Kicad con le le bar a 8 segmenti e aggiornare questa pagina con lo schema aggiornato
 - Evidenziare la nomenclatura dei segnali da fare nella pagina della control logic : l'approccio di ben era centri con rispetto al modulo , mentre l'approccio del computer NQSAP è relativo al computer nella sua interezza
 - non trovo riferimenti ad HL e HR in nessuna pagina; Poiché in questa pagina sto parlando del fatto che per alcuni registri sono necessari più segnali di controllo , come nel caso del registro h virgola che necessita di HLanche di HR volevo fare un link al registro h nella pagina del modulo ALU , ma vedo che anche lì non cè nessuna indicazione di HL anche di HR ("quando un registro presenta più segnali di ingresso che possono essere attivi contemporaneamente (ad esempio il registro dei Flag, oppure il registro H");)
-- far notare che il led che mostra gli step sono 8+1 e non 16, furbata,
 - Ho aggiunto anche una barra a led per mostrare l'indirizzo correntemente In input sulle EEPROM
