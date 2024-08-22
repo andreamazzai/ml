@@ -23,7 +23,7 @@ Alcune note propedeutiche alla comprensione di quanto esposto in questa pagina:
 
 ### Instruction Register
 
-Un Instruction Register (IR) memorizza l'istruzione corrente prelevandola dalla memoria.
+Il ruolo dell'Instruction Register (IR) è di memorizzare l'istruzione corrente prelevandola dalla memoria.
 
 L'Instruction Register del SAP presentava una dimensione di un byte, all'interno del quale erano contenuti sia l'istruzione che l'operando:
 
@@ -67,7 +67,7 @@ Per poter gestire questo numero di istruzioni, l'opcode richiede un intero byte;
 - un solo byte per le istruzioni con indirizzamento Implicito e Accumulatore, che non hanno dunque bisogno di un operando;
 - due o tre\* byte per tutte le altre istruzioni che hanno bisogno di un operando (istruzioni a due o tre* byte per definire un indirizzo; istruzioni a due byte per definire un valore assoluto).
 
-\* Un computer con 256 byte di RAM non necessità di istruzioni a 3 byte, perché un operando della lunghezza di un unico byte è in grado di indirizzare tutta la memoria del computer, come brevemente discusso anche nella sezione [Indirizzamenti](../alu/#indirizzamenti) della pagina dedicata all'ALU.
+\* Un computer con 256 byte di RAM non necessita di istruzioni a 3 byte, perché un operando della lunghezza di un singolo byte è in grado di indirizzare tutta la memoria del computer, come brevemente discusso anche nella sezione [Indirizzamenti](../alu/#indirizzamenti) della pagina dedicata all'ALU.
 
 Conseguentemente:
 
