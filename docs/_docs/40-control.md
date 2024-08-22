@@ -23,10 +23,16 @@ Alcune note propedeutiche alla comprensione di quanto esposto in questa pagina:
 
 ### Instruction Register
 
-L'Instruction Register del SAP presentava istruzioni lunghe un byte che al loro interno includevano sia l'istruzione stessa sia l'operando:
+Un Instruction Register (IR) memorizza l'istruzione corrente prelevandola dalla memoria.
+
+L'Instruction Register del SAP presentava una dimensione di un byte, all'interno del quale erano contenuti sia l'istruzione che l'operando:
 
 - i 4 bit più significativi erano dedicati all'istruzione;
-- i 4 bit meno significativi erano riservati all'operando.
+- i 4 bit meno significativi erano riservati a un operando o a un indirizzo opzionali.
+
+Se i bit meno significativi contenevano un operando (ad esempio, un valore immediato da utilizzare in un'operazione aritmetica), questo valore veniva caricato in un determinato registro per l'esecuzione dell'istruzione.
+
+Se i bit meno significativi contenevano un indirizzo di memoria, questo indirizzo veniva caricato nel Memory Address Register, che puntava così alla posizione di memoria da cui leggere o scrivere dati.
 
 Nell'immagine seguente, tratta dal video <a href="https://youtu.be/JUVt_KYAp-I?t=1837" target="_blank">Reprogramming CPU microcode with an Arduino</a> di Ben Eater, si vede come ogni byte di un semplice programma di somma e sottrazione includa sia l'operazione sia l'operando:
 
