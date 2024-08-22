@@ -60,8 +60,11 @@ Ad esempio:
 
 *Rappresentazione di un programma di somma, sottrazione e output caricato nei 16 byte della memoria del SAP.*
 
-In conseguenza del numero di bit utilizzato per l'istruzione, la connessione tra Instruction Register del SAP ed EEPROM contenenti il microcode poteva avere una dimensione di soli 4 bit.
+In conseguenza del numero di bit utilizzato per l'istruzione, la connessione tra Instruction Register del SAP ed EEPROM contenenti il microcode poteva avere una dimensione di soli 4 bit, come visibile in figura:
 
+[![Schema della Control Logic del SAP computer](../../assets/control/40-control-logic-schema-SAP.png "Schema logico della Control Logic del SAP computer"){:width="100%"}](../../assets/control/40-control-logic-schema-SAP.png)
+
+*Schema della Control Logic del SAP computer.*
 Una fondamentale differenza tra Instruction Register del SAP ed Instruction Register dell'NQSAP e del BEAM è la dimensione. Il 6502 ha un set di istruzioni *relativamente* piccolo, composto da 56 istruzioni di base; tuttavia, queste istruzioni possono essere utilizzate in diverse modalità di indirizzamento, il che porta il numero totale di combinazioni possibili a circa 150.
 
 Per poter gestire questo numero di istruzioni, l'opcode richiede un intero byte; inoltre, l'architettura del computer deve presentare un Instruction Register adeguato, nonché la possibilità di gestire istruzioni di lunghezza diversa:
@@ -82,9 +85,6 @@ Conseguentemente, per un computer come l'NQSAP o il BEAM:
 
 Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF da 8 registri in cascata, così il primo viene aggiornato al normale caricamento dell'IR (che corrisponderebbe a T7 (step 1), ma causando un glitch sulla ROM)… invece di collegare il FF agli ingressi delle ROM, viene collegato a un altro FF che viene caricato col Falling Edge del CLK / Rising Edge del CLK, così le uscite delle ROM vengono aggiornate alla fine della microistruzione quando i segnali sono stabili 😁
 
-[![Schema della Control Logic del SAP computer](../../assets/control/40-control-logic-schema-SAP.png "Schema logico della Control Logic del SAP computer"){:width="100%"}](../../assets/control/40-control-logic-schema-SAP.png)
-
-*Schema della Control Logic del SAP computer.*
 
 ### Ring Counter
 
