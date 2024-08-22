@@ -15,9 +15,11 @@ In generale, la gestione delle istruzioni consta di tre capisaldi: *Instruction 
 
 *Schema della Control Logic dell'NQSAP, leggermente modificato al solo scopo di migliorarne la leggibilità.*
 
-Nota: Nel computer SAP di Ben Eater, la denominazione dei segnali è 'modulo-centrica', riflettendo la funzione specifica di ciascun modulo: ad esempio, il segnale RO (RAM Out) estrae il contenuto della RAM sul bus, mentre AI (A Input) carica il registro A.
+Alcune note propedeutiche alla comprensione di quanto esposto in questa pagina:
 
-Nel computer NQSAP di Tom Nisbet e nel BEAM, invece, la nomenclatura è 'computer-centrica', adottando un punto di vista a livello di bus: per esempio, RO diventa RR (RAM Read) e AI diventa WA (Write A).
+1. Nel computer SAP di Ben Eater, la denominazione dei segnali è 'modulo-centrica', riflettendo la funzione specifica di ciascun modulo: ad esempio, il segnale RO (RAM Out) estrae il contenuto della RAM sul bus, mentre AI (A Input) carica il registro A. Nel computer NQSAP di Tom Nisbet e nel BEAM, invece, la nomenclatura è 'computer-centrica', adottando un punto di vista a livello di bus: per esempio, RO diventa RR (RAM Read) e AI diventa WA (Write A).
+
+2. Nell'NQSAP e nel BEAM l'Instruction Register (IR) è incluso nello schema della Control Logic, mentre negli schemi del SAP stava su un foglio separato.
 
 ### Instruction Register
 
