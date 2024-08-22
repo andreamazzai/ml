@@ -15,6 +15,10 @@ In generale, la gestione delle istruzioni consta di tre capisaldi: *Instruction 
 
 *Schema della Control Logic dell'NQSAP, leggermente modificato al solo scopo di migliorarne la leggibilità.*
 
+Nota: Nel computer SAP di Ben Eater, la denominazione dei segnali è 'modulo-centrica', riflettendo la funzione specifica di ciascun modulo: ad esempio, il segnale RO (RAM Out) estrae il contenuto della RAM sul bus, mentre AI (A Input) carica il registro A.
+
+Nel computer NQSAP di Tom Nisbet e nel BEAM, invece, la nomenclatura è 'computer-centrica', adottando un punto di vista a livello di bus: per esempio, RO diventa RR (RAM Read) e AI diventa WA (Write A).
+
 ### Instruction Register
 
 L'Instruction Register del SAP presentava istruzioni lunghe un byte che al loro interno includevano sia l'istruzione stessa sia l'operando:
@@ -76,54 +80,52 @@ Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF d
 
 ### Ring Counter
 
-Le istruzioni di un microprocessore sono composte da un certo numero di step, più precisamente chiamati *microistruzioni*.
+Per capire il funzionamento del Ring Counter, è necessario fare proprio il concetto di microistruzione: le *istruzioni* di un microprocessore sono composte da un certo numero di step, più precisamente chiamati *microistruzioni*.
 
-Prima dell'esecuzione di ogni microistruzione, la Control Logic deve settare tutti i segnali contenuti in tale microistruzione, così che al successivo impulso di clock (che nel nostro caso è il Rising Edge del CLK) tutti i moduli del computer eseguano correttamente i task assegnati.
+Infatti, ogni istruzione (ad esempio, "carica un valore nel registro X", "incrementa il contenuto della locazione $EA" o "esegui uno scorrimento a destra dell'accumulatore") è composta da una sequenza di microistruzioni elementari, che corrispondono ai singoli passi (step) necessari per completare l'operazione.
 
-Ad esempio, una istruzione LDA Immediate del 6502 si traduce nei seguenti quattro step:
+Ad esempio, l'istruzione LDA #$94 (che si traduce in "carica nell'accumulatore il valore esadecimale $94"), è composta dai seguenti quattro step:
 
 ~~~text
 | ---- | ------------------------- |
-| step | microistruzione           |
+| Step | Microistruzione           |
 | ---- | ------------------------- |
-| 1    | RPC | WM                  |
-| 2    | RR  | WIR | PCI           |
+| 1*   | RPC | WM                  |
+| 2*   | RR  | WIR | PCI           |
 | 3    | RPC | WM                  |
 | 4    | RR  | FNZ | WAH | PCI | N |
 | ---- | ------------------------- |
 ~~~
 
-- Il primo step espone il contenuto del Program Counter sul bus (RPC, Read Program Counter) e scrive il contenuto del bus nel MAR (WM, Write Memor Address Register).
-- Il secondo step espone sul bus il contenuto della locazione di memoria puntata dal MAR (RR, Read RAM), scrive il contenuto del bus nell'Instruction Register (WIR, Write Instruction Register) e incrementa il Program Counter (Program Counter Increment).
-- Uguale al primo step; alla fine dello step, il MAR punterà all'indirizzo dell'operando.
-- Il quarto ed ultimo step espone sul bus il contenuto della locazione di memoria puntata dal MAR (RR, Read RAM), abilita la scrittura dei Flag N e Z (FNZ), scrive il contenuto del bus su A e H (WAH, Write A, H), incrementa il Program Counter (Program Counter Increment) e resetta il Ring Counter (N, Next).
+1. Il primo step espone il contenuto del Program Counter sul bus (RPC, Read Program Counter) e scrive il contenuto del bus nel MAR (WM, Write Memory Address Register).
+2. Il secondo step espone sul bus il contenuto della locazione di memoria puntata dal MAR (RR, Read RAM), scrive il contenuto del bus nell'Instruction Register (WIR, Write Instruction Register) e incrementa il Program Counter (Program Counter Increment).
+3. Uguale al primo step; alla fine dello step, il MAR punterà all'indirizzo dell'operando.
+4. Il quarto ed ultimo step espone sul bus il contenuto della locazione di memoria puntata dal MAR (RR, Read RAM), abilita la scrittura dei Flag N e Z (FNZ), scrive il contenuto del bus su A e H (WAH, Write A, H), incrementa il Program Counter (Program Counter Increment) e resetta il Ring Counter (N, Next).
 
-La Control Logic deve settare correttamente la *Control Word* prima dell'esecuzione di ogni microistruzione, così che le tutti i segnali definiti dalla Control Word possano essere correttamente gestiti in corrispondenza di un opportuno impulso di clock (che nel nostro caso è il Rising Edge del CLK).
+Alla fine del quarto step, il Flag Z non sarà attivo (il risultato dell'operazione di caricamento dell'accumulatore non è uguale a zero), mentre il Flag N sarà attivo (secondo il metodo di [rappresentazione dei numeri Signed](../math/#numeri-unsigned-e-numeri-signed) a 8 bit in Complemento a 2, 1001.0100 è un numero negativo, in quanto il bit più significativo è allo stato logico 1).
 
-La Control Word è una stringa di bit utilizzata in una Control Logic per governare e coordinare il comportamento dei vari componenti del processore durante l'esecuzione di una microistruzione.
+Perché tutto questo accada, la Control Logic deve settare la giusta *Control Word* per ogni microistruzione. Si può definire la Control Word come una stringa di bit utilizzata per governare e coordinare il comportamento dei vari componenti del processore durante l'esecuzione di una microistruzione. Questa stringa di bit è definita nel microcode scritto nelle EEPROM; ad ogni bit corrisponde un segnale di controllo (RPC, WM, PCI, RR eccetera).
 
-In una CPU è sempre necessario conoscere in ogni momento quale sia l'istruzione in esecuzione - ne riceviamo indicazioni dall'Instruction Register - e quale sia lo step correntemente attivo, per conoscere il quale ci viene in aiuto il Ring Counter. Tanto il SAP quanto l'NQSAP e il BEAM sviluppano il Ring Counter attorno a un contatore <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">74LS161</a>, in grado di contare da 0 a 15, e a un DEMUX 74LS138, che ci aiuta ad avere riscontro visivo sullo step in esecuzione.
+\* E' opportuno segnalare che i primi due step sono identici per tutte le istruzioni del computer: alla fine di questi due step l'Instruction Register contiene l'Opcode dell'istruzione, che, affiancato alle microistruzioni, permette di definire il comportamento di ogni step di ogni istruzione.
 
-Nella durata di un ciclo di clock, due sono i momenti essenziali: il Rising Edge (passaggio del segnale dallo stato logico LO allo stato logico HI) e il Falling Edge (viceversa).
+---
+Definita la microistruzione, possiamo procedere con il funzionamento del Ring Counter.
 
-- I registri della CPU sono tipicamente aggiornati al *Rising Edge* del CLK, in quanto la maggior parte dei chip modifica il proprio stato proprio in coincidenza della transizione del CLK dallo stato logico LO allo stato logico HI. Fanno parte di questo momento tutti i registri principali del computer: PC, MAR, RAM, IR, A, B, H, Flag: al Rising Edge del CLK, avvengono le azioni di caricamento.
+In una CPU è necessario conoscere in ogni momento quale sia l'istruzione in esecuzione - ne riceviamo indicazioni dall'Instruction Register - e quale sia lo step correntemente attivo, per conoscere il quale ci viene in aiuto il Ring Counter. Tanto il SAP quanto l'NQSAP e il BEAM sviluppano il Ring Counter attorno a un contatore <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">74LS161</a>, in grado di contare da 0 a 15, e a un DEMUX 74LS138, che ci aiuta ad avere riscontro visivo sulla microistruzione in esecuzione.
 
-Come anticipato, la Control Logic deve settare correttamente la *Control Word* prima dell'esecuzione di ogni microistruzione, così che questa possa poi essere correttamente eseguita in corrispondenza del Rising Edge del CLK.
+In generale, i momenti essenziali di un ciclo di clock in un computer sono due: il Rising Edge ↗ (passaggio del segnale dallo stato logico LO allo stato logico HI) e il Falling Edge ↘ (viceversa).
 
-Responsabile della tracciatura della Control Word è il Ring Counter.
+- Rising Edge: la maggior parte dei chip (contatori, registri, FF) modifica il proprio stato in coincidenza con la transizione del segnale di clock dallo stato logico LO allo stato logico HI; le azioni di caricamento di tutti i moduli del computer (PC, MAR, RAM, IR, A, B, H, Flag, SP, O) avvengono in questo momento. Poiché il caricamento dei registri avviene con il Rising Edge del clock, ne consegue che la Control Word deve essere settata *prima* di ogni occorrenza di questo evento, dunque tra un Rising Edge del clock e l'altro.
 
-Si può dire che la Control Logic debba essere settata tra un Rising Edge del clock e l'altro; in altre parole, la Control Logic deve approntare la Control Word con sufficiente anticipo rispetto al Rising Edge del CLK. Per fare questo, è possibile utilizzare un inverter per pilotare il clock del Ring Counte, così che questo possa effettuare l'operazione di settaggio della Control Word in corrispondenza del Falling Edge del clock.
+- Falling Edge: risulta che il momento più indicato per eseguire la configurazione della Control Word - e dunque della microistruzione - sia il Falling Edge del clock. E' possibile utilizzare un semplice inverter per invertire la fase del clock del Ring Counter, così che questo possa effettuare l'operazione di settaggio della Control Word in corrispondenza del Falling Edge del clock.
 
-Ad esempio, quando c'è il segnale CE Counter Enable attivo, il PC viene incrementato al Rising Edge e l'indirizzo viene aumentato di uno.
+A questo punto è evidente che l'Instruction Register contiene l'Opcode dell'istruzione attualmente in esecuzione e che il Ring Counter indica lo step attivo: possiamo usare una Combinational Logic e costruire il microcode da caricare nelle EEPROM, che metteranno in output gli opportuni segnali da abilitare per ogni step di ogni istruzione.
 
-Il 74LS138 è un decoder che può prendere i 3 bit (ce ne bastano 3 per gestire 8 cicli, visto che gli step delle microistruzioni sono al massimo 6) e convertirli in singoli bit che rappresentano lo step della microistruzione corrente e poi uno di questi, l'ultimo, che resetta il 74LS161 in modo da risparmiare i cicli di clock inutilizzati.
+Il contatore del Ring Counter '161 espone un output binario, che può pilotare un DEMUX '138, che può prendere i 3 bit (ce ne bastano 3 per gestire 8 cicli, visto che gli step delle microistruzioni sono al massimo 6) e convertirli in singoli bit che rappresentano lo step della microistruzione corrente e poi uno di questi, l'ultimo, che resetta il 74LS161 in modo da risparmiare i cicli di clock inutilizzati.
+
+ Per esempio quando siamo in T0, che è la prima microistruzione, prendiamo l'uscita del 74LS138, la neghiamo con un NOT per portarla positiva e attiviamo CO e MI e poi Clock. Alla successiva attiviamo RO e II  e poi Clock e alla successiva attiviamo CE e poi Clock.
 
 Come si vede nello schema dell'n Q sub non vi è più un controllo del reset del contatore da parte del 138.
-
-A questo punto abbiamo nell'Instruction Register l'istruzione attualmente in esecuzione e nel contatore lo step, che rappresenta la microistruzione. Possiamo usare una Combinational Logic per settare i nostri segnali da abilitare per ogni microistruzione. Per esempio quando siamo in T0, che è la prima microistruzione, prendiamo l'uscita del 74LS138, la neghiamo con un NOT per portarla positiva e attiviamo CO e MI e poi Clock. Alla successiva attiviamo RO e II  e poi Clock e alla successiva attiviamo CE e poi Clock.
-E poiché CE può essere inserito nella stessa microistruzione di RO e II possiamo ridurre la lunghezza delle microistruzioni a un massimo di 5 (step 0-4).
-
-Come indicato anche nella sezione [Differenze](.../alu/#differenze-tra-moduli-alu-dellnqsap-e-del-beam) della pagina dell'ALU, bisogna notare che il computer NQSAP prevedeva solo 8 step per le microistruzioni. Per emulare le istruzioni del 6502 di salto condizionale, di scorrimento / rotazione e di salto a subroutine servono più step, pertanto, sul computer BEAM ne sono stati previsti 16.
 
 Le istruzioni del computer sap avevano tutte la stessa durata cioè 5 step indipendentemente dalla loro complessità punto nel micro code che segue possiamo vedere che in realtà l'istruzione di caricamento immediato è lunga solo tre step , mentre ad esempio somma e sottrazione sono lunghe 5 step
 
@@ -151,6 +153,8 @@ const PROGMEM uint16_t microcode_template[16][8] = {
 ...
 ...
 ~~~
+
+Come indicato anche nella sezione [Differenze](.../alu/#differenze-tra-moduli-alu-dellnqsap-e-del-beam) della pagina dell'ALU, bisogna notare che il computer NQSAP prevedeva solo 8 step per le microistruzioni. Per emulare le istruzioni del 6502 di salto condizionale, di scorrimento / rotazione e di salto a subroutine servono più step, pertanto, sul computer BEAM ne sono stati previsti 16.
 
 come si può vedere nello schema del SAP, il contatore '161 presente le sue uscite agli ingressi di selezione del DEMUX '138, che attiverà in sequenza le uscite invertite (active = LO) da 00 a 05 in sequenza; all'attivazione di quest'ultima, le due NAND attiveranno l'ingresso di Reset /MR del '161, che riporterà il conteggi degli step allo zero iniziale, cominciando così una nuova istruzione.
 
@@ -497,3 +501,4 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 - Evidenziare la nomenclatura dei segnali da fare nella pagina della control logic : l'approccio di ben era centri con rispetto al modulo , mentre l'approccio del computer NQSAP è relativo al computer nella sua interezza
 - non trovo riferimenti ad HL e HR in nessuna pagina; Poiché in questa pagina sto parlando del fatto che per alcuni registri sono necessari più segnali di controllo , come nel caso del registro h virgola che necessita di HLanche di HR volevo fare un link al registro h nella pagina del modulo ALU , ma vedo che anche lì non cè nessuna indicazione di HL anche di HR ("quando un registro presenta più segnali di ingresso che possono essere attivi contemporaneamente (ad esempio il registro dei Flag, oppure il registro H");)
 - Ho aggiunto anche una barra a led per mostrare l'indirizzo correntemente In input sulle EEPROM
+- verificare quando spiegare cosa fa il 138: se metto prima Ring Counter o la speigazione delle uscite dei 4x 138 della prima ROM
