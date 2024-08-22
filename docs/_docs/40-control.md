@@ -9,7 +9,7 @@ excerpt: "Control Logic del BEAM computer"
 
 Questa pagina descrive le Control Logic dell'NQSAP e del BEAM, evidenzia le differenze con la Control Logic del SAP computer di Ben Eater e approfondisce gli argomenti che avevo trovato più ostici e più interessanti.
 
-In generale, la gestione delle istruzioni consta di tre capisaldi: **Instruction Register**, **Ring Counter** e **Microcode**.
+In generale, la gestione delle istruzioni consta di tre capisaldi: *Instruction Register*, *Ring Counter* e *Microcode*.
 
 [![Schema della Control Logic dell'NQSAP](../../assets/control/40-control-logic-schema-nqsap.png "Schema logico della Control Logic dell'NQSAP"){:width="100%"}](../../assets/control/40-control-logic-schema-nqsap.png)
 
@@ -55,7 +55,7 @@ Per poter gestire questo numero di istruzioni, l'opcode richiede un intero byte;
 - un solo byte per le istruzioni con indirizzamento Implicito e Accumulatore, che non hanno dunque bisogno di un operando;
 - due o tre\* byte per tutte le altre istruzioni che hanno bisogno di un operando (istruzioni a due o tre* byte per definire un indirizzo; istruzioni a due byte per definire un valore assoluto).
 
-\* Notare che in un computer con 256 byte di RAM le modalità di indirizzamento con 3 byte non sono necessarie, perché un operando della lunghezza di un unico byte è in grado di indirizzare tutta la memoria del computer, come brevemente discusso anche nella sezione [Indirizzamenti](../alu/#indirizzamenti) della pagina dedicata all'ALU.
+\* Un computer con 256 byte di RAM non necessità di istruzioni a 3 byte, perché un operando della lunghezza di un unico byte è in grado di indirizzare tutta la memoria del computer, come brevemente discusso anche nella sezione [Indirizzamenti](../alu/#indirizzamenti) della pagina dedicata all'ALU.
 
 Conseguentemente:
 
@@ -76,7 +76,29 @@ Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF d
 
 ### Ring Counter
 
-Le istruzioni di un microprocessore sono composte da un certo numero di step, più precisamente chiamati *microistruzioni*. La Control Logic deve settare correttamente la *Control Word* prima dell'esecuzione di ogni microistruzione, così che questa possa poi essere correttamente eseguita in corrispondenza di un opportuno impulso di clock (che nel nostro caso è il Rising Edge del CLK).
+Le istruzioni di un microprocessore sono composte da un certo numero di step, più precisamente chiamati *microistruzioni*.
+
+Prima dell'esecuzione di ogni microistruzione, la Control Logic deve settare tutti i segnali contenuti in tale microistruzione, così che al successivo impulso di clock (che nel nostro caso è il Rising Edge del CLK) tutti i moduli del computer eseguano correttamente i task assegnati.
+
+Ad esempio, una istruzione LDA Immediate del 6502 si traduce nei seguenti quattro step:
+
+~~~text
+| ---- | ------------------------- |
+| step | microistruzione           |
+| ---- | ------------------------- |
+| 1    | RPC | WM                  |
+| 2    | RR  | WIR | PCI           |
+| 3    | RPC | WM                  |
+| 4    | RR  | FNZ | WAH | PCI | N |
+| ---- | ------------------------- |
+~~~
+
+- Il primo step espone il contenuto del Program Counter sul bus (RPC, Read Program Counter) e scrive il contenuto del bus nel MAR (WM, Write Memor Address Register).
+- Il secondo step espone sul bus il contenuto della locazione di memoria puntata dal MAR (RR, Read RAM), scrive il contenuto del bus nell'Instruction Register (WIR, Write Instruction Register) e incrementa il Program Counter (Program Counter Increment).
+- Uguale al primo step; alla fine dello step, il MAR punterà all'indirizzo dell'operando.
+- Il quarto ed ultimo step espone sul bus il contenuto della locazione di memoria puntata dal MAR (RR, Read RAM), abilita la scrittura dei Flag N e Z (FNZ), scrive il contenuto del bus su A e H (WAH, Write A, H), incrementa il Program Counter (Program Counter Increment) e resetta il Ring Counter (N, Next).
+
+La Control Logic deve settare correttamente la *Control Word* prima dell'esecuzione di ogni microistruzione, così che le tutti i segnali definiti dalla Control Word possano essere correttamente gestiti in corrispondenza di un opportuno impulso di clock (che nel nostro caso è il Rising Edge del CLK).
 
 La Control Word è una stringa di bit utilizzata in una Control Logic per governare e coordinare il comportamento dei vari componenti del processore durante l'esecuzione di una microistruzione.
 
