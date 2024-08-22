@@ -60,6 +60,8 @@ Ad esempio:
 
 *Rappresentazione di un programma di somma, sottrazione e output caricato nei 16 byte della memoria del SAP.*
 
+In conseguenza del numero di bit utilizzato per l'istruzione, la connessione tra Instruction Register del SAP ed EEPROM contenenti il microcode poteva avere una dimensione di soli 4 bit.
+
 Una fondamentale differenza tra Instruction Register del SAP ed Instruction Register dell'NQSAP e del BEAM è la dimensione. Il 6502 ha un set di istruzioni *relativamente* piccolo, composto da 56 istruzioni di base; tuttavia, queste istruzioni possono essere utilizzate in diverse modalità di indirizzamento, il che porta il numero totale di combinazioni possibili a circa 150.
 
 Per poter gestire questo numero di istruzioni, l'opcode richiede un intero byte; inoltre, l'architettura del computer deve presentare un Instruction Register adeguato, nonché la possibilità di gestire istruzioni di lunghezza diversa:
@@ -69,16 +71,14 @@ Per poter gestire questo numero di istruzioni, l'opcode richiede un intero byte;
 
 \* Un computer con 256 byte di RAM non necessita di istruzioni a 3 byte, perché un operando della lunghezza di un singolo byte è in grado di indirizzare tutta la memoria del computer, come brevemente discusso anche nella sezione [Indirizzamenti](../alu/#indirizzamenti) della pagina dedicata all'ALU.
 
-Conseguentemente:
+Conseguentemente, per un computer come l'NQSAP o il BEAM:
 
-- il bus tra Instruction Register e Control Logic deve avere un'ampiezza di 8 bit e non più di soli 4 bit come nel SAP;
+- la connessione tra Instruction Register e Control Logic deve avere un'ampiezza di 8 bit e non più di soli 4 bit come nel SAP;
 - sono necessarie EEPROM 28C256 da 256Kb con 15 pin per gli indirizzi:
   - 8 pin di indirizzi per le istruzioni (2^8 = 256 istruzioni)
   - 4 pin di indirizzi per le microistruzioni (2^4 = 16 step)
   - 2 pin di indirizzi per selezionare le ROM
   - rimane un pin inutilizzato, tanto da pensare di poter utilizzare EEPROM da 128Kb, che però non esistono in commercio <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">con l'interfaccia parallela</a>.
-
-**Qui devo iniziare spiegare come è fatto l'IR dell'NQSAP e a parlare della differenza tra il registro delle istruzioni dello NQSAP e del Beam. Segnalare che avevo certamente letto tutto su n QSP , ma avevo anche cercato di comprendere le differenze nella versione PCB avevo compreso chela bufferizzazione avrebbe compotato diversi vantaggi , cosa che ho applicato al BAM .**
 
 Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF da 8 registri in cascata, così il primo viene aggiornato al normale caricamento dell'IR (che corrisponderebbe a T7 (step 1), ma causando un glitch sulla ROM)… invece di collegare il FF agli ingressi delle ROM, viene collegato a un altro FF che viene caricato col Falling Edge del CLK / Rising Edge del CLK, così le uscite delle ROM vengono aggiornate alla fine della microistruzione quando i segnali sono stabili 😁
 
@@ -90,9 +90,9 @@ Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF d
 
 Per capire il funzionamento del Ring Counter, è necessario fare proprio il concetto di microistruzione: le *istruzioni* di un microprocessore sono composte da un certo numero di step, più precisamente chiamati *microistruzioni*.
 
-Infatti, ogni istruzione (ad esempio, "carica un valore nel registro X", "incrementa il contenuto della locazione $EA" o "esegui uno scorrimento a destra dell'accumulatore") è composta da una sequenza di microistruzioni elementari, che corrispondono ai singoli passi (step) necessari per completare l'operazione.
+Infatti, ogni istruzione di un microprocessore (ad esempio, "carica un valore nel registro X", "incrementa il contenuto della locazione $EA" o "esegui uno scorrimento a destra dell'accumulatore") è composta da una sequenza di microistruzioni elementari, che corrispondono ai singoli passi (step) necessari per completare l'operazione voluta.
 
-Ad esempio, l'istruzione LDA #$94 (che si traduce in "carica nell'accumulatore il valore esadecimale $94"), è composta dai seguenti quattro step:
+Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio del 6502 si traduce in "carica nell'accumulatore il valore esadecimale $94") è composta dai seguenti quattro step:
 
 ~~~text
 | ---- | ------------------------- |
@@ -106,8 +106,8 @@ Ad esempio, l'istruzione LDA #$94 (che si traduce in "carica nell'accumulatore i
 ~~~
 
 1. Il primo step espone il contenuto del Program Counter sul bus (RPC, Read Program Counter) e scrive il contenuto del bus nel MAR (WM, Write Memory Address Register).
-2. Il secondo step espone sul bus il contenuto della locazione di memoria puntata dal MAR (RR, Read RAM), scrive il contenuto del bus nell'Instruction Register (WIR, Write Instruction Register) e incrementa il Program Counter (Program Counter Increment).
-3. Uguale al primo step; alla fine dello step, il MAR punterà all'indirizzo dell'operando.
+2. Il secondo step espone sul bus il contenuto della locazione di memoria puntata dal MAR (RR, Read RAM), scrive il contenuto del bus nell'Instruction Register (WIR, Write Instruction Register) e incrementa il Program Counter (Program Counter Increment). Alla fine di questo step, l'IR conterrà l'opcode dell'Istruzione.
+3. Questo step è uguale al primo; alla fine dello step, il MAR punterà all'indirizzo dell'operando.
 4. Il quarto ed ultimo step espone sul bus il contenuto della locazione di memoria puntata dal MAR (RR, Read RAM), abilita la scrittura dei Flag N e Z (FNZ), scrive il contenuto del bus su A e H (WAH, Write A, H), incrementa il Program Counter (Program Counter Increment) e resetta il Ring Counter (N, Next).
 
 Alla fine del quarto step, il Flag Z non sarà attivo (il risultato dell'operazione di caricamento dell'accumulatore non è uguale a zero), mentre il Flag N sarà attivo (secondo il metodo di [rappresentazione dei numeri Signed](../math/#numeri-unsigned-e-numeri-signed) a 8 bit in Complemento a 2, 1001.0100 è un numero negativo, in quanto il bit più significativo è allo stato logico 1).
@@ -128,6 +128,8 @@ In generale, i momenti essenziali di un ciclo di clock in un computer sono due: 
 - Falling Edge: risulta che il momento più indicato per eseguire la configurazione della Control Word - e dunque della microistruzione - sia il Falling Edge del clock. E' possibile utilizzare un semplice inverter per invertire la fase del clock del Ring Counter, così che questo possa effettuare l'operazione di settaggio della Control Word in corrispondenza del Falling Edge del clock.
 
 A questo punto è evidente che l'Instruction Register contiene l'Opcode dell'istruzione attualmente in esecuzione e che il Ring Counter indica lo step attivo: possiamo usare una Combinational Logic e costruire il microcode da caricare nelle EEPROM, che metteranno in output gli opportuni segnali da abilitare per ogni step di ogni istruzione.
+
+**Controllare:** Le operazioni di lettura settate dalla Control Word in realtà vengono applicate immediatamente: Per esempio quando desidero leggere la memoria RAM il segnale rr viene attivato e il transceiver 74LS245 metterà subito sul bus il valore presente in RAM, dando tempo al computer di stabilizzarsi e facendo così in modo che i registri che si desiderano aggiornare, come da esempio A, abbiano degli ingressi stabili nel momento in cui arriva il Rising Edge.
 
 Il contatore del Ring Counter '161 espone un output binario, che può pilotare un DEMUX '138, che può prendere i 3 bit (ce ne bastano 3 per gestire 8 cicli, visto che gli step delle microistruzioni sono al massimo 6) e convertirli in singoli bit che rappresentano lo step della microistruzione corrente e poi uno di questi, l'ultimo, che resetta il 74LS161 in modo da risparmiare i cicli di clock inutilizzati.
 
