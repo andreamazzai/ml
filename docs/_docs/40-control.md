@@ -65,6 +65,7 @@ In conseguenza del numero di bit utilizzato per l'istruzione, la connessione tra
 [![Schema della Control Logic del SAP computer](../../assets/control/40-control-logic-schema-SAP.png "Schema logico della Control Logic del SAP computer"){:width="100%"}](../../assets/control/40-control-logic-schema-SAP.png)
 
 *Schema della Control Logic del SAP computer.*
+
 Una fondamentale differenza tra Instruction Register del SAP ed Instruction Register dell'NQSAP e del BEAM è la dimensione. Il 6502 ha un set di istruzioni *relativamente* piccolo, composto da 56 istruzioni di base; tuttavia, queste istruzioni possono essere utilizzate in diverse modalità di indirizzamento, il che porta il numero totale di combinazioni possibili a circa 150.
 
 Per poter gestire questo numero di istruzioni, l'opcode richiede un intero byte; inoltre, l'architettura del computer deve presentare un Instruction Register adeguato, nonché la possibilità di gestire istruzioni di lunghezza diversa:
@@ -83,8 +84,7 @@ Conseguentemente, per un computer come l'NQSAP o il BEAM:
   - 2 pin di indirizzi per selezionare le ROM
   - rimane un pin inutilizzato, tanto da pensare di poter utilizzare EEPROM da 128Kb, che però non esistono in commercio <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">con l'interfaccia parallela</a>.
 
-Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF da 8 registri in cascata, così il primo viene aggiornato al normale caricamento dell'IR (che corrisponderebbe a T7 (step 1), ma causando un glitch sulla ROM)… invece di collegare il FF agli ingressi delle ROM, viene collegato a un altro FF che viene caricato col Falling Edge del CLK / Rising Edge del CLK, così le uscite delle ROM vengono aggiornate alla fine della microistruzione quando i segnali sono stabili 😁
-
+**Questo non deve stare qui, credo** Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF da 8 registri in cascata, così il primo viene aggiornato al normale caricamento dell'IR (che corrisponderebbe a T7 (step 1), ma causando un glitch sulla ROM)… invece di collegare il FF agli ingressi delle ROM, viene collegato a un altro FF che viene caricato col Falling Edge del CLK / Rising Edge del CLK, così le uscite delle ROM vengono aggiornate alla fine della microistruzione quando i segnali sono stabili 😁
 
 ### Ring Counter
 
@@ -110,7 +110,7 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio del 6502 si trad
 3. Questo step è uguale al primo; alla fine dello step, il MAR punterà all'indirizzo dell'operando.
 4. Il quarto ed ultimo step espone sul bus il contenuto della locazione di memoria puntata dal MAR (RR, Read RAM), abilita la scrittura dei Flag N e Z (FNZ), scrive il contenuto del bus su A e H (WAH, Write A, H), incrementa il Program Counter (Program Counter Increment) e resetta il Ring Counter (N, Next).
 
-Alla fine del quarto step, il Flag Z non sarà attivo (il risultato dell'operazione di caricamento dell'accumulatore non è uguale a zero), mentre il Flag N sarà attivo (secondo il metodo di [rappresentazione dei numeri Signed](../math/#numeri-unsigned-e-numeri-signed) a 8 bit in Complemento a 2, 1001.0100 è un numero negativo, in quanto il bit più significativo è allo stato logico 1).
+**poco chiaro se sta qui** Alla fine del quarto step, il Flag Z non sarà attivo (il risultato dell'operazione di caricamento dell'accumulatore non è uguale a zero), mentre il Flag N sarà attivo (secondo il metodo di [rappresentazione dei numeri Signed](../math/#numeri-unsigned-e-numeri-signed) a 8 bit in Complemento a 2, 1001.0100 è un numero negativo, in quanto il bit più significativo è allo stato logico 1).
 
 Perché tutto questo accada, la Control Logic deve settare la giusta *Control Word* per ogni microistruzione. Si può definire la Control Word come una stringa di bit utilizzata per governare e coordinare il comportamento dei vari componenti del processore durante l'esecuzione di una microistruzione. Questa stringa di bit è definita nel microcode scritto nelle EEPROM; ad ogni bit corrisponde un segnale di controllo (RPC, WM, PCI, RR eccetera).
 
@@ -119,50 +119,53 @@ Perché tutto questo accada, la Control Logic deve settare la giusta *Control Wo
 ---
 Definita la microistruzione, possiamo procedere con il funzionamento del Ring Counter.
 
-In una CPU è necessario conoscere in ogni momento quale sia l'istruzione in esecuzione - ne riceviamo indicazioni dall'Instruction Register - e quale sia lo step correntemente attivo, per conoscere il quale ci viene in aiuto il Ring Counter. Tanto il SAP quanto l'NQSAP e il BEAM sviluppano il Ring Counter attorno a un contatore <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">74LS161</a>, in grado di contare da 0 a 15, e a un DEMUX 74LS138, che ci aiuta ad avere riscontro visivo sulla microistruzione in esecuzione.
+In una CPU è necessario conoscere in ogni momento quale sia l'istruzione in esecuzione - ne riceviamo indicazioni dall'Instruction Register - e quale sia lo step correntemente attivo, per conoscere il quale ci viene in aiuto il Ring Counter. Tanto il SAP quanto l'NQSAP e il BEAM sviluppano il Ring Counter attorno a un contatore <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">74LS161</a>, in grado di contare da 0 a 15, e a un demultiplexer <a href="https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target="_blank">74LS138</a>, che ci aiuta ad avere riscontro visivo sulla microistruzione in esecuzione.
 
 In generale, i momenti essenziali di un ciclo di clock in un computer sono due: il Rising Edge ↗ (passaggio del segnale dallo stato logico LO allo stato logico HI) e il Falling Edge ↘ (viceversa).
 
 - Rising Edge: la maggior parte dei chip (contatori, registri, FF) modifica il proprio stato in coincidenza con la transizione del segnale di clock dallo stato logico LO allo stato logico HI; le azioni di caricamento di tutti i moduli del computer (PC, MAR, RAM, IR, A, B, H, Flag, SP, O) avvengono in questo momento. Poiché il caricamento dei registri avviene con il Rising Edge del clock, ne consegue che la Control Word deve essere settata *prima* di ogni occorrenza di questo evento, dunque tra un Rising Edge del clock e l'altro.
 
-- Falling Edge: risulta che il momento più indicato per eseguire la configurazione della Control Word - e dunque della microistruzione - sia il Falling Edge del clock. E' possibile utilizzare un semplice inverter per invertire la fase del clock del Ring Counter, così che questo possa effettuare l'operazione di settaggio della Control Word in corrispondenza del Falling Edge del clock.
+- Falling Edge: un momento facilmente identificabile tra un Rising Edge del clock e l'altro è il Falling Edge. E' possibile invertire la fase del clock del Ring Counter, così che questo possa eseguire la configurazione della Control Word - e dunque della microistruzione - proprio in corrispondenza del Falling Edge.
 
-A questo punto è evidente che l'Instruction Register contiene l'Opcode dell'istruzione attualmente in esecuzione e che il Ring Counter indica lo step attivo: possiamo usare una Combinational Logic e costruire il microcode da caricare nelle EEPROM, che metteranno in output gli opportuni segnali da abilitare per ogni step di ogni istruzione.
+A questo è chiaro che l'Instruction Register contiene l'Opcode dell'istruzione attualmente in esecuzione e il Ring Counter indica lo step attivo: possiamo usare una Combinational Logic e costruire il microcode da caricare nelle EEPROM, che metteranno in output gli opportuni segnali da abilitare per ogni step di ogni istruzione.
 
 **Controllare:** Le operazioni di lettura settate dalla Control Word in realtà vengono applicate immediatamente: Per esempio quando desidero leggere la memoria RAM il segnale rr viene attivato e il transceiver 74LS245 metterà subito sul bus il valore presente in RAM, dando tempo al computer di stabilizzarsi e facendo così in modo che i registri che si desiderano aggiornare, come da esempio A, abbiano degli ingressi stabili nel momento in cui arriva il Rising Edge.
 
-Il contatore del Ring Counter '161 espone un output binario, che può pilotare un DEMUX '138, che può prendere i 3 bit (ce ne bastano 3 per gestire 8 cicli, visto che gli step delle microistruzioni sono al massimo 6) e convertirli in singoli bit che rappresentano lo step della microistruzione corrente e poi uno di questi, l'ultimo, che resetta il 74LS161 in modo da risparmiare i cicli di clock inutilizzati.
+Altro aspetto importante da prendere in considerazione è il numero di microistruzioni che possono comporre ogni istruzione.
 
- Per esempio quando siamo in T0, che è la prima microistruzione, prendiamo l'uscita del 74LS138, la neghiamo con un NOT per portarla positiva e attiviamo CO e MI e poi Clock. Alla successiva attiviamo RO e II  e poi Clock e alla successiva attiviamo CE e poi Clock.
+Ad esempio nel computer sap gli step delle microistruzioni sono al massimo 6)
 
-Come si vede nello schema dell'n Q sub non vi è più un controllo del reset del contatore da parte del 138.
 
 Le istruzioni del computer sap avevano tutte la stessa durata cioè 5 step indipendentemente dalla loro complessità punto nel micro code che segue possiamo vedere che in realtà l'istruzione di caricamento immediato è lunga solo tre step , mentre ad esempio somma e sottrazione sono lunghe 5 step
 
-~~~text
+~~~C++
 ...
 ...
 const PROGMEM uint16_t microcode_template[16][8] = {
-  { CO|MI, RO|II|CE,  0,      0,      0,            0,  0,  0 }, // 0000 - NOP
-  { CO|MI, RO|II|CE,  IO|MI,  RO|AI,  0,            0,  0,  0 }, // 0001 - LDA
-  { CO|MI, RO|II|CE,  IO|MI,  RO|BI,  EO|AI|FI,     0,  0,  0 }, // 0010 - ADD
-  { CO|MI, RO|II|CE,  IO|MI,  RO|BI,  EO|AI|SU|FI,  0,  0,  0 }, // 0011 - SUB
-  { CO|MI, RO|II|CE,  IO|J,   0,      0,            0,  0,  0 }, // 0100 - JMP
-  { CO|MI, RO|II|CE,  IO|MI,  AO|RI,  0,            0,  0,  0 }, // 0101 - STA
-  { CO|MI, RO|II|CE,  IO|AI,  0,      0,            0,  0,  0 }, // 0110 - LDI
-  { CO|MI, RO|II|CE,  0,      0,      0,            0,  0,  0 }, // 0111 - JC // normalmente non accade nulla...
-  { CO|MI, RO|II|CE,  0,      0,      0,            0,  0,  0 }, // 1000 - JZ // normalmente non accade nulla...
-  { CO|MI, RO|II|CE,  0,      0,      0,            0,  0,  0 }, // 1001
-  { CO|MI, RO|II|CE,  0,      0,      0,            0,  0,  0 }, // 1010
-  { CO|MI, RO|II|CE,  0,      0,      0,            0,  0,  0 }, // 1011
-  { CO|MI, RO|II|CE,  0,      0,      0,            0,  0,  0 }, // 1100
-  { CO|MI, RO|II|CE,  0,      0,      0,            0,  0,  0 }, // 1101
-  { CO|MI, RO|II|CE,  AO|OI,  0,      0,            0,  0,  0 }, // 1110 - OUT
-  { CO|MI, RO|II|CE,  HLT,    0,      0,            0,  0,  0 }, // 1111 - HLT
+  { CO|MI, RO|II|CE, 0,     0,     0,           0, 0, 0 }, // 0000 - NOP
+  { CO|MI, RO|II|CE, IO|MI, RO|AI, 0,           0, 0, 0 }, // 0001 - LDA
+  { CO|MI, RO|II|CE, IO|MI, RO|BI, EO|AI|FI,    0, 0, 0 }, // 0010 - ADD
+  { CO|MI, RO|II|CE, IO|MI, RO|BI, EO|AI|SU|FI, 0, 0, 0 }, // 0011 - SUB
+  { CO|MI, RO|II|CE, IO|J,  0,     0,           0, 0, 0 }, // 0100 - JMP
+  { CO|MI, RO|II|CE, IO|MI, AO|RI, 0,           0, 0, 0 }, // 0101 - STA
+  { CO|MI, RO|II|CE, IO|AI, 0,     0,           0, 0, 0 }, // 0110 - LDI
+  { CO|MI, RO|II|CE, 0,     0,     0,           0, 0, 0 }, // 0111 - JC - TBD
+  { CO|MI, RO|II|CE, 0,     0,     0,           0, 0, 0 }, // 1000 - JZ - TBD
+  { CO|MI, RO|II|CE, 0,     0,     0,           0, 0, 0 }, // 1001
+  { CO|MI, RO|II|CE, 0,     0,     0,           0, 0, 0 }, // 1010
+  { CO|MI, RO|II|CE, 0,     0,     0,           0, 0, 0 }, // 1011
+  { CO|MI, RO|II|CE, 0,     0,     0,           0, 0, 0 }, // 1100
+  { CO|MI, RO|II|CE, 0,     0,     0,           0, 0, 0 }, // 1101
+  { CO|MI, RO|II|CE, AO|OI, 0,     0,           0, 0, 0 }, // 1110 - OUT
+  { CO|MI, RO|II|CE, HLT,   0,     0,           0, 0, 0 }, // 1111 - HLT
 };
 ...
 ...
 ~~~
+
+Il contatore del Ring Counter '161 espone un output binario, che può pilotare un DEMUX '138, che può prendere i 3 bit (ce ne bastano 3 per gestire 8 cicli, visto che gli step delle microistruzioni sono al massimo 6) e convertirli in singoli bit che rappresentano lo step della microistruzione corrente e poi uno di questi, l'ultimo, che resetta il 74LS161 in modo da risparmiare i cicli di clock inutilizzati.
+
+Come si vede nello schema dell'NQSAP sub non vi è più un controllo del reset del contatore da parte del 138.
 
 Come indicato anche nella sezione [Differenze](.../alu/#differenze-tra-moduli-alu-dellnqsap-e-del-beam) della pagina dell'ALU, bisogna notare che il computer NQSAP prevedeva solo 8 step per le microistruzioni. Per emulare le istruzioni del 6502 di salto condizionale, di scorrimento / rotazione e di salto a subroutine servono più step, pertanto, sul computer BEAM ne sono stati previsti 16.
 
