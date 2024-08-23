@@ -135,33 +135,14 @@ Altro aspetto importante da prendere in considerazione è il numero di microistr
 
 Ad esempio nel computer sap gli step delle microistruzioni sono al massimo 6)
 
-
 Le istruzioni del computer sap avevano tutte la stessa durata cioè 5 step indipendentemente dalla loro complessità punto nel micro code che segue possiamo vedere che in realtà l'istruzione di caricamento immediato è lunga solo tre step , mentre ad esempio somma e sottrazione sono lunghe 5 step
 
-~~~C++
-...
-...
-const PROGMEM uint16_t microcode_template[16][8] = {
-  { CO|MI, RO|II|CE, 0,     0,     0,           0, 0, 0 }, // 0000 - NOP
-  { CO|MI, RO|II|CE, IO|MI, RO|AI, 0,           0, 0, 0 }, // 0001 - LDA
-  { CO|MI, RO|II|CE, IO|MI, RO|BI, EO|AI|FI,    0, 0, 0 }, // 0010 - ADD
-  { CO|MI, RO|II|CE, IO|MI, RO|BI, EO|AI|SU|FI, 0, 0, 0 }, // 0011 - SUB
-  { CO|MI, RO|II|CE, IO|J,  0,     0,           0, 0, 0 }, // 0100 - JMP
-  { CO|MI, RO|II|CE, IO|MI, AO|RI, 0,           0, 0, 0 }, // 0101 - STA
-  { CO|MI, RO|II|CE, IO|AI, 0,     0,           0, 0, 0 }, // 0110 - LDI
-  { CO|MI, RO|II|CE, 0,     0,     0,           0, 0, 0 }, // 0111 - JC - TBD
-  { CO|MI, RO|II|CE, 0,     0,     0,           0, 0, 0 }, // 1000 - JZ - TBD
-  { CO|MI, RO|II|CE, 0,     0,     0,           0, 0, 0 }, // 1001
-  { CO|MI, RO|II|CE, 0,     0,     0,           0, 0, 0 }, // 1010
-  { CO|MI, RO|II|CE, 0,     0,     0,           0, 0, 0 }, // 1011
-  { CO|MI, RO|II|CE, 0,     0,     0,           0, 0, 0 }, // 1100
-  { CO|MI, RO|II|CE, 0,     0,     0,           0, 0, 0 }, // 1101
-  { CO|MI, RO|II|CE, AO|OI, 0,     0,           0, 0, 0 }, // 1110 - OUT
-  { CO|MI, RO|II|CE, HLT,   0,     0,           0, 0, 0 }, // 1111 - HLT
-};
-...
-...
-~~~
+
+
+
+[![Microcode del computer SAP](../../assets/control/40-cl-sap-microcode.png "Microcode del computer SAP"){:width="66%"}](../../assets/control/40-cl-sap-microcode.png)
+
+*Microcode del computer SAP.*
 
 Il contatore del Ring Counter '161 espone un output binario, che può pilotare un DEMUX '138, che può prendere i 3 bit (ce ne bastano 3 per gestire 8 cicli, visto che gli step delle microistruzioni sono al massimo 6) e convertirli in singoli bit che rappresentano lo step della microistruzione corrente e poi uno di questi, l'ultimo, che resetta il 74LS161 in modo da risparmiare i cicli di clock inutilizzati.
 
