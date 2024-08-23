@@ -32,7 +32,7 @@ L'Instruction Register del SAP presentava una dimensione di un byte, all'interno
 
 Se i bit meno significativi contenevano un operando (ad esempio, un valore immediato da utilizzare in un'operazione aritmetica), questo valore veniva caricato in un determinato registro per l'esecuzione dell'istruzione.
 
-Se i bit meno significativi contenevano un indirizzo di memoria, questo indirizzo veniva caricato nel Memory Address Register, che puntava così alla posizione di memoria da cui leggere o scrivere dati.
+Se i bit meno significativi contenevano un indirizzo di memoria, questo indirizzo veniva caricato nel Memory Address Register (MAR), che puntava così alla posizione di memoria da cui leggere o scrivere dati.
 
 Nell'immagine seguente, tratta dal video <a href="https://youtu.be/JUVt_KYAp-I?t=1837" target="_blank">Reprogramming CPU microcode with an Arduino</a> di Ben Eater, si vede come ogni byte di un semplice programma di somma e sottrazione includa sia l'operazione sia l'operando:
 
@@ -93,9 +93,9 @@ Tirando le fila, per un computer come l'NQSAP o il BEAM:
 
 Per capire il funzionamento del Ring Counter, è necessario fare proprio il concetto di microistruzione: le *istruzioni* di un microprocessore sono composte da un certo numero di step, più precisamente chiamati *microistruzioni*.
 
-Infatti, ogni istruzione di un microprocessore (ad esempio, "carica un valore nel registro X", "incrementa il contenuto della locazione $E5" o "esegui uno scorrimento a destra dell'accumulatore") può essere scompota in una sequenza di microistruzioni elementari, che corrispondono ai singoli passi (step) necessari per completare l'operazione voluta.
+Infatti, ogni istruzione di un microprocessore (ad esempio, "carica un valore nel registro X", "incrementa il contenuto della locazione $E5" o "esegui uno scorrimento a destra dell'accumulatore") può essere *scomposta* in una sequenza di microistruzioni elementari, che corrispondono ai singoli passi (step) necessari per completare l'operazione voluta.
 
-Anticipando alcuni concetti, il Ring Counter (RC) è un registro che tiene traccia dello stato di avanzamento delle microistruzioni. Ogni stato dell'RC corrisponde a un particolare step nel ciclo di esecuzione di un'istruzione, quindi può essere visto come un meccanismo che avanza attraverso le diverse microistruzioni necessarie per eseguire un'istruzione completa della CPU.
+Il registro Ring Counter (RC) tiene traccia dello stato di avanzamento delle microistruzioni. Ogni stato dell'RC corrisponde a un particolare step nel ciclo di esecuzione di un'istruzione, quindi può essere visto come un meccanismo che avanza attraverso le diverse microistruzioni necessarie per eseguire un'istruzione completa della CPU.
 
 Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio del 6502 si traduce in "carica nell'accumulatore il valore esadecimale $94") è composta dai seguenti quattro step / microistruzioni:
 
@@ -111,13 +111,13 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio del 6502 si trad
 ~~~
 
 1. Il primo step espone il contenuto del Program Counter sul bus (RPC, Read Program Counter) e scrive il contenuto del bus nel MAR (WM, Write Memory Address Register).
-2. Il secondo step espone sul bus il contenuto della locazione di memoria puntata dal MAR (RR, Read RAM), scrive il contenuto del bus nell'Instruction Register (WIR, Write Instruction Register) e incrementa il Program Counter (Program Counter Increment). Alla fine di questo step, l'IR conterrà l'opcode dell'Istruzione.
-3. Per questa istruzione, il terzo step è uguale al primo; alla fine dello step, il MAR punterà all'indirizzo dell'operando.
-4. Il quarto ed ultimo step espone sul bus il contenuto della locazione di memoria puntata dal MAR (RR, Read RAM), abilita la scrittura dei Flag N e Z (FNZ), scrive il contenuto del bus su A e H (WAH, Write A, H), incrementa il Program Counter (Program Counter Increment) e resetta il Ring Counter (N, Next).
+2. Il secondo step espone sul bus il contenuto della locazione di memoria puntata dal MAR (RR, Read RAM), scrive il contenuto del bus nell'Instruction Register (WIR, Write Instruction Register) e incrementa il Program Counter (Program Counter Increment). Alla fine di questo step, l'IR conterrà l'opcode dell'Istruzione e il PC punterà alla locazione di memoria successiva, che contiene l'operando.
+3. Si espone il contenuto del Program Counter sul bus (RPC, Read Program Counter) e si scrive il contenuto del bus nel MAR (WM, Write Memory Address Register). A questo punto, il MAR punta alla locazione di memoria che contiene l'operando.
+4. Il quarto ed ultimo step espone sul bus l'operando, che è contenuto nella locazione di memoria puntata dal MAR (RR, Read RAM), abilita la scrittura dei Flag N e Z (FNZ), scrive il contenuto del bus su A e H (WAH, Write A, H), incrementa il Program Counter (Program Counter Increment) e resetta il Ring Counter (N, Next).
 
 Perché tutto questo accada, la Control Logic deve settare la giusta *Control Word* per ogni microistruzione. Si può definire la Control Word come una stringa di bit utilizzata per governare e coordinare il comportamento dei vari componenti del processore durante l'esecuzione di una microistruzione. Questa stringa di bit è definita nel microcode scritto nelle EEPROM; ad ogni bit / pin di output delle EEPROM è associato un segnale di controllo (RPC, WM, PCI, RR eccetera).
 
-\* Importante notare che i primi due step sono identici per *tutte* le istruzioni del computer: alla fine di questi due step l'Instruction Register contiene l'Opcode dell'istruzione, che, affiancato alle microistruzioni, permette di definire il comportamento di ogni step di ogni istruzione. Grazie a questo accorgimento, il computer sarà sempre in grado di partire dopo un reset, indipendentemente dall'istruzione che si troverà nella locazione zero della RAM.
+\* Importante notare che i primi due step sono identici per *tutte* le istruzioni del computer: alla fine di questi due step, l'Instruction Register contiene l'Opcode dell'istruzione, che, insieme alle microistruzioni, definisce il compito di ogni step per ciascuna istruzione. Questo accorgimento garantisce che il computer possa sempre avviarsi correttamente dopo un reset, indipendentemente dall'istruzione presente nella locazione iniziale dopo il caricamento di un programma in memoria.
 
 Le operazioni di una CPU passano per diverse fasi, che possiamo semplificare come:
 
