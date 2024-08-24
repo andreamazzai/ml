@@ -164,11 +164,13 @@ Riassumendo, l'Instruction Register contiene l'Opcode dell'istruzione attualment
 - I segnali di lettura attivano immediatamente il modulo interessato, il quale espone subito il suo output sul bus; questo permette ai segnali di stabilizzarsi prima che vengano letti dai registri che dovranno essere aggiornati.
 - Viceversa, i segnali di scrittura attivano il modulo interessato, ma l'operazione di scrittura verrà eseguita solo al Rising Edge del clock, assicurando che i registri che devono essere aggiornati ricevano segnali stabili prima dell'effettiva scrittura.
 
+### Durata delle istruzioni
+
 Altro aspetto importante da prendere in considerazione è il numero di microistruzioni che possono comporre ogni istruzione.
 
-Ad esempio nel computer sap gli step delle microistruzioni sono al massimo 6)
+Ad esempio nel computer sap gli step delle microistruzioni sono al massimo 6 **verificare bene**
 
-Le istruzioni del computer sap avevano tutte la stessa durata cioè 5 step indipendentemente dalla loro complessità punto nel micro code che segue possiamo vedere che in realtà l'istruzione di caricamento immediato è lunga solo tre step , mentre ad esempio somma e sottrazione sono lunghe 5 step
+Le istruzioni del computer SAP avevano tutte la stessa durata di **5 step**, indipendentemente dalla loro complessità. Nel microcode che segue possiamo vedere che in realtà l'istruzione di caricamento immediato LDA può essere eseguita in tre step, mentre ad esempio somma e sottrazione sono necessitano di 5 step.
 
 [![Microcode del computer SAP](../../assets/control/40-cl-sap-microcode.png "Microcode del computer SAP"){:width="66%"}](../../assets/control/40-cl-sap-microcode.png)
 
