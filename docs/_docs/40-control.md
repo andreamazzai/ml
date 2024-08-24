@@ -155,11 +155,14 @@ In generale, i momenti essenziali di un ciclo di clock in un computer sono due: 
 
 - Falling Edge: un momento facilmente identificabile tra un Rising Edge e l'altro del clock è il Falling Edge. E' possibile invertire la fase del clock del Ring Counter, consentendo la configurazione della Control Word - e dunque della microistruzione - proprio in corrispondenza del Falling Edge.
 
-\* I chip sequanziali producono un output che dipende non solo dagli ingressi attuali, ma anche dallo stato logico precedente.
+\* I chip sequenziali producono un output che dipende non solo dagli ingressi attuali, ma anche dallo stato logico precedente.
 
 Riassumendo, l'Instruction Register contiene l'Opcode dell'istruzione attualmente in esecuzione, mentre il Ring Counter ne indica lo step attivo. Utilizzando una logica combinatoria, è possibile costruire il microcode da caricare nelle EEPROM, che emetteranno gli opportuni segnali (Control Word) per ogni step di ogni istruzione.
 
-È importante sottolineare che la configurazione delle operazioni di lettura e scrittura da parte della Control Word segue tempi diversi: i segnali di lettura attivano immediatamente il modulo interessato, il quale espone subito il suo output sul bus; questo permette ai segnali di stabilizzarsi prima che vengano letti dai registri che dovranno essere aggiornati. Viceversa, i segnali di scrittura attivano il modulo interessato, ma l'operazione di scrittura verrà eseguita solo al Rising Edge del clock, assicurando che i registri che devono essere aggiornati ricevano segnali stabili prima dell'effettiva scrittura.
+È importante sottolineare che la configurazione delle operazioni di lettura e scrittura da parte della Control Word segue tempi diversi:
+
+- I segnali di lettura attivano immediatamente il modulo interessato, il quale espone subito il suo output sul bus; questo permette ai segnali di stabilizzarsi prima che vengano letti dai registri che dovranno essere aggiornati.
+- Viceversa, i segnali di scrittura attivano il modulo interessato, ma l'operazione di scrittura verrà eseguita solo al Rising Edge del clock, assicurando che i registri che devono essere aggiornati ricevano segnali stabili prima dell'effettiva scrittura.
 
 Altro aspetto importante da prendere in considerazione è il numero di microistruzioni che possono comporre ogni istruzione.
 
@@ -301,10 +304,6 @@ SE Stack Enable, vedi pagina Stack Pointer, condivisi con C0 e C1*** (chiamiamol
 
 • Se /LDR-ACTIVE viene attivato (LO), LDR-ACTIVE passa a HI e disattiva le ROM2 e ROM3 collegate via /OE.
 
-## CONTROL LOGIC PART 1
-
-
-
 ## Forse interessante da tenere, espandere, collegare ad altri paragrafi
 
 La realizzazione del comuter SAP mi ha permesso finalmente di capire cosa sia il microcode di un computer moderno.
@@ -340,38 +339,6 @@ Legenda dei segnali:
 | BI      | B Register In           | Il contenuto del bus viene caricato nel registro B                |
 | AI      | A Register In           | Il contenuto del bus viene caricato nel registro A                |
 | EO      | Sum Out                 | L'adder computa A+B e il suo risultato viene esposto sul bus      |
-
-** Le istruzioni del computer SAP includevano in un byte sia l'opcode sia l'operando, come descritto anche in precedenza in questa stessa pagina:
-
->... un unico byte di cui i 4 Most Significant Bit (MSB) rappresentano l'opcode e di cui i 4 Least Significant Bit (LSB) sono l'operando
-
-Introducendo gli Step, riflettevo anche sul fatto che per talune operazioni, da quanto capivo approfondendo l'NQSAP, avere più di 8 microistruzioni sarebbe stato molto util: ecco che, ancora una volta, dovevo riconsiderare il numero di bit di indirizzamento necessari per le EEPROM
-
-8-bit CPU control logic: Part 2
-https://www.youtube.com/watch?v=X7rCxs1ppyY
-
-Prima cosa che facciamo è leggere un comando e metterlo nell'Instruction Register, che tiene traccia del comando che stiamo eseguendo.
-
-• Prima fase: FETCH. Poiché la prima istruzione sta nell'indirizzo 0, devo mettere 0 dal Program Counter PC (comando CO esporta il PC sul bus) al Memory Address Register MAR (comando MI legge dal bus e setta l'indirizzo sulla RAM) così da poter indirizzare la RAM e leggere il comando.
-• Una volta che ho la RAM attiva all'indirizzo zero, copio il contenuto della RAM nell'Instruction Register IR passando dal bus (comando RO e comando II).
-• Poi incrementiamo il PC col comando Counter Enable CE (nel video successivo il CE viene inserito nella microistruzione con RO II).
-• Ora eseguiamo l'istruzione LDA 14, che prende il contenuto della cella 14 e lo scrive in A. Dunque poiché il valore 14 sono i 4 LSB del comando, sono i led gialli dell'IR e col comando Instruction Register Out IO ne copio il valore nel bus e poi, caricando MI, indirizzo la cella di memoria 14 che è quella che contiene il valore (28 nel mio caso) che esporto nel bus col comando RAM Out RO e che caricherò in A col comando AI. 
-
-
-
-La fase Fetch è uguale per tutte le istruzioni, dunque istruzione XXXX e imposto solo gli step.
-Per LDA uso il valore 0001 e imposto gli step con le microistruzioni opportune.
-Per ADD uso il valore 0010 e imposto gli step con le microistruzioni opportune.
-Per OUT uso il valore 1110 e imposto gli step con le microistruzioni opportune.
-
-E' differente dall'8-bit computer originario, dove un unico FF '173 memorizzava entrambi i flag nello stesso momento - e dunque, ricordo qualcosa, si era ripetuta per 4 volte la programmazione delle EEPROM perché avendo due flag C ed F le combinazioni possibili sono 4 (00, 01, 10, 11) e dunque avevo bisogno di 4 set di microcode, uno per ogni combinazione degli indirizzi in ingresso C ed F. Da verificare.
-
-23/10/2022 In questo nuovo caso le istruzioni non variano a seconda dello stato dei flag, che non sono più Input alle ROM che poi variavano l'output in base all'indirizzo/flag presentato in ingresso! Nella configurazione sviluppata da Tom, a un certo punto nel codice si trova un'istruzione di salto condizionale legata a un flag, magari JZ: ad essa corrisponde un segnale in uscita di JUMP (uguale per tutte le istruzioni) che attiva con /E il Selector 151; la selezione del flag da mettere in uscita dipende dal microcode (i 3 bit Select del 151 sono direttamente collegati all'Instruction Register) perciò se per esempio l'istruzione di JZ Jump on Zero è 010 questo andrà a selezionare il pin I2 di ingresso del 151 che, se attivo (cioè output FF del flag Z = 1), andrà ad abilitare il PC-LOAD e permettere il caricamento del nuovo indirizzo nel PC 😎
-
-La logica del salto condizionale del SAP-1 era implementata nel microcode, utilizzando linee di indirizzamento delle ROM. Poiché i flag dell'NQSAP sono implementati in hardware, non c'è bisogno di usare linee preziose linee di indirizzamento delle ROM. Miglioramenti derivanti:
-- è possibile settare i flag anche singolarmente
-- risparmio delle linee di indirizzamento ROM
-- non si modifica l'output della ROM durante l'esecuzione della singola istruzione (ma nel SAP-1 come si comportava? 04/10/2022 l'ho compreso andando a rileggere gli appunti del BE 8 bit computer). Teoricamente, e l'avevo letto anche altrove, questo potrebbe essere un problema perché causa "glitching".
 
 ---
 MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE
