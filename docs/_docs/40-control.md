@@ -87,8 +87,6 @@ Tirando le fila, per un computer come l'NQSAP o il BEAM:
 
 **Questo non deve stare qui, credo** Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF da 8 registri in cascata, così il primo viene aggiornato al normale caricamento dell'IR (che corrisponderebbe a T7 (step 1), ma causando un glitch sulla ROM)… invece di collegare il FF agli ingressi delle ROM, viene collegato a un altro FF che viene caricato col Falling Edge del CLK / Rising Edge del CLK, così le uscite delle ROM vengono aggiornate alla fine della microistruzione quando i segnali sono stabili 😁
 
-**SPIEGAZIONE MICROCODE** Devo anche inserire qualcosa per far capire meglio Quale sia il legame tra le eprom e il microcode
-
 ### Ring Counter
 
 Per capire il funzionamento del Ring Counter, è necessario fare proprio il concetto di microistruzione: le *istruzioni* di un microprocessore sono composte da un certo numero di step, più precisamente chiamati *microistruzioni*.
@@ -117,7 +115,9 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio del 6502 si trad
 
 Perché tutto questo accada, la Control Logic deve settare la giusta *Control Word* per ogni microistruzione. Si può definire la Control Word come una stringa di bit utilizzata per governare e coordinare il comportamento dei vari componenti del processore durante l'esecuzione di una microistruzione. Questa stringa di bit è definita nel microcode scritto nelle EEPROM; ad ogni bit / pin di output delle EEPROM è associato un segnale di controllo (RPC, WM, PCI, RR eccetera).
 
-\* Importante notare che i primi due step sono identici per *tutte* le istruzioni del computer: alla fine di questi due step, l'Instruction Register contiene l'Opcode dell'istruzione, che, insieme alle microistruzioni, definisce il compito di ogni step per ciascuna istruzione. Questo accorgimento garantisce che il computer possa sempre avviarsi correttamente dopo un reset, indipendentemente dall'istruzione presente nella locazione iniziale dopo il caricamento di un programma in memoria. Un esempio è visibile in questa immagine tratta dal video <a href="https://www.youtube.com/watch?v=dHWFpkGsxOs" target="_blank">8-bit CPU control logic: Part 3</a> di Ben Eater:
+\* Importante notare che i primi due step sono identici per *tutte* le istruzioni del computer: alla fine di questi due step, l'Instruction Register contiene l'Opcode dell'istruzione, che, insieme alle microistruzioni, definisce il compito di ogni step per ciascuna istruzione. Questo accorgimento garantisce che il computer possa sempre avviarsi correttamente dopo un reset, indipendentemente dall'istruzione presente nella locazione iniziale dopo il caricamento di un programma in memoria.
+
+Un esempio che mostra chiaramente gli step di alcune istruzioni del SAP è visibile in questa immagine tratta dal video <a href="https://www.youtube.com/watch?v=dHWFpkGsxOs" target="_blank">8-bit CPU control logic: Part 3</a> di Ben Eater; notiamo che gli step delle istruzioni LDA, ADD eccetera partono da 010, a significare che gli step 000 e 001 sono invece comuni per tutte.
 
 [![Microcode del SAP](../../assets/control/40-cl-ben-step-microcode.png "Microcode del SAP"){:width="100%"}](../../assets/control/40-cl-ben-step-microcode.png)
 
@@ -137,10 +137,7 @@ Per concludere la spiegazione dei 4 step dell'istruzione LDA #$94, riepiloghiamo
 - il Flag N sarà attivo (secondo il metodo di [rappresentazione dei numeri Signed](../math/#numeri-unsigned-e-numeri-signed) a 8 bit in Complemento a 2, $94 / 1001.0100 è un numero negativo, in quanto il bit più significativo è allo stato logico 1);
 - l'accumulatore A e il registro H conterranno il valore $94 esadecimale.
 
----
-**piase gnente** Definito il concetto di microistruzione, possiamo procedere con il funzionamento del Ring Counter.
-
-In una CPU è necessario conoscere in ogni momento quale sia l'istruzione in esecuzione - ne riceviamo indicazioni dall'Instruction Register - e quale sia lo step correntemente attivo, per conoscere il quale ci viene in aiuto il Ring Counter. Tanto il SAP quanto l'NQSAP e il BEAM sviluppano il Ring Counter attorno a un contatore <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">74LS161</a>, in grado di contare da 0 a 15, e a un demultiplexer <a href="https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target="_blank">74LS138</a>, che ci aiuta ad avere riscontro visivo sulla microistruzione in esecuzione.
+Riprendendo la spiegazione il funzionamento del Ring Counter, dovrebbe essere ora evidente che in una CPU è necessario conoscere in ogni momento quale sia l'istruzione in esecuzione - ne riceviamo indicazioni dall'Instruction Register - e quale sia lo step correntemente attivo, per conoscere il quale ci viene in aiuto il Ring Counter. Tanto il SAP quanto l'NQSAP e il BEAM sviluppano il Ring Counter attorno a un contatore <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">74LS161</a>, in grado di contare da 0 a 15, e a un demultiplexer <a href="https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target="_blank">74LS138</a>, che ci aiuta ad avere riscontro visivo sulla microistruzione in esecuzione.
 
 In generale, i momenti essenziali di un ciclo di clock in un computer sono due: il Rising Edge ↗ (passaggio del segnale dallo stato logico LO allo stato logico HI) e il Falling Edge ↘ (viceversa).
 
