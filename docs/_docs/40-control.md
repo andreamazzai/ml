@@ -21,7 +21,7 @@ Alcune note propedeutiche alla comprensione di quanto esposto in questa pagina:
 
 2. Nell'NQSAP e nel BEAM l'Instruction Register (IR) è incluso nello schema della Control Logic, mentre negli schemi del SAP stava su un foglio separato.
 
-### Instruction Register
+## Instruction Register e Istruzioni
 
 Il ruolo dell'Instruction Register è di memorizzare l'istruzione corrente prelevandola dalla memoria.
 
@@ -89,7 +89,7 @@ Tirando le fila, per un computer come l'NQSAP o il BEAM:
 
 **devo spiegare il funzionamento dell'IR**, Riprendendo spunto dal fatto che il registro delle istruzioni questa volta è bufferizzato.
 
-### Ring Counter
+## Ring Counter e Microistruzioni
 
 Per capire il funzionamento del Ring Counter, è necessario fare proprio il concetto di microistruzione: le *istruzioni* di un microprocessore sono composte da un certo numero di step, più precisamente chiamati *microistruzioni*.
 
@@ -127,6 +127,8 @@ Uno schema che mostra chiaramente gli step di alcune istruzioni del SAP è visib
 
 *Microcode del SAP.*
 
+### Fasi
+
 Le operazioni di una CPU passano per diverse fasi, che possiamo riassumere in:
 
 1. Fase "Fetch" (prelievo), che preleva l'istruzione dalla locazione di memoria puntata dal PC e la memorizza nell'IR.
@@ -148,6 +150,8 @@ Riprendendo la spiegazione del funzionamento del Ring Counter, risulta ora evide
 [![Dettaglio del Ring Counter del BEAM](../../assets/control/40-control-logic-161-138-beam.png "Dettaglio del Ring Counter del BEAM"){:width="66%"}](../../assets/control/40-control-logic-161-138-beam.png)
 
 *Dettaglio del Ring Counter del BEAM.*
+
+### Il clock
 
 In generale, i momenti essenziali di un ciclo di clock in un computer sono due: il Rising Edge ↗ (passaggio del segnale dallo stato logico LO allo stato logico HI) e il Falling Edge ↘ (viceversa).
 
