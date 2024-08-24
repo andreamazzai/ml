@@ -17,20 +17,20 @@ In generale, la gestione delle istruzioni consta di tre capisaldi: *Instruction 
 
 Alcune note propedeutiche alla comprensione di quanto esposto in questa pagina:
 
-1. Nel computer SAP di Ben Eater, la denominazione dei segnali è 'modulo-centrica', riflettendo la funzione specifica di ciascun modulo: ad esempio, il segnale RO (RAM Out) estrae il contenuto della RAM sul bus, mentre AI (A Input) carica il registro A. Nel computer NQSAP di Tom Nisbet e nel BEAM, invece, la nomenclatura è 'computer-centrica', adottando un punto di vista a livello di bus: per esempio, RO diventa RR (RAM Read) e AI diventa WA (Write A).
+1. Nel computer SAP di Ben Eater, la denominazione dei segnali è "modulo-centrica", riflettendo la funzione specifica di ciascun modulo: ad esempio, il segnale RO (RAM Out) esporta il contenuto della RAM sul bus, mentre AI (A Input) carica il registro A. Nel computer NQSAP di Tom Nisbet e nel BEAM, invece, la nomenclatura è "computer-centrica", adottando un punto di vista a livello di bus: per esempio, RO diventa RR (RAM Read) e AI diventa WA (Write A).
 
 2. Nell'NQSAP e nel BEAM l'Instruction Register (IR) è incluso nello schema della Control Logic, mentre negli schemi del SAP stava su un foglio separato.
 
 ### Instruction Register
 
-Il ruolo dell'Instruction Register (IR) è di memorizzare l'istruzione corrente prelevandola dalla memoria.
+Il ruolo dell'Instruction Register è di memorizzare l'istruzione corrente prelevandola dalla memoria.
 
 L'Instruction Register del SAP presentava una dimensione di un byte, all'interno del quale erano contenuti sia l'istruzione che l'operando:
 
 - i 4 bit più significativi erano dedicati all'istruzione;
 - i 4 bit meno significativi erano riservati a un operando o a un indirizzo opzionali.
 
-Se i bit meno significativi contenevano un operando (ad esempio, un valore immediato da utilizzare in un'operazione aritmetica), questo valore veniva caricato in un determinato registro per l'esecuzione dell'istruzione.
+Se i bit meno significativi contenevano un operando (ad esempio, un valore immediato da utilizzare in un'operazione aritmetica), questo valore veniva caricato in un registro per l'esecuzione dell'istruzione.
 
 Se i bit meno significativi contenevano un indirizzo di memoria, questo indirizzo veniva caricato nel Memory Address Register (MAR), che puntava così alla posizione di memoria da cui leggere o scrivere dati.
 
@@ -68,17 +68,17 @@ In conseguenza del numero di bit utilizzato per l'istruzione, la connessione tra
 
 Una fondamentale differenza tra l'IR del SAP e quello dell'NQSAP e del BEAM è la dimensione. Il 6502 ha un set di istruzioni *relativamente* piccolo, composto da 56 istruzioni di base; tuttavia, queste istruzioni possono essere utilizzate con diverse modalità di indirizzamento, il che porta il numero totale di combinazioni possibili a circa 150.
 
-Per poter gestire queste combinazioni ed emulare così il set di istruzioni del 6502, l'opcode abbisogna di un intero byte (dunque, anche l'IR deve avere la stessa dimensione); l'architettura del sistema deve inoltre gestire istruzioni di lunghezza diversa:
+Per poter gestire queste combinazioni ed emulare così il set di istruzioni del 6502, l'opcode abbisogna di un intero byte (pertanto, l'IR deve dedicare un intero byte all'istruzione, senza condividerlo con l'operando) e l'architettura del sistema deve gestire istruzioni di lunghezza diversa:
 
-- un solo byte per quelle con indirizzamento Implicito e Accumulatore e che, dunque, non hanno un operando;
-- due o tre\* byte per tutte le altre, che fanno invece uso di un operando (istruzioni a due o tre* byte per definire un indirizzo; istruzioni a due byte per definire un valore assoluto).
+- a un solo byte per quelle con indirizzamento Implicito e Accumulatore e che, dunque, non hanno un operando;
+- a due o tre\* byte per tutte le altre, che fanno invece uso di un operando (istruzioni a due o tre* byte per definire un indirizzo; istruzioni a due byte per definire un valore assoluto).
 
 \* Un computer con 256 byte di RAM non necessita di istruzioni a 3 byte, perché un operando della lunghezza di un singolo byte è in grado di indirizzare tutta la memoria del computer, come brevemente discusso anche nella sezione [Indirizzamenti](../alu/#indirizzamenti) della pagina dedicata all'ALU.
 
 Tirando le fila, per un computer come l'NQSAP o il BEAM:
 
 - l'Instruction Register deve essere dedicato alle sole istruzioni ed avere dimensione di un byte;
-- la connessione tra IR e Control Logic deve avere un'ampiezza di 8 bit e non più di soli 4 bit come nel SAP;
+- la connessione tra IR ed EEPROM deve avere un'ampiezza di 8 bit e non più di soli 4 bit come nel SAP;
 - sono necessarie EEPROM 28C256 da 256Kb con 15 pin per gli indirizzi:
   - 8 pin di indirizzi per le istruzioni (2^8 = 256 istruzioni)
   - 4 pin di indirizzi per le microistruzioni (2^4 = 16 step), delle quali si parla in seguito
@@ -86,6 +86,8 @@ Tirando le fila, per un computer come l'NQSAP o il BEAM:
   - rimane un pin inutilizzato, tanto da pensare di poter utilizzare EEPROM da 128Kb, che però non esistono in commercio <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">con l'interfaccia parallela</a>.
 
 **Questo non deve stare qui, credo** Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF da 8 registri in cascata, così il primo viene aggiornato al normale caricamento dell'IR (che corrisponderebbe a T7 (step 1), ma causando un glitch sulla ROM)… invece di collegare il FF agli ingressi delle ROM, viene collegato a un altro FF che viene caricato col Falling Edge del CLK / Rising Edge del CLK, così le uscite delle ROM vengono aggiornate alla fine della microistruzione quando i segnali sono stabili 😁
+
+**devo spiegare il funzionamento dell'IR**, Riprendendo spunto dal fatto che il registro delle istruzioni questa volta è bufferizzato.
 
 ### Ring Counter
 
@@ -108,16 +110,18 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio del 6502 si trad
 | ---- | ------------------------- |
 ~~~
 
+*Scomposizione dell'istruzione LDA nelle sue quattro microistruzioni elementari*.
+
 1. Il primo step espone il contenuto del Program Counter sul bus (RPC, Read Program Counter) e scrive il contenuto del bus nel MAR (WM, Write Memory Address Register).
-2. Il secondo step espone sul bus il contenuto della locazione di memoria puntata dal MAR (RR, Read RAM), scrive il contenuto del bus nell'Instruction Register (WIR, Write Instruction Register) e incrementa il Program Counter (Program Counter Increment). Alla fine di questo step, l'IR conterrà l'opcode dell'istruzione e il PC punterà alla locazione di memoria successiva, che contiene l'operando.
+2. Il secondo step espone sul bus il contenuto della locazione di memoria puntata dal MAR (RR, Read RAM), scrive il contenuto del bus nell'Instruction Register (WIR, Write Instruction Register) e incrementa il Program Counter (Program Counter Increment). Alla fine di questo step, l'IR conterrà l'opcode dell'istruzione e il PC punterà alla locazione di memoria successiva, che nel caso dell'istruzione LDA contiene l'operando.
 3. Si espone il contenuto del Program Counter sul bus (RPC, Read Program Counter) e si scrive il contenuto del bus nel MAR (WM, Write Memory Address Register). A questo punto, il MAR punta alla locazione di memoria che contiene l'operando.
-4. Il quarto ed ultimo step espone sul bus l'operando, che è contenuto nella locazione di memoria puntata dal MAR (RR, Read RAM), abilita la scrittura dei Flag N e Z (FNZ), scrive il contenuto del bus su A e H (WAH, Write A, H), incrementa il Program Counter (Program Counter Increment) e resetta il Ring Counter (N, Next).
+4. Il quarto ed ultimo step espone sul bus l'operando, che è contenuto nella locazione di memoria puntata dal MAR (RR, Read RAM), abilita la scrittura dei Flag N e Z (FNZ), scrive il contenuto del bus su A e H (WAH, Write A + H), incrementa il Program Counter (Program Counter Increment) e resetta il Ring Counter (N, Next).
 
 Perché tutto questo accada, la Control Logic deve settare la giusta *Control Word* per ogni microistruzione. Si può definire la Control Word come una stringa di bit utilizzata per governare e coordinare il comportamento dei vari componenti del processore durante l'esecuzione di una microistruzione. Questa stringa di bit è definita nel microcode scritto nelle EEPROM; ad ogni bit / pin di output delle EEPROM è associato un segnale di controllo (RPC, WM, PCI, RR eccetera).
 
 \* Importante notare che i primi due step sono identici per *tutte* le istruzioni del computer: alla fine di questi due step, l'Instruction Register contiene l'Opcode dell'istruzione, che, insieme alle microistruzioni, definisce il compito di ogni step per ciascuna istruzione. Questo accorgimento garantisce che il computer possa sempre avviarsi correttamente dopo un reset, indipendentemente dall'istruzione presente nella locazione iniziale dopo il caricamento di un programma in memoria.
 
-Un esempio che mostra chiaramente gli step di alcune istruzioni del SAP è visibile in questa immagine tratta dal video <a href="https://www.youtube.com/watch?v=dHWFpkGsxOs" target="_blank">8-bit CPU control logic: Part 3</a> di Ben Eater; notiamo che gli step delle istruzioni LDA, ADD eccetera partono da 010, a significare che gli step 000 e 001 sono invece comuni per tutte.
+Un esempio che mostra chiaramente gli step di alcune istruzioni del SAP è visibile in questa immagine tratta dal video <a href="https://www.youtube.com/watch?v=dHWFpkGsxOs" target="_blank">8-bit CPU control logic: Part 3</a> di Ben Eater; notiamo che gli step delle istruzioni LDA, ADD eccetera partono da 010, a significare che gli step 000 e 001 sono invece comuni per tutte e compongono quella che viene chiamata Fase Fetch.
 
 [![Microcode del SAP](../../assets/control/40-cl-ben-step-microcode.png "Microcode del SAP"){:width="100%"}](../../assets/control/40-cl-ben-step-microcode.png)
 
@@ -137,15 +141,15 @@ Per concludere la spiegazione dei 4 step dell'istruzione LDA #$94, riepiloghiamo
 - il Flag N sarà attivo (secondo il metodo di [rappresentazione dei numeri Signed](../math/#numeri-unsigned-e-numeri-signed) a 8 bit in Complemento a 2, $94 / 1001.0100 è un numero negativo, in quanto il bit più significativo è allo stato logico 1);
 - l'accumulatore A e il registro H conterranno il valore $94 esadecimale.
 
-Riprendendo la spiegazione il funzionamento del Ring Counter, dovrebbe essere ora evidente che in una CPU è necessario conoscere in ogni momento quale sia l'istruzione in esecuzione - ne riceviamo indicazioni dall'Instruction Register - e quale sia lo step correntemente attivo, per conoscere il quale ci viene in aiuto il Ring Counter. Tanto il SAP quanto l'NQSAP e il BEAM sviluppano il Ring Counter attorno a un contatore <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">74LS161</a>, in grado di contare da 0 a 15, e a un demultiplexer <a href="https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target="_blank">74LS138</a>, che ci aiuta ad avere riscontro visivo sulla microistruzione in esecuzione.
+Riprendendo la spiegazione del funzionamento del Ring Counter, dovrebbe essere ora evidente che in una CPU è necessario conoscere in ogni momento quale sia l'istruzione in esecuzione - ne riceviamo indicazioni dall'Instruction Register - e quale sia lo step correntemente attivo, per conoscere il quale ci viene in aiuto il Ring Counter. Tanto il SAP quanto l'NQSAP e il BEAM sviluppano il Ring Counter attorno a un contatore <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">74LS161</a>, in grado di contare da 0 a 15, e a un demultiplexer <a href="https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target="_blank">74LS138</a>, che ci aiuta ad avere riscontro visivo sulla microistruzione in esecuzione.
 
 In generale, i momenti essenziali di un ciclo di clock in un computer sono due: il Rising Edge ↗ (passaggio del segnale dallo stato logico LO allo stato logico HI) e il Falling Edge ↘ (viceversa).
 
-- Rising Edge: la maggior parte dei chip (contatori, registri, FF) modifica il proprio stato in coincidenza con la transizione del segnale di clock dallo stato logico LO allo stato logico HI; le azioni di caricamento di tutti i moduli del computer (PC, MAR, RAM, IR, A, B, H, Flag, SP, O) avvengono in questo momento. Poiché il caricamento dei registri avviene con il Rising Edge del clock, ne consegue che la Control Word deve essere settata *prima* di ogni occorrenza di questo evento, dunque tra un Rising Edge del clock e l'altro.
+- Rising Edge: la maggior parte dei chip (contatori, registri, FF) modifica il proprio stato in coincidenza con la transizione del segnale di clock dallo stato logico LO allo stato logico HI; le azioni di caricamento di tutti i moduli del computer (PC, MAR, RAM, IR, A, B, H, Registri Indice, Flag, SP, O) avvengono in questo momento. Poiché il caricamento dei registri avviene con il Rising Edge del clock, ne consegue che la Control Word deve essere settata *prima* di ogni occorrenza di questo evento, dunque tra un Rising Edge del clock e l'altro.
 
 - Falling Edge: un momento facilmente identificabile tra un Rising Edge del clock e l'altro è il Falling Edge. E' possibile invertire la fase del clock del Ring Counter, così che questo possa eseguire la configurazione della Control Word - e dunque della microistruzione - proprio in corrispondenza del Falling Edge.
 
-A questo è chiaro che l'Instruction Register contiene l'Opcode dell'istruzione attualmente in esecuzione e il Ring Counter indica lo step attivo: possiamo usare una Combinational Logic e costruire il microcode da caricare nelle EEPROM, che metteranno in output gli opportuni segnali da abilitare per ogni step di ogni istruzione.
+Riassumendo, l'Instruction Register contiene l'Opcode dell'istruzione attualmente in esecuzione e il Ring Counter ne indica lo step attivo: possiamo usare una Combinational Logic e costruire il microcode da caricare nelle EEPROM, che metteranno in output gli opportuni segnali (Control Word) per ogni step di ogni istruzione.
 
 **Controllare:** Le operazioni di lettura settate dalla Control Word in realtà vengono applicate immediatamente: Per esempio quando desidero leggere la memoria RAM il segnale rr viene attivato e il transceiver 74LS245 metterà subito sul bus il valore presente in RAM, dando tempo al computer di stabilizzarsi e facendo così in modo che i registri che si desiderano aggiornare, come da esempio A, abbiano degli ingressi stabili nel momento in cui arriva il Rising Edge.
 
