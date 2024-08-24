@@ -137,23 +137,23 @@ La fase di decodifica avviene grazie al microcodice memorizzato nelle EEPROM: l'
 
 Il legame tra decodifica ed esecuzione è molto forte, perché in ogni momento la Control Word dipende sia dall'opcode (Decode), sia dalla microistruzione (Execute).
 
-Per concludere la spiegazione dei 4 step dell'istruzione LDA #$94, riepiloghiamo lo stato del computer alla fine del quarto step:
+Per concludere l'analisi dell'istruzione LDA #$94, riepiloghiamo lo stato del computer alla fine del quarto step:
 
 - il Flag Z non sarà attivo (il risultato dell'operazione di caricamento dell'accumulatore non è uguale a zero);
 - il Flag N sarà attivo (secondo il metodo di [rappresentazione dei numeri Signed](../math/#numeri-unsigned-e-numeri-signed) a 8 bit in Complemento a 2, $94 / 1001.0100 è un numero negativo, in quanto il bit più significativo è allo stato logico 1);
 - l'accumulatore A e il registro H conterranno il valore $94 esadecimale.
 
-Riprendendo la spiegazione del funzionamento del Ring Counter, dovrebbe essere ora evidente che in una CPU è necessario conoscere in ogni momento quale sia l'istruzione in esecuzione - ne riceviamo indicazioni dall'Instruction Register - e quale sia lo step correntemente attivo, per conoscere il quale ci viene in aiuto il Ring Counter. Tanto il SAP quanto l'NQSAP e il BEAM sviluppano il Ring Counter attorno a un contatore <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">74LS161</a>, in grado di contare da 0 a 15, e a un demultiplexer <a href="https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target="_blank">74LS138</a>, che ci aiuta ad avere riscontro visivo della microistruzione in esecuzione.
+Riprendendo la spiegazione del funzionamento del Ring Counter, risulta ora evidente che in una CPU è necessario conoscere in ogni momento quale sia l'istruzione in esecuzione - ne riceviamo indicazioni dall'Instruction Register - e quale sia lo step correntemente attivo, per conoscere il quale ci viene in aiuto il Ring Counter. Tanto il SAP quanto l'NQSAP e il BEAM sviluppano il Ring Counter attorno a un contatore <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">74LS161</a>, in grado di contare da 0 a 15, e a un demultiplexer <a href="https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target="_blank">74LS138</a>, che ci aiuta ad avere riscontro visivo della microistruzione in esecuzione.
 
 In generale, i momenti essenziali di un ciclo di clock in un computer sono due: il Rising Edge ↗ (passaggio del segnale dallo stato logico LO allo stato logico HI) e il Falling Edge ↘ (viceversa).
 
-- Rising Edge: la maggior parte dei circuiti sequenziali (quali contatori, registri, FF) modifica il proprio stato durante transizione del segnale di clock dallo stato logico LO allo stato logico HI; le azioni di caricamento di tutti i moduli del computer (PC, MAR, RAM, IR, A, B, H, Registri Indice, Flag, SP, O) avvengono in questo momento. Poiché il caricamento dei registri avviene con il Rising Edge del clock, la Control Word deve essere configurata prima di ogni occorrenza di questo evento, quindi durante l'intervallo tra un Rising Edge e il successivo.
+- Rising Edge: la maggior parte dei chip sequenziali* (quali contatori, registri, FF) modifica il proprio stato durante transizione del segnale di clock dallo stato logico LO allo stato logico HI; le azioni di caricamento di tutti i moduli del computer (PC, MAR, RAM, IR, A, B, H, Registri Indice, Flag, SP, O) avvengono in questo momento. Poiché il caricamento dei registri avviene con il Rising Edge del clock, la Control Word deve essere configurata prima di ogni occorrenza di questo evento, quindi durante l'intervallo tra un Rising Edge e il successivo.
 
 - Falling Edge: un momento facilmente identificabile tra un Rising Edge e l'altro del clock è il Falling Edge. E' possibile invertire la fase del clock del Ring Counter, consentendo la configurazione della Control Word - e dunque della microistruzione - proprio in corrispondenza del Falling Edge.
 
-Riassumendo, l'Instruction Register contiene l'Opcode dell'istruzione attualmente in esecuzione, mentre il Ring Counter ne indica lo step attivo. Possiamo usare una logica combinatoria e costruire il microcode da caricare nelle EEPROM, che emetteranno gli opportuni segnali (Control Word) per ogni step di ogni istruzione.
+\* I chip sequanziali producono un output che dipende non solo dagli ingressi attuali, ma anche dallo stato logico precedente.
 
-Bisogna sottolineare anche che la configurazione delle operazioni di lettura e scrittura da parte della Control Word ha tempi diversi: i segnali di lettura attivano immediatamente il modulo interessato, mentre i segnali di scrittura attivano il modulo, che però aspetta il Rising Edge del clock per eseguire l'operazione di scrittura.
+Riassumendo, l'Instruction Register contiene l'Opcode dell'istruzione attualmente in esecuzione, mentre il Ring Counter ne indica lo step attivo. Utilizzando una logica combinatoria, è possibile costruire il microcode da caricare nelle EEPROM, che emetteranno gli opportuni segnali (Control Word) per ogni step di ogni istruzione.
 
 È importante sottolineare che la configurazione delle operazioni di lettura e scrittura da parte della Control Word segue tempi diversi: i segnali di lettura attivano immediatamente il modulo interessato, il quale espone subito il suo output sul bus; questo permette ai segnali di stabilizzarsi prima che vengano letti dai registri che dovranno essere aggiornati. Viceversa, i segnali di scrittura attivano il modulo interessato, ma l'operazione di scrittura verrà eseguita solo al Rising Edge del clock, assicurando che i registri che devono essere aggiornati ricevano segnali stabili prima dell'effettiva scrittura.
 
@@ -303,23 +303,11 @@ SE Stack Enable, vedi pagina Stack Pointer, condivisi con C0 e C1*** (chiamiamol
 
 ## Forse interessante da tenere, espandere, collegare ad altri paragrafi
 
-Praticamente ora abbiamo il contatore delle microistruzioni (T0-T4) e il contatore dell'istruzione (Instruction Register MSB). Posso creare una **combinational logic** che, a seconda dell'istruzione che ho caricato nell'Instruction Register + il T0/4 dove mi trovo mi permetta di avere in uscita i segnali corretti da applicare al computer.
-
-Praticamente ho due fasi:
-• Fetch, in cui carico l'istruzione dalla RAM nell'Instruction Register
-• Dopo la fase di Fetch so "cosa devo fare", perché a questo punto ho l'istruzione nell'Instruction Register
-
 La realizzazione del comuter SAP mi ha permesso finalmente di capire cosa sia il microcode di un computer moderno.
 
 È piuttosto comune leggere ad esempio che è necessario aggiornare il bios dei server per indirizzare falle di sicurezza che sono state scoperte e che potrebbero essere utilizzate dagli hacker per ... 
-Non capendo come potesse essere aggiornata una CPU, dal momento che si tratta di un componente non programmabile , non riuscivo a comprendere come fosse possibile arginare i problemi di sicurezza; con il microcode ho capito
 
-Ritornando alla dimensione delle EEPROM da utilizzare per il microcode, nei miei appunti trovo traccia di diverse revisioni, ad esempio:
-
-- come notavo anche nelal costruzione del modulo RAM in cui si indicavano le 256 istruzioni, notavo che servivano 28c64. ram/#mux-program-mode-e-run-mode 
-
-## Instruction Register
-
+Non capendo come potesse essere aggiornata una CPU, dal momento che si tratta di un componente non programmabile , non riuscivo a comprendere come fosse possibile arginare i problemi di sicurezza; con il microcode ho capito.
 
 ## Fare spiega su EEPROM input e output
 
@@ -355,29 +343,8 @@ Legenda dei segnali:
 
 Introducendo gli Step, riflettevo anche sul fatto che per talune operazioni, da quanto capivo approfondendo l'NQSAP, avere più di 8 microistruzioni sarebbe stato molto util: ecco che, ancora una volta, dovevo riconsiderare il numero di bit di indirizzamento necessari per le EEPROM
 
-Ricordiamo che "Praticamente ho due fasi:
-
-- Fetch, in cui carico l'istruzione dalla RAM nell'Instruction Register
-- Dopo la fase di Fetch so "cosa devo fare", perché a questo punto ho l'istruzione nell'Instruction Register", che attiva opportunamente le EEPROM in modo da aver in uscita i corretti segnali di Control Logic…
-- 02/09/2022 … e a quel punto leggerò la locazione dell'operando, il cui contenuto
-  - ○ se è una istruzione "indiretta" mi darà il valore della locazione reale da indirizzare per leggerne il contenuto o scrivervi un valore
-  - ○ se è un istruzione diretta conterrà il valore da lavorare
-- "Sicuramente" avrò bisogno di EEPROM più grandi, perché dovranno ospitare gli 8 MSB e gli 8 LSB attuali, ma anche altri 8 bit di segnali… 02/09/2022 ma forse anche no, come visto sopra non mi servono (per ora) altri segnali… e addirittura, come visto in seguito, forse non mi serve nemmeno IO
-In seguito ho compreso il decoder 3-8 che usa Tom Nisbet per poter gestire tanti segnali con poche linee
-
 8-bit CPU control logic: Part 2
 https://www.youtube.com/watch?v=X7rCxs1ppyY
-
-NB: Dobbiamo settare la Control Logic tra un clock e l'altro… come a dire che la Control Logic deve "essere pronta" prima che l'istruzione venga eseguita: possiamo usare un NOT per invertire il clock e usare questo per gestire il 74LS161 della Control Logic.
-
-	• I registri sono aggiornati al Rising Edge del CLK, che corrisponde al Falling Edge del /CLK.
-	• Le microistruzioni sono aggiornate al Falling Edge del CLK, che corrisponde al Rising Edge del /CLK.
-	• CLK gestisce tutti i registri principali: PC, MAR, RAM, IR, A, B, Flag: al Rising Edge del CLK, avvengono le azioni di caricamento dei registri. Quando c'è il segnale CE Counter Enable attivo, il PC viene incrementato al Rising Edge e l'indirizzo viene aumentato di uno.
-	• /CLK gestisce il Ring Counter e di conseguenza la Control Logic: è sfasato di 180°, dunque al Falling Edge di CLK corrisponde il Rising Edge di /CLK
-
-Control Logic
-8-bit CPU control logic: Part 1 
-https://www.youtube.com/watch?v=dXdoim96v5A
 
 Prima cosa che facciamo è leggere un comando e metterlo nell'Instruction Register, che tiene traccia del comando che stiamo eseguendo.
 
@@ -386,13 +353,7 @@ Prima cosa che facciamo è leggere un comando e metterlo nell'Instruction Regist
 • Poi incrementiamo il PC col comando Counter Enable CE (nel video successivo il CE viene inserito nella microistruzione con RO II).
 • Ora eseguiamo l'istruzione LDA 14, che prende il contenuto della cella 14 e lo scrive in A. Dunque poiché il valore 14 sono i 4 LSB del comando, sono i led gialli dell'IR e col comando Instruction Register Out IO ne copio il valore nel bus e poi, caricando MI, indirizzo la cella di memoria 14 che è quella che contiene il valore (28 nel mio caso) che esporto nel bus col comando RAM Out RO e che caricherò in A col comando AI. 
 
-• ADD 15 ha sempre una prima fase di Fetch, uguale per tutte le istruzioni, e poi come sopra il valore 15 è quello della cella 15 e dunque Instruction Register Out IO che posiziona sul bus i 4 LSb del comando ADD 15, poi MI così setto l'indirizzo 15 della RAM, il cui contenuto metto sul bus col comando RAM Out RO e lo carico in B con BI così avrò a disposizione la somma di A e B, che metto sul bus con EO e che ricarico in A con AI. 
 
-• Prossima istruzione all'indirizzo 3 è OUT che mette sul display il risultato della somma che avevo latchato in A. La prima fase di Fetch è uguale alle altre. Poi faccio AO per mettere A sul bus e OI. 
-
-
-8-bit CPU control logic: Part 3
-https://www.youtube.com/watch?v=dHWFpkGsxOs
 
 La fase Fetch è uguale per tutte le istruzioni, dunque istruzione XXXX e imposto solo gli step.
 Per LDA uso il valore 0001 e imposto gli step con le microistruzioni opportune.
@@ -408,7 +369,6 @@ La logica del salto condizionale del SAP-1 era implementata nel microcode, utili
 - risparmio delle linee di indirizzamento ROM
 - non si modifica l'output della ROM durante l'esecuzione della singola istruzione (ma nel SAP-1 come si comportava? 04/10/2022 l'ho compreso andando a rileggere gli appunti del BE 8 bit computer). Teoricamente, e l'avevo letto anche altrove, questo potrebbe essere un problema perché causa "glitching".
 
-MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE
 ---
 MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE
 
