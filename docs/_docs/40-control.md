@@ -114,12 +114,12 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio del 6502 si trad
 
 1. Il primo step espone il contenuto del Program Counter sul bus (RPC, Read Program Counter) e scrive il contenuto del bus nel MAR (WM, Write Memory Address Register).
 2. Il secondo step espone sul bus il contenuto della locazione di memoria puntata dal MAR (RR, Read RAM), scrive il contenuto del bus nell'Instruction Register (WIR, Write Instruction Register) e incrementa il Program Counter (Program Counter Increment). Alla fine di questo step, l'IR conterrà l'opcode dell'istruzione e il PC punterà alla locazione di memoria successiva, che nel caso dell'istruzione LDA contiene l'operando.
-3. Si espone il contenuto del Program Counter sul bus (RPC, Read Program Counter) e si scrive il contenuto del bus nel MAR (WM, Write Memory Address Register). A questo punto, il MAR punta alla locazione di memoria che contiene l'operando.
+3. Il terzo step espone di nuovo il contenuto del Program Counter sul bus (RPC, Read Program Counter) e si scrive il contenuto del bus nel MAR (WM, Write Memory Address Register). Ora, il MAR punta alla locazione di memoria che contiene l'operando.
 4. Il quarto ed ultimo step espone sul bus l'operando, che è contenuto nella locazione di memoria puntata dal MAR (RR, Read RAM), abilita la scrittura dei Flag N e Z (FNZ), scrive il contenuto del bus su A e H (WAH, Write A + H), incrementa il Program Counter (PCI, Program Counter Increment) e resetta il Ring Counter (N, Next).
 
-Perché tutto questo accada, la Control Logic deve settare la giusta *Control Word* per ogni microistruzione. Si può definire la Control Word come una stringa di bit utilizzata per governare e coordinare il comportamento dei vari componenti del processore durante l'esecuzione di una microistruzione. Questa stringa di bit è definita nel microcode scritto nelle EEPROM; ad ogni bit / pin di output delle EEPROM è associato un segnale di controllo (RPC, WM, PCI, RR eccetera).
+Per garantire il corretto funzionamento del processore, la Control Logic deve settare la giusta *Control Word* per ogni microistruzione. La Control Word può essere definita come una stringa di bit utilizzata per governare e coordinare il comportamento dei vari componenti del processore durante l'esecuzione di una microistruzione. Questa stringa di bit è definita nel microcode memorizzato nelle EEPROM; ad ogni bit / pin di output delle EEPROM è associato un segnale di controllo (come RPC, WM, PCI, RR eccetera).
 
-\* Importante notare che i primi due step sono identici per *tutte* le istruzioni del computer: alla fine di questi due step, l'Instruction Register contiene l'Opcode dell'istruzione, che, insieme alle microistruzioni, definirà il compito di ogni step per ciascuna istruzione. Questo accorgimento garantisce che il computer possa sempre avviarsi correttamente dopo un reset, indipendentemente dall'istruzione presente nella locazione iniziale dopo il caricamento di un programma in memoria.
+\* E' importante notare che i primi due step sono identici per *tutte* le istruzioni del computer: alla fine di questi due step, l'Instruction Register contiene l'Opcode dell'istruzione, che, insieme alle microistruzioni, definirà il compito di ogni step per ciascuna istruzione. Questo accorgimento garantisce che il computer possa sempre avviarsi correttamente dopo un reset, indipendentemente dall'istruzione presente nella locazione iniziale dopo il caricamento di un programma in memoria.
 
 Uno schema che mostra chiaramente gli step di alcune istruzioni del SAP è visibile in questa immagine tratta dal video <a href="https://www.youtube.com/watch?v=dHWFpkGsxOs" target="_blank">8-bit CPU control logic: Part 3</a> di Ben Eater; notiamo che gli step delle istruzioni LDA, ADD eccetera partono da 010, a significare che gli step 000 e 001 sono invece comuni per tutte e compongono quella che viene chiamata Fase Fetch.
 
@@ -135,7 +135,7 @@ Le operazioni di una CPU passano per diverse fasi, che possiamo riassumere in:
 
 La fase di decodifica avviene grazie al microcodice memorizzato nelle EEPROM: l'istruzione caricata nell'IR ha un proprio opcode specifico (ad esempio, 0100.0110), che viene presentato agli ingressi delle EEPROM insieme agli output del Ring Counter. Questa combinazione indirizza una locazione di memoria specifica nelle EEPROM, la quale genera in uscita i bit della Control Word, attivando i segnali di controllo necessari per eseguire la microistruzione corrente.
 
-Il legame tra decodifica ed esecuzione è molto forte, perché in ogni momento la Control Word dipende sia dall'opcode (Decode), sia dalla microistruzione (Execute).
+Il legame tra decodifica ed esecuzione è molto stretto, perché in ogni momento la Control Word dipende sia dall'opcode (Decode), sia dalla microistruzione (Execute).
 
 Per concludere l'analisi dell'istruzione LDA #$94, riepiloghiamo lo stato del computer alla fine del quarto step:
 
@@ -144,6 +144,10 @@ Per concludere l'analisi dell'istruzione LDA #$94, riepiloghiamo lo stato del co
 - l'accumulatore A e il registro H conterranno il valore $94 esadecimale.
 
 Riprendendo la spiegazione del funzionamento del Ring Counter, risulta ora evidente che in una CPU è necessario conoscere in ogni momento quale sia l'istruzione in esecuzione - ne riceviamo indicazioni dall'Instruction Register - e quale sia lo step correntemente attivo, per conoscere il quale ci viene in aiuto il Ring Counter. Tanto il SAP quanto l'NQSAP e il BEAM sviluppano il Ring Counter attorno a un contatore <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">74LS161</a>, in grado di contare da 0 a 15, e a un demultiplexer <a href="https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target="_blank">74LS138</a>, che ci aiuta ad avere riscontro visivo della microistruzione in esecuzione.
+
+[![Dettaglio del Ring Counter del BEAM](../../assets/control/40-control-logic-161-138-beam.png "Dettaglio del Ring Counter del BEAM"){:width="66%"}](../../assets/control/40-control-logic-161-138-beam.png)
+
+*Dettaglio del Ring Counter del BEAM.*
 
 In generale, i momenti essenziali di un ciclo di clock in un computer sono due: il Rising Edge ↗ (passaggio del segnale dallo stato logico LO allo stato logico HI) e il Falling Edge ↘ (viceversa).
 
