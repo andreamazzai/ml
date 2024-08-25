@@ -112,12 +112,10 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio del 6502 si trad
 
 *Scomposizione dell'istruzione LDA nelle sue quattro microistruzioni elementari*.
 
-### opzione 1
-
 1. Il primo step carica l'indirizzo del Program Counter nel Memory Address Register:
     - RPC, Read Program Counter - espone sul bus l'indirizzo del Program Counter
     - WM, Write Memory Address Register - scrive il contenuto del bus nel MAR
-2. Il secondo step carica l'opcode dell'istruzione nell'IR e incrementa il PC per farlo puntare alla locazione di memoria successiva, che nel caso dell'istruzione LDA contiene l'operando:
+2. Il secondo step carica l'opcode dell'istruzione nell'IR e incrementa il PC per farlo puntare alla locazione di memoria successiva (che nel caso dell'istruzione LDA contiene l'operando):
     - RR, Read RAM - espone sul bus il contenuto della locazione di memoria puntata dal MAR
     - WIR, Write Instruction Register - scrive il contenuto del bus nell'Instruction Register
     - PCI, Program Counter Increment - incrementa il Program Counter
@@ -129,16 +127,9 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio del 6502 si trad
     - FNZ, Flag N & Z - abilita la scrittura dei Flag N e Z
     - WAH, Write A & H - scrive il contenuto del bus su A e H*
     - PCI, Program Counter Increment - incrementa il Program Counter
-    - N, Next - e resetta il Ring Counter
+    - N, Next - resetta il Ring Counter
 
 \* Perché anche H? Si veda la sezione dedicata alla spiegazione del [registro H](../alu/#il-registro-h) nella pagina dell'ALU.
-
-### opzione 2
-
-1. Il primo step espone sul bus l'indirizzo del Program Counter (RPC, Read Program Counter) e scrive il contenuto del bus nel MAR (WM, Write Memory Address Register); così facendo, il MAR conterrà l'indirizzo attuale del PC.
-2. Il secondo step espone sul bus il contenuto della locazione di memoria puntata dal MAR (RR, Read RAM), scrive il contenuto del bus nell'Instruction Register (WIR, Write Instruction Register) e incrementa il Program Counter (Program Counter Increment). Alla fine di questo step, l'IR conterrà l'opcode dell'istruzione e il PC punterà alla locazione di memoria successiva, che nel caso dell'istruzione LDA contiene l'operando.
-3. Il terzo step espone di nuovo il contenuto del Program Counter sul bus (RPC, Read Program Counter) e si scrive il contenuto del bus nel MAR (WM, Write Memory Address Register). Ora, il MAR punta alla locazione di memoria che contiene l'operando.
-4. Il quarto ed ultimo step espone sul bus l'operando, che è contenuto nella locazione di memoria puntata dal MAR (RR, Read RAM), abilita la scrittura dei Flag N e Z (FNZ), scrive il contenuto del bus su A e H (WAH, Write A + H), incrementa il Program Counter (PCI, Program Counter Increment) e resetta il Ring Counter (N, Next).
 
 I primi due step sono *sempre* identici per *tutte* le istruzioni del computer: alla fine di questi due step, l'Instruction Register contiene l'Opcode dell'istruzione, che, insieme alle microistruzioni, definirà il compito di ogni step di ciascuna istruzione. Questo accorgimento garantisce che il computer possa sempre avviarsi correttamente dopo un reset, indipendentemente dall'istruzione presente nella locazione iniziale dopo il caricamento di un programma in memoria.
 
