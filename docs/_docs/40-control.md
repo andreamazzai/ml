@@ -134,7 +134,7 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio del 6502 si trad
 
 I primi due step sono *sempre* identici per *tutte* le istruzioni del computer: alla fine di questi due step, l'Instruction Register contiene l'Opcode dell'istruzione, che, insieme alle microistruzioni, definisce il compito di ogni step di ciascuna istruzione. Questo accorgimento garantisce che il computer possa sempre avviarsi correttamente dopo un reset, indipendentemente dall'istruzione presente nella locazione iniziale dopo il caricamento di un programma in memoria.
 
-Uno schema che mostra chiaramente gli step di alcune istruzioni del SAP è visibile in questa immagine tratta dal video <a href="https://www.youtube.com/watch?v=dHWFpkGsxOs" target="_blank">8-bit CPU control logic: Part 3</a> di Ben Eater; notiamo che gli step delle istruzioni LDA, ADD eccetera partono da 010, a significare che gli step 000 e 001 sono comuni per tutte e compongono quella che viene chiamata Fase Fetch, evidenziata in giallo.
+Uno schema che mostra chiaramente gli step di alcune istruzioni del SAP è visibile in questa immagine tratta dal video <a href="https://www.youtube.com/watch?v=dHWFpkGsxOs" target="_blank">8-bit CPU control logic: Part 3</a> di Ben Eater; notiamo che gli step delle istruzioni LDA, ADD eccetera partono da 010, a significare che gli step 000 e 001 sono comuni per tutte e compongono quella che viene chiamata **Fase Fetch**, evidenziata in giallo.
 
 [![Microcode del SAP](../../assets/control/40-cl-ben-step-microcode.png "Microcode del SAP"){:width="100%"}](../../assets/control/40-cl-ben-step-microcode.png)
 
@@ -168,67 +168,64 @@ Riprendendo la spiegazione del funzionamento del Ring Counter, risulta ora evide
 
 Come detto poc’anzi, la combinazione generata dall'Opcode contenuto nell’Instruction Register e dallo step esposto dal Ring Counter indirizza una locazione di memoria specifica nelle EEPROM: tale locazione di memoria contiene la Control Word.
 
-Nell'immagine si può osservare che le uscite del '161 controllano il '138, utilizzato per visualizzare lo stato dell'RC. Anziché impiegare 16 LED (e due '138), un singolo LED "esteso" è pilotato dal pin più significativo del '161, che ha un valore pari ad 8: lo step correntemente in esecuzione sarà indicato dal LED acceso dal '138, al quale sommare  8 se il LED "esteso" è acceso.
+Nell'immagine si può osservare che le uscite del '161 controllano il '138, utilizzato per visualizzare lo stato dell'RC. Anziché impiegare 16 LED (e due '138), un singolo LED "esteso" è pilotato dal pin più significativo del '161, che ha un valore pari ad 8: lo step correntemente in esecuzione sarà indicato dal LED acceso dal '138, al quale sommare 8 se il LED "esteso" è acceso.
 
 ### Il clock
 
 In generale, i momenti essenziali di un ciclo di clock in un computer sono due: il Rising Edge ↗ (passaggio del segnale dallo stato logico LO allo stato logico HI) e il Falling Edge ↘ (viceversa).
 
-- Rising Edge: la maggior parte dei componenti sequenziali* (quali contatori, registri, FF) modifica il proprio stato durante transizione del segnale di clock dallo stato logico LO allo stato logico HI; le azioni di caricamento di tutti i moduli del computer (PC, MAR, RAM, IR, A, B, H, Registri Indice, Flag, SP, O) avvengono in questo momento. Poiché il caricamento dei registri avviene con il Rising Edge del clock, la Control Word dovrà essere configurata prima di ogni occorrenza di questo evento, quindi durante l'intervallo tra un Rising Edge e il successivo.
+- Rising Edge: la maggior parte dei componenti sequenziali* (quali contatori, registri, FF) modifica il proprio stato durante la transizione del segnale di clock dallo stato logico LO allo stato logico HI; le azioni di caricamento di tutti i moduli del computer (PC, MAR, RAM, IR, A, B, H, Registri Indice, Flag, SP, O) avvengono in questo momento, ad eccezione del RC. Poiché il caricamento dei registri avviene con il Rising Edge del clock, la Control Word deve essere configurata prima di ogni occorrenza di questo evento, quindi durante l'intervallo tra un Rising Edge e il successivo.
 
-- Falling Edge: il momento migliore per settare la Control Word è il Falling Edge del clock. E' possibile invertire la fase del clock del Ring Counter, consentendo la configurazione della Control Word - e dunque della microistruzione - proprio in corrispondenza del Falling Edge.
+- Falling Edge: è il momento migliore per settare la Control Word. Invertendo la fase del clock inviato al Ring Counter, si esegue la configurazione della Control Word - e dunque della microistruzione - proprio in corrispondenza del Falling Edge.
 
 \* I componenti sequenziali producono un output che dipende non solo dagli ingressi attuali, ma anche dallo stato precedente, a differenza dei circuiti combinatori che dipendono esclusivamente dagli ingressi presenti.
 
 Riassumendo, l'Instruction Register contiene l'Opcode dell'istruzione attualmente in esecuzione, mentre il Ring Counter ne indica lo step attivo. Utilizzando una logica combinatoria, è possibile costruire il microcode da caricare nelle EEPROM, che emetteranno gli opportuni segnali (Control Word) per ogni step di ogni istruzione.
 
-È importante sottolineare che la configurazione delle operazioni di lettura e scrittura da parte della Control Word segue tempi diversi:
+È importante sottolineare che la configurazione delle operazioni di lettura e scrittura da parte della Control Word segue tempi diversi.
 
-- I segnali di lettura attivano immediatamente il modulo interessato, il quale espone subito il suo output sul bus; questo permette ai segnali di stabilizzarsi prima che vengano letti dai registri che dovranno essere aggiornati.
+- Al Falling Edge del clock, i segnali di lettura settati dalla Control Word attivano immediatamente l'eventua modulo interessato da una Read, il quale espone subito il suo output sul bus; questo permette ai segnali sul bus di stabilizzarsi prima che vengano letti dai registri che dovranno essere aggiornati;
 - Viceversa, i segnali di scrittura attivano il modulo interessato, ma l'operazione di scrittura verrà eseguita solo al Rising Edge del clock, assicurando che i registri che devono essere aggiornati ricevano segnali stabili prima dell'effettiva scrittura.
 
 ### Durata delle istruzioni
 
 Altro aspetto importante da prendere in considerazione è il numero di microistruzioni che possono comporre ogni istruzione.
 
-Ad esempio nel computer sap gli step delle microistruzioni sono al massimo 6 **verificare bene**
-
-Le istruzioni del computer SAP avevano tutte la stessa durata di **5 step**, indipendentemente dalla loro complessità. Nel microcode che segue possiamo vedere che in realtà l'istruzione di caricamento immediato LDA può essere eseguita in tre step, mentre ad esempio somma e sottrazione sono necessitano di 5 step.
+Il SAP prevedeva una durata fissa delle istruzioni, basata su 5 step; conseguentemente, tutte le istruzioni avevano la stessa durata, indipendentemente dalla loro complessità. Tuttavia, nel microcode che segue possiamo vedere che in realtà l'istruzione di caricamento immediato LDA potrebbe essere eseguita in tre step, mentre ad esempio somma e sottrazione necessitano di 5 step:
 
 [![Microcode del computer SAP](../../assets/control/40-cl-sap-microcode.png "Microcode del computer SAP"){:width="66%"}](../../assets/control/40-cl-sap-microcode.png)
 
 *Microcode del computer SAP.*
 
-Il contatore del Ring Counter '161 espone un output binario, che può pilotare un DEMUX '138, che può prendere i 3 bit (ce ne bastano 3 per gestire 8 cicli, visto che gli step delle microistruzioni sono al massimo 6) e convertirli in singoli bit che rappresentano lo step della microistruzione corrente e poi uno di questi, l'ultimo, che resetta il 74LS161 in modo da risparmiare i cicli di clock inutilizzati.
+Come si può vedere nello schema del SAP, il contatore '161 presenta le sue uscite agli ingressi di selezione del DEMUX '138, che attiva in sequenza le uscite invertite (active = LO) da 00 a 05: ad ogni attivazione di quest'ultima, le due NAND attivano l'ingresso di Reset /MR del '161, che riportea il conteggio degli step allo zero iniziale, cominciando così una nuova istruzione.
 
-Come si vede nello schema dell'NQSAP sub non vi è più un controllo del reset del contatore da parte del 138.
-
-Come indicato anche nella sezione [Differenze](.../alu/#differenze-tra-moduli-alu-dellnqsap-e-del-beam) della pagina dell'ALU, bisogna notare che il computer NQSAP prevedeva solo 8 step per le microistruzioni. Per emulare le istruzioni del 6502 di salto condizionale, di scorrimento / rotazione e di salto a subroutine servono più step, pertanto, sul computer BEAM ne sono stati previsti 16.
-
-come si può vedere nello schema del SAP, il contatore '161 presente le sue uscite agli ingressi di selezione del DEMUX '138, che attiverà in sequenza le uscite invertite (active = LO) da 00 a 05 in sequenza; all'attivazione di quest'ultima, le due NAND attiveranno l'ingresso di Reset /MR del '161, che riporterà il conteggi degli step allo zero iniziale, cominciando così una nuova istruzione.
-
-È facile notare che per le istruzioni più corte questo si produce in uno spreco di cicli di elaborazione.
+E' abbastanza immediato notare questa architettura comporta uno spreco di cicli di elaborazione durante l'esecuzione delle istruzioni con pochi step, perché il RC deve comunque attendere l'attivazione dell'ultima uscita 05 per poter essere resettato.
 
 [![Ring Counter del SAP](../../assets/control/40-control-sap-rc.png "Ring Counter del SAP"){:width="33%"}](../../assets/control/40-control-sap-rc.png)
 
 *Ring Counter del SAP.*
 
-Per indirizzare questa questione e migliorare le prestazioni del computer, all'ultimo step di tutte le istruzioni dell'NQSAP e del BEAM viene aggiunta l' finale "**N**", che su una EEPROM attiva un segnale **NI** che attiva a sua il pin di Load del '161, che, avendo tutti i suoi input a 0, sarà praticamente resettato.
+L'NQSAP di Tom prevede un altro accorgimento molto furbo e migliora le prestazioni del computer introducendo la durata variabile delle istruzioni; infatti, l'ultima microistruzione di ogni istruzione include un segnale N, che attiva il pin di caricamento parallelo del '161: tutti gli input del contatore sono a 0 e il contatore ritorna allo zero iniziale.
 
-Perché non collegare l'output NI della EEPROM al pin di reset del contatore?
+In altre parole, si mette anticipatamente fine ad ogni istruzione inserendo nell'ultimo step un Reload del Ring Counter, così da non dover aspettare l'esecuzione di tutti gli step vuoti; il vantaggio nell'operare questa scelta aumenta man mano che si desidera implementare istruzioni sempre più complesse, che necessitano di un numero di microistruzioni sempre maggiore - che vengono però risparmiate nel momento in cui l'istruzione da eseguire necessita di un numero limitato di step.
 
-Se si facesse in questo modo, il contatore verrebbe resettato non appena la microistruzione contenente N fosse eseguita, non permettendo l'esecuzione completa di quanto stabilito con la Control Word , pertanto si dovrebbe creare una micro istruzione aggiuntiva per tutte le istruzioni anziché poter avere l'istruzione micron direttamente integrata insieme alle ultime istruzioni micro di ogni istruzione , risparmiando così un ciclo macchino .questo perché il contatore è sincrono virgola e significa che dunque il suo reset avverrebbe in qualsiasi momento , indipendentemente dallo stato del clock.volevo dire asincrono .e allora perché non utilizzare un contatore sincrono ? non lo possiamo fare perchéavremmo problemi con il reset vero e proprio.
+Il momento del caricamento del contatore è visibile a pagina 11 del <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">datasheet</a>: il pin /Load viene portato allo stato LO* e in corrispondenza del successivo Falling Edge** del clock (vedere l'istante Preset nella ascissa) le uscite QA-QD rispecchiano gli ingressi A-D.
 
-In altre parole, possiamo mettere anticipatamente fine ad ogni istruzione inserendo nell'ultimo step un  reset del Ring Counter così da non dover aspettare l'esecuzine di eventuali step vuoti (alla data, la lunghezza massima delle istruzioni è di 10 step).
+In definitiva, si può dire che con il /LOAD ("N") e tutti i pin di input a 0, il Ring Counter si resetta in sincronia con il Rising Edge del clock.
 
-Spiegare il legame con il funzionamento del 161, che permette di caricare zero sui suoi ingressi, ed è il metodo che viene utilizzato per resettare il ring counter e riportarlo allo step t zero.
+Potrebbe sorgere una domanda: perché non collegare il segnale N del microcode direttamente al pin di reset del contatore?
 
-Praticamente usando il '161:
-- con /CLR, che è asincrono, faccio il reset "hardware"
-  - 17/06/2023 Tom segnala che questo segnale asincrono non è invece ideale per pulire il Ring Counter utilizzando il microcode perché, essendo appunto asincrono, non sarebbe gestito dal clock: infatti, non appena attivato, andrebbe a resettare il ciclo di microistruzione esattamente all'inizio invece che quando arriva il impulso di clock!
-  - 04/07/2023 Va invece benissimo per fare il reset del Program Counter 😁 anche col clock stoppato
-  - A dire il vero si potrebbe comunque utilizzare questo segnale, ma significherebbe dover aggiungere una microistruzione dedicata al reset alla fine di tutte le altre microistruzioni. Utilizzando una modalità di reset sincrona su questo chip si potrebbe invece aggiungere il segnale di reset all'ultima microistruzione del ciclo.
-- con il /LOAD ("N") e tutti i pin di input a 0, il Ring Counter si resetta in sincrono con il /CLK 😁. Assomiglia un po' al JUMP del Program Counter. Notare il /CLK, che è invertito rispetto al CLK principale e che dunque permette di lasciar terminare l'esecuzione della microistruzione corrente prima di fare il LOAD.
+Il reset del '161 è *asincrono*, che significa che è indipendente dal clock: di conseguenza, il contatore verrebbe resettato nel momento stesso in cui la Control Word fosse emessa dalle EEPROM, non permettendo la continuazione dell'esecuzione della microistruzione!
+
+In realtà, fa notare Tom - sarebbe comunque possibile utilizzare il Reset del '161 collegato direttamente al segnale N, ma questo significherebbe dover aggiungere uno step dedicato al reset come ultima microistruzione di ogni istruzione. Utilizzando invece il caricamento sincrono, non è necessario uno step di reset dedicato.
+
+Assomiglia un po' al JUMP del Program Counter. Notare il /CLK, che è invertito rispetto al CLK principale e che dunque permette di lasciar terminare l'esecuzione della microistruzione corrente prima di fare il LOAD.
+
+\* e \*\*: Ricordando quanto esposto in precedenza relativamente all'impostazione della Control Word e ai momenti di caricamento dei registri, bisogna troviamo qui un primo esempio concreto: il segnale /Load viene settato dalla Control Word durante il Falling Edge del clock, mentre l'effettivo caricamento del registro avviene in concomitanza con il Rising Edge.
+ 
+
+Come indicato anche nella sezione [Differenze](.../alu/#differenze-tra-moduli-alu-dellnqsap-e-del-beam) della pagina dell'ALU, bisogna notare che il computer NQSAP prevedeva solo 8 step per le microistruzioni. Per emulare le istruzioni del 6502 di salto condizionale, di scorrimento / rotazione e di salto a subroutine servono più step, pertanto, sul computer BEAM ne sono stati previsti 16.
+
 
 
 • Gli ingressi D0-D3 sono tutti a 0, così quando arriva il /LOAD (o /PE) sincrono (segnale "N" per Tom), il conteggio ricomincia da zero
@@ -466,3 +463,4 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 - Ho aggiunto anche una barra a led per mostrare l'indirizzo correntemente In input sulle EEPROM
 - verificare quando spiegare cosa fa il 138: se metto prima Ring Counter o la speigazione delle uscite dei 4x 138 della prima ROM
 - sistemare "\*\* In una successiva sezione si tratterà della durata delle micro istruzioni delle istruzioni e dei miglioramenti apportati dall'NQSAP."
+- intorno a riga 179, bisogna verificare... Perché il caricamento della control World al falling edge è  solo una parte, perché dobbiamo considerare anche l'IR
