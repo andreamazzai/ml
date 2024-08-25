@@ -2,7 +2,6 @@
 title: "ALU"
 permalink: /docs/alu/
 excerpt: "Unità Aritmetica e Logica del BEAM computer"
-toc: left
 ---
 [![Unità Aritmetica e Logica del BEAM computer](../../assets/alu/50-alu-beam.png "Unità Aritmetica e Logica del BEAM computer"){:width="100%"}](../../assets/alu/50-alu-beam.png)
 
@@ -57,8 +56,7 @@ Nell'esempio dell'istruzione INX del 6502, dopo le due fasi di fetch comuni a tu
 - i '181 eseguono l'operazione **A Plus 1**, il cui risultato viene letto dall'output (RL) e copiato in X (WX);
 - si legge il contenuto non modificato di A (RA) e si riallinea H (WH).
 
-Nella sezione dedicata alle istruzioni e al microcode si analizzeranno in dettaglio le microistruzioni di tutte le istruzioni del computer.
-
+**Nella sezione dedicata alle istruzioni e al microcode si analizzeranno in dettaglio le microistruzioni di tutte le istruzioni del computer.**
 
 ### Funzioni logiche e operazioni aritmetiche
 
@@ -340,3 +338,4 @@ Ecco una lista delle differenze:
 - https://bread80.com/2019/09/02/adding-adc-sbc-inc-dec-operations-to-ben-eaters-alu/#easy-footnote-4-43 da leggere per capire se buono
 - subito dopo il capitolo "Il registro H" capire "(da fare: in questo caso, ma anche nel caso delle istruzioni di shift / rotazione e forse anche CPX e CPY, verificare se non potessi usare D invece di H)"
 - in Questa zona <<< Nel datasheet venivano menzionati anche il Carry Look-Ahead e il Ripple-Carry, approfonditi nella sezione dedicata all'[Aritmetica Binaria](../math/#). >>> sistemare il link alla sezione che devo ancora scrivere - 15 08 2024
+- **Nella sezione dedicata alle istruzioni e al microcode si analizzeranno in dettaglio le microistruzioni di tutte le istruzioni del computer.**... ricordare

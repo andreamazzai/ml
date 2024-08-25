@@ -114,7 +114,7 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio del 6502 si trad
 
 ### opzione 1
 
-1. Il primo step carica l'indirizzo del Program Counter nel MAR:
+1. Il primo step carica l'indirizzo del Program Counter nel Memory Address Register:
     - RPC, Read Program Counter - espone sul bus l'indirizzo del Program Counter
     - WM, Write Memory Address Register - scrive il contenuto del bus nel MAR
 2. Il secondo step carica l'opcode dell'istruzione nell'IR e incrementa il PC per farlo puntare alla locazione di memoria successiva, che nel caso dell'istruzione LDA contiene l'operando:
@@ -133,7 +133,7 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio del 6502 si trad
 
 **sono arrivato in questa zona** 
 
-\* si veda su ALU spiegazione del perché si caricano sia A sia H
+\* Perché anche H? Si veda la sezione dedicata alla spiegazione del [registro H](../alu/#il-registro-h) nella pagina dell'ALU.
 
 ### opzione 2
 
