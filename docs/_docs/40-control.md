@@ -62,9 +62,9 @@ Ad esempio:
 
 In conseguenza del numero di bit utilizzato per l'istruzione, la connessione tra Instruction Register del SAP ed EEPROM contenenti il microcode poteva avere una ampiezza di soli 4 bit, come visibile in figura:
 
-[![Schema della Control Logic del SAP computer](../../assets/control/40-control-logic-schema-SAP.png "Schema logico della Control Logic del SAP computer"){:width="100%"}](../../assets/control/40-control-logic-schema-SAP.png)
+[![Schema della Control Logic e dell'Instruction Register del SAP computer](../../assets/control/40-control-logic-schema-SAP.png "Schema della Control Logic e dell'Instruction Register del SAP computer"){:width="100%"}](../../assets/control/40-control-logic-schema-SAP.png)
 
-*Schema della Control Logic del SAP computer.*
+*Schema della Control Logic e dell'Instruction Register del SAP computer.*
 
 Una fondamentale differenza tra l'IR del SAP e quello dell'NQSAP e del BEAM è la dimensione. Il 6502 ha un set di istruzioni *relativamente* piccolo, composto da 56 istruzioni di base; tuttavia, queste istruzioni possono essere utilizzate con diverse modalità di indirizzamento, il che porta il numero totale di combinazioni possibili a circa 150.
 
@@ -112,7 +112,31 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio del 6502 si trad
 
 *Scomposizione dell'istruzione LDA nelle sue quattro microistruzioni elementari*.
 
-1. Il primo step espone il contenuto del Program Counter sul bus (RPC, Read Program Counter) e scrive il contenuto del bus nel MAR (WM, Write Memory Address Register).
+1. Il primo step carica l'indirizzo del Program Counter nel MAR:
+    - RPC, Read Program Counter - espone sul bus l'indirizzo del Program Counter
+    - WM, Write Memory Address Register - scrive il contenuto del bus nel MAR
+
+2. Il secondo step carica l'opcode dell'istruzione nell'IR e incrementa il PC per farlo puntare alla locazione di memoria successiva, che nel caso dell'istruzione LDA contiene l'operando:
+    - RR, Read RAM - espone sul bus il contenuto della locazione di memoria puntata dal MAR
+    - WIR, Write Instruction Register - scrive il contenuto del bus nell'Instruction Register
+    - PCI, Program Counter Increment - incrementa il Program Counter
+
+3. Il terzo step carica sul MAR l'indirizzo dell'operando:
+    - RPC, Read Program Counter - espone il contenuto del Program Counter sul bus
+    - WM, Write Memory Address Register - scrive il contenuto del bus nel MAR
+
+4. Il quarto ed ultimo step carica l'operando nell'accumulatore*, incrementa il PC per farlo puntare alla istruzione successiva e resetta il Ring Counter
+    - RR, Read RAM - espone sul bus il contenuto della locazione di memoria puntata dal MAR
+    - FNZ, Flag N & Z - abilita la scrittura dei Flag N e Z
+    - WAH, Write A & H - scrive il contenuto del bus su A e H
+    - PCI, Program Counter Increment - incrementa il Program Counter
+    - N, Next - e resetta il Ring Counter
+
+**sono arrivato in questa zona** 
+
+\* si veda su ALU spiegazione del perché si caricano sia A sia H
+
+1. Il primo step espone sul bus l'indirizzo del Program Counter (RPC, Read Program Counter) e scrive il contenuto del bus nel MAR (WM, Write Memory Address Register); così facendo, il MAR conterrà l'indirizzo attuale del PC.
 2. Il secondo step espone sul bus il contenuto della locazione di memoria puntata dal MAR (RR, Read RAM), scrive il contenuto del bus nell'Instruction Register (WIR, Write Instruction Register) e incrementa il Program Counter (Program Counter Increment). Alla fine di questo step, l'IR conterrà l'opcode dell'istruzione e il PC punterà alla locazione di memoria successiva, che nel caso dell'istruzione LDA contiene l'operando.
 3. Il terzo step espone di nuovo il contenuto del Program Counter sul bus (RPC, Read Program Counter) e si scrive il contenuto del bus nel MAR (WM, Write Memory Address Register). Ora, il MAR punta alla locazione di memoria che contiene l'operando.
 4. Il quarto ed ultimo step espone sul bus l'operando, che è contenuto nella locazione di memoria puntata dal MAR (RR, Read RAM), abilita la scrittura dei Flag N e Z (FNZ), scrive il contenuto del bus su A e H (WAH, Write A + H), incrementa il Program Counter (PCI, Program Counter Increment) e resetta il Ring Counter (N, Next).
