@@ -81,9 +81,13 @@ Tirando le fila, per un computer come l'NQSAP o il BEAM:
 - la connessione tra IR ed EEPROM deve avere un'ampiezza di 8 bit e non più di soli 4 bit come nel SAP;
 - sono necessarie EEPROM 28C256 da 256Kb con 15 pin per gli indirizzi:
   - 8 pin di indirizzi per le istruzioni (2^8 = 256 istruzioni)
-  - 4 pin di indirizzi per le microistruzioni (2^4 = 16 step), delle quali si parla nella sezione dedicata al [Ring Counter](#ring-counter)
+  - 4 pin di indirizzi per le microistruzioni (2^4 = 16 step), delle quali si parla nella sezione dedicata al [Ring Counter](#ring-counter-e-microistruzioni)
   - 2 pin di indirizzi per selezionare le ROM
   - rimane un pin inutilizzato, tanto da pensare di poter utilizzare EEPROM da 128Kb, che però non esistono in commercio <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">con l'interfaccia parallela</a>.
+
+[![Schema dell'Instruction Register del BEAM](../../assets/control/40-cl-ir-beam.png "Schema dell'Instruction Register del BEAM"){:width="100%"}](../../assets/control/40-cl-ir-beam.png)
+
+*Schema dell'Instruction Register del BEAM.*
 
 **Questo non deve stare qui, credo** Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF da 8 registri in cascata, così il primo viene aggiornato al normale caricamento dell'IR (che corrisponderebbe a T7 (step 1), ma causando un glitch sulla ROM)… invece di collegare il FF agli ingressi delle ROM, viene collegato a un altro FF che viene caricato col Falling Edge del CLK / Rising Edge del CLK, così le uscite delle ROM vengono aggiornate alla fine della microistruzione quando i segnali sono stabili 😁
 
@@ -194,7 +198,7 @@ In generale, i momenti essenziali di un ciclo di clock in un computer sono due: 
 
 Altro aspetto importante da prendere in considerazione è il numero di microistruzioni che possono comporre ogni istruzione.
 
-Il SAP prevedeva una durata fissa delle istruzioni di 5 step; conseguentemente, tutte le istruzioni avevano la stessa durata, indipendentemente dalla loro complessità. Tuttavia, nel microcode che segue possiamo vedere che in realtà l'istruzione di caricamento immediato LDA potrebbe essere eseguita in tre step, mentre somma e sottrazione necessitano di 5 step:
+Il SAP prevedeva una durata fissa delle istruzioni di 5 step; conseguentemente, tutte le istruzioni avevano la stessa durata, indipendentemente dalla loro complessità. Tuttavia, nel microcode che segue possiamo vedere che in realtà l'istruzione di caricamento immediato LDA potrebbe essere eseguita in tre step, mentre somma e sottrazione necessitano di cinque step:
 
 [![Microcode del computer SAP](../../assets/control/40-cl-sap-microcode.png "Microcode del computer SAP"){:width="66%"}](../../assets/control/40-cl-sap-microcode.png)
 
@@ -227,11 +231,8 @@ In realtà, fa notare Tom - sarebbe comunque possibile utilizzare il Reset del '
 Assomiglia un po' al JUMP del Program Counter. Notare il /CLK, che è invertito rispetto al CLK principale e che dunque permette di lasciar terminare l'esecuzione della microistruzione corrente prima di fare il LOAD.
 
 \* e \*\*: Ricordando quanto esposto in precedenza relativamente all'impostazione della Control Word e ai momenti di caricamento dei registri, bisogna troviamo qui un primo esempio concreto: il segnale /Load viene settato dalla Control Word durante il Falling Edge del clock, mentre l'effettivo caricamento del registro avviene in concomitanza con il Rising Edge.
- 
 
 Come indicato anche nella sezione [Differenze](.../alu/#differenze-tra-moduli-alu-dellnqsap-e-del-beam) della pagina dell'ALU, bisogna notare che il computer NQSAP prevedeva solo 8 step per le microistruzioni. Per emulare le istruzioni del 6502 di salto condizionale, di scorrimento / rotazione e di salto a subroutine servono più step, pertanto, sul computer BEAM ne sono stati previsti 16.
-
-
 
 • Gli ingressi D0-D3 sono tutti a 0, così quando arriva il /LOAD (o /PE) sincrono (segnale "N" per Tom), il conteggio ricomincia da zero
 • Le uscite Q0-Q2 del 161 vanno a MA0-MA2 per avere 8 step di microistruzioni, ma se aggiungo un quarto pin al contatore, posso avere 16 step
@@ -469,3 +470,4 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 - verificare quando spiegare cosa fa il 138: se metto prima Ring Counter o la speigazione delle uscite dei 4x 138 della prima ROM
 - sistemare "\*\* In una successiva sezione si tratterà della durata delle micro istruzioni delle istruzioni e dei miglioramenti apportati dall'NQSAP."
 - intorno a riga 179, bisogna verificare... Perché il caricamento della control World al falling edge è  solo una parte, perché dobbiamo considerare anche l'IR
+- Forse opportuno fare una tabella all'inizio della pagina che spiega molto rapidamente le differenze principali di sap, NQSAP e Beam

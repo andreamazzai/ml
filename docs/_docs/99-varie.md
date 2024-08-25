@@ -1,4 +1,5 @@
-### opzione 2
+# opzione 2
+
 Utilizzato nella pagina della control logic e sostituito con elenco puntato più dettagliato
 
 1. Il primo step espone sul bus l'indirizzo del Program Counter (RPC, Read Program Counter) e scrive il contenuto del bus nel MAR (WM, Write Memory Address Register); così facendo, il MAR conterrà l'indirizzo attuale del PC.

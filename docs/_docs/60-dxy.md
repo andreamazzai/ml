@@ -79,5 +79,6 @@ Per completezza, devo segnalare di aver conosciuto il 74LS377 studiando l'<a hre
 
 *Schema dei registri indice del BEAM computer.*
 
-# TO DO
+## TO DO
+
 - Parlando di registri indice virgola che vengono molto spesso utilizzati per gestire le modalità di indirizzamento ,È necessario ricordare che alcune modalità di indirizzamento sono ridondanti Perché il computer ha solamente 256 byte, come cè scritto altrove , come ad esempio zero page , x e Absolute Index , x , pertanto sono trattate come se fossero un'unica modalità di indirizzamento Così come già descritto nella pagina xYZ
