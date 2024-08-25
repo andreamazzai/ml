@@ -15,6 +15,24 @@ In generale, la gestione delle istruzioni consta di tre capisaldi: *Instruction 
 
 *Schema della Control Logic dell'NQSAP, leggermente modificato al solo scopo di migliorarne la leggibilità.*
 
+
+Per facilità di consultazione e semplificazione del confronto fra i tre computer SAP, NQSAP e BEAM, è opportuno riepilogare in tabella alcuni degli aspetti che saranno trattati nella pagina.
+
+| Oggetto --- / --- Computer           | SAP        | NQSAP       | BEAM           |
+| -                                    | -          | -           | -              |
+| Autore                               | Ben Eater  | Tom Nisbet  | Andrea Mazzai  |
+| IR condisivo tra Opcode e Operando   | Sì         | No          | No             |
+| Bit IR per Opcode                    | 4          | 8           | 8              |
+| Bit da IR a EEPROM                   | 4          | 8           | 8              |
+| Bit IR per Operando                  | 4          | 0           | 0              |
+| EEPROM tipo                          | 2x 28C16   | 4x 28C256   | 4x 28C256      |
+| EEPROM Kb                            | 16         | 256         | 256            |
+| RAM (byte)                           | 16         | 256         | 256            |
+| Massimo istruzioni                   | 16         | 256         | 256            |
+| Massimo Step                         | 5          | 8           | 16             |
+| Caricamento IR Rising o Falling Edge | Rising     | Rising      | Falling        |
+| Caricamento RC Rising o Falling Edge | Falling    | Falling     | Falling        |
+
 Alcune note propedeutiche alla comprensione di quanto esposto in questa pagina:
 
 1. Nel computer SAP di Ben Eater, la denominazione dei segnali è "modulo-centrica", riflettendo la funzione specifica di ciascun modulo: ad esempio, il segnale RO (RAM Out) esporta il contenuto della RAM sul bus, mentre AI (A Input) carica il registro A. Nel computer NQSAP di Tom Nisbet e nel BEAM, invece, la nomenclatura è "computer-centrica", adottando un punto di vista a livello di bus: per esempio, RO diventa RR (RAM Read) e AI diventa WA (Write A).
@@ -62,9 +80,9 @@ Ad esempio:
 
 In conseguenza del numero di bit utilizzato per l'istruzione, la connessione tra Instruction Register del SAP ed EEPROM contenenti il microcode poteva avere una ampiezza di soli 4 bit, come visibile in figura:
 
-[![Schema della Control Logic e dell'Instruction Register del SAP computer](../../assets/control/40-control-logic-schema-SAP.png "Schema della Control Logic e dell'Instruction Register del SAP computer"){:width="100%"}](../../assets/control/40-control-logic-schema-SAP.png)
+[![Schema della Control Logic e dell'Instruction Register del SAP](../../assets/control/40-control-logic-schema-SAP.png "Schema della Control Logic e dell'Instruction Register del SAP"){:width="100%"}](../../assets/control/40-control-logic-schema-SAP.png)
 
-*Schema della Control Logic e dell'Instruction Register del SAP computer.*
+*Schema della Control Logic e dell'Instruction Register del SAP.*
 
 Una fondamentale differenza tra l'IR del SAP e quello dell'NQSAP e del BEAM è la dimensione. Il 6502 ha un set di istruzioni *relativamente* piccolo, composto da 56 istruzioni di base; tuttavia, queste istruzioni possono essere utilizzate con diverse modalità di indirizzamento, il che porta il numero totale di combinazioni possibili a circa 150.
 
@@ -81,7 +99,7 @@ Tirando le fila, per un computer come l'NQSAP o il BEAM:
 - la connessione tra IR ed EEPROM deve avere un'ampiezza di 8 bit e non più di soli 4 bit come nel SAP;
 - sono necessarie EEPROM 28C256 da 256Kb con 15 pin per gli indirizzi:
   - 8 pin di indirizzi per le istruzioni (2^8 = 256 istruzioni)
-  - 4 pin di indirizzi per le microistruzioni (2^4 = 16 step), delle quali si parla nella sezione dedicata al [Ring Counter](#ring-counter-e-microistruzioni)
+  - 3 o 4 pin di indirizzi per le microistruzioni (2^3 = 8 step, 2^4 = 16 step), delle quali si parla nella sezione dedicata al [Ring Counter](#ring-counter-e-microistruzioni)
   - 2 pin di indirizzi per selezionare le ROM
   - rimane un pin inutilizzato, tanto da pensare di poter utilizzare EEPROM da 128Kb, che però non esistono in commercio <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">con l'interfaccia parallela</a>.
 
@@ -471,3 +489,4 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 - sistemare "\*\* In una successiva sezione si tratterà della durata delle micro istruzioni delle istruzioni e dei miglioramenti apportati dall'NQSAP."
 - intorno a riga 179, bisogna verificare... Perché il caricamento della control World al falling edge è  solo una parte, perché dobbiamo considerare anche l'IR
 - Forse opportuno fare una tabella all'inizio della pagina che spiega molto rapidamente le differenze principali di sap, NQSAP e Beam
+- Schema della Control Logic e dell’Instruction Register del SAP computer --- l'immagine probabilmente risulta troppo piccola su schermi "normali"
