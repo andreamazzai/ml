@@ -151,6 +151,12 @@ Riprendendo la spiegazione del funzionamento del Ring Counter, risulta ora evide
 
 *Dettaglio del Ring Counter del BEAM.*
 
+Come detto poc'anzi, la combinazione generata dal contenuto dell'Instruction Register e dallo step esposto dal Ring Counter indirizza una locazione di memoria specifica nelle EEPROM nelle quali è memorizzato il microcode e i cui ingressi sono connessi agli output dell'IR e dell'RC.
+
+Tale locazione di memoria contiene è la control Word che viene esportata al computer.
+
+**riscrivere meglio**
+
 ### Il clock
 
 In generale, i momenti essenziali di un ciclo di clock in un computer sono due: il Rising Edge ↗ (passaggio del segnale dallo stato logico LO allo stato logico HI) e il Falling Edge ↘ (viceversa).
