@@ -185,22 +185,22 @@ In generale, i momenti essenziali di un ciclo di clock in un computer sono due: 
 
 \* I componenti sequenziali producono un output che dipende non solo dagli ingressi attuali, ma anche dallo stato precedente, a differenza dei circuiti combinatori che dipendono esclusivamente dagli ingressi presenti.
 
-È importante sottolineare che la configurazione delle operazioni di lettura e scrittura da parte della Control Word segue tempi diversi.
+È importante sottolineare che la configurazione delle operazioni di lettura e scrittura da parte della Control Word segue tempi diversi:
 
-- Al Falling Edge del clock, i segnali di lettura settati dalla Control Word attivano immediatamente l'eventuale modulo interessato da una Read, il quale espone subito il suo output sul bus; questo garantisce ai segnali sul bus di stabilizzarsi prima che vengano memorizzati dai registri che dovranno essere aggiornati;
-- Viceversa, i segnali di scrittura preparano i moduli interessati, ma le operazioni di Write vengono eseguite solo al Rising Edge del clock, assicurando così che i registri che devono essere aggiornati trovino in input segnali ormai stabilizzati.
+- al Falling Edge del clock, i segnali di lettura settati dalla Control Word attivano immediatamente l'eventuale modulo interessato da una Read, il quale presenta subito il suo output sul bus;
+- viceversa, i segnali di scrittura preparano i moduli interessati, ma le operazioni di Write vengono eseguite solo al successivo Rising Edge del clock, assicurando così che i registri che devono essere aggiornati trovino in input segnali ormai stabilizzati.
 
 ### Durata delle istruzioni
 
 Altro aspetto importante da prendere in considerazione è il numero di microistruzioni che possono comporre ogni istruzione.
 
-Il SAP prevedeva una durata fissa delle istruzioni, basata su 5 step; conseguentemente, tutte le istruzioni avevano la stessa durata, indipendentemente dalla loro complessità. Tuttavia, nel microcode che segue possiamo vedere che in realtà l'istruzione di caricamento immediato LDA potrebbe essere eseguita in tre step, mentre ad esempio somma e sottrazione necessitano di 5 step:
+Il SAP prevedeva una durata fissa delle istruzioni di 5 step; conseguentemente, tutte le istruzioni avevano la stessa durata, indipendentemente dalla loro complessità. Tuttavia, nel microcode che segue possiamo vedere che in realtà l'istruzione di caricamento immediato LDA potrebbe essere eseguita in tre step, mentre somma e sottrazione necessitano di 5 step:
 
 [![Microcode del computer SAP](../../assets/control/40-cl-sap-microcode.png "Microcode del computer SAP"){:width="66%"}](../../assets/control/40-cl-sap-microcode.png)
 
 *Microcode del computer SAP.*
 
-Come si può vedere nello schema del SAP, il contatore '161 presenta le sue uscite agli ingressi di selezione del DEMUX '138, che attiva in sequenza le uscite invertite (active = LO) da 00 a 05: ad ogni attivazione di quest'ultima, le due NAND attivano l'ingresso di Reset /MR del '161, che riportea il conteggio degli step allo zero iniziale, cominciando così una nuova istruzione.
+Come si può vedere nello schema *Ring Counter del SAP*, il contatore '161 presenta le sue uscite agli ingressi di selezione del DEMUX '138, che attiva in sequenza le uscite invertite (active = LO) da 00 a 05: ad ogni attivazione di quest'ultima, le due NAND attivano l'ingresso di Reset /MR del '161, che riporta il conteggio degli step allo zero iniziale, cominciando così una nuova istruzione.
 
 E' abbastanza immediato notare questa architettura comporta uno spreco di cicli di elaborazione durante l'esecuzione delle istruzioni con pochi step, perché il RC deve comunque attendere l'attivazione dell'ultima uscita 05 per poter essere resettato.
 
@@ -208,11 +208,13 @@ E' abbastanza immediato notare questa architettura comporta uno spreco di cicli 
 
 *Ring Counter del SAP.*
 
-L'NQSAP di Tom prevede un altro accorgimento molto furbo e migliora le prestazioni del computer introducendo la durata variabile delle istruzioni; infatti, l'ultima microistruzione di ogni istruzione include un segnale N, che attiva il pin di caricamento parallelo del '161: tutti gli input del contatore sono a 0 e il contatore ritorna allo zero iniziale.
+L'NQSAP di Tom prevede un altro accorgimento molto furbo e migliora le prestazioni del computer introducendo la durata variabile delle istruzioni; infatti, l'ultima microistruzione di ogni istruzione include un segnale N, che attiva il pin di caricamento parallelo del '161: poiché tutti gli input del contatore sono a 0, il conteggio ritorna allo zero iniziale.
 
-In altre parole, si mette anticipatamente fine ad ogni istruzione inserendo nell'ultimo step un Reload del Ring Counter, così da non dover aspettare l'esecuzione di tutti gli step vuoti; il vantaggio nell'operare questa scelta aumenta man mano che si desidera implementare istruzioni sempre più complesse, che necessitano di un numero di microistruzioni sempre maggiore - che vengono però risparmiate nel momento in cui l'istruzione da eseguire necessita di un numero limitato di step.
+In altre parole, si mette anticipatamente fine ad ogni istruzione inserendo nell'ultimo step un segnaele di reload del Ring Counter, così da non dover aspettare l'esecuzione di tutti gli step vuoti; il vantaggio nell'operare questa scelta aumenta man mano che si desidera implementare istruzioni sempre più complesse, che necessitano di un numero di microistruzioni sempre maggiore - che vengono però risparmiate nel momento in cui l'istruzione da eseguire necessita di un numero limitato di step.
 
 Il momento del caricamento del contatore è visibile a pagina 11 del <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">datasheet</a>: il pin /Load viene portato allo stato LO* e in corrispondenza del successivo Falling Edge** del clock (vedere l'istante Preset nella ascissa) le uscite QA-QD rispecchiano gli ingressi A-D.
+
+**sono arrivato qui**, sono stanco
 
 In definitiva, si può dire che con il /LOAD ("N") e tutti i pin di input a 0, il Ring Counter si resetta in sincronia con il Rising Edge del clock.
 
