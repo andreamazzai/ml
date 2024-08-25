@@ -7,28 +7,32 @@ excerpt: "Control Logic del BEAM computer"
 
 [![Control Logic del BEAM computer](../../assets/control/40-beam-control.png "Control Logic del BEAM computer"){:width="100%"}](../../assets/control/40-beam-control.png)
 
-Questa pagina descrive le Control Logic dell'NQSAP e del BEAM, evidenzia le differenze con la Control Logic del SAP computer di Ben Eater e approfondisce gli argomenti che avevo trovato più ostici e più interessanti.
-
 In generale, la gestione delle istruzioni consta di tre capisaldi: *Instruction Register*, *Ring Counter* e *Microcode*.
+
+Questa pagina descrive le Control Logic dell'NQSAP e del BEAM, evidenzia le differenze con la Control Logic del SAP computer di Ben Eater e approfondisce gli argomenti che avevo trovato più ostici e più interessanti.
 
 Per facilità di consultazione e semplificazione del confronto fra i tre computer SAP, NQSAP e BEAM, è opportuno riepilogare in tabella alcuni degli aspetti che saranno trattati nella pagina.
 
-| Oggetto --- / --- Computer           | SAP        | NQSAP       | BEAM           |
-| -                                    | -          | -           | -              |
-| Autore                               | Ben Eater  | Tom Nisbet  | Andrea Mazzai  |
-| IR condisivo tra Opcode e Operando   | Sì         | No          | No             |
-| Bit IR per Opcode                    | 4          | 8           | 8              |
-| Bit IR per Operando                  | 4          | 0           | 0              |
-| Bit da IR a EEPROM                   | 4          | 8           | 8              |
-| Bit da RC a EEPROM                   | 3          | 3           | 4              |
-| Caricamento IR Rising o Falling Edge | Rising     | Rising      | Falling        |
-| Caricamento RC Rising o Falling Edge | Falling    | Falling     | Falling        |
-| EEPROM tipo                          | 2x 28C16   | 4x 28C256   | 4x 28C256      |
-| EEPROM Kb                            | 16         | 256         | 256            |
-| RAM (byte)                           | 16         | 256         | 256            |
-| Massimo istruzioni (IR)              | 16         | 256         | 256            |
-| Massimo Step       (RC)              | 5          | 8           | 16             |
-| Lunghezza istruzioni variabile       | No         | Sì          | Sì             |
+| Oggetto --- / --- Computer             | SAP        | NQSAP       | BEAM           |
+| -                                      | -          | -           | -              |
+| Autore                                 | Ben Eater  | Tom Nisbet  | Andrea Mazzai  |
+| IR condisivo tra Opcode e Operando     | Sì         | No          | No             |
+| Bit IR per Opcode                      | 4          | 8           | 8              |
+| Bit IR per Operando                    | 4          | 0           | 0              |
+| Bit da IR a EEPROM                     | 4          | 8           | 8              |
+| Bit da RC a EEPROM                     | 3          | 3           | 4              |
+| Caricamento IR a Rising o Falling Edge | Rising     | Rising      | Falling        |
+| Caricamento RC a Rising o Falling Edge | Falling    | Falling     | Falling        |
+| EEPROM                                 | 2x 28C16   | 4x 28C256   | 4x 28C256      |
+| EEPROM (Kb)                            | 2x 16      | 4x 256      | 4x 256         |
+| Dimensione Control Word (bit)          | 16         | 32          | 32             |
+| RAM (byte)                             | 16         | 256         | 256            |
+| Numero massimo istruzioni (IR)         | 16         | 256         | 256            |
+| Numero massimo Step (RC)               | 5          | 8           | 16             |
+| Lunghezza istruzioni variabile         | No         | Sì          | Sì             |
+| Instruction Register bufferizzato      | No         | No          | Sì             |
+
+Legenda: IR = Instruction Register; RC = Ring Counter
 
 Alcune note propedeutiche alla comprensione dell'argomento:
 
@@ -36,7 +40,7 @@ Alcune note propedeutiche alla comprensione dell'argomento:
 
 2. Nell'NQSAP e nel BEAM l'Instruction Register (IR) è incluso nello schema della Control Logic, mentre negli schemi del SAP stava su un foglio separato.
 
-[![Schema della Control Logic dell'NQSAP](../../assets/control/40-control-logic-schema-nqsap.png "Schema logico della Control Logic dell'NQSAP"){:width="100%"}](../../assets/control/40-control-logic-schema-nqsap.png)
+[![Schema della Control Logic dell'NQSAP](../../assets/control/40-control-logic-schema-nqsap.png "Schema della Control Logic dell'NQSAP"){:width="100%"}](../../assets/control/40-control-logic-schema-nqsap.png)
 
 *Schema della Control Logic dell'NQSAP, leggermente modificato al solo scopo di migliorarne la leggibilità.*
 
@@ -90,7 +94,10 @@ Una fondamentale differenza tra l'IR del SAP e quello dell'NQSAP e del BEAM è l
 Per poter gestire queste combinazioni ed emulare così il set di istruzioni del 6502, l'opcode abbisogna di un intero byte (pertanto, l'IR deve dedicare un intero byte all'istruzione, senza condividerlo con l'operando) e l'architettura del sistema deve gestire istruzioni di lunghezza diversa:
 
 - a un solo byte per quelle con indirizzamento Implicito e Accumulatore e che, dunque, non hanno un operando;
-- a due o tre\* byte per tutte le altre, che fanno invece uso di un operando (istruzioni a due o tre* byte per definire un indirizzo; istruzioni a due byte per definire un valore assoluto).
+- a due o tre\* byte per tutte le altre, che fanno invece uso di un operando:
+  - a due byte per definire un valore (indirizzamento Immediato e Relativo);
+  - a due byte per definire un indirizzo di pagina zero (entro i primi 256 byte del computer);
+  - a tre* byte per definire un indirizzo entro i 64K indirizzabili dal 6502.
 
 \* Un computer con 256 byte di RAM non necessita di istruzioni a 3 byte, perché un operando della lunghezza di un singolo byte è in grado di indirizzare tutta la memoria del computer, come brevemente discusso anche nella sezione [Indirizzamenti](../alu/#indirizzamenti) della pagina dedicata all'ALU.
 
@@ -108,9 +115,9 @@ Tirando le fila, per un computer come l'NQSAP o il BEAM:
 
 *Schema dell'Instruction Register del BEAM.*
 
-**Questo non deve stare qui, credo** Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF da 8 registri in cascata, così il primo viene aggiornato al normale caricamento dell'IR (che corrisponderebbe a T7 (step 1), ma causando un glitch sulla ROM)… invece di collegare il FF agli ingressi delle ROM, viene collegato a un altro FF che viene caricato col Falling Edge del CLK / Rising Edge del CLK, così le uscite delle ROM vengono aggiornate alla fine della microistruzione quando i segnali sono stabili 😁
+Come si vedrà in seguito parlando del Ring Counter, un aspetto importante del caricamento dei registri è il *momento* in cui vengono caricati: al Falling Edge del clock, oppure al Rising Edge.
 
-**devo spiegare il funzionamento dell'IR**, Riprendendo spunto dal fatto che il registro delle istruzioni questa volta è bufferizzato.
+Il caricamento dell'Instruction Register del SAP e dell'NQSAP avviene al Rising Edge, mentre quello del BEAM avviene al Falling Edge; prima di approfondire l'argomento, è opportuno iniziare a parlare anche del Ring Counter, che ha un ruolo primario nel caricamento di tutti i registri, IR compreso.
 
 ## Ring Counter e Microistruzioni
 
@@ -200,11 +207,15 @@ Riassumendo, l'Instruction Register contiene l'Opcode dell'istruzione attualment
 
 In generale, i momenti essenziali di un ciclo di clock in un computer sono due: il Rising Edge ↗ (passaggio del segnale dallo stato logico LO allo stato logico HI) e il Falling Edge ↘ (viceversa).
 
-- Rising Edge: la maggior parte dei componenti sequenziali* (quali contatori, registri, FF) modifica il proprio stato durante la transizione del segnale di clock dallo stato logico LO allo stato logico HI; le azioni di caricamento di tutti i moduli del computer (PC, MAR, RAM, IR, A, B, H, Registri Indice, Flag, SP, O) avvengono in questo momento, ad eccezione del RC.
+- Rising Edge: la maggior parte dei componenti sequenziali* (quali contatori, registri, FF) modifica il proprio stato durante la transizione del segnale di clock dallo stato logico LO allo stato logico HI; le azioni di caricamento di tutti i moduli del computer (PC, MAR, RAM, A, B, H, Registri Indice, Flag, SP, O) avvengono in questo momento, ad eccezione del RC (e, in certe situazioni, dell'IR).
 
 - Falling Edge: poiché il caricamento dei registri avviene con il Rising Edge del clock, ma la Control Word deve essere configurata *prima* di ogni occorrenza di questo evento, il Falling Edge si configura come il momento migliore per settarla. Invertendo la fase del clock inviato al Ring Counter, si esegue la configurazione della Control Word - e dunque della microistruzione - proprio in corrispondenza del Falling Edge.
 
-**però c'è il discorso** dell'IR bufferizzato e anche questo in effetti deve essere pronto prima... etc etc etc
+**Possibile riprendere qui il discorso dell'IR e del caricamento?** IR bufferizzato e anche questo in effetti deve essere pronto prima... etc etc etc
+
+Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF da 8 registri in cascata, così il primo viene aggiornato al normale caricamento dell'IR (che corrisponderebbe a T7 (step 1), ma causando un glitch sulla ROM)… invece di collegare il FF agli ingressi delle ROM, viene collegato a un altro FF che viene caricato col Falling Edge del CLK / Rising Edge del CLK, così le uscite delle ROM vengono aggiornate alla fine della microistruzione quando i segnali sono stabili 😁
+
+**devo spiegare il funzionamento dell'IR**, Riprendendo spunto dal fatto che il registro delle istruzioni questa volta è bufferizzato.
 
 \* I componenti sequenziali producono un output che dipende non solo dagli ingressi attuali, ma anche dallo stato precedente, a differenza dei circuiti combinatori che dipendono esclusivamente dagli ingressi presenti.
 
@@ -217,7 +228,7 @@ In generale, i momenti essenziali di un ciclo di clock in un computer sono due: 
 
 Altro aspetto importante da prendere in considerazione è il numero di microistruzioni che possono comporre ogni istruzione.
 
-Il SAP prevedeva una durata fissa delle istruzioni di 5 step; conseguentemente, tutte le istruzioni avevano la stessa durata, indipendentemente dalla loro complessità. Tuttavia, nel microcode che segue possiamo vedere che in realtà l'istruzione di caricamento immediato LDA potrebbe essere eseguita in tre step, mentre somma e sottrazione necessitano di cinque step:
+Il SAP prevedeva una durata fissa delle istruzioni di 5 step; conseguentemente, tutte le istruzioni avevano la stessa durata, indipendentemente dalla loro complessità. Tuttavia, nel microcode che segue possiamo vedere che in realtà l'istruzione di caricamento immediato LDA potrebbe essere eseguita in tre step, mentre a somma e sottrazione ne necessitano cinque:
 
 [![Microcode del computer SAP](../../assets/control/40-cl-sap-microcode.png "Microcode del computer SAP"){:width="66%"}](../../assets/control/40-cl-sap-microcode.png)
 
@@ -231,23 +242,25 @@ E' abbastanza immediato notare questa architettura comporta uno spreco di cicli 
 
 *Ring Counter del SAP.*
 
-L'NQSAP di Tom prevede un altro accorgimento molto furbo e migliora le prestazioni del computer introducendo la durata variabile delle istruzioni; infatti, l'ultima microistruzione di ogni istruzione include un segnale N, che attiva il pin di caricamento parallelo del '161: poiché tutti gli input del contatore sono a 0, il conteggio ritorna allo zero iniziale.
+L'NQSAP di Tom prevede un accorgimento molto furbo (tra gli altri) e migliora le prestazioni del computer introducendo la durata variabile delle istruzioni; infatti, l'ultima microistruzione di ogni istruzione include un segnale N, che attiva il pin di caricamento parallelo del '161: poiché tutti gli input del contatore sono impostati sullo 0, il conteggio ritorna allo zero iniziale.
 
-In altre parole, si mette anticipatamente fine ad ogni istruzione inserendo nell'ultimo step un segnaele di reload del Ring Counter, così da non dover aspettare l'esecuzione di tutti gli step vuoti; il vantaggio nell'operare questa scelta aumenta man mano che si desidera implementare istruzioni sempre più complesse, che necessitano di un numero di microistruzioni sempre maggiore - che vengono però risparmiate nel momento in cui l'istruzione da eseguire necessita di un numero limitato di step.
+In altre parole, si mette anticipatamente fine ad ogni istruzione inserendo nell'ultimo step un segnale di Load del Ring Counter, così da non dover aspettare l'esecuzione di tutti gli step vuoti; il vantaggio nell'operare questa scelta aumenta man mano che si desidera implementare istruzioni sempre più complesse e che necessitano di un numero massimo di step sempre maggiore.
 
-Il momento del caricamento del contatore è visibile a pagina 11 del <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">datasheet</a>: il pin /Load viene portato allo stato LO* e in corrispondenza del successivo Falling Edge** del clock (vedere l'istante Preset nella ascissa) le uscite QA-QD rispecchiano gli ingressi A-D.
+Il momento del caricamento del contatore è visibile a pagina 11 del <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">datasheet</a>: quando il pin /Load viene portato allo stato LO*, in corrispondenza del successivo Falling Edge** del clock le uscite QA-QD assumono gli stati presenti agli ingressi A-D (vedere l'istante Preset nella ascissa).
 
-**sono arrivato qui**, sono stanco
-
-In definitiva, si può dire che con il /LOAD ("N") e tutti i pin di input a 0, il Ring Counter si resetta in sincronia con il Rising Edge del clock.
+In definitiva, il segnale /Load azzera il Ring Counter in sincronia con il Falling Edge del clock.
 
 Potrebbe sorgere una domanda: perché non collegare il segnale N del microcode direttamente al pin di reset del contatore?
+
+**NOTA BENE** mettere i nomi giusti di N o NI spiegando quale computer si sta analizzando
 
 Il reset del '161 è *asincrono*, che significa che è indipendente dal clock: di conseguenza, il contatore verrebbe resettato nel momento stesso in cui la Control Word fosse emessa dalle EEPROM, non permettendo la continuazione dell'esecuzione della microistruzione!
 
 In realtà, fa notare Tom - sarebbe comunque possibile utilizzare il Reset del '161 collegato direttamente al segnale N, ma questo significherebbe dover aggiungere uno step dedicato al reset come ultima microistruzione di ogni istruzione. Utilizzando invece il caricamento sincrono, non è necessario uno step di reset dedicato.
 
 Assomiglia un po' al JUMP del Program Counter. Notare il /CLK, che è invertito rispetto al CLK principale e che dunque permette di lasciar terminare l'esecuzione della microistruzione corrente prima di fare il LOAD.
+
+**nota** quando il pin /Load viene portato allo stato LO*, e in corrispondenza del successivo Falling Edge** del clock... è giusto?
 
 \* e \*\*: Ricordando quanto esposto in precedenza relativamente all'impostazione della Control Word e ai momenti di caricamento dei registri, bisogna troviamo qui un primo esempio concreto: il segnale /Load viene settato dalla Control Word durante il Falling Edge del clock, mentre l'effettivo caricamento del registro avviene in concomitanza con il Rising Edge.
 
@@ -317,29 +330,28 @@ Notare che i segnali di uscita dei '138 realmente utilizzabili sono 30 e non 32,
 | N      | NI       | Next Instruction                                                                         |
 | JE     | PCJ      | Carica il Program Counter                                                                |
 | PI     | PCI      | Incrementa il Program Counter                                                            |
+| RR     | RR       | Espone il contenuto della RAM sul bus                                                    |
+| RA     | RA       | Espone il contenuto dell'accumulatore A sul bus                                          |
+| RB     | RB       | Espone il contenuto del registro B sul bus                                               |
+| RL     | RL       | Espone l'output della ALU sul bus                                                        |
+| RS     | RS       |                                                             |
+| RP     | RPC      | Espone il contenuto del Program Counter B sul bus                                        |
+| RD     | RD       | Espone il contenuto del registro D sul bus                                               |
+| RX     | RX       | Espone il contenuto del registro X sul bus                                               |
+| RY     | RY       | Espone il contenuto del registro Y sul bus                                               |
+| RH     | RH       | Espone il contenuto del registro H sul bus                                               |
+| RF     | RF       |                                                                                          |
 
-| RR     | PCI      | Incrementa il Program Counter                                                            |
-| RA     | PCI      | Incrementa il Program Counter                                                            |
-| RB     | PCI      | Incrementa il Program Counter                                                            |
-| RL     | PCI      | Incrementa il Program Counter                                                            |
-| RS     | PCI      | Incrementa il Program Counter                                                            |
-| RP     | PCI      | Incrementa il Program Counter                                                            |
-| RD     | PCI      | Incrementa il Program Counter                                                            |
-| RX     | PCI      | Incrementa il Program Counter                                                            |
-| RY     | PCI      | Incrementa il Program Counter                                                            |
-| RH     | PCI      | Incrementa il Program Counter                                                            |
-| RF     | PCI      | Incrementa il Program Counter                                                            |
-
-| WR     | PCI      | Incrementa il Program Counter                                                            |
-| WA     | PCI      | Incrementa il Program Counter                                                            |
-| WB     | PCI      | Incrementa il Program Counter                                                            |
-| WS     | PCI      | Incrementa il Program Counter                                                            |
-| WP     | PCI      | Incrementa il Program Counter                                                            |
-| WD     | PCI      | Incrementa il Program Counter                                                            |
-| WM     | PCI      | Incrementa il Program Counter                                                            |
-| WX     | PCI      | Incrementa il Program Counter                                                            |
-| WY     | PCI      | Incrementa il Program Counter                                                            |
-| WO     | O        | Incrementa il Program Counter                                                            |
+| WR     | WR       | Scrive il contenuto del bus sulla RAM                                                    |
+| WA     | WA       | Scrive il contenuto del bus sull'accumulatore A                                          |
+| WB     | WB       | Scrive il contenuto del bus sul registro B                                               |
+| WS     | WS       |                                                |
+| WP     | WPC      | Scrive il contenuto del bus sul Program Counter                                          |
+| WD     | WD       | Scrive il contenuto del bus sul registro D                                               |
+| WM     | WM       | Scrive il contenuto del bus sul Memory Address Register                                  |
+| WX     | WX       | Scrive il contenuto del bus sul registro X                                               |
+| WY     | WY       | Scrive il contenuto del bus sul registro Y                                               |
+| WO     | WO       | Scrive il contenuto del bus sul registro di Output                                       |
 
 \* Deduzione
 
@@ -489,5 +501,4 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 - verificare quando spiegare cosa fa il 138: se metto prima Ring Counter o la speigazione delle uscite dei 4x 138 della prima ROM
 - sistemare "\*\* In una successiva sezione si tratterà della durata delle micro istruzioni delle istruzioni e dei miglioramenti apportati dall'NQSAP."
 - intorno a riga 179, bisogna verificare... Perché il caricamento della control World al falling edge è  solo una parte, perché dobbiamo considerare anche l'IR
-- Forse opportuno fare una tabella all'inizio della pagina che spiega molto rapidamente le differenze principali di sap, NQSAP e Beam
 - Schema della Control Logic e dell’Instruction Register del SAP computer --- l'immagine probabilmente risulta troppo piccola su schermi "normali"
