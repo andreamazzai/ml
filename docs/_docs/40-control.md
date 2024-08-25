@@ -112,23 +112,22 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio del 6502 si trad
 
 *Scomposizione dell'istruzione LDA nelle sue quattro microistruzioni elementari*.
 
+### opzione 1
+
 1. Il primo step carica l'indirizzo del Program Counter nel MAR:
     - RPC, Read Program Counter - espone sul bus l'indirizzo del Program Counter
     - WM, Write Memory Address Register - scrive il contenuto del bus nel MAR
-
 2. Il secondo step carica l'opcode dell'istruzione nell'IR e incrementa il PC per farlo puntare alla locazione di memoria successiva, che nel caso dell'istruzione LDA contiene l'operando:
     - RR, Read RAM - espone sul bus il contenuto della locazione di memoria puntata dal MAR
     - WIR, Write Instruction Register - scrive il contenuto del bus nell'Instruction Register
     - PCI, Program Counter Increment - incrementa il Program Counter
-
 3. Il terzo step carica sul MAR l'indirizzo dell'operando:
     - RPC, Read Program Counter - espone il contenuto del Program Counter sul bus
     - WM, Write Memory Address Register - scrive il contenuto del bus nel MAR
-
 4. Il quarto ed ultimo step carica l'operando nell'accumulatore*, incrementa il PC per farlo puntare alla istruzione successiva e resetta il Ring Counter
     - RR, Read RAM - espone sul bus il contenuto della locazione di memoria puntata dal MAR
     - FNZ, Flag N & Z - abilita la scrittura dei Flag N e Z
-    - WAH, Write A & H - scrive il contenuto del bus su A e H
+    - WAH, Write A & H - scrive il contenuto del bus su A e H*
     - PCI, Program Counter Increment - incrementa il Program Counter
     - N, Next - e resetta il Ring Counter
 
@@ -136,14 +135,15 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio del 6502 si trad
 
 \* si veda su ALU spiegazione del perché si caricano sia A sia H
 
+### opzione 2
+
 1. Il primo step espone sul bus l'indirizzo del Program Counter (RPC, Read Program Counter) e scrive il contenuto del bus nel MAR (WM, Write Memory Address Register); così facendo, il MAR conterrà l'indirizzo attuale del PC.
 2. Il secondo step espone sul bus il contenuto della locazione di memoria puntata dal MAR (RR, Read RAM), scrive il contenuto del bus nell'Instruction Register (WIR, Write Instruction Register) e incrementa il Program Counter (Program Counter Increment). Alla fine di questo step, l'IR conterrà l'opcode dell'istruzione e il PC punterà alla locazione di memoria successiva, che nel caso dell'istruzione LDA contiene l'operando.
 3. Il terzo step espone di nuovo il contenuto del Program Counter sul bus (RPC, Read Program Counter) e si scrive il contenuto del bus nel MAR (WM, Write Memory Address Register). Ora, il MAR punta alla locazione di memoria che contiene l'operando.
 4. Il quarto ed ultimo step espone sul bus l'operando, che è contenuto nella locazione di memoria puntata dal MAR (RR, Read RAM), abilita la scrittura dei Flag N e Z (FNZ), scrive il contenuto del bus su A e H (WAH, Write A + H), incrementa il Program Counter (PCI, Program Counter Increment) e resetta il Ring Counter (N, Next).
 
-Per garantire il corretto funzionamento del processore, la Control Logic deve settare la giusta *Control Word* per ogni microistruzione. La Control Word può essere definita come una stringa di bit utilizzata per governare e coordinare il comportamento dei vari componenti del processore durante l'esecuzione di una microistruzione. Questa stringa di bit è definita nel microcode memorizzato nelle EEPROM; ad ogni bit / pin di output delle EEPROM è associato un segnale di controllo (come RPC, WM, PCI, RR eccetera).
 
-\* E' importante notare che i primi due step sono identici per *tutte* le istruzioni del computer: alla fine di questi due step, l'Instruction Register contiene l'Opcode dell'istruzione, che, insieme alle microistruzioni, definirà il compito di ogni step per ciascuna istruzione. Questo accorgimento garantisce che il computer possa sempre avviarsi correttamente dopo un reset, indipendentemente dall'istruzione presente nella locazione iniziale dopo il caricamento di un programma in memoria.
+I primi due step sono identici per *tutte* le istruzioni del computer: alla fine di questi due step, l'Instruction Register contiene l'Opcode dell'istruzione, che, insieme alle microistruzioni, definirà il compito di ogni step per ciascuna istruzione. Questo accorgimento garantisce che il computer possa sempre avviarsi correttamente dopo un reset, indipendentemente dall'istruzione presente nella locazione iniziale dopo il caricamento di un programma in memoria.
 
 Uno schema che mostra chiaramente gli step di alcune istruzioni del SAP è visibile in questa immagine tratta dal video <a href="https://www.youtube.com/watch?v=dHWFpkGsxOs" target="_blank">8-bit CPU control logic: Part 3</a> di Ben Eater; notiamo che gli step delle istruzioni LDA, ADD eccetera partono da 010, a significare che gli step 000 e 001 sono invece comuni per tutte e compongono quella che viene chiamata Fase Fetch.
 
@@ -153,13 +153,15 @@ Uno schema che mostra chiaramente gli step di alcune istruzioni del SAP è visib
 
 ### Fasi
 
+Per garantire il corretto funzionamento del processore, la Control Logic deve settare la giusta *Control Word* per ogni microistruzione. La Control Word è quella stringa di bit utilizzata per governare e coordinare il comportamento dei vari componenti del processore durante l'esecuzione di una microistruzione ed è definita nel microcode memorizzato nelle EEPROM; ad ogni bit / pin di output delle EEPROM corrisponde un segnale di controllo (come RPC, WM, PCI, RR eccetera).
+
 Le operazioni di una CPU passano per diverse fasi, che possiamo riassumere in:
 
-1. Fase "Fetch" (prelievo), che preleva l'istruzione dalla locazione di memoria puntata dal PC e la memorizza nell'IR.
-2. Fase "Decode" (decodifica), che interpreta il contenuto dell'IR per determinare quale istruzione debba essere eseguita.
-3. Fase "Execute" (esecuzione), che include tutte le microistruzioni che realizzano effettivamente quanto deve essere svolto dall'istruzione (ad esempio: "incrementa il registro X").
+1. "Fetch" (prelievo), che preleva l'istruzione dalla locazione di memoria puntata dal PC e la memorizza nell'IR.
+2. "Decode" (decodifica), che interpreta il contenuto dell'IR per determinare quale istruzione debba essere eseguita.
+3. "Execute" (esecuzione), che include tutte le microistruzioni che realizzano effettivamente quanto deve essere svolto dall'istruzione (ad esempio: "incrementa il registro X").
 
-La fase di decodifica avviene grazie al microcodice memorizzato nelle EEPROM: l'istruzione caricata nell'IR ha un proprio opcode specifico (ad esempio, 0100.0110), che viene presentato agli ingressi delle EEPROM insieme agli output del Ring Counter. Questa combinazione indirizza una locazione di memoria specifica nelle EEPROM, la quale genera in uscita i bit della Control Word, attivando i segnali di controllo necessari per eseguire la microistruzione corrente.
+La fase di decodifica avviene grazie al microcodice memorizzato nelle EEPROM: l'istruzione caricata nell'IR ha un proprio opcode specifico (ad esempio, 0100.0110), che viene presentato agli ingressi delle EEPROM insieme agli output del Ring Counter. Questa combinazione indirizza una locazione di memoria specifica nelle EEPROM, che emette in uscita i bit della Control Word ed attiva i segnali di controllo necessari per eseguire la microistruzione corrente.
 
 Il legame tra decodifica ed esecuzione è molto stretto, perché in ogni momento la Control Word dipende sia dall'opcode (Decode), sia dalla microistruzione (Execute).
 
@@ -177,7 +179,7 @@ Riprendendo la spiegazione del funzionamento del Ring Counter, risulta ora evide
 
 Come detto poc'anzi, la combinazione generata dal contenuto dell'Instruction Register e dallo step esposto dal Ring Counter indirizza una locazione di memoria specifica nelle EEPROM nelle quali è memorizzato il microcode e i cui ingressi sono connessi agli output dell'IR e dell'RC.
 
-Tale locazione di memoria contiene è la control Word che viene esportata al computer.
+Tale locazione di memoria contiene la Control Word che viene esportata al computer.
 
 **riscrivere meglio**
 
