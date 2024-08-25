@@ -170,22 +170,24 @@ Come detto poc’anzi, la combinazione generata dall'Opcode contenuto nell’Ins
 
 Nell'immagine si può osservare che le uscite del '161 controllano il '138, utilizzato per visualizzare lo stato dell'RC. Anziché impiegare 16 LED (e due '138), un singolo LED "esteso" è pilotato dal pin più significativo del '161, che ha un valore pari ad 8: lo step correntemente in esecuzione sarà indicato dal LED acceso dal '138, al quale sommare 8 se il LED "esteso" è acceso.
 
+Riassumendo, l'Instruction Register contiene l'Opcode dell'istruzione attualmente in esecuzione, mentre il Ring Counter ne indica lo step attivo. Utilizzando una logica combinatoria, è possibile costruire il microcode da caricare nelle EEPROM, che emetteranno gli opportuni segnali (Control Word) per ogni step di ogni istruzione.
+
 ### Il clock
 
 In generale, i momenti essenziali di un ciclo di clock in un computer sono due: il Rising Edge ↗ (passaggio del segnale dallo stato logico LO allo stato logico HI) e il Falling Edge ↘ (viceversa).
 
-- Rising Edge: la maggior parte dei componenti sequenziali* (quali contatori, registri, FF) modifica il proprio stato durante la transizione del segnale di clock dallo stato logico LO allo stato logico HI; le azioni di caricamento di tutti i moduli del computer (PC, MAR, RAM, IR, A, B, H, Registri Indice, Flag, SP, O) avvengono in questo momento, ad eccezione del RC. Poiché il caricamento dei registri avviene con il Rising Edge del clock, la Control Word deve essere configurata prima di ogni occorrenza di questo evento, quindi durante l'intervallo tra un Rising Edge e il successivo.
+- Rising Edge: la maggior parte dei componenti sequenziali* (quali contatori, registri, FF) modifica il proprio stato durante la transizione del segnale di clock dallo stato logico LO allo stato logico HI; le azioni di caricamento di tutti i moduli del computer (PC, MAR, RAM, IR, A, B, H, Registri Indice, Flag, SP, O) avvengono in questo momento, ad eccezione del RC.
 
-- Falling Edge: è il momento migliore per settare la Control Word. Invertendo la fase del clock inviato al Ring Counter, si esegue la configurazione della Control Word - e dunque della microistruzione - proprio in corrispondenza del Falling Edge.
+- Falling Edge: poiché il caricamento dei registri avviene con il Rising Edge del clock, ma la Control Word deve essere configurata *prima* di ogni occorrenza di questo evento, il Falling Edge si configura come il momento migliore per settarla. Invertendo la fase del clock inviato al Ring Counter, si esegue la configurazione della Control Word - e dunque della microistruzione - proprio in corrispondenza del Falling Edge.
+
+**però c'è il discorso** dell'IR bufferizzato e anche questo in effetti deve essere pronto prima... etc etc etc
 
 \* I componenti sequenziali producono un output che dipende non solo dagli ingressi attuali, ma anche dallo stato precedente, a differenza dei circuiti combinatori che dipendono esclusivamente dagli ingressi presenti.
 
-Riassumendo, l'Instruction Register contiene l'Opcode dell'istruzione attualmente in esecuzione, mentre il Ring Counter ne indica lo step attivo. Utilizzando una logica combinatoria, è possibile costruire il microcode da caricare nelle EEPROM, che emetteranno gli opportuni segnali (Control Word) per ogni step di ogni istruzione.
-
 È importante sottolineare che la configurazione delle operazioni di lettura e scrittura da parte della Control Word segue tempi diversi.
 
-- Al Falling Edge del clock, i segnali di lettura settati dalla Control Word attivano immediatamente l'eventua modulo interessato da una Read, il quale espone subito il suo output sul bus; questo permette ai segnali sul bus di stabilizzarsi prima che vengano letti dai registri che dovranno essere aggiornati;
-- Viceversa, i segnali di scrittura attivano il modulo interessato, ma l'operazione di scrittura verrà eseguita solo al Rising Edge del clock, assicurando che i registri che devono essere aggiornati ricevano segnali stabili prima dell'effettiva scrittura.
+- Al Falling Edge del clock, i segnali di lettura settati dalla Control Word attivano immediatamente l'eventuale modulo interessato da una Read, il quale espone subito il suo output sul bus; questo garantisce ai segnali sul bus di stabilizzarsi prima che vengano memorizzati dai registri che dovranno essere aggiornati;
+- Viceversa, i segnali di scrittura preparano i moduli interessati, ma le operazioni di Write vengono eseguite solo al Rising Edge del clock, assicurando così che i registri che devono essere aggiornati trovino in input segnali ormai stabilizzati.
 
 ### Durata delle istruzioni
 
