@@ -2,6 +2,7 @@
 title: "ALU"
 permalink: /docs/alu/
 excerpt: "Unità Aritmetica e Logica del BEAM computer"
+toc: true
 ---
 [![Unità Aritmetica e Logica del BEAM computer](../../assets/alu/50-alu-beam.png "Unità Aritmetica e Logica del BEAM computer"){:width="100%"}](../../assets/alu/50-alu-beam.png)
 
