@@ -15,7 +15,6 @@ In generale, la gestione delle istruzioni consta di tre capisaldi: *Instruction 
 
 *Schema della Control Logic dell'NQSAP, leggermente modificato al solo scopo di migliorarne la leggibilità.*
 
-
 Per facilità di consultazione e semplificazione del confronto fra i tre computer SAP, NQSAP e BEAM, è opportuno riepilogare in tabella alcuni degli aspetti che saranno trattati nella pagina.
 
 | Oggetto --- / --- Computer           | SAP        | NQSAP       | BEAM           |
@@ -23,15 +22,17 @@ Per facilità di consultazione e semplificazione del confronto fra i tre compute
 | Autore                               | Ben Eater  | Tom Nisbet  | Andrea Mazzai  |
 | IR condisivo tra Opcode e Operando   | Sì         | No          | No             |
 | Bit IR per Opcode                    | 4          | 8           | 8              |
-| Bit da IR a EEPROM                   | 4          | 8           | 8              |
 | Bit IR per Operando                  | 4          | 0           | 0              |
+| Bit da IR a EEPROM                   | 4          | 8           | 8              |
+| Bit da RC a EEPROM                   | 3          | 3           | 4              |
+| Caricamento IR Rising o Falling Edge | Rising     | Rising      | Falling        |
+| Caricamento RC Rising o Falling Edge | Falling    | Falling     | Falling        |
 | EEPROM tipo                          | 2x 28C16   | 4x 28C256   | 4x 28C256      |
 | EEPROM Kb                            | 16         | 256         | 256            |
 | RAM (byte)                           | 16         | 256         | 256            |
-| Massimo istruzioni                   | 16         | 256         | 256            |
-| Massimo Step                         | 5          | 8           | 16             |
-| Caricamento IR Rising o Falling Edge | Rising     | Rising      | Falling        |
-| Caricamento RC Rising o Falling Edge | Falling    | Falling     | Falling        |
+| Massimo istruzioni (IR)              | 16         | 256         | 256            |
+| Massimo Step       (RC)              | 5          | 8           | 16             |
+| Lunghezza istruzioni variabile       | No         | Sì          | Sì             |
 
 Alcune note propedeutiche alla comprensione di quanto esposto in questa pagina:
 
