@@ -139,6 +139,12 @@ Uno schema che mostra chiaramente gli step di alcune istruzioni del SAP è visib
 
 *Microcode del SAP.*
 
+Per finalizzare l'analisi dell'istruzione LDA #$94, riepiloghiamo lo stato del computer alla fine del quarto step:
+
+- il Flag Z non sarà attivo (il risultato dell'operazione di caricamento dell'accumulatore non è uguale a zero);
+- il Flag N sarà attivo (secondo il metodo di [rappresentazione dei numeri Signed](../math/#numeri-unsigned-e-numeri-signed) a 8 bit in Complemento a 2, $94 / 1001.0100 è un numero negativo, in quanto il bit più significativo è allo stato logico 1);
+- l'accumulatore A e il registro H conterranno il valore $94 esadecimale.
+
 ### Fasi
 
 Per garantire il corretto funzionamento del processore, la Control Logic deve settare la giusta *Control Word* per ogni microistruzione. La Control Word è quella stringa di bit utilizzata per governare e coordinare il comportamento dei vari componenti del processore durante l'esecuzione di una microistruzione ed è definita nel microcode memorizzato nelle EEPROM; ad ogni bit / pin di output delle EEPROM corrisponde un segnale di controllo (come RPC, WM, PCI, RR eccetera).
@@ -149,15 +155,10 @@ Le operazioni di una CPU passano per diverse fasi, che possiamo riassumere in:
 2. "Decode" (decodifica), che interpreta il contenuto dell'IR per determinare quale istruzione debba essere eseguita.
 3. "Execute" (esecuzione), che include tutte le microistruzioni che realizzano effettivamente quanto deve essere svolto dall'istruzione (ad esempio: "incrementa il registro X").
 
-La fase di decodifica avviene grazie al microcodice memorizzato nelle EEPROM: l'istruzione caricata nell'IR ha un proprio opcode specifico (ad esempio, 0100.0110), che viene presentato agli ingressi delle EEPROM insieme agli output del Ring Counter. Questa combinazione indirizza una locazione di memoria specifica nelle EEPROM, che emette in uscita i bit della Control Word ed attiva i segnali di controllo necessari per eseguire la microistruzione corrente.
+La fase di decodifica avviene grazie al microcodice memorizzato nelle EEPROM: l'istruzione caricata nell'IR ha un proprio opcode specifico (ad esempio, 0100.0110), che viene presentato agli ingressi delle EEPROM insieme agli output del Ring Counter. Questa combinazione indirizza una locazione di memoria specifica nelle EEPROM, che emettono in uscita i bit della Control Word ed attivano i segnali di controllo necessari per eseguire la microistruzione corrente.
 
 Il legame tra decodifica ed esecuzione è molto stretto, perché in ogni momento la Control Word dipende sia dall'opcode (Decode), sia dalla microistruzione (Execute).
 
-Per concludere l'analisi dell'istruzione LDA #$94, riepiloghiamo lo stato del computer alla fine del quarto step:
-
-- il Flag Z non sarà attivo (il risultato dell'operazione di caricamento dell'accumulatore non è uguale a zero);
-- il Flag N sarà attivo (secondo il metodo di [rappresentazione dei numeri Signed](../math/#numeri-unsigned-e-numeri-signed) a 8 bit in Complemento a 2, $94 / 1001.0100 è un numero negativo, in quanto il bit più significativo è allo stato logico 1);
-- l'accumulatore A e il registro H conterranno il valore $94 esadecimale.
 
 Riprendendo la spiegazione del funzionamento del Ring Counter, risulta ora evidente che in una CPU è necessario conoscere in ogni momento quale sia l'istruzione in esecuzione - ne riceviamo indicazioni dall'Instruction Register - e quale sia lo step correntemente attivo, per conoscere il quale ci viene in aiuto il Ring Counter. Tanto il SAP quanto l'NQSAP e il BEAM sviluppano il Ring Counter attorno a un contatore <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">74LS161</a>, in grado di contare da 0 a 15, e a un demultiplexer <a href="https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target="_blank">74LS138</a>, che ci aiuta ad avere riscontro visivo della microistruzione in esecuzione.
 
@@ -169,7 +170,7 @@ Come detto poc'anzi, la combinazione generata dal contenuto dell'Instruction Reg
 
 Tale locazione di memoria contiene la Control Word che viene esportata al computer.
 
-**riscrivere meglio**
+Test da **riscrivere meglio**?
 
 ### Il clock
 
@@ -233,9 +234,9 @@ Praticamente usando il '161:
 
 3 uscite del 161 vanno al 138 per pilotare 8 led (2^3 = 8); per il 9° LED Tom è il solito furbo: invece di mettere due 138 per pilotare 16 led, aggiunge un led al quarto pin del 161, così ad esempio 11 = 3 + 8 e dunque si accendono il 3* led di 8 pilotato dal 138 e quello dell'"Extended Time" pilotato dal 161
 
-	• Gli ingressi D0-D3 sono tutti a 0, così quando arriva il /LOAD (o /PE) sincrono (segnale "N" per Tom), il conteggio ricomincia da zero
-	• Le uscite Q0-Q2 del 161 vanno a MA0-MA2 per avere 8 step di microistruzioni, ma se aggiungo un quarto pin al contatore, posso avere 16 step
-	• Il /LOAD arriva da N 17 della ROM0
+• Gli ingressi D0-D3 sono tutti a 0, così quando arriva il /LOAD (o /PE) sincrono (segnale "N" per Tom), il conteggio ricomincia da zero
+• Le uscite Q0-Q2 del 161 vanno a MA0-MA2 per avere 8 step di microistruzioni, ma se aggiungo un quarto pin al contatore, posso avere 16 step
+• Il /LOAD arriva da N 17 della ROM0
 CEP e CET sono a +Vcc
 
 ### I 74LS138 per la gestione dei segnali
@@ -323,8 +324,7 @@ Notare che i segnali di uscita dei '138 realmente utilizzabili sono 30 e non 32,
 
 \* Deduzione
 
-	• C0 e C1 *** 
-sono condivisi con C0 e C1 ***
+• C0 e C1 **sono condivisi con C0 e C1**
 
 SE Stack Enable, vedi pagina Stack Pointer, condivisi con C0 e C1*** (chiamiamoli SU Stack Up e SD Stack Down) per definire se fare conteggio Up o Down
 
@@ -334,7 +334,7 @@ SE Stack Enable, vedi pagina Stack Pointer, condivisi con C0 e C1*** (chiamiamol
 
 La realizzazione del comuter SAP mi ha permesso finalmente di capire cosa sia il microcode di un computer moderno.
 
-È piuttosto comune leggere ad esempio che è necessario aggiornare il bios dei server per indirizzare falle di sicurezza che sono state scoperte e che potrebbero essere utilizzate dagli hacker per ... 
+È piuttosto comune leggere ad esempio che è necessario aggiornare il bios dei server per indirizzare falle di sicurezza che sono state scoperte e che potrebbero essere utilizzate dagli hacker per ...
 
 Non capendo come potesse essere aggiornata una CPU, dal momento che si tratta di un componente non programmabile , non riuscivo a comprendere come fosse possibile arginare i problemi di sicurezza; con il microcode ho capito.
 
@@ -370,17 +370,14 @@ Legenda dei segnali:
 MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE
 
 • Nota che  livello generale ha definito due fasi di Fetch F1 ed F2 che sono comuni a tutte le istruzioni e sono sempre ripetute.
-	• NQSAP: 
-		○ 8 step compresi due di Fetch
-		○ #define F1    RP | WM       // Instruction fetch step 1
-		○ #define F2    RR | WI |PI   // Instruction fetch step 2
-	• NQSAP-PCB:
-		○ 16 step compresi due di Fetch
-		○ #define F1    RP | WM | PI  // Instruction fetch step 1: instruction address from PC to MAR
-#define F2    RR | WI       // Instruction fetch step 2: instruction from RAM to IR
-
-
-
+• NQSAP:
+○ 8 step compresi due di Fetch
+○ #define F1    RP | WM       // Instruction fetch step 1
+○ #define F2    RR | WI |PI   // Instruction fetch step 2
+• NQSAP-PCB:
+○ 16 step compresi due di Fetch
+○ #define F1    RP | WM | PI  // Instruction fetch step 1: instruction address from PC to MAR
+\#define F2    RR | WI       // Instruction fetch step 2: instruction from RAM to IR
 
 Per fare il microcode sto usando:
 • https://www.masswerk.at/6502/6502_instruction_set.html
@@ -390,59 +387,54 @@ Per fare il microcode sto usando:
 • In quali combinazioni si attivano i vari flag N, Z e C?
 • Ho trovato supporto su http://www.6502.org/tutorials/compare_beyond.html nel quale si spiega che fare un confronto equivale a settare il carry e fare la differenza, ma senza effettivamente scrivere il risultato nel registro di partenza:
 CMP NUM
-		is very similar to:
+is very similar to:
 SEC
 SBC NUM
 
-	        • If the Z flag is 0, then A <> NUM and BNE will branch
-	        • If the Z flag is 1, then A = NUM and BEQ will branch
-	        • If the C flag is 0, then A (unsigned) < NUM (unsigned) and BCC will branch
-	        • If the C flag is 1, then A (unsigned) >= NUM (unsigned) and BCS will branch
-	
-	Facciamo le prove:
-	Codice:
-	        LDY #$40
-	        CPY #$30
-	Viene attivato il C, coerentemente con quanto spiegato sopra… direi perché nell'equivalenza si fa il SEC prima di SBC; essendo il numero da comparare inferiore, non faccio "il prestito" (borrow) del Carry e dunque alla fine dell'istruzione me lo ritrovo attivo come in partenza.
-	
-	
-	Codice:
-	        LDY #$40
-	        CPY #$40
-	Vengono attivati sia Z sia C: Z perché 40 - 40 = 0 e dunque il risultato è Zero e il contenuto del registro e del confronto numeri sono uguali; essendo il numero da comparare inferiore, non faccio "il prestito" (borrow) del Carry.
-	
-	
-	
-	Codice:
-	        LDY #$40
-	        CPY #$50
-	No Z e C, coerentemente con quanto spiegato sopra, ma N, perché il numero risultante è negativo: in 2C il primo bit è 1 ☺️. C è diventato Zero perché l'ho "preso in prestito".
-	
-	
-	
-	
-	Su BEAM: LDY #$40; CPY #$30 e ottengo nessun Flag, mentre dovrei avere C.
-	 La ALU presenta il COUT acceso, dunque la sua uscita è a livello logico basso. DA CAPIRE!!! Cosa volevo dire?
-	
-	Teoricamente dunque dovrei attivare l’ingresso di uno del 151 di Carry Input settando opportunamente i segnali C0 e C1.
-	
-	In conseguenza di questo, verifico sul BEAM il comportamento del Carry Out dell'ALU nei 3 casi descritti e poi modifico il microcode di conseguenza. In effetti, il comportamento non era quello desiderato da teoria e ho fatto le modifiche necessarie:
-	
-	        • Aggiunti i segnali C0 e C1, che non avevo ancora cablato, che permettono al 151 di scelta del Carry Input di selezionare cosa prendere in ingresso. L'ALU emette un Carry invertito (0 = Attivo), dunque, per poter settare a 1 il Flag del Carry Input, lo devo prendere in ingresso dall'ALU attraverso una NOT su uno dei 4 ingressi attivi del 151, che seleziono appunto con i segnali C0 e C1 attivando il solo C0.
-	        • Ho poi incluso nel microcode anche LF, in quanto ho definito l'utilizzo di LF su tutte le istruzioni di comparazione, tranne CPX abs.
-	        • Considerare anche che tipo di Carry devo iniettare nella ALU… In realtà, poiché per fare il confronto utilizzo l’istruzione SBC, devo utilizzare il normale LHHL con Carry, cioè CIN = LO, che nel microcode corrisponde ad attivare il segnale CS.
-	
-	Ho posizionato in uscita sul Carry dell'ALU un LED (ricordare che l'uscita è negata, dunque anodo a Vcc e catodo verso il pin del chip). Anche l’ingresso Carry è negato e dunque attivo a zero, pertanto anche qui ho un LED con anodo a Vcc e catodo sul Pin.
-	
-	Dopo queste modifiche, le istruzioni di comparazione sembrano funzionare correttamente.
-	
-	TO DO: finire http://www.6502.org/tutorials/compare_beyond.html da "In fact, many 6502 assemblers will allow BLT (Branch on Less Than) "
-	
-	        • Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
-	
-Altre referenze Tom Nisbet per Flags	• Question for all 74ls181 alu people on reddit led to the design of the oVerflow flag.
-	• How to add a decremental and incremental circuit to the ALU ? on reddit inspired the idea to drive the PC load line from the flags instead of running the flags through the microcode.
-	• Opcodes and Flag decoding circuit on reddit has a different approach to conditional jumps using hardware. Instead of driving the LOAD line of the PC, the circuit sits between the Instruction Register and the ROM and conditionally jams a NOP or JMP instruction to the microcode depending on the state of the flags. One interesting part of the design is that the opcodes of the jump instructions are arranged so that the flag of interest can be determined by bits from the IR. NQSAP already did something similar with the ALU select lines, so the concept was used again for the conditional jump select lines.
+• If the Z flag is 0, then A <> NUM and BNE will branch
+• If the Z flag is 1, then A = NUM and BEQ will branch
+• If the C flag is 0, then A (unsigned) < NUM (unsigned) and BCC will branch
+• If the C flag is 1, then A (unsigned) >= NUM (unsigned) and BCS will branch
+
+Facciamo le prove:
+Codice:
+LDY #$40
+CPY #$30
+Viene attivato il C, coerentemente con quanto spiegato sopra… direi perché nell'equivalenza si fa il SEC prima di SBC; essendo il numero da comparare inferiore, non faccio "il prestito" (borrow) del Carry e dunque alla fine dell'istruzione me lo ritrovo attivo come in partenza.
+
+Codice:
+LDY #$40
+CPY #$40
+Vengono attivati sia Z sia C: Z perché 40 - 40 = 0 e dunque il risultato è Zero e il contenuto del registro e del confronto numeri sono uguali; essendo il numero da comparare inferiore, non faccio "il prestito" (borrow) del Carry.
+
+Codice:
+LDY #$40
+CPY #$50
+No Z e C, coerentemente con quanto spiegato sopra, ma N, perché il numero risultante è negativo: in 2C il primo bit è 1 ☺️. C è diventato Zero perché l'ho "preso in prestito".
+
+Su BEAM: LDY #$40; CPY #$30 e ottengo nessun Flag, mentre dovrei avere C.
+La ALU presenta il COUT acceso, dunque la sua uscita è a livello logico basso. DA CAPIRE!!! Cosa volevo dire?
+
+Teoricamente dunque dovrei attivare l’ingresso di uno del 151 di Carry Input settando opportunamente i segnali C0 e C1.
+
+In conseguenza di questo, verifico sul BEAM il comportamento del Carry Out dell'ALU nei 3 casi descritti e poi modifico il microcode di conseguenza. In effetti, il comportamento non era quello desiderato da teoria e ho fatto le modifiche necessarie:
+
+• Aggiunti i segnali C0 e C1, che non avevo ancora cablato, che permettono al 151 di scelta del Carry Input di selezionare cosa prendere in ingresso. L'ALU emette un Carry invertito (0 = Attivo), dunque, per poter settare a 1 il Flag del Carry Input, lo devo prendere in ingresso dall'ALU attraverso una NOT su uno dei 4 ingressi attivi del 151, che seleziono appunto con i segnali C0 e C1 attivando il solo C0.
+• Ho poi incluso nel microcode anche LF, in quanto ho definito l'utilizzo di LF su tutte le istruzioni di comparazione, tranne CPX abs.
+• Considerare anche che tipo di Carry devo iniettare nella ALU… In realtà, poiché per fare il confronto utilizzo l’istruzione SBC, devo utilizzare il normale LHHL con Carry, cioè CIN = LO, che nel microcode corrisponde ad attivare il segnale CS.
+
+Ho posizionato in uscita sul Carry dell'ALU un LED (ricordare che l'uscita è negata, dunque anodo a Vcc e catodo verso il pin del chip). Anche l’ingresso Carry è negato e dunque attivo a zero, pertanto anche qui ho un LED con anodo a Vcc e catodo sul Pin.
+
+Dopo queste modifiche, le istruzioni di comparazione sembrano funzionare correttamente.
+
+TO DO: finire http://www.6502.org/tutorials/compare_beyond.html da "In fact, many 6502 assemblers will allow BLT (Branch on Less Than) "
+
+• Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
+
+Altre referenze Tom Nisbet per Flags
+Question for all 74ls181 alu people on reddit led to the design of the oVerflow flag.
+• How to add a decremental and incremental circuit to the ALU ? on reddit inspired the idea to drive the PC load line from the flags instead of running the flags through the microcode.
+• Opcodes and Flag decoding circuit on reddit has a different approach to conditional jumps using hardware. Instead of driving the LOAD line of the PC, the circuit sits between the Instruction Register and the ROM and conditionally jams a NOP or JMP instruction to the microcode depending on the state of the flags. One interesting part of the design is that the opcodes of the jump instructions are arranged so that the flag of interest can be determined by bits from the IR. NQSAP already did something similar with the ALU select lines, so the concept was used again for the conditional jump select lines.
 
 [![Schema della control logic del BEAM](../../assets/control/40-control-logic-schema.png "Schema della control logic del BEAM"){:width="100%"}](../../assets/control/40-control-logic-schema.png)
 
