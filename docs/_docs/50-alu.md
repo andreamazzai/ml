@@ -49,7 +49,7 @@ Il registro H sarà anche fondamentale come registro temporaneo di appoggio da u
 
 *Microcode per l'emulazione dell'istruzione INX del 6502.*
 
-Nell'esempio dell'istruzione INX del 6502, dopo le due fasi di fetch comuni a tutte le istruzioni (non evidenziate qui):
+Nell'esempio dell'istruzione INX del 6502, dopo la [fase Fetch](../control/#fasi) comune a tutte le istruzioni (fase non evidenziata qui):
 
 - X viene letto (RX) e copiato in H (WH);
 - H presenta il suo contenuto agli ingressi "A" dei '181;

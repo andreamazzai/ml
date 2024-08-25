@@ -131,8 +131,6 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio del 6502 si trad
     - PCI, Program Counter Increment - incrementa il Program Counter
     - N, Next - e resetta il Ring Counter
 
-**sono arrivato in questa zona** 
-
 \* Perché anche H? Si veda la sezione dedicata alla spiegazione del [registro H](../alu/#il-registro-h) nella pagina dell'ALU.
 
 ### opzione 2
@@ -142,10 +140,9 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio del 6502 si trad
 3. Il terzo step espone di nuovo il contenuto del Program Counter sul bus (RPC, Read Program Counter) e si scrive il contenuto del bus nel MAR (WM, Write Memory Address Register). Ora, il MAR punta alla locazione di memoria che contiene l'operando.
 4. Il quarto ed ultimo step espone sul bus l'operando, che è contenuto nella locazione di memoria puntata dal MAR (RR, Read RAM), abilita la scrittura dei Flag N e Z (FNZ), scrive il contenuto del bus su A e H (WAH, Write A + H), incrementa il Program Counter (PCI, Program Counter Increment) e resetta il Ring Counter (N, Next).
 
+I primi due step sono *sempre* identici per *tutte* le istruzioni del computer: alla fine di questi due step, l'Instruction Register contiene l'Opcode dell'istruzione, che, insieme alle microistruzioni, definirà il compito di ogni step di ciascuna istruzione. Questo accorgimento garantisce che il computer possa sempre avviarsi correttamente dopo un reset, indipendentemente dall'istruzione presente nella locazione iniziale dopo il caricamento di un programma in memoria.
 
-I primi due step sono identici per *tutte* le istruzioni del computer: alla fine di questi due step, l'Instruction Register contiene l'Opcode dell'istruzione, che, insieme alle microistruzioni, definirà il compito di ogni step per ciascuna istruzione. Questo accorgimento garantisce che il computer possa sempre avviarsi correttamente dopo un reset, indipendentemente dall'istruzione presente nella locazione iniziale dopo il caricamento di un programma in memoria.
-
-Uno schema che mostra chiaramente gli step di alcune istruzioni del SAP è visibile in questa immagine tratta dal video <a href="https://www.youtube.com/watch?v=dHWFpkGsxOs" target="_blank">8-bit CPU control logic: Part 3</a> di Ben Eater; notiamo che gli step delle istruzioni LDA, ADD eccetera partono da 010, a significare che gli step 000 e 001 sono invece comuni per tutte e compongono quella che viene chiamata Fase Fetch.
+Uno schema che mostra chiaramente gli step di alcune istruzioni del SAP è visibile in questa immagine tratta dal video <a href="https://www.youtube.com/watch?v=dHWFpkGsxOs" target="_blank">8-bit CPU control logic: Part 3</a> di Ben Eater; notiamo che gli step delle istruzioni LDA, ADD eccetera partono da 010, a significare che gli step 000 e 001 sono comuni per tutte e compongono quella che viene chiamata Fase Fetch.
 
 [![Microcode del SAP](../../assets/control/40-cl-ben-step-microcode.png "Microcode del SAP"){:width="100%"}](../../assets/control/40-cl-ben-step-microcode.png)
 
