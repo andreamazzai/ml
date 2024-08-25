@@ -127,13 +127,14 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio del 6502 si trad
     - FNZ, Flag N & Z - abilita la scrittura dei Flag N e Z
     - WAH, Write A & H - scrive il contenuto del bus su A e H*
     - PCI, Program Counter Increment - incrementa il Program Counter
-    - N, Next - resetta il Ring Counter
+    - N, Next - resetta il Ring Counter**
 
 \* Perché anche H? Si veda la sezione dedicata alla spiegazione del [registro H](../alu/#il-registro-h) nella pagina dell'ALU.
+\*\* In una successiva sezione si tratterà della durata delle micro istruzioni delle istruzioni e dei miglioramenti apportati dall'NQSAP.
 
-I primi due step sono *sempre* identici per *tutte* le istruzioni del computer: alla fine di questi due step, l'Instruction Register contiene l'Opcode dell'istruzione, che, insieme alle microistruzioni, definirà il compito di ogni step di ciascuna istruzione. Questo accorgimento garantisce che il computer possa sempre avviarsi correttamente dopo un reset, indipendentemente dall'istruzione presente nella locazione iniziale dopo il caricamento di un programma in memoria.
+I primi due step sono *sempre* identici per *tutte* le istruzioni del computer: alla fine di questi due step, l'Instruction Register contiene l'Opcode dell'istruzione, che, insieme alle microistruzioni, definisce il compito di ogni step di ciascuna istruzione. Questo accorgimento garantisce che il computer possa sempre avviarsi correttamente dopo un reset, indipendentemente dall'istruzione presente nella locazione iniziale dopo il caricamento di un programma in memoria.
 
-Uno schema che mostra chiaramente gli step di alcune istruzioni del SAP è visibile in questa immagine tratta dal video <a href="https://www.youtube.com/watch?v=dHWFpkGsxOs" target="_blank">8-bit CPU control logic: Part 3</a> di Ben Eater; notiamo che gli step delle istruzioni LDA, ADD eccetera partono da 010, a significare che gli step 000 e 001 sono comuni per tutte e compongono quella che viene chiamata Fase Fetch.
+Uno schema che mostra chiaramente gli step di alcune istruzioni del SAP è visibile in questa immagine tratta dal video <a href="https://www.youtube.com/watch?v=dHWFpkGsxOs" target="_blank">8-bit CPU control logic: Part 3</a> di Ben Eater; notiamo che gli step delle istruzioni LDA, ADD eccetera partono da 010, a significare che gli step 000 e 001 sono comuni per tutte e compongono quella che viene chiamata Fase Fetch, evidenziata in giallo.
 
 [![Microcode del SAP](../../assets/control/40-cl-ben-step-microcode.png "Microcode del SAP"){:width="100%"}](../../assets/control/40-cl-ben-step-microcode.png)
 
@@ -167,17 +168,17 @@ Riprendendo la spiegazione del funzionamento del Ring Counter, risulta ora evide
 
 Come detto poc’anzi, la combinazione generata dall'Opcode contenuto nell’Instruction Register e dallo step esposto dal Ring Counter indirizza una locazione di memoria specifica nelle EEPROM: tale locazione di memoria contiene la Control Word.
 
-Nell'immagine si nota che le uscite del '161 governano anche un '138, che viene utilizzato per mostrare lo stato dell'RC. Anziché utilizzare 16 LED (e due '138), un singolo "extended LED" è pilotato dal pin più significativo del '161, che ha valore 8.
+Nell'immagine si può osservare che le uscite del '161 controllano il '138, utilizzato per visualizzare lo stato dell'RC. Anziché impiegare 16 LED (e due '138), un singolo LED "esteso" è pilotato dal pin più significativo del '161, che ha un valore pari ad 8: lo step correntemente in esecuzione sarà indicato dal LED acceso dal '138, al quale sommare  8 se il LED "esteso" è acceso.
 
 ### Il clock
 
 In generale, i momenti essenziali di un ciclo di clock in un computer sono due: il Rising Edge ↗ (passaggio del segnale dallo stato logico LO allo stato logico HI) e il Falling Edge ↘ (viceversa).
 
-- Rising Edge: la maggior parte dei chip sequenziali* (quali contatori, registri, FF) modifica il proprio stato durante transizione del segnale di clock dallo stato logico LO allo stato logico HI; le azioni di caricamento di tutti i moduli del computer (PC, MAR, RAM, IR, A, B, H, Registri Indice, Flag, SP, O) avvengono in questo momento. Poiché il caricamento dei registri avviene con il Rising Edge del clock, la Control Word deve essere configurata prima di ogni occorrenza di questo evento, quindi durante l'intervallo tra un Rising Edge e il successivo.
+- Rising Edge: la maggior parte dei componenti sequenziali* (quali contatori, registri, FF) modifica il proprio stato durante transizione del segnale di clock dallo stato logico LO allo stato logico HI; le azioni di caricamento di tutti i moduli del computer (PC, MAR, RAM, IR, A, B, H, Registri Indice, Flag, SP, O) avvengono in questo momento. Poiché il caricamento dei registri avviene con il Rising Edge del clock, la Control Word dovrà essere configurata prima di ogni occorrenza di questo evento, quindi durante l'intervallo tra un Rising Edge e il successivo.
 
-- Falling Edge: un momento facilmente identificabile tra un Rising Edge e l'altro del clock è il Falling Edge. E' possibile invertire la fase del clock del Ring Counter, consentendo la configurazione della Control Word - e dunque della microistruzione - proprio in corrispondenza del Falling Edge.
+- Falling Edge: il momento migliore per settare la Control Word è il Falling Edge del clock. E' possibile invertire la fase del clock del Ring Counter, consentendo la configurazione della Control Word - e dunque della microistruzione - proprio in corrispondenza del Falling Edge.
 
-\* I chip sequenziali producono un output che dipende non solo dagli ingressi attuali, ma anche dallo stato logico precedente.
+\* I componenti sequenziali producono un output che dipende non solo dagli ingressi attuali, ma anche dallo stato precedente, a differenza dei circuiti combinatori che dipendono esclusivamente dagli ingressi presenti.
 
 Riassumendo, l'Instruction Register contiene l'Opcode dell'istruzione attualmente in esecuzione, mentre il Ring Counter ne indica lo step attivo. Utilizzando una logica combinatoria, è possibile costruire il microcode da caricare nelle EEPROM, che emetteranno gli opportuni segnali (Control Word) per ogni step di ogni istruzione.
 
@@ -464,3 +465,4 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 - non trovo riferimenti ad HL e HR in nessuna pagina; Poiché in questa pagina sto parlando del fatto che per alcuni registri sono necessari più segnali di controllo , come nel caso del registro h virgola che necessita di HLanche di HR volevo fare un link al registro h nella pagina del modulo ALU , ma vedo che anche lì non cè nessuna indicazione di HL anche di HR ("quando un registro presenta più segnali di ingresso che possono essere attivi contemporaneamente (ad esempio il registro dei Flag, oppure il registro H");)
 - Ho aggiunto anche una barra a led per mostrare l'indirizzo correntemente In input sulle EEPROM
 - verificare quando spiegare cosa fa il 138: se metto prima Ring Counter o la speigazione delle uscite dei 4x 138 della prima ROM
+- sistemare "\*\* In una successiva sezione si tratterà della durata delle micro istruzioni delle istruzioni e dei miglioramenti apportati dall'NQSAP."
