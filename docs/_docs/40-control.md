@@ -3,12 +3,6 @@ title: "Control Logic"
 permalink: /docs/control/
 excerpt: "Control Logic del BEAM computer"
 ---
-<style>
-.hidden-link {
-    display: none;
-}
-</style>
-
 ## WORK IN PROGRESS
 
 [![Control Logic del BEAM computer](../../assets/control/40-beam-control.png "Control Logic del BEAM computer"){:width="100%"}](../../assets/control/40-beam-control.png)
@@ -26,21 +20,22 @@ Per facilità di consultazione e semplificazione del confronto fra i tre compute
 | Bit IR per Opcode                      | 4          | 8           | 8              |
 | Bit IR per Operando                    | 4          | 0           | 0              |
 | Bit da IR a EEPROM                     | 4          | 8           | 8              |
+| Istruzioni implementate nel microcode  | ~ 10       | ~ 150       | ~ 150          |
+| Numero massimo istruzioni (IR)         | 16         | 256         | 256            |
 | Bit da RC a EEPROM                     | 3          | 3           | 4              |
+| Numero massimo Step (RC)               | 5          | 8           | 16             |
+| Lunghezza istruzioni variabile         | No         | Sì          | Sì             |
+| IR bufferizzato                        | No         | No          | Sì             |
 | Caricamento IR a Rising o Falling Edge | Rising     | Rising      | Falling        |
 | Caricamento RC a Rising o Falling Edge | Falling    | Falling     | Falling        |
 | EEPROM                                 | 2x 28C16   | 4x 28C256   | 4x 28C256      |
 | EEPROM (Kb)                            | 2x 16      | 4x 256      | 4x 256         |
 | Dimensione Control Word (bit)          | 16         | 32          | 32             |
 | RAM (byte)                             | 16         | 256         | 256            |
-| Numero massimo istruzioni (IR)         | 16         | 256         | 256            |
-| Numero massimo Step (RC)               | 5          | 8           | 16             |
-| Lunghezza istruzioni variabile         | No         | Sì          | Sì             |
-| IR bufferizzato                        | No         | No          | Sì             |
 
 Legenda: IR = Instruction Register; RC = Ring Counter
 
-Alcune note propedeutiche alla comprensione dell'argomento:
+Alcune note propedeutiche:
 
 1. Nel computer SAP di Ben Eater, la denominazione dei segnali è "modulo-centrica", riflettendo la funzione specifica di ciascun modulo: ad esempio, il segnale RO (RAM Out) esporta il contenuto della RAM sul bus, mentre AI (A Input) carica il registro A. Nel computer NQSAP di Tom Nisbet e nel BEAM, invece, la nomenclatura è "computer-centrica", adottando un punto di vista a livello di bus: per esempio, RO diventa RR (RAM Read) e AI diventa WA (Write A).
 
@@ -56,14 +51,10 @@ Il ruolo dell'Instruction Register è di memorizzare l'istruzione corrente prele
 
 L'Instruction Register del SAP presentava una dimensione di un byte, all'interno del quale erano contenuti sia l'istruzione che l'operando:
 
-<h2 id="paragrafo-nascosto" class="hidden-link">Paragrafo Nascosto</h2>
-
 - i 4 bit più significativi erano dedicati all'istruzione;
 - i 4 bit meno significativi erano riservati a un operando o a un indirizzo opzionali.
 
-Se i bit meno significativi contenevano un operando (ad esempio, un valore immediato da utilizzare in un'operazione aritmetica), questo valore veniva caricato in un registro per l'esecuzione dell'istruzione.
-
-Se i bit meno significativi contenevano un indirizzo di memoria, questo indirizzo veniva caricato nel Memory Address Register (MAR), che puntava così alla posizione di memoria da cui leggere o scrivere dati.
+Se i bit meno significativi contenevano un operando (ad esempio, un valore immediato da utilizzare in un'operazione aritmetica), questo valore veniva caricato in un registro per l'esecuzione dell'istruzione; se i bit meno significativi contenevano un indirizzo di memoria, questo indirizzo veniva caricato nel Memory Address Register (MAR), che puntava così alla posizione di memoria da cui leggere o scrivere dati.
 
 Nell'immagine seguente, tratta dal video <a href="https://youtu.be/JUVt_KYAp-I?t=1837" target="_blank">Reprogramming CPU microcode with an Arduino</a> di Ben Eater, si vede come ogni byte di un semplice programma di somma e sottrazione includa sia l'operazione sia l'operando:
 
@@ -92,8 +83,6 @@ Ad esempio:
 *Rappresentazione di un programma di somma, sottrazione e output caricato nei 16 byte della memoria del SAP.*
 
 In conseguenza del numero di bit utilizzato per l'istruzione, la connessione tra Instruction Register del SAP ed EEPROM contenenti il microcode poteva avere una ampiezza di soli 4 bit, come visibile in figura:
-
-[Link al paragrafo nascosto](#paragrafo-nascosto)
 
 [![Schema della Control Logic e dell'Instruction Register del SAP](../../assets/control/40-control-logic-schema-SAP.png "Schema della Control Logic e dell'Instruction Register del SAP"){:width="100%"}](../../assets/control/40-control-logic-schema-SAP.png)
 
