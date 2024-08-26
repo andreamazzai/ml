@@ -7,16 +7,16 @@ excerpt: "Control Logic del BEAM computer"
 
 [![Control Logic del BEAM computer](../../assets/control/40-beam-control.png "Control Logic del BEAM computer"){:width="100%"}](../../assets/control/40-beam-control.png)
 
-In generale, la gestione delle istruzioni consta di tre capisaldi: *Instruction Register*, *Ring Counter* e *Microcode*.
+In generale, la gestione delle istruzioni è affidata alla Control Logic, che consta di tre capisaldi: Instruction Register, Ring Counter e Microcode. L'Instruction Register contiene l'istruzione in esecuzione, il Ring Counter tiene traccia delle microistruzioni che compongono l'istruzione e il Microcode definisce i segnali di controllo necessari per eseguire le microistruzioni.
 
-Questa pagina descrive le Control Logic dell'NQSAP e del BEAM, evidenzia le differenze con la Control Logic del SAP computer di Ben Eater e approfondisce gli argomenti che avevo trovato più ostici e più interessanti.
+Questa pagina descrive le Control Logic dell'NQSAP e del BEAM, evidenzia le differenze con la Control Logic del SAP di Ben Eater e approfondisce gli argomenti che avevo trovato più ostici e più interessanti.
 
-Per facilità di consultazione e semplificazione del confronto fra i tre computer SAP, NQSAP e BEAM, è opportuno riepilogare in tabella alcuni degli aspetti che saranno trattati nella pagina.
+Per facilità di consultazione e semplificazione del confronto fra i tre computer SAP, NQSAP e BEAM, è opportuno riepilogare in tabella alcuni degli aspetti che saranno esposti.
 
 | Oggetto --- / --- Computer             | SAP        | NQSAP       | BEAM           |
 | -                                      | -          | -           | -              |
 | Autore                                 | Ben Eater  | Tom Nisbet  | Andrea Mazzai  |
-| IR condisivo tra Opcode e Operando     | Sì         | No          | No             |
+| IR condiviso tra Opcode e Operando     | Sì         | No          | No             |
 | Bit IR per Opcode                      | 4          | 8           | 8              |
 | Bit IR per Operando                    | 4          | 0           | 0              |
 | Bit da IR a EEPROM                     | 4          | 8           | 8              |
@@ -30,7 +30,7 @@ Per facilità di consultazione e semplificazione del confronto fra i tre compute
 | Numero massimo istruzioni (IR)         | 16         | 256         | 256            |
 | Numero massimo Step (RC)               | 5          | 8           | 16             |
 | Lunghezza istruzioni variabile         | No         | Sì          | Sì             |
-| Instruction Register bufferizzato      | No         | No          | Sì             |
+| IR bufferizzato                        | No         | No          | Sì             |
 
 Legenda: IR = Instruction Register; RC = Ring Counter
 
