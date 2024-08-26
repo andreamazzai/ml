@@ -13,7 +13,7 @@ Questa pagina descrive le Control Logic dell'NQSAP e del BEAM, evidenzia le diff
 
 Per facilità di consultazione e semplificazione del confronto fra i tre computer SAP, NQSAP e BEAM, è opportuno riepilogare in tabella alcuni degli aspetti che saranno esposti.
 
-| ↓↓ Caratteristica / Sistema →→         | SAP        | NQSAP       | BEAM           |
+| ↓ ↓ Caratteristica / Sistema → →       | SAP        | NQSAP       | BEAM           |
 | -                                      | -          | -           | -              |
 | Autore                                 | Ben Eater  | Tom Nisbet  | Andrea Mazzai  |
 | IR condiviso tra Opcode e Operando     | Sì         | No          | No             |
@@ -90,13 +90,13 @@ In conseguenza del numero di bit utilizzato per l'istruzione, la connessione tra
 
 Una fondamentale differenza tra l'IR del SAP e quello dell'NQSAP e del BEAM è la dimensione. Il 6502 ha un set di istruzioni *relativamente* piccolo, composto da 56 istruzioni di base; tuttavia, queste istruzioni possono essere utilizzate con diverse modalità di indirizzamento, il che porta il numero totale di combinazioni possibili a circa 150.
 
-Per poter gestire queste combinazioni ed emulare così il set di istruzioni del 6502, l'opcode abbisogna di un intero byte (pertanto, l'IR deve dedicare un intero byte all'istruzione, senza condividerlo con l'operando) e l'architettura del sistema deve gestire istruzioni di lunghezza diversa:
+Per poter gestire queste combinazioni ed emulare così il set di istruzioni del 6502, la dimensione dell'opcode deve essere di un intero byte e l'architettura del sistema deve gestire istruzioni di lunghezza variabile:
 
 - a un solo byte per quelle con indirizzamento Implicito e Accumulatore e che, dunque, non hanno un operando;
 - a due o tre\* byte per tutte le altre, che fanno invece uso di un operando:
-  - a due byte per definire un valore (indirizzamento Immediato e Relativo);
-  - a due byte per definire un indirizzo di pagina zero (entro i primi 256 byte del computer);
-  - a tre* byte per definire un indirizzo entro i 64K indirizzabili dal 6502.
+  - a due byte quando l'operando è un valore (indirizzamento Immediato e Relativo);
+  - a due byte quando l'operando è un indirizzo di pagina zero (entro i primi 256 byte del computer);
+  - a tre* byte quando l'operando è un indirizzo entro i 64K indirizzabili dal 6502.
 
 \* Un computer con 256 byte di RAM non necessita di istruzioni a 3 byte, perché un operando della lunghezza di un singolo byte è in grado di indirizzare tutta la memoria del computer, come brevemente discusso anche nella sezione [Indirizzamenti](../alu/#indirizzamenti) della pagina dedicata all'ALU.
 
@@ -501,3 +501,4 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 - sistemare "\*\* In una successiva sezione si tratterà della durata delle micro istruzioni delle istruzioni e dei miglioramenti apportati dall'NQSAP."
 - intorno a riga 179, bisogna verificare... Perché il caricamento della control World al falling edge è  solo una parte, perché dobbiamo considerare anche l'IR
 - Schema della Control Logic e dell’Instruction Register del SAP computer --- l'immagine probabilmente risulta troppo piccola su schermi "normali"
+- da qualche parte devo descrivere o meglio linkare a masswerk per gli indirizzamenti del 6502.
