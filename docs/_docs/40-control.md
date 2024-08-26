@@ -13,7 +13,7 @@ Questa pagina descrive le Control Logic dell'NQSAP e del BEAM, evidenzia le diff
 
 Per facilità di consultazione e semplificazione del confronto fra i tre computer SAP, NQSAP e BEAM, è opportuno riepilogare in tabella alcuni degli aspetti che saranno esposti.
 
-| Oggetto --- / --- Computer             | SAP        | NQSAP       | BEAM           |
+| ↓↓ Caratteristica / Sistema →→         | SAP        | NQSAP       | BEAM           |
 | -                                      | -          | -           | -              |
 | Autore                                 | Ben Eater  | Tom Nisbet  | Andrea Mazzai  |
 | IR condiviso tra Opcode e Operando     | Sì         | No          | No             |
