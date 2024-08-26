@@ -3,6 +3,12 @@ title: "Control Logic"
 permalink: /docs/control/
 excerpt: "Control Logic del BEAM computer"
 ---
+<style>
+.hidden-header {
+    display: none;
+}
+</style>
+
 ## WORK IN PROGRESS
 
 [![Control Logic del BEAM computer](../../assets/control/40-beam-control.png "Control Logic del BEAM computer"){:width="100%"}](../../assets/control/40-beam-control.png)
@@ -50,6 +56,8 @@ Il ruolo dell'Instruction Register è di memorizzare l'istruzione corrente prele
 
 L'Instruction Register del SAP presentava una dimensione di un byte, all'interno del quale erano contenuti sia l'istruzione che l'operando:
 
+<text id="paragrafo-nascosto" class=" hidden-link">Paragrafo Nascosto</text>
+
 - i 4 bit più significativi erano dedicati all'istruzione;
 - i 4 bit meno significativi erano riservati a un operando o a un indirizzo opzionali.
 
@@ -84,6 +92,8 @@ Ad esempio:
 *Rappresentazione di un programma di somma, sottrazione e output caricato nei 16 byte della memoria del SAP.*
 
 In conseguenza del numero di bit utilizzato per l'istruzione, la connessione tra Instruction Register del SAP ed EEPROM contenenti il microcode poteva avere una ampiezza di soli 4 bit, come visibile in figura:
+
+[Link al paragrafo nascosto](#paragrafo-nascosto)
 
 [![Schema della Control Logic e dell'Instruction Register del SAP](../../assets/control/40-control-logic-schema-SAP.png "Schema della Control Logic e dell'Instruction Register del SAP"){:width="100%"}](../../assets/control/40-control-logic-schema-SAP.png)
 
