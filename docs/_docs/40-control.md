@@ -4,7 +4,7 @@ permalink: /docs/control/
 excerpt: "Control Logic del BEAM computer"
 ---
 <style>
-.hidden-header {
+.hidden-link {
     display: none;
 }
 </style>
@@ -56,7 +56,7 @@ Il ruolo dell'Instruction Register è di memorizzare l'istruzione corrente prele
 
 L'Instruction Register del SAP presentava una dimensione di un byte, all'interno del quale erano contenuti sia l'istruzione che l'operando:
 
-<text id="paragrafo-nascosto" class=" hidden-link">Paragrafo Nascosto</text>
+<h2 id="paragrafo-nascosto" class="hidden-link">Paragrafo Nascosto</h2>
 
 - i 4 bit più significativi erano dedicati all'istruzione;
 - i 4 bit meno significativi erano riservati a un operando o a un indirizzo opzionali.
