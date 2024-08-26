@@ -104,11 +104,12 @@ Tirando le fila, per un computer come l'NQSAP o il BEAM:
 
 - l'Instruction Register deve essere dedicato alle sole istruzioni ed avere dimensione di un byte;
 - la connessione tra IR ed EEPROM deve avere un'ampiezza di 8 bit e non più di soli 4 bit come nel SAP;
-- sono necessarie EEPROM 28C256 da 256Kb con 15 pin per gli indirizzi:
-  - 8 pin di indirizzi per le istruzioni (2^8 = 256 istruzioni)
-  - 3 o 4 pin di indirizzi per le microistruzioni (2^3 = 8 step, 2^4 = 16 step), delle quali si parla nella sezione dedicata al [Ring Counter](#ring-counter-e-microistruzioni)
-  - 2 pin di indirizzi per selezionare le ROM
-  - rimane un pin inutilizzato, tanto da pensare di poter utilizzare EEPROM da 128Kb, che però non esistono in commercio <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">con l'interfaccia parallela</a>.
+- sono necessarie EEPROM con 13 (NQSAP) o 14 (BEAM) pin di indirizzamento:
+  - 8 pin per le istruzioni (2^8 = 256 istruzioni)
+  - 3 o 4 pin per le microistruzioni (2^3 = 8 step, 2^4 = 16 step), delle quali si parla nella sezione dedicata al [Ring Counter](#ring-counter-e-microistruzioni)
+  - 2 pin per la selezione delle EEPROM
+
+Per l'NQSAP Tom ha deciso di utilizzare comunque EEPROM da 15 pin per l'indirizzamento / 256Kb anziché da 13 pin / 64Kb; nel BEAM avrei potuto utilizzare EEPROM da 14 pin / 128Kb, che però non esistono in commercio con <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">l’interfaccia parallela</a>, riportando ancora una volta la scelta verso EEPROM da 256Kb.
 
 [![Schema dell'Instruction Register del BEAM](../../assets/control/40-cl-ir-beam.png "Schema dell'Instruction Register del BEAM"){:width="66%"}](../../assets/control/40-cl-ir-beam.png)
 
