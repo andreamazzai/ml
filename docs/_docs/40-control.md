@@ -9,9 +9,9 @@ excerpt: "Control Logic del BEAM computer"
 
 In generale, la gestione delle istruzioni è affidata alla Control Logic, che consta di tre capisaldi: Instruction Register, Ring Counter e Microcode. L'Instruction Register contiene l'istruzione in esecuzione, il Ring Counter tiene traccia delle microistruzioni che compongono l'istruzione e il Microcode definisce i segnali di controllo necessari per eseguire le microistruzioni.
 
-Questa pagina descrive le Control Logic dell'NQSAP e del BEAM, evidenzia le differenze con la Control Logic del SAP di Ben Eater e approfondisce gli argomenti che avevo trovato più ostici e più interessanti.
+Questa pagina descrive le Control Logic dell'NQSAP e del BEAM, evidenzia le differenze con la Control Logic del SAP di Ben Eater e approfondisce gli argomenti che avevo trovato più ostici o più interessanti.
 
-Per facilità di consultazione e semplificazione del confronto fra i tre computer SAP, NQSAP e BEAM, è opportuno riepilogare in tabella alcuni degli aspetti che saranno esposti.
+Per facilità di consultazione e semplificazione del confronto fra i tre computer SAP, NQSAP e BEAM, è opportuno riepilogare in tabella alcuni degli aspetti ricorrenti nel testo.
 
 | ↓ ↓ Caratteristica / Sistema → →       | SAP        | NQSAP       | BEAM           |
 | -                                      | -          | -           | -              |
@@ -64,6 +64,7 @@ Ad esempio:
 
 - L'istruzione LDA 15 all'indirizzo di memoria 0000 è composta dai 4 bit più significativi (MSB) 0001 (che nel microcode definiscono un'operazione di caricamento accumulatore) e dai 4 bit meno significativi (LSB) 1111, che indicano l'indirizzo di memoria 15, nel quale è presente il valore 5 da caricare nell'accumulatore A.
 - L'istruzione ADD 14 all'indirizzo di memoria 0001 è composta dai 4 bit MSB 0010 (che nel microcode definiscono un'operazione di somma) e dai 4 bit LSB 1110, che indicano l'indirizzo di memoria 14, nel quale è presente il valore 6 da sommare al valore già presente nell'accumulatore A.
+- L'istruzione OUT non necessita di operando: espone sul modulo di Output il contenuto di A, pertanto i 4 LSB sono irrilevanti.
 
 | Mnemonico | Indirizzo | Istruzione.Operando |
 | -         | -         | -                   |
@@ -113,7 +114,7 @@ Tirando le fila, per un computer come l'NQSAP o il BEAM:
   - 3 o 4 pin per le microistruzioni (2^3 = 8 step, 2^4 = 16 step), delle quali si parla nella sezione dedicata al [Ring Counter](#ring-counter-e-microistruzioni)
   - 2 pin per la selezione delle EEPROM
 
-Per l'NQSAP Tom ha deciso di utilizzare comunque EEPROM da 15 pin per l'indirizzamento / 256Kb anziché da 13 pin / 64Kb; nel BEAM avrei potuto utilizzare EEPROM da 14 pin / 128Kb anziché da 256Kb, però non esistono in commercio con <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">l’interfaccia parallela</a>.
+Per l'NQSAP Tom ha deciso di utilizzare comunque EEPROM da 15 pin di / dimnesione di 256Kb anziché da 13 pin / 64Kb; il BEAM richiede invece obbligatoriamente EEPROM da 15 pin / 256Kb, perché le EEPROM da 128Kb con interfaccia parallela <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">non sono disponibili in commercio</a>.
 
 Come si vedrà in seguito parlando del Ring Counter, un aspetto importante del caricamento dei registri è il *momento* in cui vengono caricati: al Falling Edge del clock, oppure al Rising Edge.
 
@@ -187,11 +188,11 @@ Le operazioni di una CPU passano per diverse fasi, che possiamo riassumere in:
 2. "Decode" (decodifica), che interpreta il contenuto dell'IR per determinare quale istruzione debba essere eseguita.
 3. "Execute" (esecuzione), che include tutte le microistruzioni che realizzano effettivamente quanto deve essere svolto dall'istruzione (ad esempio: "incrementa il registro X").
 
-La fase di decodifica avviene grazie al microcodice memorizzato nelle EEPROM: l'istruzione caricata nell'IR ha un proprio opcode specifico (ad esempio, 0100.0110), che viene presentato agli ingressi delle EEPROM insieme agli output del Ring Counter. Questa combinazione indirizza una locazione di memoria specifica nelle EEPROM, che emettono in uscita i bit della Control Word ed attivano i segnali di controllo necessari per eseguire la microistruzione corrente.
+La fase di decodifica avviene grazie al microcodice memorizzato nelle EEPROM: l'istruzione caricata nell'IR ha un proprio opcode specifico (ad esempio, 0100.0110), che viene presentato agli ingressi delle EEPROM insieme agli output del Ring Counter. Questa combinazione indirizza una locazione di memoria specifica nelle EEPROM, che emettono in uscita i bit della Control Word e che a loro volta attivano i segnali di controllo necessari per eseguire la microistruzione corrente.
 
 Il legame tra decodifica ed esecuzione è molto stretto, perché in ogni momento la Control Word dipende sia dall'opcode (Decode), sia dalla microistruzione (Execute).
 
-Riprendendo la spiegazione del funzionamento del Ring Counter, si può affermare che una CPU deve conoscere in ogni momento quale istruzione sia attualmente in esecuzione - ne riceviamo indicazioni dall'Instruction Register - e quale sia lo step correntemente attivo, per conoscere il quale ci viene in aiuto il Ring Counter. Tanto il SAP quanto l'NQSAP e il BEAM sviluppano il Ring Counter attorno a un contatore <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">74LS161</a>, in grado di contare da 0 a 15, e a un demultiplexer <a href="https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target="_blank">74LS138</a>, che ci aiuta ad avere riscontro visivo della microistruzione in esecuzione.
+Si intuisce che una CPU deve conoscere in ogni momento quale istruzione sia attualmente in esecuzione (ne riceviamo indicazioni dall'Instruction Register) e quale sia lo step correntemente attivo, per conoscere il quale ci viene in aiuto il Ring Counter. Tanto il SAP quanto l'NQSAP e il BEAM sviluppano il Ring Counter attorno a un contatore <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">74LS161</a>, in grado di contare da 0 a 15, e a un demultiplexer <a href="https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target="_blank">74LS138</a>, che ci aiuta ad avere riscontro visivo della microistruzione in esecuzione.
 
 Come detto poc’anzi, la combinazione generata dall'opcode contenuto nell’Instruction Register e dallo step esposto dal Ring Counter indirizza una locazione di memoria specifica nelle EEPROM: tale locazione di memoria contiene la Control Word.
 
@@ -207,9 +208,21 @@ Riassumendo, l'Instruction Register contiene l'Opcode dell'istruzione attualment
 
 In generale, i momenti essenziali di un ciclo di clock in un computer sono due: il Rising Edge ↗ (passaggio del segnale dallo stato logico LO allo stato logico HI) e il Falling Edge ↘ (viceversa).
 
-- Rising Edge: la maggior parte dei componenti sequenziali* (quali contatori, registri, FF) modifica il proprio stato durante la transizione del segnale di clock dallo stato logico LO allo stato logico HI; le azioni di caricamento di tutti i moduli del computer (PC, MAR, RAM, A, B, H, Registri Indice, Flag, SP, O) avvengono in questo momento, ad eccezione del RC (e, in certe situazioni, dell'IR).
+- Rising Edge: la maggior parte dei componenti sequenziali* (quali contatori, registri, flip-flop) modifica il proprio stato durante la transizione del segnale di clock dallo stato logico LO allo stato logico HI; le azioni di caricamento di tutti i moduli del computer (PC, MAR, RAM, A, B, H, Registri Indice, Flag, SP, O) avvengono in questo momento, con qualche eccezione.
 
-- Falling Edge: poiché il caricamento dei registri avviene con il Rising Edge del clock, ma la Control Word deve essere configurata *prima* di ogni occorrenza di questo evento, il Falling Edge si configura come il momento migliore per settarla. Invertendo la fase del clock inviato al Ring Counter, si esegue la configurazione della Control Word - e dunque della microistruzione - proprio in corrispondenza del Falling Edge.
+- Falling Edge: poiché ad ogni Rising Edge i componenti sequenziali caricano i dati in ingresso, si intuisce che è necessario trovare un momento *antecedente*, durante il quale settare la Control Word di tutti i moduli del sistema in modo che i dati siano presenti agli ingressi dei componenti col dovuto anticipo. Il Falling Edge si configura come il momento migliore per settare la Control Word; invertendo la fase del clock inviato al Ring Counter, si esegue la configurazione della Control Word - e dunque della microistruzione - proprio in corrispondenza del Falling Edge.
+
+Per quale motivo si parla di eccezioni? Sicuramente il Ring Counter è una di queste, per il motivo spiegato al punto precedente; l'Instruction Register *può* essere un'altra eccezione.
+
+In effetti, nel SAP il caricamento dell'IR è sincrono con il Rising Edge del clock:
+
+[![Dettaglio Instruction Register del SAP](../../assets/control/40-cl-sap-ir-detail.png "Dettaglio Instruction Register del SAP"){:width="75%"}](../../assets/control/40-cl-sap-ir-detail.png)
+
+Anche nell'NQPSAP si ritrova tale sincronia:
+
+[![Dettaglio Instruction Register dell'NQSAP](../../assets/control/40-cl-nqsap-ir-detail.png "Dettaglio Instruction Register dell'NQSAP"){:width="75%"}](../../assets/control/40-cl-nqsap-ir-detail.png)
+
+
 
 **Possibile riprendere qui il discorso dell'IR e del caricamento?** IR bufferizzato e anche questo in effetti deve essere pronto prima... etc etc etc
 
