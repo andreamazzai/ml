@@ -196,15 +196,11 @@ Si intuisce che una CPU deve conoscere in ogni momento quale istruzione sia attu
 
 Come detto poc’anzi, la combinazione generata dall'opcode contenuto nell’Instruction Register e dallo step esposto dal Ring Counter indirizza una locazione di memoria specifica nelle EEPROM: tale locazione di memoria contiene la Control Word.
 
-[![Output di IR ed RC e input delle EEPROM del BEAM](../../assets/control/40-cl-ir-cr-beam.png "Output di IR ed RC e input delle EEPROM del BEAM"){:width="66%"}](../../assets/control/40-cl-ir-cr-beam.png)
+[![Output di IR ed RC e input delle EEPROM del BEAM](../../assets/control/40-cl-ir-cr-beam.png "Output di IR ed RC e input delle EEPROM del BEAM"){:width="100%"}](../../assets/control/40-cl-ir-cr-beam.png)
 
 *Output di IR ed RC e input delle EEPROM del BEAM*.
 
 Nell'immagine seguente si può osservare che le uscite del contatore '161 controllano anche un '138, che viene utilizzato per visualizzare lo stato dell'RC. Anziché impiegare 16 LED (e due '138), un singolo LED "esteso" è pilotato dal pin più significativo del '161, che ha un valore pari ad 8: lo step correntemente in esecuzione sarà indicato dal LED acceso dal '138, al quale sommare 8 se il LED "esteso" è acceso.
-
-[![Dettaglio del Ring Counter del BEAM](../../assets/control/40-control-logic-161-138-beam.png "Dettaglio del Ring Counter del BEAM"){:width="66%"}](../../assets/control/40-control-logic-161-138-beam.png)
-
-*Dettaglio del Ring Counter del BEAM.*
 
 Riassumendo, l'Instruction Register contiene l'Opcode dell'istruzione attualmente in esecuzione, mentre il Ring Counter ne indica lo step attivo. Utilizzando una logica combinatoria, è possibile costruire il microcode da caricare nelle EEPROM, che emetteranno gli opportuni segnali (Control Word) per ogni step di ogni istruzione.
 
