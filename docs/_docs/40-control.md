@@ -109,16 +109,16 @@ Tirando le fila, per un computer come l'NQSAP o il BEAM:
 
 - l'Instruction Register deve essere dedicato alle sole istruzioni ed avere dimensione di un byte;
 - la connessione tra IR ed EEPROM deve avere un'ampiezza di 8 bit e non più di soli 4 bit come nel SAP;
-- sono necessarie EEPROM con 13 (NQSAP) o 14 (BEAM) pin di indirizzamento:
+- sono necessarie EEPROM con 13 (NQSAP, 2^13 = 64Kb) o 14 (BEAM, 2^14 = 128Kb) pin di indirizzamento:
   - 8 pin per le istruzioni (2^8 = 256 istruzioni)
   - 3 o 4 pin per le microistruzioni (2^3 = 8 step, 2^4 = 16 step), delle quali si parla nella sezione dedicata al [Ring Counter](#ring-counter-e-microistruzioni)
   - 2 pin per la selezione delle EEPROM
 
-Per l'NQSAP Tom ha deciso di utilizzare comunque EEPROM da 15 pin di / dimnesione di 256Kb anziché da 13 pin / 64Kb; il BEAM richiede invece obbligatoriamente EEPROM da 15 pin / 256Kb, perché le EEPROM da 128Kb con interfaccia parallela <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">non sono disponibili in commercio</a>.
+Per l'NQSAP Tom ha deciso di utilizzare comunque EEPROM da 256Kb anziché da 64Kb; il BEAM richiede invece obbligatoriamente EEPROM da 256Kb, perché le EEPROM da 128Kb con interfaccia parallela <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">non sono disponibili in commercio</a>.
 
-Come si vedrà in seguito parlando del Ring Counter, un aspetto importante del caricamento dei registri è il *momento* in cui vengono caricati: al Falling Edge del clock, oppure al Rising Edge.
+Come si vedrà in seguito parlando del Ring Counter, un aspetto importante del caricamento dei registri è il *momento* in cui vengono caricati: al Falling Edge del clock, oppure al Rising Edge: il caricamento dell'Instruction Register del SAP e dell'NQSAP avviene al Rising Edge, mentre quello del BEAM avviene al Falling Edge.
 
-Il caricamento dell'Instruction Register del SAP e dell'NQSAP avviene al Rising Edge, mentre quello del BEAM avviene al Falling Edge; prima di approfondire l'argomento, è opportuno iniziare a parlare anche del Ring Counter, che ha un ruolo primario nel caricamento di tutti i registri, IR compreso.
+Prima di approfondire l'argomento, è opportuno iniziare a parlare anche del Ring Counter, che ha un ruolo primario nel caricamento di tutti i registri, IR compreso.
 
 ## Ring Counter e Microistruzioni
 
@@ -126,7 +126,7 @@ Per capire il funzionamento del Ring Counter, è necessario fare proprio il conc
 
 Infatti, ogni istruzione di un microprocessore (ad esempio, "carica un valore nel registro X", "incrementa il contenuto della locazione $E5" o "esegui uno scorrimento a destra dell'accumulatore") è composta da una sequenza di microistruzioni elementari, che corrispondono ai singoli passi (step) necessari per completare l'operazione voluta.
 
-Il registro Ring Counter (RC) tiene traccia dello stato di avanzamento delle microistruzioni. Ogni stato dell'RC corrisponde a un particolare step nel ciclo di esecuzione di un'istruzione, quindi può essere visto come un meccanismo che avanza attraverso le diverse microistruzioni necessarie per eseguire un'istruzione completa della CPU.
+Il Ring Counter (RC) tiene traccia dello stato di avanzamento delle microistruzioni. Ogni stato del RC corrisponde a un particolare step nel ciclo di esecuzione di un'istruzione, quindi può essere visto come un meccanismo che avanza attraverso le diverse microistruzioni necessarie per eseguire un'istruzione completa della CPU.
 
 Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio del 6502 si traduce in "carica nell'accumulatore il valore esadecimale $94") è composta dai seguenti quattro step / microistruzioni:
 
@@ -164,7 +164,7 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio del 6502 si trad
 
 \*\* Approfondimenti in merito nella sezione [Lunghezza delle istruzioni](#lunghezza-delle-istruzioni) in questa stessa pagina.
 
-I primi due step sono *sempre* identici per *tutte* le istruzioni del computer: alla fine di questi due step, l'Instruction Register contiene l'opcode dell'istruzione, che, insieme alle microistruzioni, definisce il compito di ogni step successivo di ciascuna istruzione. Questo accorgimento garantisce che il computer possa sempre avviarsi correttamente dopo un reset, indipendentemente dall'istruzione presente nella locazione iniziale dopo il caricamento di un programma in memoria.
+I primi due step sono *sempre* identici per *tutte* le istruzioni del computer: dopo averli eseguiti, l'Instruction Register contiene l'opcode dell'istruzione, che, insieme alle microistruzioni, definisce il compito di ogni step successivo. Questo accorgimento garantisce che il computer possa sempre avviarsi, indipendentemente dall'istruzione presente nella locazione di memoria iniziale.
 
 Uno schema che mostra chiaramente gli step di alcune istruzioni del SAP è visibile in questa immagine tratta dal video <a href="https://www.youtube.com/watch?v=dHWFpkGsxOs" target="_blank">8-bit CPU control logic: Part 3</a> di Ben Eater; notiamo che gli step delle istruzioni LDA, ADD eccetera partono da 010, a significare che gli step 000 e 001 sono comuni per tutte e compongono quella che viene chiamata **Fase Fetch**, evidenziata in giallo.
 
@@ -188,19 +188,23 @@ Le operazioni di una CPU passano per diverse fasi, che possiamo riassumere in:
 2. "Decode" (decodifica), che interpreta il contenuto dell'IR per determinare quale istruzione debba essere eseguita.
 3. "Execute" (esecuzione), che include tutte le microistruzioni che realizzano effettivamente quanto deve essere svolto dall'istruzione (ad esempio: "incrementa il registro X").
 
-La fase di decodifica avviene grazie al microcodice memorizzato nelle EEPROM: l'istruzione caricata nell'IR ha un proprio opcode specifico (ad esempio, 0100.0110), che viene presentato agli ingressi delle EEPROM insieme agli output del Ring Counter. Questa combinazione indirizza una locazione di memoria specifica nelle EEPROM, che emettono in uscita i bit della Control Word e che a loro volta attivano i segnali di controllo necessari per eseguire la microistruzione corrente.
+La fase di decodifica avviene grazie al microcodice memorizzato nelle EEPROM: l'istruzione caricata nell'IR ha un proprio opcode specifico (ad esempio, 0100.0110), che viene presentato agli ingressi delle EEPROM insieme agli output del Ring Counter. Questa combinazione indirizza una locazione di memoria specifica nelle EEPROM, che emettono in uscita i bit della Control Word e che, a loro volta, attivano i segnali di controllo necessari per eseguire la microistruzione corrente.
 
 Il legame tra decodifica ed esecuzione è molto stretto, perché in ogni momento la Control Word dipende sia dall'opcode (Decode), sia dalla microistruzione (Execute).
 
-Si intuisce che una CPU deve conoscere in ogni momento quale istruzione sia attualmente in esecuzione (ne riceviamo indicazioni dall'Instruction Register) e quale sia lo step correntemente attivo, per conoscere il quale ci viene in aiuto il Ring Counter. Tanto il SAP quanto l'NQSAP e il BEAM sviluppano il Ring Counter attorno a un contatore <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">74LS161</a>, in grado di contare da 0 a 15, e a un demultiplexer <a href="https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target="_blank">74LS138</a>, che ci aiuta ad avere riscontro visivo della microistruzione in esecuzione.
+Si intuisce che una CPU deve conoscere in ogni momento quale istruzione sia attualmente in esecuzione (ne riceviamo indicazioni dall'Instruction Register) e quale sia lo step correntemente attivo, per conoscere il quale ci viene in aiuto il Ring Counter. SAP, NQSAP e BEAM sviluppano il Ring Counter attorno a un contatore <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">74LS161</a>, in grado di contare da 0 a 15, e a un demultiplexer <a href="https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target="_blank">74LS138</a>, che ci aiuta ad avere riscontro visivo della microistruzione in esecuzione.
 
 Come detto poc’anzi, la combinazione generata dall'opcode contenuto nell’Instruction Register e dallo step esposto dal Ring Counter indirizza una locazione di memoria specifica nelle EEPROM: tale locazione di memoria contiene la Control Word.
+
+[![Output di IR ed RC e input delle EEPROM del BEAM](../../assets/control/40-cl-ir-cr-beam.png "Output di IR ed RC e input delle EEPROM del BEAM"){:width="66%"}](../../assets/control/40-cl-ir-cr-beam.png)
+
+*Output di IR ed RC e input delle EEPROM del BEAM*.
+
+Nell'immagine seguente si può osservare che le uscite del contatore '161 controllano anche un '138, che viene utilizzato per visualizzare lo stato dell'RC. Anziché impiegare 16 LED (e due '138), un singolo LED "esteso" è pilotato dal pin più significativo del '161, che ha un valore pari ad 8: lo step correntemente in esecuzione sarà indicato dal LED acceso dal '138, al quale sommare 8 se il LED "esteso" è acceso.
 
 [![Dettaglio del Ring Counter del BEAM](../../assets/control/40-control-logic-161-138-beam.png "Dettaglio del Ring Counter del BEAM"){:width="66%"}](../../assets/control/40-control-logic-161-138-beam.png)
 
 *Dettaglio del Ring Counter del BEAM.*
-
-Nell'immagine si può osservare che le uscite del contatore '161 controllano anche un '138, che viene utilizzato per visualizzare lo stato dell'RC. Anziché impiegare 16 LED (e due '138), un singolo LED "esteso" è pilotato dal pin più significativo del '161, che ha un valore pari ad 8: lo step correntemente in esecuzione sarà indicato dal LED acceso dal '138, al quale sommare 8 se il LED "esteso" è acceso.
 
 Riassumendo, l'Instruction Register contiene l'Opcode dell'istruzione attualmente in esecuzione, mentre il Ring Counter ne indica lo step attivo. Utilizzando una logica combinatoria, è possibile costruire il microcode da caricare nelle EEPROM, che emetteranno gli opportuni segnali (Control Word) per ogni step di ogni istruzione.
 
@@ -226,7 +230,7 @@ Anche nell'NQPSAP si ritrova tale sincronia:
 
 **Possibile riprendere qui il discorso dell'IR e del caricamento?** IR bufferizzato e anche questo in effetti deve essere pronto prima... etc etc etc
 
-Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF da 8 registri in cascata, così il primo viene aggiornato al normale caricamento dell'IR (che corrisponderebbe a T7 (step 1), ma causando un glitch sulla ROM)… invece di collegare il FF agli ingressi delle ROM, viene collegato a un altro FF che viene caricato col Falling Edge del CLK / Rising Edge del CLK, così le uscite delle ROM vengono aggiornate alla fine della microistruzione quando i segnali sono stabili 😁
+Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF da 8 registri in cascata, così il primo viene aggior  to al normale caricamento dell'IR (che corrisponderebbe a T7 (step 1), ma causando un glitch sulla ROM)… invece di collegare il FF agli ingressi delle ROM, viene collegato a un altro FF che viene caricato col Falling Edge del CLK / Rising Edge del CLK, così le uscite delle ROM vengono aggiornate alla fine della microistruzione quando i segnali sono stabili 😁
 
 **devo spiegare il funzionamento dell'IR**, Riprendendo spunto dal fatto che il registro delle istruzioni questa volta è bufferizzato.
 
