@@ -220,17 +220,34 @@ In effetti, nel SAP il caricamento dell'IR è sincrono con il Rising Edge del cl
 
 [![Dettaglio Instruction Register del SAP](../../assets/control/40-cl-sap-ir-detail.png "Dettaglio Instruction Register del SAP"){:width="75%"}](../../assets/control/40-cl-sap-ir-detail.png)
 
-Anche nell'NQPSAP si ritrova tale sincronia:
+Tale sincronia si ritrova anche nell'NQSAP:
 
 [![Dettaglio Instruction Register dell'NQSAP](../../assets/control/40-cl-nqsap-ir-detail.png "Dettaglio Instruction Register dell'NQSAP"){:width="75%"}](../../assets/control/40-cl-nqsap-ir-detail.png)
+
+Quali sono lÈ possibile conseguenze del caricamento dell'instaction register del clock ?
+
+Cè una proprietà delle eprm da tenere in considerazione : nel momento in cui Si cambia l'indirizzo, l'output potrebbe non essere stabile per un certo periodo e generare il fenomeno del glitching.
+
+Ad esempio, il thread di rolf-electronics su Reddit mostra (nei primi 3 quadranti) il fenomeno, con dei segnali di output che, al momento del cambiamento di input delle EEPROM, mostrano delle oscillazioni significative.
+
+https://www.reddit.com/r/beneater/comments/f7gcvx/glitches_on_eeprom_datalines_when_their_adress/
+
+https://www.reddit.com/r/beneater/comments/ggabgw/huge_instruction_eeprom_problems/
+
+[![SAP computer - istruzione LDA](../../assets/control/40-wavedrom-sap-lda.png "SAP computer - istruzione LDA"){:width="100%"}](../../assets/control/40-wavedrom-sap-lda.png)
+
+*SAP computer - istruzione LDA*.
+
+Lo schema mostra i primi cicli di clock di un'istruzione nel computer sapENQSAP . il ring counter cambia ad ogni del clock , mentre l'instruction register cambia a ogni age del cloud. tutti questi eventi modificano gli indirizzi di input delle EEPROME generano un momento di incertezza . per tutti gli output virgola che poi sono i segnali di controllo .
+per il computer SPA, questo non è tipicamente un problema , perché le istruzioni, anzi meglio dire gli step del SAP copiano i valori da un registro a un'altro, cioè leggono da 1245e scrivono su 173
+
+il glitching non causa problemi Perché il 173 carica nuovi valori quando il segnale di caricamento è attivo e il clock è nel momento del transizione da basso a alto, momento in cui i segnali sono stabilizzati e dunque non cè rischio dicaricare dati non corretti
+
+
 
 
 **Possibile riprendere qui il discorso dell'IR e del caricamento?** IR bufferizzato e anche questo in effetti deve essere pronto prima... etc etc etc
 
-
-[![SAP computer - istruzione LDA](../../assets/control/40-wavedrom-sap-lda.png "SAP computer - istruzione LDA"){:width="75%"}](../../assets/control/40-wavedrom-sap-lda.png)
-
-*SAP computer - istruzione LDA*.
 
 Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF da 8 registri in cascata, così il primo viene aggior  to al normale caricamento dell'IR (che corrisponderebbe a T7 (step 1), ma causando un glitch sulla ROM)… invece di collegare il FF agli ingressi delle ROM, viene collegato a un altro FF che viene caricato col Falling Edge del CLK / Rising Edge del CLK, così le uscite delle ROM vengono aggiornate alla fine della microistruzione quando i segnali sono stabili 😁
 
