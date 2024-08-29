@@ -225,8 +225,12 @@ Anche nell'NQPSAP si ritrova tale sincronia:
 [![Dettaglio Instruction Register dell'NQSAP](../../assets/control/40-cl-nqsap-ir-detail.png "Dettaglio Instruction Register dell'NQSAP"){:width="75%"}](../../assets/control/40-cl-nqsap-ir-detail.png)
 
 
-
 **Possibile riprendere qui il discorso dell'IR e del caricamento?** IR bufferizzato e anche questo in effetti deve essere pronto prima... etc etc etc
+
+
+[![SAP computer - istruzione LDA](../../assets/control/40-wavedrom-sap-lda.png "SAP computer - istruzione LDA"){:width="75%"}](../../assets/control/40-wavedrom-sap-lda.png)
+
+*SAP computer - istruzione LDA*.
 
 Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF da 8 registri in cascata, così il primo viene aggior  to al normale caricamento dell'IR (che corrisponderebbe a T7 (step 1), ma causando un glitch sulla ROM)… invece di collegare il FF agli ingressi delle ROM, viene collegato a un altro FF che viene caricato col Falling Edge del CLK / Rising Edge del CLK, così le uscite delle ROM vengono aggiornate alla fine della microistruzione quando i segnali sono stabili 😁
 
