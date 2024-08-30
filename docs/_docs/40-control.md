@@ -234,16 +234,16 @@ Nelle EEPROM come la <a href="https://ww1.microchip.com/downloads/en/DeviceDoc/d
 
 Ad esempio, un <a href="https://www.reddit.com/r/beneater/comments/f7gcvx/glitches_on_eeprom_datalines_when_their_adress/" target="_blank">thread di rolf-electronics</a> su Reddit evidenzia il fenomeno nei primi 3 quadranti della seguente immagine, con dei segnali di output che mostrano oscillazioni significative al momento del cambiamento di input delle EEPROM:
 
-[![Glitching nel SAP di Rolf Electronics](../../assets/control/40-glitching-rolf.png "Glitching nel SAP di Rolf Electronics"){:width="75%"}](../../assets/control/40-glitching-rolf.png)
+[![Glitching nel SAP di Rolf Electronics](../../assets/control/40-glitching-rolf.png "Glitching nel SAP di Rolf Electronics"){:width="66%"}](../../assets/control/40-glitching-rolf.png)
 
 Ora, qual è la relazione tra il glitching e il caricamento dell'Instruction Register al Rising Edge del clock?
 
-Il prossimo grafico mostra i segnali in gioco nei 4 cicli di clock dell'istruzione LDA del SAP. Quanto accade è abbastanza simile alla spiegazione dell'istruzione [LDA#$94 dell'NQSAP](#ring-counter-e-microistruzioni):
+Il prossimo grafico mostra i segnali in gioco nei 4 cicli di clock dell'istruzione LDA del SAP. Quanto accade è abbastanza simile alla spiegazione dell'istruzione [LDA #$94](#ring-counter-e-microistruzioni) dell'NQSAP:
 
-1) PC esposto sul bus e caricamento del MAR
-2) RAM esposta sul bus, caricamento dell'IR e incremento del PC
-3) IR esposto sul bus, caricamento del MAR
-4) RAM esposta sul bus, caricamento di A
+1. PC esposto sul bus e caricamento del MAR
+2. RAM esposta sul bus, caricamento dell'IR e incremento del PC
+3. IR esposto sul bus, caricamento del MAR
+4. RAM esposta sul bus, caricamento di A
 
 [![SAP computer - istruzione LDA ideale](../../assets/control/40-wavedrom-sap-lda-ideale.png "SAP computer - istruzione LDA ideale"){:width="100%"}](../../assets/control/40-wavedrom-sap-lda-ideale.png)
 
