@@ -249,6 +249,7 @@ Si può notare che tutti i cambi di stato dei segnali avvengono in corrispondenz
 
 [![SAP computer - istruzione LDA ideale](../../assets/control/40-wavedrom-sap-lda-ideale.png "SAP computer - istruzione LDA ideale"){:width="90%"}](../../assets/control/40-wavedrom-sap-lda-ideale.png)
 
+![Alt text](image.png)
 *SAP computer - istruzione LDA ideale*.
 
 Questo è quando accade in un mondo ideale.
