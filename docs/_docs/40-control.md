@@ -226,16 +226,15 @@ Tale sincronia si ritrova anche nell'NQSAP:
 
 Quali sono le possibili conseguenze del caricamento dell'IR al Rising Edge del clock?
 
-Bisogna prendere in considerazione una proprietà delle EEPROM: durante il periodo di transizione, le uscite possono essere instabili, oscillando tra gli stati logici prima di stabilizzarsi sul valore corretto.
+Bisogna prendere in considerazione una proprietà delle EEPROM: durante il periodo di transizione, le uscite possono essere instabili, oscillando ("glitching") tra gli stati logici prima di stabilizzarsi sul valore corretto.
 
 Nelle EEPROM come la <a href="https://ww1.microchip.com/downloads/en/DeviceDoc/doc0006.pdf" target="_blank">AT28C256</a>, il parametro che indica la durata dell'incertezza all'output è tipicamente chiamato "Address Access Time" o "t<sub>ACC</sub>" e indica il periodo che intercorre tra l'applicazione di un nuovo indirizzo di ingresso e il momento in cui i dati corretti sono disponibili sull'uscita, come visibile in figura:
 
 [![AC Read Waveforms EEPROM AT28C256](../../assets/control/40-28C256-read-waveform.png "AC Read Waveforms EEPROM AT28C256"){:width="50%"}](../../assets/control/40-28C256-read-waveform.png)
 
+Ad esempio, il <a href="https://www.reddit.com/r/beneater/comments/f7gcvx/glitches_on_eeprom_datalines_when_their_adress/" target="_blank">thread di rolf-electronics</a> su Reddit mostra (nei primi 3 quadranti) il fenomeno, con dei segnali di output che, al momento del cambiamento di input delle EEPROM, mostrano delle oscillazioni significative.
 
-Ad esempio, il thread di rolf-electronics su Reddit mostra (nei primi 3 quadranti) il fenomeno, con dei segnali di output che, al momento del cambiamento di input delle EEPROM, mostrano delle oscillazioni significative.
-
-https://www.reddit.com/r/beneater/comments/f7gcvx/glitches_on_eeprom_datalines_when_their_adress/
+[![Glitching nel SAP di Rolf Electronics](../../assets/control/40-glitching-rolf "Glitching nel SAP di Rolf Electronics"){:width="100%"}](../../assets/control/40-glitching-rolf)
 
 https://www.reddit.com/r/beneater/comments/ggabgw/huge_instruction_eeprom_problems/
 
