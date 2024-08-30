@@ -218,25 +218,24 @@ Per quale motivo si parla di eccezioni? Sicuramente il Ring Counter è una di qu
 
 In effetti, nel SAP il caricamento dell'IR è sincrono con il Rising Edge del clock:
 
-[![Dettaglio Instruction Register del SAP](../../assets/control/40-cl-sap-ir-detail.png "Dettaglio Instruction Register del SAP"){:width="75%"}](../../assets/control/40-cl-sap-ir-detail.png)
+[![Dettaglio Instruction Register del SAP](../../assets/control/40-cl-sap-ir-detail.png "Dettaglio Instruction Register del SAP"){:width="66%"}](../../assets/control/40-cl-sap-ir-detail.png)
 
 Tale sincronia si ritrova anche nell'NQSAP:
 
-[![Dettaglio Instruction Register dell'NQSAP](../../assets/control/40-cl-nqsap-ir-detail.png "Dettaglio Instruction Register dell'NQSAP"){:width="75%"}](../../assets/control/40-cl-nqsap-ir-detail.png)
+[![Dettaglio Instruction Register dell'NQSAP](../../assets/control/40-cl-nqsap-ir-detail.png "Dettaglio Instruction Register dell'NQSAP"){:width="66%"}](../../assets/control/40-cl-nqsap-ir-detail.png)
 
 Quali sono le possibili conseguenze del caricamento dell'IR al Rising Edge del clock?
 
-Bisogna prendere in considerazione una proprietà delle EEPROM: durante il periodo di transizione, le uscite possono essere instabili, oscillando ("glitching") tra gli stati logici prima di stabilizzarsi sul valore corretto.
+Bisogna prendere in considerazione una proprietà delle EEPROM: quando l'indirizzo di ingresso cambia, le uscite possono diventare instabili, oscillando ("glitching") tra gli stati logici prima di assestarsi definitivamente sul valore corretto. Se il fenomeno non viene gestito, i segnali spuri potrebbero generare risultati indesiderati, dagli impulsi di clock non voluti nel caso si usino meccanismi artificiali per gestire l'enable nei chip che non hanno un ingresso dedicato ([registro B](../alu/#lalu-dellnqsap) nell'ALU dell'NQSAP), fino all'attivazione contemporanea di più moduli in output sul bus, generando contenzioso e assorbimenti di corrente elevati.
 
 Nelle EEPROM come la <a href="https://ww1.microchip.com/downloads/en/DeviceDoc/doc0006.pdf" target="_blank">AT28C256</a>, il parametro che indica la durata dell'incertezza all'output è tipicamente chiamato "Address Access Time" o "t<sub>ACC</sub>" e indica il periodo che intercorre tra l'applicazione di un nuovo indirizzo di ingresso e il momento in cui i dati corretti sono disponibili sull'uscita, come visibile in figura:
 
-[![AC Read Waveforms EEPROM AT28C256](../../assets/control/40-28C256-read-waveform.png "AC Read Waveforms EEPROM AT28C256"){:width="75%"}](../../assets/control/40-28C256-read-waveform.png)
+[![AC Read Waveforms EEPROM AT28C256](../../assets/control/40-28C256-read-waveform.png "AC Read Waveforms EEPROM AT28C256"){:width="50%"}](../../assets/control/40-28C256-read-waveform.png)
 
-Ad esempio, un <a href="https://www.reddit.com/r/beneater/comments/f7gcvx/glitches_on_eeprom_datalines_when_their_adress/" target="_blank">thread di rolf-electronics</a> su Reddit mostra (nei primi 3 quadranti) il fenomeno, con dei segnali di output che, al momento del cambiamento di input delle EEPROM, mostrano delle oscillazioni significative.
+Ad esempio, un <a href="https://www.reddit.com/r/beneater/comments/f7gcvx/glitches_on_eeprom_datalines_when_their_adress/" target="_blank">thread di rolf-electronics</a> su Reddit evidenzia il fenomeno nei primi 3 quadranti della seguente immagine, con dei segnali di output che mostrano oscillazioni significative al momento del cambiamento di input delle EEPROM:
 
 [![Glitching nel SAP di Rolf Electronics](../../assets/control/40-glitching-rolf.png "Glitching nel SAP di Rolf Electronics"){:width="75%"}](../../assets/control/40-glitching-rolf.png)
 
-https://www.reddit.com/r/beneater/comments/ggabgw/huge_instruction_eeprom_problems/
 
 [![SAP computer - istruzione LDA](../../assets/control/40-wavedrom-sap-lda.png "SAP computer - istruzione LDA"){:width="100%"}](../../assets/control/40-wavedrom-sap-lda.png)
 
@@ -247,6 +246,7 @@ Il grafico mostra i primi cicli di clock di un'istruzione nel computer sap.
 
 
  e NQSAP . il ring counter cambia ad ogni del clock , mentre l'instruction register cambia a ogni age del cloud. tutti questi eventi modificano gli indirizzi di input delle EEPROME generano un momento di incertezza . per tutti gli output virgola che poi sono i segnali di controllo .
+
 per il computer SPA, questo non è tipicamente un problema , perché le istruzioni, anzi meglio dire gli step del SAP copiano i valori da un registro a un'altro, cioè leggono da 1245e scrivono su 173
 
 il glitching non causa problemi Perché il 173 carica nuovi valori quando il segnale di caricamento è attivo e il clock è nel momento del transizione da basso a alto, momento in cui i segnali sono stabilizzati e dunque non cè rischio dicaricare dati non corretti
