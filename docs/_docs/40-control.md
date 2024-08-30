@@ -224,9 +224,14 @@ Tale sincronia si ritrova anche nell'NQSAP:
 
 [![Dettaglio Instruction Register dell'NQSAP](../../assets/control/40-cl-nqsap-ir-detail.png "Dettaglio Instruction Register dell'NQSAP"){:width="75%"}](../../assets/control/40-cl-nqsap-ir-detail.png)
 
-Quali sono lÈ possibile conseguenze del caricamento dell'instaction register del clock ?
+Quali sono le possibili conseguenze del caricamento dell'IR al Rising Edge del clock?
 
-Cè una proprietà delle eprm da tenere in considerazione : nel momento in cui Si cambia l'indirizzo, l'output potrebbe non essere stabile per un certo periodo e generare il fenomeno del glitching.
+Bisogna prendere in considerazione una proprietà delle EEPROM: durante il periodo di transizione, le uscite possono essere instabili, oscillando tra gli stati logici prima di stabilizzarsi sul valore corretto.
+
+Nelle EEPROM come la <a href="https://ww1.microchip.com/downloads/en/DeviceDoc/doc0006.pdf" target="_blank">AT28C256</a>, il parametro che indica la durata dell'incertezza all'output è tipicamente chiamato "Address Access Time" o "t~ACC~" e indica il periodo che intercorre tra l'applicazione di un nuovo indirizzo di ingresso e il momento in cui i dati corretti sono disponibili sull'uscita, come visibile in figura:
+
+[![AC Read Waveforms EEPROM AT28C256](../../assets/control/40-28C256-read-waveform "AC Read Waveforms EEPROM AT28C256"){:width="50%"}](../../assets/control/40-28C256-read-waveform.png)
+
 
 Ad esempio, il thread di rolf-electronics su Reddit mostra (nei primi 3 quadranti) il fenomeno, con dei segnali di output che, al momento del cambiamento di input delle EEPROM, mostrano delle oscillazioni significative.
 
@@ -238,7 +243,11 @@ https://www.reddit.com/r/beneater/comments/ggabgw/huge_instruction_eeprom_proble
 
 *SAP computer - istruzione LDA*.
 
-Lo schema mostra i primi cicli di clock di un'istruzione nel computer sapENQSAP . il ring counter cambia ad ogni del clock , mentre l'instruction register cambia a ogni age del cloud. tutti questi eventi modificano gli indirizzi di input delle EEPROME generano un momento di incertezza . per tutti gli output virgola che poi sono i segnali di controllo .
+Il grafico mostra i primi cicli di clock di un'istruzione nel computer sap.
+
+
+
+ e NQSAP . il ring counter cambia ad ogni del clock , mentre l'instruction register cambia a ogni age del cloud. tutti questi eventi modificano gli indirizzi di input delle EEPROME generano un momento di incertezza . per tutti gli output virgola che poi sono i segnali di controllo .
 per il computer SPA, questo non è tipicamente un problema , perché le istruzioni, anzi meglio dire gli step del SAP copiano i valori da un registro a un'altro, cioè leggono da 1245e scrivono su 173
 
 il glitching non causa problemi Perché il 173 carica nuovi valori quando il segnale di caricamento è attivo e il clock è nel momento del transizione da basso a alto, momento in cui i segnali sono stabilizzati e dunque non cè rischio dicaricare dati non corretti
