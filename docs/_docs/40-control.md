@@ -206,7 +206,7 @@ Utilizzando una logica combinatoria, è possibile costruire il microcode da cari
 
 Nell'immagine si può osservare che le uscite del contatore controllano anche il demultiplexer, che viene utilizzato per visualizzare lo stato dell'RC. Anziché impiegare 16 LED (e due '138), un singolo LED "esteso" è pilotato dal pin più significativo del '161, che ha un valore pari ad 8: lo step correntemente in esecuzione sarà indicato dal LED acceso dal '138, al quale sommare 8 se il LED "esteso" è acceso.
 
-### Il clock
+### Il clock e il "glitching" delle EEPROM
 
 In generale, i momenti essenziali di un ciclo di clock in un computer sono due: il Rising Edge ↗ (passaggio del segnale dallo stato logico LO allo stato logico HI) e il Falling Edge ↘ (viceversa).
 
@@ -247,22 +247,22 @@ Il prossimo grafico mostra i segnali attivati nei quattro step che compongono il
 
 Si può notare che tutti i cambi di stato dei segnali avvengono in corrispondenza del Falling Edge del clock, che è il momento nel quale il Ring Counter modifica le proprie uscite e, di conseguenza, le EEPROM espongono una nuova Control Word.
 
-[![SAP computer - istruzione LDA ideale](../../assets/control/40-wavedrom-sap-lda-ideale.png "SAP computer - istruzione LDA ideale"){:width="100%"}](../../assets/control/40-wavedrom-sap-lda-ideale.png)
+[![SAP computer - istruzione LDA ideale](../../assets/control/40-wavedrom-sap-lda-ideale.png "SAP computer - istruzione LDA ideale"){:width="75%"}](../../assets/control/40-wavedrom-sap-lda-ideale.png)
 
 *SAP computer - istruzione LDA ideale*.
 
 Questo è quando accade in un mondo ideale.
 
-Andando ad aggiungere i segnali spuri dovuti al cambiamento degli indirizzi di ingresso delle EEPROM, il grafico cambia decisamente aspetto. Nel SAP e nell'NQSAP gli indirizzi sono modificati:
+Il grafico cambia decisamente aspetto andando ad aggiungere i segnali spuri dovuti al cambiamento degli indirizzi di ingresso delle EEPROM. Nel SAP e nell'NQSAP gli indirizzi sono modificati:
 
 - ad ogni Falling Edge del clock dal cambiamento delle uscite del Ring Counter (momenti 1, 5, 9, 13, 17)
 - al Rising Edge del Clock dal caricamento dell'istruzione nell'Instruction Register (momento 7 nello step 2).
 
 In tutti questi momenti di variazione degli indirizzi di ingresso delle EEPROM, i segnali in uscita sono instabili.
 
-[![SAP computer - istruzione LDA reale](../../assets/control/40-wavedrom-sap-lda-reale.png "SAP computer - istruzione LDA reale"){:width="100%"}](../../assets/control/40-wavedrom-sap-lda-reale.png)
+[![SAP computer - istruzione LDA reale](../../assets/control/40-wavedrom-sap-lda-reale.png "SAP computer - istruzione LDA reale"){:width="75%"}](../../assets/control/40-wavedrom-sap-lda-reale.png)
 
-Tutti questi segnali spuri generalmente non sono un problema per il SAP, perché le microistruzioni scrivono su registri attivati al Rising Edge, quando i segnali hanno avuto tempo a sufficienza per stabilizzarsi. Ad esempio, il glitching del segnale MI non è fonte di problemi, perché il 173 memorizza nuovi valori con il segnale attivo **e** il Rising Edge, cioè quando MI è ormai stabile e non c'è rischio di caricare dati non corretti.
+Tutti questi segnali spuri generalmente non sono un problema per il SAP, perché le microistruzioni scrivono su registri <a href="https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf" target="_blank">74LS173</a> attivati al Rising Edge, quando i segnali hanno avuto tempo a sufficienza per stabilizzarsi. Ad esempio, il glitching del segnale MI non è fonte di problemi, perché il 173 memorizza nuovi valori con il segnale attivo **e** il Rising Edge, cioè quando MI è ormai stabile e non c'è rischio di caricare dati non corretti.
 
 da aggiungere:  In addition, the SAP-1 also drives address lines with the outputs of the Flags Register, so this causes uncertainty on any rising edge that modifies the flags.
 
