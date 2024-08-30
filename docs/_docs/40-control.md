@@ -226,7 +226,7 @@ Tale sincronia si ritrova anche nell'NQSAP:
 
 Quali sono le possibili conseguenze del caricamento dell'IR al Rising Edge del clock?
 
-Bisogna prendere in considerazione una proprietà delle EEPROM: quando l'indirizzo di ingresso cambia, le uscite possono diventare instabili, oscillando ("glitching") tra gli stati logici prima di assestarsi definitivamente sul valore corretto. Se il fenomeno non viene gestito, i segnali spuri potrebbero generare risultati indesiderati, dagli impulsi di clock non voluti nel caso si usino meccanismi artificiali per gestire l'enable nei chip che non hanno un ingresso dedicato ([registro B](../alu/#lalu-dellnqsap) nell'ALU dell'NQSAP), fino all'attivazione contemporanea di più moduli in output sul bus, generando contenzioso e assorbimenti di corrente elevati.
+Bisogna prendere in considerazione una proprietà delle EEPROM: quando l'indirizzo di ingresso cambia, le uscite possono diventare instabili, oscillando ("glitching") tra gli stati logici prima di assestarsi definitivamente sul valore corretto. Se il fenomeno non viene gestito, i segnali spuri possono generare risultati indesiderati, dagli impulsi di clock non voluti nel caso si usino gate per gestire l'enable nei chip che ne sono sprovvisti (vedi il [registro B](../alu/#lalu-dellnqsap) nell'ALU dell'NQSAP), fino all'attivazione contemporanea di più moduli in output sul bus, generando contenzioso e assorbimenti di corrente elevati.
 
 Nelle EEPROM come la <a href="https://ww1.microchip.com/downloads/en/DeviceDoc/doc0006.pdf" target="_blank">AT28C256</a>, il parametro che indica la durata dell'incertezza all'output è tipicamente chiamato "Address Access Time" o "t<sub>ACC</sub>" e indica il periodo che intercorre tra l'applicazione di un nuovo indirizzo di ingresso e il momento in cui i dati corretti sono disponibili sull'uscita, come visibile in figura:
 
@@ -236,14 +236,24 @@ Ad esempio, un <a href="https://www.reddit.com/r/beneater/comments/f7gcvx/glitch
 
 [![Glitching nel SAP di Rolf Electronics](../../assets/control/40-glitching-rolf.png "Glitching nel SAP di Rolf Electronics"){:width="75%"}](../../assets/control/40-glitching-rolf.png)
 
+Ora, qual è la relazione tra il glitching e il caricamento dell'Instruction Register al Rising Edge del clock?
 
-[![SAP computer - istruzione LDA](../../assets/control/40-wavedrom-sap-lda.png "SAP computer - istruzione LDA"){:width="100%"}](../../assets/control/40-wavedrom-sap-lda.png)
+Il prossimo grafico mostra i segnali in gioco nei 4 cicli di clock dell'istruzione LDA del SAP. Quanto accade è abbastanza simile alla spiegazione dell'istruzione [LDA#$94 dell'NQSAP](#ring-counter-e-microistruzioni):
 
-*SAP computer - istruzione LDA*.
+1) PC esposto sul bus e caricamento del MAR
+2) RAM esposta sul bus, caricamento dell'IR e incremento del PC
+3) IR esposto sul bus, caricamento del MAR
+4) RAM esposta sul bus, caricamento di A
 
-Il grafico mostra i primi cicli di clock di un'istruzione nel computer sap.
+[![SAP computer - istruzione LDA ideale](../../assets/control/40-wavedrom-sap-lda-ideale.png "SAP computer - istruzione LDA ideale"){:width="100%"}](../../assets/control/40-wavedrom-sap-lda-ideale.png)
 
+*SAP computer - istruzione LDA ideale*.
 
+Questo è quando accade in un mondo ideale.
+
+Andando ad aggiungere i segnali spuri dovuti al cambiamento degli indirizzi di ingresso delle EEPROM, il grafico cambia decisamente aspetto. Nel SAP e nell'NQSAP gli indirizzi sono modificati ad ogni Falling Edge del clock dal cambiamento delle uscite del Ring Counter (momenti 1, 5, 9, 13, 17) e al Rising Edge del Clock al momento 7 dal cambiamento delle uscite dell'Instruction Register, che corrisponde al caricamento dell'istruzione nell'Instruction Register.
+
+[![SAP computer - istruzione LDA reale](../../assets/control/40-wavedrom-sap-lda-reale.png "SAP computer - istruzione LDA reale"){:width="100%"}](../../assets/control/40-wavedrom-sap-lda-reale.png)
 
  e NQSAP . il ring counter cambia ad ogni del clock , mentre l'instruction register cambia a ogni age del cloud. tutti questi eventi modificano gli indirizzi di input delle EEPROME generano un momento di incertezza . per tutti gli output virgola che poi sono i segnali di controllo .
 
