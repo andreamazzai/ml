@@ -247,7 +247,7 @@ Il prossimo grafico mostra i segnali attivati nei quattro step che compongono il
 
 Si può notare che tutti i cambi di stato dei segnali avvengono in corrispondenza del Falling Edge del clock, che è il momento nel quale il Ring Counter modifica le proprie uscite e, di conseguenza, le EEPROM espongono una nuova Control Word.
 
-[![SAP computer - istruzione LDA ideale](../../assets/control/40-wavedrom-sap-lda-ideale.png "SAP computer - istruzione LDA ideale"){:width="75%"}](../../assets/control/40-wavedrom-sap-lda-ideale.png)
+[![SAP computer - istruzione LDA ideale](../../assets/control/40-wavedrom-sap-lda-ideale.png "SAP computer - istruzione LDA ideale"){:width="90%"}](../../assets/control/40-wavedrom-sap-lda-ideale.png)
 
 *SAP computer - istruzione LDA ideale*.
 
@@ -260,9 +260,9 @@ Il grafico cambia decisamente aspetto andando ad aggiungere i segnali spuri dovu
 
 In tutti questi momenti di variazione degli indirizzi di ingresso delle EEPROM, i segnali in uscita sono instabili.
 
-[![SAP computer - istruzione LDA reale](../../assets/control/40-wavedrom-sap-lda-reale.png "SAP computer - istruzione LDA reale"){:width="75%"}](../../assets/control/40-wavedrom-sap-lda-reale.png)
+[![SAP computer - istruzione LDA reale](../../assets/control/40-wavedrom-sap-lda-reale.png "SAP computer - istruzione LDA reale"){:width="90%"}](../../assets/control/40-wavedrom-sap-lda-reale.png)
 
-Tutti questi segnali spuri generalmente non sono un problema per il SAP, perché le microistruzioni scrivono su registri <a href="https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf" target="_blank">74LS173</a> attivati al Rising Edge, quando i segnali hanno avuto tempo a sufficienza per stabilizzarsi. Ad esempio, il glitching del segnale MI non è fonte di problemi, perché il 173 memorizza nuovi valori con il segnale attivo **e** il Rising Edge, cioè quando MI è ormai stabile e non c'è rischio di caricare dati non corretti.
+Tutti questi segnali spuri generalmente non sono un problema per il SAP, perché le microistruzioni scrivono su registri tipo D <a href="https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf" target="_blank">74LS173</a> attivati al Rising Edge, quando i segnali hanno avuto tempo a sufficienza per stabilizzarsi. Ad esempio, il glitching del segnale MI non è fonte di problemi, perché il 173 memorizza nuovi valori con il segnale attivo **e** il Rising Edge, cioè quando MI è ormai stabile e non c'è rischio di caricare dati non corretti.
 
 da aggiungere:  In addition, the SAP-1 also drives address lines with the outputs of the Flags Register, so this causes uncertainty on any rising edge that modifies the flags.
 
