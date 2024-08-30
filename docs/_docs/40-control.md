@@ -230,7 +230,7 @@ Bisogna prendere in considerazione una proprietà delle EEPROM: durante il perio
 
 Nelle EEPROM come la <a href="https://ww1.microchip.com/downloads/en/DeviceDoc/doc0006.pdf" target="_blank">AT28C256</a>, il parametro che indica la durata dell'incertezza all'output è tipicamente chiamato "Address Access Time" o "t~ACC~" e indica il periodo che intercorre tra l'applicazione di un nuovo indirizzo di ingresso e il momento in cui i dati corretti sono disponibili sull'uscita, come visibile in figura:
 
-[![AC Read Waveforms EEPROM AT28C256](../../assets/control/40-28C256-read-waveform "AC Read Waveforms EEPROM AT28C256"){:width="50%"}](../../assets/control/40-28C256-read-waveform.png)
+[![AC Read Waveforms EEPROM AT28C256](../../assets/control/40-28C256-read-waveform.png "AC Read Waveforms EEPROM AT28C256"){:width="50%"}](../../assets/control/40-28C256-read-waveform.png)
 
 
 Ad esempio, il thread di rolf-electronics su Reddit mostra (nei primi 3 quadranti) il fenomeno, con dei segnali di output che, al momento del cambiamento di input delle EEPROM, mostrano delle oscillazioni significative.
