@@ -260,8 +260,6 @@ Il grafico cambia decisamente aspetto andando ad aggiungere i segnali spuri dovu
 
 In tutti questi momenti di variazione degli indirizzi di ingresso delle EEPROM, i segnali in uscita sono instabili.
 
-![Alt text](image.png)
-
 [![SAP computer - istruzione LDA reale](../../assets/control/40-wavedrom-sap-lda-reale.png "SAP computer - istruzione LDA reale"){:width="90%"}](../../assets/control/40-wavedrom-sap-lda-reale.png)
 
 Tutti questi segnali spuri generalmente non sono un problema per il SAP, perché le microistruzioni scrivono su registri tipo D <a href="https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf" target="_blank">74LS173</a> attivati al Rising Edge, quando i segnali hanno avuto tempo a sufficienza per stabilizzarsi. Ad esempio, il glitching di MI non è fonte di problemi, perché il '173 memorizza nuovi valori con MI attivo ***e*** il Rising Edge del clock, cioà quando il segnale è ormai stabile e non c'è rischio di caricare dati non corretti.
