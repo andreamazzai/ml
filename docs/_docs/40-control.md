@@ -240,7 +240,11 @@ Ad esempio, un <a href="https://www.reddit.com/r/beneater/comments/f7gcvx/glitch
 
 Ora, qual è la relazione tra il glitching e il caricamento dell'Instruction Register al Rising Edge del clock?
 
-Il grafico seguente mostra i fronti di salita e di discesa dei segnali di controllo attivati nei quattro step dell'istruzione LDA del SAP. I tempi di assestamento delle EEPROM sono colorati quando il microcode richiede un cambiamento dello stato del segnale, mentre quelli segnati in grigio indicano tutti gli altri momenti di glitching*.
+Il grafico seguente mostra i fronti di salita e di discesa dei segnali di controllo attivati nei quattro step dell'istruzione LDA del SAP.
+
+I colori indicano che il glitching è innescato da un cambiamento intenzionale, cioè dal microcode che modifica volutamente lo stato di un determinato segnale. Le aree grigie, invece, rappresentano il glitching di altri segnali non modificati dalla microistruzione corrente.
+
+Detto in altre parole, il fenomeno si manifesta su tutti i segnali di controllo, sia quelli variati di proposito, sia quelli che non vengono modificati nello step corrente.
 
 Nel SAP (e nell'NQSAP) le variazioni degli indirizzi di ingresso delle EEPROM avvengono:
 
