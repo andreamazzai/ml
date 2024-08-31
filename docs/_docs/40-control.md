@@ -240,17 +240,14 @@ Ad esempio, un <a href="https://www.reddit.com/r/beneater/comments/f7gcvx/glitch
 
 Ora, qual è la relazione tra il glitching e il caricamento dell'Instruction Register al Rising Edge del clock?
 
-Il prossimo grafico mostra i fronti di salita e di discesa dei segnali di controllo attivati nei quattro step dell'istruzione LDA del SAP. I tempi di assestamento delle EEPROM sono colorati quando il microcode richiede un cambiamento dello stato del segnale, mentre quelli segnati in grigio indicano tutti gli altri momenti di glitching.
+Il prossimo grafico mostra i fronti di salita e di discesa dei segnali di controllo attivati nei quattro step dell'istruzione LDA del SAP. I tempi di assestamento delle EEPROM sono colorati quando il microcode richiede un cambiamento dello stato del segnale, mentre quelli segnati in grigio indicano tutti gli altri momenti di glitching*.
 
-Bisogna far notare che in realtà anche tutti gli altri segnali di controllo del computer sono soggetti a questo fenomeno , anche se non è indicati nel grafico.
+Nel SAP (e nell'NQSAP) le variazioni degli indirizzi di ingresso delle EEPROM avvengono:
 
-SEGNALI **DI CONTROLLO**
+- ad ogni Falling Edge del clock come conseguenza del cambiamento delle uscite del Ring Counter (momenti 1, 5, 9, 13, 17)
+- al Rising Edge del Clock per il caricamento dell'istruzione nell'Instruction Register (momento 7 nello step 2).
 
-Il grafico cambia decisamente aspetto andando ad aggiungere i segnali spuri dovuti al cambiamento degli indirizzi di ingresso delle EEPROM, che nel SAP e nell'NQSAP avvengono:
-
-- ad ogni Falling Edge del clock dal cambiamento delle uscite del Ring Counter (momenti 1, 5, 9, 13, 17)
-- al Rising Edge del Clock dal caricamento dell'istruzione nell'Instruction Register (momento 7 nello step 2).
-
+*Bisogna notare che in realtà anche tutti gli altri segnali di controllo del computer sono soggetti a questo fenomeno, anche se non indicati nel grafico.
 
 Quanto accade è abbastanza simile alla spiegazione dell'istruzione [LDA #$94](#ring-counter-e-microistruzioni) dell'NQSAP:
 
@@ -259,13 +256,14 @@ Quanto accade è abbastanza simile alla spiegazione dell'istruzione [LDA #$94](#
 3. IR esposto sul bus (IO), caricamento del MAR (MI)
 4. RAM esposta sul bus (RO), caricamento di A (AI)
 
-Come visto in precedenza, tutti i cambi di stato dei segnali avvengono in corrispondenza del Falling Edge del clock, che è il momento nel quale il Ring Counter modifica le proprie uscite e, di conseguenza, le EEPROM espongono una nuova Control Word.
 
 [![SAP computer - istruzione LDA](../../assets/control/40-wavedrom-sap-lda.png "SAP computer - istruzione LDA"){:width="90%"}](../../assets/control/40-wavedrom-sap-lda.png)
 
 *SAP computer - istruzione LDA*.
 
-![Alt text](image.png)
+Come visto in precedenza, tutti i cambi di stato dei segnali avvengono in corrispondenza del Falling Edge del clock, che è il momento nel quale il Ring Counter modifica le proprie uscite e, di conseguenza, le EEPROM espongono una nuova Control Word.
+
+A tutti questi, si aggiungono le variazioni non desiderate, spurie.
 
 In tutti questi momenti di variazione degli indirizzi di ingresso delle EEPROM, i segnali in uscita sono instabili.
 
