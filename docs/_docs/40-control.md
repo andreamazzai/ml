@@ -249,6 +249,10 @@ Nel SAP (e nell'NQSAP) le variazioni degli indirizzi di ingresso delle EEPROM av
 
 *Bisogna notare che in realtà anche tutti gli altri segnali di controllo del computer sono soggetti a questo fenomeno, anche se non indicati nel grafico.
 
+[![SAP computer - istruzione LDA](../../assets/control/40-wavedrom-sap-lda.png "SAP computer - istruzione LDA"){:width="90%"}](../../assets/control/40-wavedrom-sap-lda.png)
+
+*SAP computer - istruzione LDA*.
+
 Quanto accade è abbastanza simile alla spiegazione dell'istruzione [LDA #$94](#ring-counter-e-microistruzioni) dell'NQSAP:
 
 1. PC esposto sul bus (CO) e caricamento del MAR (MI)
@@ -256,18 +260,11 @@ Quanto accade è abbastanza simile alla spiegazione dell'istruzione [LDA #$94](#
 3. IR esposto sul bus (IO), caricamento del MAR (MI)
 4. RAM esposta sul bus (RO), caricamento di A (AI)
 
-
-[![SAP computer - istruzione LDA](../../assets/control/40-wavedrom-sap-lda.png "SAP computer - istruzione LDA"){:width="90%"}](../../assets/control/40-wavedrom-sap-lda.png)
-
-*SAP computer - istruzione LDA*.
-
 Come visto in precedenza, tutti i cambi di stato dei segnali avvengono in corrispondenza del Falling Edge del clock, che è il momento nel quale il Ring Counter modifica le proprie uscite e, di conseguenza, le EEPROM espongono una nuova Control Word.
 
 A tutti questi, si aggiungono le variazioni non desiderate, spurie.
 
 In tutti questi momenti di variazione degli indirizzi di ingresso delle EEPROM, i segnali in uscita sono instabili.
-
-[![SAP computer - istruzione LDA reale](../../assets/control/40-wavedrom-sap-lda-reale.png "SAP computer - istruzione LDA reale"){:width="90%"}](../../assets/control/40-wavedrom-sap-lda-reale.png)
 
 Tutti questi segnali spuri generalmente non sono un problema per il SAP, perché le microistruzioni scrivono su registri tipo D <a href="https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf" target="_blank">74LS173</a> attivati al Rising Edge, quando i segnali hanno avuto tempo a sufficienza per stabilizzarsi. Ad esempio, il glitching di MI non è fonte di problemi, perché il '173 memorizza nuovi valori con MI attivo ***e*** il contemporaneo Rising Edge del clock, cioè quando il segnale è ormai stabile e non c'è rischio di caricare dati non corretti. **(è corretto dire che il glitching inizia dopo il caricamento?)**
 
