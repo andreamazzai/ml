@@ -7,6 +7,8 @@ header:
   overlay_image: /assets/beam.png
   overlay_filter: 0.5
 ---
+## WORK IN PROGRESS - WORK IN PROGRESS - WORK IN PROGRESS
+
 ## BEAM 8-bit computer
 
 <!-- TLDR: vai subito alla [documentazione del BEAM 8-bit computer](https://andreamazzai.github.io/beam/) su GitHub Pages -->
@@ -70,7 +72,7 @@ A luglio 2023 ho cercato di ricomporre tutto ciò che avevo appreso e ho provato
 
 La fase costruttiva è iniziata a ottobre 2023 e si è conclusa nei primi giorni di maggio 2024. Il risultato è quello visibile in foto.
 
-In queste pagine si trovano analisi dei moduli dell'NQSAP, quanto ho imparato ed applicato nella realizzazione del BEAM, differenze tra i due sistemi, note, appunti e approfondimenti.
+In queste pagine si trovano analisi dei moduli dell'NQSAP, quanto ho imparato ed applicato nella realizzazione del BEAM, alcune differenze tra i due sistemi, qualche confronto anche con il SAP, note, appunti e approfondimenti.
 
 [![BEAM Breadboard Computer](assets/beam.png "BEAM breadboard computer"){:width="66%"}](assets/beam.png)
 
