@@ -5,6 +5,8 @@ excerpt: "Stack Pointer del BEAM computer"
 ---
 [![Stack Pointer del BEAM computer](../../assets/sp/70-beam-sp.png "Stack Pointer del BEAM computer"){:width="100%"}](../../assets/sp/70-beam-sp.png)
 
+## PLACEHOLDER - WORK TO BE STARTED SOON
+
 • Stack Pointer. Vedi '169 74LS169 4-bit Synchronous Binary Up-Down Counter. 
 • Forse con un unico Counter a 4 bit posso fare uno SP da 16 indirizzi e se volessi farlo più grande me ne servirebbero due.
 	• 05/01/2023 nota che Tom usa 8 bit… così forse da poter usare qualsiasi indirizzo all'interno dei 256 byte? ***

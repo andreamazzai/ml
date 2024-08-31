@@ -5,9 +5,9 @@ excerpt: "Per iniziare"
 ---
 [![Per iniziare](../../assets/ram/20-ram-beam.png "Per iniziare"){:width="100%"}](../../assets/ram/20-ram-beam.png)
 
-## Cosa devo includere in questa pagina?
-
 **NOTA: PLACEHOLDER - PLACEHOLDER - PLACEHOLDER**
+
+## Cosa devo includere in questa pagina?
 
 - Per esempio Il circuito che permette di leggere o scrivere su un bus a 8 bit
 - evidenziare che non ho utilizzato i condensatori collegati all'alimentazione di ogni chip

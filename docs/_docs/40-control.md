@@ -214,6 +214,8 @@ In generale, i momenti essenziali di un ciclo di clock in un computer sono due: 
 
 - Falling Edge: poiché ad ogni Rising Edge i componenti sequenziali caricano i dati in ingresso, si intuisce che è necessario trovare un momento *antecedente*, durante il quale settare la Control Word di tutti i moduli del sistema in modo che i dati siano presenti agli ingressi dei componenti col dovuto anticipo. Il Falling Edge si configura come il momento migliore per settare la Control Word; invertendo la fase del clock inviato al Ring Counter, si esegue la configurazione della Control Word - e dunque della microistruzione - proprio in corrispondenza del Falling Edge.
 
+\* I componenti sequenziali producono un output che dipende non solo dagli ingressi attuali, ma anche dallo stato precedente, a differenza dei circuiti combinatori che dipendono esclusivamente dagli ingressi presenti.
+
 Per quale motivo si parla di eccezioni? Sicuramente il Ring Counter è una di queste, per il motivo spiegato al punto precedente; l'Instruction Register *può* essere un'altra eccezione.
 
 In effetti, nel SAP il caricamento dell'IR è sincrono con il Rising Edge del clock:
@@ -253,7 +255,7 @@ Si può notare che tutti i cambi di stato dei segnali avvengono in corrispondenz
 
 Questo è quando accade in un mondo ideale.
 
-Il grafico cambia decisamente aspetto andando ad aggiungere i segnali spuri dovuti al cambiamento degli indirizzi di ingresso delle EEPROM. Nel SAP e nell'NQSAP gli indirizzi sono modificati:
+Il grafico cambia decisamente aspetto andando ad aggiungere i segnali spuri dovuti al cambiamento degli indirizzi di ingresso delle EEPROM, che nel SAP e nell'NQSAP avvengono:
 
 - ad ogni Falling Edge del clock dal cambiamento delle uscite del Ring Counter (momenti 1, 5, 9, 13, 17)
 - al Rising Edge del Clock dal caricamento dell'istruzione nell'Instruction Register (momento 7 nello step 2).
@@ -262,28 +264,17 @@ In tutti questi momenti di variazione degli indirizzi di ingresso delle EEPROM, 
 
 [![SAP computer - istruzione LDA reale](../../assets/control/40-wavedrom-sap-lda-reale.png "SAP computer - istruzione LDA reale"){:width="90%"}](../../assets/control/40-wavedrom-sap-lda-reale.png)
 
-Tutti questi segnali spuri generalmente non sono un problema per il SAP, perché le microistruzioni scrivono su registri tipo D <a href="https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf" target="_blank">74LS173</a> attivati al Rising Edge, quando i segnali hanno avuto tempo a sufficienza per stabilizzarsi. Ad esempio, il glitching di MI non è fonte di problemi, perché il '173 memorizza nuovi valori con MI attivo ***e*** il Rising Edge del clock, cioà quando il segnale è ormai stabile e non c'è rischio di caricare dati non corretti.
+Tutti questi segnali spuri generalmente non sono un problema per il SAP, perché le microistruzioni scrivono su registri tipo D <a href="https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf" target="_blank">74LS173</a> attivati al Rising Edge, quando i segnali hanno avuto tempo a sufficienza per stabilizzarsi. Ad esempio, il glitching di MI non è fonte di problemi, perché il '173 memorizza nuovi valori con MI attivo ***e*** il contemporaneo Rising Edge del clock, cioè quando il segnale è ormai stabile e non c'è rischio di caricare dati non corretti. **(è corretto dire che il glitching inizia dopo il caricamento?)**
 
-Possiamo riprendere ora la domanda segnalata in precedenza in questa sezione: Quali sono le possibili conseguenze del caricamento dell'IR al Rising Edge del clock?
+Possiamo riprendere ora la domanda fatta in precedenza in questa sezione: "Quali sono le possibili conseguenze del caricamento dell'IR al Rising Edge del clock?"
 
-Se nel computer sono presenti registri con il segnale di clock come unico controllo di input, il caricamento al Rising Edge può essere effettuato realizzando un LINK logico tra clock e segnale di caricamento dedicato.
-
-Ad esempio, nell'NQSAP abbiamo i registri D, X e Y realizzati con '574 e NOR.
+Se nel computer sono presenti registri che non dispongono di un segnale di Enable, il caricamento al Rising Edge può essere effettuato realizzando un AND logico tra clock e segnale di caricamento dedicato.
 
 
+
+Ad esempio, nell'NQSAP abbiamo i registri D, X e Y realizzati con '574 e NOR. **non è vero, non è l'esempio giusto**
 
 Se il fenomeno non viene gestito, i segnali spuri possono generare risultati indesiderati, dagli impulsi di clock non voluti nel caso si usino gate per gestire l'enable nei chip che ne sono sprovvisti (vedi il [registro B](../alu/#lalu-dellnqsap) nell'ALU dell'NQSAP), fino all'attivazione contemporanea di più 
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -317,7 +308,6 @@ Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF d
 
 ---
 
-\* I componenti sequenziali producono un output che dipende non solo dagli ingressi attuali, ma anche dallo stato precedente, a differenza dei circuiti combinatori che dipendono esclusivamente dagli ingressi presenti.
 
 È importante sottolineare che la configurazione delle operazioni di lettura e scrittura da parte della Control Word segue tempi diversi. Al Falling Edge del clock:
 

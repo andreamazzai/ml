@@ -3,6 +3,8 @@ title: "Aritmetica binaria"
 permalink: /docs/math/
 excerpt: "Aritmetica binaria"
 ---
+## WORK IN PROGRESS - WORK IN PROGRESS - WORK IN PROGRESS
+
 ## Concetti importanti
 
 Studiando il funzionamento dei moduli Flag e ALU, avevo scoperto diverse mie lacune nell'aritmetica binaria:

@@ -3,7 +3,7 @@ title: "EEPROM Programmer"
 permalink: /docs/eeprom-programmer/
 excerpt: "EEPROM Programmer"
 ---
-## PLACEHOLDER - pagina non iniziata
+## PLACEHOLDER - PLACEHOLDER - PLACEHOLDER - pagina non iniziata
 
 
 ![Utilizzo del 74LS151 nell'NQSAP per il calcolo dell'Overflow con evidenza degli MSB di H, B e dell'ALU e degli ingressi di selezione dell'operazione IR-Q1 e IR-Q3.](../../assets/flags/30-flag-v-151.png){:width="50%"}
