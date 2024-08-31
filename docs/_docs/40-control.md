@@ -228,7 +228,7 @@ Tale sincronia si ritrova anche nell'NQSAP:
 
 Quali sono le possibili conseguenze del caricamento dell'IR al Rising Edge del clock?
 
-Bisogna prendere in considerazione una proprietà delle EEPROM: quando l'indirizzo di ingresso cambia, le uscite possono diventare instabili, oscillando ("glitching") tra gli stati logici prima di assestarsi definitivamente sul valore corretto. Se il fenomeno non viene gestito, quali impulsi di clock non voluti nel caso si usino gate per gestire l'enable nei chip che ne sono sprovvisti (come il [registro B](../alu/#lalu-dellnqsap) nell'ALU dell'NQSAP), oppure l'output contemporaneo di più moduli sul bus, generando contese e assorbimenti di corrente elevati.
+Bisogna prendere in considerazione una proprietà delle EEPROM: quando l'indirizzo di ingresso cambia, le uscite possono diventare instabili, oscillando ("glitching") tra gli stati logici prima di assestarsi definitivamente sul valore corretto. Se il fenomeno non viene gestito, quali impulsi di clock non voluti nel caso si usino gate per gestire l'enable nei chip che ne sono sprovvisti (come il [registro B](../alu/#lalu-dellnqsap) o i [registri D, X e Y](../dxy/) dell'NQSAP), oppure l'output contemporaneo di più moduli sul bus, generando contese e assorbimenti di corrente elevati.
 
 Nelle EEPROM come la <a href="https://ww1.microchip.com/downloads/en/DeviceDoc/doc0006.pdf" target="_blank">AT28C256</a>, il parametro che indica la durata dell'incertezza all'output è tipicamente chiamato "Address Access Time" o "t<sub>ACC</sub>" e indica il periodo che intercorre tra l'applicazione di un nuovo indirizzo di ingresso e il momento in cui i dati corretti sono disponibili sull'uscita, come visibile in figura:
 
@@ -240,16 +240,14 @@ Ad esempio, un <a href="https://www.reddit.com/r/beneater/comments/f7gcvx/glitch
 
 Ora, qual è la relazione tra il glitching e il caricamento dell'Instruction Register al Rising Edge del clock?
 
-Il grafico seguente mostra i fronti di salita e di discesa dei soli* segnali di controllo attivati nei quattro step dell'istruzione LDA del SAP. I colori indicano che il glitching è innescato da un cambiamento intenzionale, cioè dal microcode che modifica volutamente lo stato di un determinato segnale. Le aree grigie, invece, rappresentano il glitching dei segnali non modificati dalla microistruzione corrente.
+Il grafico seguente mostra i fronti di salita e di discesa dei soli segnali di controllo attivati nei quattro step dell'istruzione LDA del SAP. I colori indicano che il glitching è innescato da un cambiamento intenzionale, cioè dal microcode che modifica volutamente lo stato di un determinato segnale. Le aree grigie, invece, rappresentano il glitching dei segnali non modificati dalla microistruzione corrente.
 
-Il glitching dovuto alle variazioni degli indirizzi di ingresso delle EEPROM del SAP (ma è così anche dell'NQSAP) avviene:
+Il glitching dovuto alle variazioni degli indirizzi di ingresso delle EEPROM del SAP (ma è così anche nell'NQSAP) avviene:
 
 - ad ogni Falling Edge del clock come conseguenza del cambiamento delle uscite del Ring Counter (momenti 1, 5, 9, 13, 17)
-- al Rising Edge del Clock per il caricamento dell'istruzione nell'Instruction Register (momento 7 nello step 2).
+- al Rising Edge del Clock per il caricamento dell'istruzione nell'Instruction Register (momento 7 nello step 1).
 
-Risulta evidente che il fenomeno si manifesta su tutti i segnali di controllo, sia quelli variati di proposito, sia quelli che non vengono modificati nello step corrente.
-
-\* Bisogna segnalare che *tutti* i segnali di controllo del computer sono soggetti a questo fenomeno, anche se non indicati nel grafico.
+Risulta evidente che il fenomeno si manifesta su tutti i segnali di controllo, sia quelli variati di proposito, sia quelli che non vengono modificati nello step corrente. Come nota a latere, bisogna segnalare che *tutti* i segnali di controllo del computer sono soggetti a questo fenomeno, anche se non indicati nel grafico.
 
 [![SAP computer - istruzione LDA](../../assets/control/40-wavedrom-sap-lda.png "SAP computer - istruzione LDA"){:width="100%"}](../../assets/control/40-wavedrom-sap-lda.png)
 
@@ -268,9 +266,17 @@ Tutti questi segnali spuri generalmente non sono un problema per il SAP, perché
 
 Possiamo riprendere ora la domanda fatta in precedenza in questa sezione: "Quali sono le possibili conseguenze del caricamento dell'IR al Rising Edge del clock?"
 
-Se nel computer sono presenti registri che non dispongono di un segnale di Enable, il caricamento al Rising Edge può essere effettuato realizzando un AND logico tra clock e segnale di caricamento dedicato.
+Se nel computer sono presenti registri privi di un segnale di Enable, il caricamento al Rising Edge può essere effettuato implementando una logica combinatoria tra il clock e il segnale di controllo dedicato, .
 
-Ad esempio, nell'NQSAP abbiamo i registri D, X e Y realizzati con '574 e NOR. **non è vero, non è l'esempio giusto**
+Ad esempio, nell'NQSAP i [registri D, X e Y](../dxy) sono realizzati con <a href="https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf" target="_blank">74LS574</a> e porte NOR.
+
+at marker 7 there could be glitch due to the IR loading? /CLK is LOW and IR is just loaded; EEPROMs output still need to settle, this causes glitching on all signals (both the direct ones outputted from the EEPROMs and the ones getting demultiplexed by the 138's), including /WX, hence /CLK NOR /WX could generate unwanted side effects?
+
+Yes, OR-ing WX with anything can potentially get you a glitch there because the low signal of CLK won't do anything to gate the unknown state on the WX line. That's why I double buffered my IR so that it only changes the EEPROM address lines on the low clock transition.
+
+
+![Alt text](image.png)
+
 
 **da aggiungere**:  In addition, the SAP-1 also drives address lines with the outputs of the Flags Register, so this causes uncertainty on any rising edge that modifies the flags.
 
