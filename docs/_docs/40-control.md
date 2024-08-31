@@ -262,15 +262,17 @@ Prima di continuare, è interessante esaminare gli step di questa istruzione e r
 
 Dopo questa breve digressione, ritorniamo al discorso principale.
 
-Tutti questi segnali spuri generalmente non sono un problema per il SAP, perché le microistruzioni scrivono su registri tipo D <a href="https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf" target="_blank">74LS173</a> attivati al Rising Edge, quando i segnali di controllo hanno avuto tempo a sufficienza per stabilizzarsi. Ad esempio, il glitching di MI al momento 7 non è fonte di problemi, perché il '173 memorizza nuovi valori solo col segnale di Enable attivo ***e*** il clock al Rising Edge: al Rising Edge, il segnale si trova in uno stato stabile e non c'è rischio di caricare dati non corretti.
+Tutti questi segnali spuri generalmente non sono un problema per il SAP, perché le microistruzioni scrivono su registri tipo D <a href="https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf" target="_blank">74LS173</a> attivati al Rising Edge, cioè quando i segnali di controllo hanno avuto tempo a sufficienza per stabilizzarsi. Ad esempio, il glitching di MI al momento 7 non è fonte di problemi, perché il '173 memorizza nuovi valori solo col segnale di Enable attivo ***e*** il Rising Edge del clock: in questo momento, il segnale si trova in uno stato stabile e non c'è rischio di caricare dati non corretti.
 
-Possiamo riprendere ora la domanda fatta in precedenza in questa sezione: "Quali sono le possibili conseguenze del caricamento dell'IR al Rising Edge del clock?"
+Possiamo ora riprendere la domanda fatta in precedenza in questa sezione: "Quali sono le possibili conseguenze del caricamento dell'IR al Rising Edge del clock?"
 
-Se nel computer sono presenti registri privi di un segnale di Enable, il caricamento al Rising Edge può essere effettuato implementando una logica combinatoria tra il clock e il segnale di controllo dedicato, .
+Se nel computer sono presenti registri privi di un segnale di Enable, il caricamento di tali registri può essere effettuato implementando una logica combinatoria tra il clock e il segnale di controllo dedicato. Ad esempio, nell'NQSAP i [registri D, X e Y](../dxy) sono realizzati con <a href="https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf" target="_blank">74LS574</a> e porte NOR.
 
-Ad esempio, nell'NQSAP i [registri D, X e Y](../dxy) sono realizzati con <a href="https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf" target="_blank">74LS574</a> e porte NOR.
+[![Registro Y dell'NQSAP](../../assets/control/40-NQSAP-dxy-y.png "Registro Y dell'NQSAP"){:width="66%"}](../../assets/control/40-NQSAP-dxy-y.png)
 
-at marker 7 there could be glitch due to the IR loading? /CLK is LOW and IR is just loaded; EEPROMs output still need to settle, this causes glitching on all signals (both the direct ones outputted from the EEPROMs and the ones getting demultiplexed by the 138's), including /WX, hence /CLK NOR /WX could generate unwanted side effects?
+*Registro Y dell'NQSAP*.
+
+La risposta alla domanda è che il caricamento dell'Instruction Register al momento 7 genera un glitch sul segnale /WX, che potrebbe risultare in un errato caricamento di Y: il segnale di clock è alto, dunque /clock è basso e le EEPROM stanno ancora stabilizzando i segnali in uscita:
 
 Yes, OR-ing WX with anything can potentially get you a glitch there because the low signal of CLK won't do anything to gate the unknown state on the WX line. That's why I double buffered my IR so that it only changes the EEPROM address lines on the low clock transition.
 
