@@ -228,7 +228,7 @@ Tale sincronia si ritrova anche nell'NQSAP:
 
 Quali sono le possibili conseguenze del caricamento dell'IR al Rising Edge del clock?
 
-Bisogna prendere in considerazione una proprietà delle EEPROM: quando l'indirizzo di ingresso cambia, le uscite possono diventare instabili, oscillando ("glitching") tra gli stati logici prima di assestarsi definitivamente sul valore corretto. Se il fenomeno non viene gestito, quali impulsi di clock non voluti nel caso si usino gate per gestire l'enable nei chip che ne sono sprovvisti (come il [registro B](../alu/#lalu-dellnqsap) o i [registri D, X e Y](../dxy/) dell'NQSAP), oppure l'output contemporaneo di più moduli sul bus, generando contese e assorbimenti di corrente elevati.
+Bisogna prendere in considerazione una proprietà delle EEPROM: quando l'indirizzo di ingresso cambia, le uscite possono diventare instabili, oscillando ("glitching", problema tecnico) tra gli stati logici prima di assestarsi definitivamente sul valore corretto. Se il fenomeno non viene gestito, possono verificarsi effetti collaterali indesiderati, quali impulsi di clock non voluti nel caso si usino gate per gestire l'enable nei chip che ne sono sprovvisti (come il [registro B](../alu/#lalu-dellnqsap) o i [registri D, X e Y](../dxy/) dell'NQSAP), oppure l'output contemporaneo di più moduli sul bus, generando contese e assorbimenti di corrente elevati.
 
 Nelle EEPROM come la <a href="https://ww1.microchip.com/downloads/en/DeviceDoc/doc0006.pdf" target="_blank">AT28C256</a>, il parametro che indica la durata dell'incertezza all'output è tipicamente chiamato "Address Access Time" o "t<sub>ACC</sub>" e indica il periodo che intercorre tra l'applicazione di un nuovo indirizzo di ingresso e il momento in cui i dati corretti sono disponibili sull'uscita, come visibile in figura:
 
@@ -272,12 +272,19 @@ Se nel computer sono presenti registri privi di un segnale di Enable, il caricam
 
 *Registro Y dell'NQSAP*.
 
-La risposta alla domanda è che il caricamento dell'Instruction Register al momento 7 genera un glitch sul segnale /WX, che potrebbe risultare in un errato caricamento di Y: il segnale di clock è alto, dunque /clock è basso e le EEPROM stanno ancora stabilizzando i segnali in uscita:
+La risposta alla domanda è che il caricamento dell'Instruction Register al momento 7 genera un glitch sul segnale /WY, che potrebbe causare un errato caricamento di Y. Questo accade perché l'operazione NOR tra il clock invertito e un segnale di controllo rende l'output della NOR dipendente da quest'ultimo segnale. Tuttavia, poiché le EEPROM stanno ancora stabilizzando i segnali in uscita, l'output della NOR può risultare instabile, portando a un caricamento indesiderato di Y.
+
+[![Registro Y dell'NQSAP](../../assets/control/40-nqsap-ldy.png "Registro Y dell'NQSAP"){:width="66%"}](../../assets/control/40-nqsap-ldy.png)
+
+*Glitching all'istruzione LDY nell'NQSAP*.
+
+![Alt text](image-1.png)
+
+il caricamento dell'Instruction Register al momento 7 genera un glitch sul segnale /WY, che potrebbe risultare in un errato caricamento di Y: l'operazione NOR tra un segnale /clock basso ed un altro segnale comporta che l'output dipende da quest'altro segnale, che, poiché le EEPROM stanno ancora stabilizzando i segnali in uscita, può generare un output indesiderato e un caricamento indesiderato del registro.
 
 Yes, OR-ing WX with anything can potentially get you a glitch there because the low signal of CLK won't do anything to gate the unknown state on the WX line. That's why I double buffered my IR so that it only changes the EEPROM address lines on the low clock transition.
 
 
-![Alt text](image.png)
 
 
 **da aggiungere**:  In addition, the SAP-1 also drives address lines with the outputs of the Flags Register, so this causes uncertainty on any rising edge that modifies the flags.
