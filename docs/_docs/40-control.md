@@ -234,28 +234,26 @@ Nelle EEPROM come la <a href="https://ww1.microchip.com/downloads/en/DeviceDoc/d
 
 [![AC Read Waveforms EEPROM AT28C256](../../assets/control/40-28C256-read-waveform.png "AC Read Waveforms EEPROM AT28C256"){:width="50%"}](../../assets/control/40-28C256-read-waveform.png)
 
-Ad esempio, un <a href="https://www.reddit.com/r/beneater/comments/f7gcvx/glitches_on_eeprom_datalines_when_their_adress/" target="_blank">thread di rolf-electronics</a> su Reddit evidenzia il fenomeno nei primi 3 quadranti della seguente immagine, con dei segnali di output che mostrano oscillazioni significative al momento del cambiamento degli input delle EEPROM:
+Ad esempio, un <a href="https://www.reddit.com/r/beneater/comments/f7gcvx/glitches_on_eeprom_datalines_when_their_adress/" target="_blank">thread su Reddit</a> di rolf-electronics evidenzia il fenomeno nei primi 3 quadranti della seguente immagine, con dei segnali di output che mostrano oscillazioni significative al momento del cambiamento degli input delle EEPROM:
 
 [![Glitching nel SAP di Rolf Electronics](../../assets/control/40-glitching-rolf.png "Glitching nel SAP di Rolf Electronics"){:width="66%"}](../../assets/control/40-glitching-rolf.png)
 
 Ora, qual è la relazione tra il glitching e il caricamento dell'Instruction Register al Rising Edge del clock?
 
-Il grafico seguente mostra i fronti di salita e di discesa dei segnali di controllo attivati nei quattro step dell'istruzione LDA del SAP.
-
-I colori indicano che il glitching è innescato da un cambiamento intenzionale, cioè dal microcode che modifica volutamente lo stato di un determinato segnale. Le aree grigie, invece, rappresentano il glitching di altri segnali non modificati dalla microistruzione corrente.
+Il grafico seguente mostra i fronti di salita e di discesa dei segnali di controllo attivati nei quattro step dell'istruzione LDA del SAP. I colori indicano che il glitching è innescato da un cambiamento intenzionale, cioè dal microcode che modifica volutamente lo stato di un determinato segnale. Le aree grigie, invece, rappresentano il glitching di altri segnali non modificati dalla microistruzione corrente.
 
 Detto in altre parole, il fenomeno si manifesta su tutti i segnali di controllo, sia quelli variati di proposito, sia quelli che non vengono modificati nello step corrente.
 
-Nel SAP (e nell'NQSAP) le variazioni degli indirizzi di ingresso delle EEPROM avvengono:
-
-- ad ogni Falling Edge del clock come conseguenza del cambiamento delle uscite del Ring Counter (momenti 1, 5, 9, 13, 17)
-- al Rising Edge del Clock per il caricamento dell'istruzione nell'Instruction Register (momento 7 nello step 2).
-
-*Bisogna notare che in realtà anche tutti gli altri segnali di controllo del computer sono soggetti a questo fenomeno, anche se non indicati nel grafico.
+Bisogna infine segnalare che *tutti* i segnali di controllo del computer sono soggetti a questo fenomeno, anche se non indicati nel grafico.
 
 [![SAP computer - istruzione LDA](../../assets/control/40-wavedrom-sap-lda.png "SAP computer - istruzione LDA"){:width="90%"}](../../assets/control/40-wavedrom-sap-lda.png)
 
 *SAP computer - istruzione LDA*.
+
+Il glitching dovuto alle variazioni degli indirizzi di ingresso delle EEPROM del SAP (ma anche dell'NQSAP) avviene:
+
+- ad ogni Falling Edge del clock come conseguenza del cambiamento delle uscite del Ring Counter (momenti 1, 5, 9, 13, 17)
+- al Rising Edge del Clock per il caricamento dell'istruzione nell'Instruction Register (momento 7 nello step 2).
 
 Quanto accade è abbastanza simile alla spiegazione dell'istruzione [LDA #$94](#ring-counter-e-microistruzioni) dell'NQSAP:
 
