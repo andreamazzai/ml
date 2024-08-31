@@ -228,19 +228,19 @@ Tale sincronia si ritrova anche nell'NQSAP:
 
 Quali sono le possibili conseguenze del caricamento dell'IR al Rising Edge del clock?
 
-Bisogna prendere in considerazione una proprietà delle EEPROM: quando l'indirizzo di ingresso cambia, le uscite possono diventare instabili, oscillando ("glitching") tra gli stati logici prima di assestarsi definitivamente sul valore corretto. Se il fenomeno non viene gestito, i segnali spuri possono generare risultati indesiderati, dagli impulsi di clock non voluti nel caso si usino gate per gestire l'enable nei chip che ne sono sprovvisti (vedi il [registro B](../alu/#lalu-dellnqsap) nell'ALU dell'NQSAP), fino all'attivazione contemporanea di più moduli in output sul bus, generando contenzioso e assorbimenti di corrente elevati. **(spiegare meglio)**
+Bisogna prendere in considerazione una proprietà delle EEPROM: quando l'indirizzo di ingresso cambia, le uscite possono diventare instabili, oscillando ("glitching") tra gli stati logici prima di assestarsi definitivamente sul valore corretto. Se il fenomeno non viene gestito, quali impulsi di clock non voluti nel caso si usino gate per gestire l'enable nei chip che ne sono sprovvisti (come il [registro B](../alu/#lalu-dellnqsap) nell'ALU dell'NQSAP), oppure l'output contemporaneo di più moduli sul bus, generando contese e assorbimenti di corrente elevati.
 
 Nelle EEPROM come la <a href="https://ww1.microchip.com/downloads/en/DeviceDoc/doc0006.pdf" target="_blank">AT28C256</a>, il parametro che indica la durata dell'incertezza all'output è tipicamente chiamato "Address Access Time" o "t<sub>ACC</sub>" e indica il periodo che intercorre tra l'applicazione di un nuovo indirizzo di ingresso e il momento in cui i dati corretti sono disponibili sull'uscita, come visibile in figura:
 
 [![AC Read Waveforms EEPROM AT28C256](../../assets/control/40-28C256-read-waveform.png "AC Read Waveforms EEPROM AT28C256"){:width="50%"}](../../assets/control/40-28C256-read-waveform.png)
 
-Ad esempio, un <a href="https://www.reddit.com/r/beneater/comments/f7gcvx/glitches_on_eeprom_datalines_when_their_adress/" target="_blank">thread di rolf-electronics</a> su Reddit evidenzia il fenomeno nei primi 3 quadranti della seguente immagine, con dei segnali di output che mostrano oscillazioni significative al momento del cambiamento di input delle EEPROM:
+Ad esempio, un <a href="https://www.reddit.com/r/beneater/comments/f7gcvx/glitches_on_eeprom_datalines_when_their_adress/" target="_blank">thread di rolf-electronics</a> su Reddit evidenzia il fenomeno nei primi 3 quadranti della seguente immagine, con dei segnali di output che mostrano oscillazioni significative al momento del cambiamento degli input delle EEPROM:
 
 [![Glitching nel SAP di Rolf Electronics](../../assets/control/40-glitching-rolf.png "Glitching nel SAP di Rolf Electronics"){:width="66%"}](../../assets/control/40-glitching-rolf.png)
 
 Ora, qual è la relazione tra il glitching e il caricamento dell'Instruction Register al Rising Edge del clock?
 
-Il prossimo grafico mostra i fronti di salita e di discesa dei segnali di controllo attivati nei quattro step dell'istruzione LDA del SAP. I tempi di assestamento delle EEPROM sono colorati quando il microcode richiede un cambiamento dello stato del segnale, mentre quelli segnati in grigio indicano tutti gli altri momenti di glitching*.
+Il grafico seguente mostra i fronti di salita e di discesa dei segnali di controllo attivati nei quattro step dell'istruzione LDA del SAP. I tempi di assestamento delle EEPROM sono colorati quando il microcode richiede un cambiamento dello stato del segnale, mentre quelli segnati in grigio indicano tutti gli altri momenti di glitching*.
 
 Nel SAP (e nell'NQSAP) le variazioni degli indirizzi di ingresso delle EEPROM avvengono:
 
@@ -272,21 +272,9 @@ Possiamo riprendere ora la domanda fatta in precedenza in questa sezione: "Quali
 
 Se nel computer sono presenti registri che non dispongono di un segnale di Enable, il caricamento al Rising Edge può essere effettuato realizzando un AND logico tra clock e segnale di caricamento dedicato.
 
-
-
 Ad esempio, nell'NQSAP abbiamo i registri D, X e Y realizzati con '574 e NOR. **non è vero, non è l'esempio giusto**
 
-Se il fenomeno non viene gestito, i segnali spuri possono generare risultati indesiderati, dagli impulsi di clock non voluti nel caso si usino gate per gestire l'enable nei chip che ne sono sprovvisti (vedi il [registro B](../alu/#lalu-dellnqsap) nell'ALU dell'NQSAP), fino all'attivazione contemporanea di più 
-
-
-
-
-
-
-da aggiungere:  In addition, the SAP-1 also drives address lines with the outputs of the Flags Register, so this causes uncertainty on any rising edge that modifies the flags.
-
-
-
+**da aggiungere**:  In addition, the SAP-1 also drives address lines with the outputs of the Flags Register, so this causes uncertainty on any rising edge that modifies the flags.
 
 **Possibile riprendere qui il discorso dell'IR e del caricamento?** IR bufferizzato e anche questo in effetti deve essere pronto prima... etc etc etc
 
