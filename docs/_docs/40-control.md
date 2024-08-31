@@ -272,9 +272,9 @@ Se nel computer sono presenti registri privi di un segnale di Enable, il caricam
 
 *Registro Y dell'NQSAP*.
 
-La risposta alla domanda è che il caricamento dell'Instruction Register al momento 7 genera un glitch sul segnale /WY, che potrebbe causare un errato caricamento di Y. Questo accade perché l'operazione NOR tra il clock invertito e un segnale di controllo rende l'output della NOR dipendente da quest'ultimo segnale. Tuttavia, poiché le EEPROM stanno ancora stabilizzando i segnali in uscita, l'output della NOR può risultare instabile, portando a un caricamento indesiderato di Y.
+La risposta alla domanda è che il caricamento dell'Instruction Register al momento 7 genera un glitch sul segnale /WY, che potrebbe causare un caricamento indesiderato di Y. Questo accade perché l'operazione NOR tra il clock invertito e /WY rende l'output della NOR dipendente da quest'ultimo segnale. Conseguentemente al caricamento dell'IR, le EEPROM stanno ancora stabilizzando i segnali in uscita e l'output della NOR può risultare instabile, portando a un possibile caricamento non voluto di Y.
 
-[![Registro Y dell'NQSAP](../../assets/control/40-nqsap-ldy.png "Registro Y dell'NQSAP"){:width="66%"}](../../assets/control/40-nqsap-ldy.png)
+[![Registro Y dell'NQSAP](../../assets/control/40-nqsap-ldy.png "Registro Y dell'NQSAP"){:width="100%"}](../../assets/control/40-nqsap-ldy.png)
 
 *Glitching all'istruzione LDY nell'NQSAP*.
 
