@@ -323,8 +323,6 @@ Il momento del caricamento del contatore è visibile a pagina 11 del <a href="ht
 
 In pratica, il Ring Counter ritorna allo step iniziale.
 
-**NOTA BENE** mettere i nomi giusti di N o NI spiegando quale computer si sta analizzando
-
 Potrebbe sorgere una domanda: perché non collegare il segnale N del microcode direttamente al pin di Reset del contatore?
 
 Il reset del '161 è *asincrono*, che significa che è indipendente dal clock: di conseguenza, il contatore verrebbe resettato al Falling Edge nel momento stesso dell'impostazione della Control Word, non permettendo il completamento dello step al Rising Edge!
@@ -375,71 +373,64 @@ Riassumendo:
 
 Notare che i segnali di uscita dei '138 realmente utilizzabili sono 30 e non 32, perché il microcode deve prevedere situazioni in cui nessun registro pilotato deve essere attivo. Ad esempio, un output 0000.0000 della prima EEPROM attiverà i pin D0 del primo e del terzo demultiplexer: poiché entrambi i pin sono scollegati, sarà sufficiente impostare l'output sulla prima EEPROM a 0x00 per evitare l'attivazione di qualsiasi registro gestito dai '138.
 
-
-## WORK IN PROGRESS HEREAFTER
-
-## Riepilogo dei segnali dell'NQSAP e del BEAM
+## Riepilogo dei segnali di controllo dell'NQSAP e del BEAM
 
 | NQSAP  | BEAM     | Descrizione                                                                                           |
 | ------ | -------- | -----------                                                                                           |
-| C0-C1  | C0-C1    | Utilizzati per determinare se il Carry da salvare nel Flag Register debba provenire dal Carry Output dell'ALU (operazioni aritmetice) o da H (operazioni di scorrimento e rotazione);[vedere la spiegazione](../flags/#carry). |
+| C0-C1  | C0-C1    | Utilizzati per determinare se il Carry da salvare nel Flag Register debba provenire dal Carry Output dell'ALU (operazioni aritmetice) o da H (operazioni di scorrimento e rotazione); [vedere la spiegazione](../flags/#carry). |
 | CC-CS  | CC-CS    | Utilizzati per selezionare quale Carry presentare all'ALU e ad H (quello effettivamente presente nel registro dei Flag, oppure 0 o 1 fissi); [vedere la spiegazione](../flags/#il-carry-e-i-registri-h-e-alu). |
 | DY-DZ  | DX/Y-DZ  | DX/Y HI espone X, LO espone Y agli adder; DZ non espone X e Y agli adder; [vedere la spiegazione](../dyx/).     |
-| HL-HR  | HL-HR    | Definiscono l'operazione da eseguire sul registro H (caricamento parallelo, rotazione a destra o sinistra)      |
+| FC     | FC       | Caricamento del Flag C nel registro dei flag                                                          |
 | FN     | FN       | Caricamento del Flag N nel registro dei flag                                                          |
+| FB     | FS       | Origine dei Flag da caricare nel registro (computo oppure bus); [vedere la spiegazione](../flags/#componenti-e-funzionamento).   |
 | FV     | FV       | Caricamento del Flag V nel registro dei flag                                                          |
 | FZ     | FZ       | Caricamento del Flag Z nel registro dei flag                                                          |
-| FC     | FC       | Caricamento del Flag C nel registro dei flag                                                          |
-| FS     | FB       | Origine dei Flag da caricare nel registro (computo oppure bus); [vedere la spiegazione](../flags/#componenti-e-funzionamento).   |
-| SCE*   | SE       | Abilita la scrittura dello Stack Pointer                                                              |
-| SPI*   | SU/D     | Indica se lo Stack Pointer deve contare verso l'alto o verso il basso                                 |
-| LF     | LF       | ALU Force; [vedere la spiegazione](../alu/#istruzioni-di-comparazione)                                |
-| WI     | WIR      | Abilita la scrittura dell'Instruction Register                                                        |
-| N      | NI       | Next Instruction                                                                                      |
-| JE     | PCJ      | Carica il Program Counter                                                                             |
+| LF     | LF       | ALU Force; [vedere la spiegazione](../alu/#istruzioni-di-comparazione).                               |
+| HL-HR  | HL-HR    | Definiscono l'operazione da eseguire sul registro H (caricamento parallelo, rotazione dx o sx)        |
+| JE     | JE       | Attiva le istruzioni di salto condizionale; [vedere la spiegazione](../flags/#i-salti-condizionali).  |
+| N      | NI       | Next Instruction; [vedere la spiegazione](#lunghezza-delle-istruzioni).                               |
 | PI     | PCI      | Incrementa il Program Counter                                                                         |
-| RR     | RR       | Espone il contenuto della RAM sul bus                                                                 |
-| RA     | RA       | Espone il contenuto dell'accumulatore A sul bus                                                       |
-| RB     | RB       | Espone il contenuto del registro B sul bus                                                            |
-| RL     | RL       | Espone l'output della ALU sul bus                                                                     |
-| RS     | RS       |                                                                                                       |
-| RP     | RPC      | Espone il contenuto del Program Counter B sul bus                                                     |
-| RD     | RD       | Espone il contenuto del registro D sul bus                                                            |
-| RX     | RX       | Espone il contenuto del registro X sul bus                                                            |
-| RY     | RY       | Espone il contenuto del registro Y sul bus                                                            |
-| RH     | RH       | Espone il contenuto del registro H sul bus                                                            |
-| RF     | RF       |                                                                                                       |
+| RR     | RR       | Espone sul bus il contenuto della RAM                                                                 |
+| RA     | RA       | Espone sul bus il contenuto dell'accumulatore A                                                       |
+| RB     | RB       | Espone sul bus il contenuto del registro B                                                            |
+| RD     | RD       | Espone sul bus il contenuto del registro D                                                            |
+| RF     | RF       | Espone sul bus il contenuto del registro dei Flag                                                     |
+| RH     | RH       | Espone sul bus il contenuto del registro H                                                            |
+| RL     | RL       | Espone sul bus l'output della ALU                                                                     |
+| RP     | RPC      | Espone sul bus il contenuto del Program Counter                                                       |
+| RR     | RR       | Espone sul bus il contenuto della RAM                                                                 |
+| RS     | RS       | Espone sul bus il valore dello Stack Pointer                                                          |
+| RX     | RX       | Espone sul bus il contenuto del registro X                                                            |
+| RY     | RY       | Espone sul bus il contenuto del registro Y                                                            |
+| SCE*   | SE       | Attiva incremento/decremento dello Stack Pointer                                                      |
+| SPI*   | SU/D     | Indica se lo Stack Pointer deve contare verso l'alto o verso il basso                                 |
+| WA     | WA       | Scrive il contenuto del bus nell'accumulatore A                                                       |
+| WB     | WB       | Scrive il contenuto del bus nel registro B                                                            |
+| WD     | WD       | Scrive il contenuto del bus nel registro D                                                            |
+| WI     | WIR      | Scrive il contenuto del bus nell'Instruction Register                                                 |
+| WM     | WM       | Scrive il contenuto del bus nel Memory Address Register                                               |
+| WO     | WO       | Scrive il contenuto del bus nel registro di Output                                                    |
+| WR     | WR       | Scrive il contenuto del bus nella RAM                                                                 |
+| WS     | WS       | Scrive il contenuto del bus nello Stack Pointer                                                       |
+| WP     | WPC      | Scrive il contenuto del bus nel Program Counter                                                       |
+| WX     | WX       | Scrive il contenuto del bus nel registro X                                                            |
+| WY     | WY       | Scrive il contenuto del bus nel registro Y                                                            |
 
-| WR     | WR       | Scrive il contenuto del bus sulla RAM                                                                 |
-| WA     | WA       | Scrive il contenuto del bus sull'accumulatore A                                                       |
-| WB     | WB       | Scrive il contenuto del bus sul registro B                                                            |
-| WS     | WS       |                                                                                                       |
-| WP     | WPC      | Scrive il contenuto del bus sul Program Counter                                                       |
-| WD     | WD       | Scrive il contenuto del bus sul registro D                                                            |
-| WM     | WM       | Scrive il contenuto del bus sul Memory Address Register                                               |
-| WX     | WX       | Scrive il contenuto del bus sul registro X                                                            |
-| WY     | WY       | Scrive il contenuto del bus sul registro Y                                                            |
-| WO     | WO       | Scrive il contenuto del bus sul registro di Output                                                    |
+## WORK IN PROGRESS HEREAFTER
+
+HLT
+
+Riepilogo dei segnali NON di controllo?
+| JE     | PCJ      | Carica il Program Counter                                                                             |
+LDR-Active, LDR-CLK. CLK-Start
+RST
+prog
+H-Cin, H-Q7, H-Q0, B-Q7, ALU-Q7, ~{ALU-Cout}, ~{ALU-Cin}
+IR-M e S0-S3
 
 \* Deduzione
 
 • C0 e C1 **sono condivisi con C0 e C1**
-
-SE Stack Enable, vedi pagina Stack Pointer, condivisi con C0 e C1*** (chiamiamoli SU Stack Up e SD Stack Down) per definire se fare conteggio Up o Down
-
-• Se /LDR-ACTIVE viene attivato (LO), LDR-ACTIVE passa a HI e disattiva le ROM2 e ROM3 collegate via /OE.
-
-## Forse interessante da tenere, espandere, collegare ad altri paragrafi
-
-La realizzazione del comuter SAP mi ha permesso finalmente di capire cosa sia il microcode di un computer moderno.
-
-È piuttosto comune leggere ad esempio che è necessario aggiornare il bios dei server per indirizzare falle di sicurezza che sono state scoperte e che potrebbero essere utilizzate dagli hacker per ...
-
-Non capendo come potesse essere aggiornata una CPU, dal momento che si tratta di un componente non programmabile , non riuscivo a comprendere come fosse possibile arginare i problemi di sicurezza; con il microcode ho capito.
-
-## Fare spiega su EEPROM input e output
-
-Stavo anche iniziando a pensare come avrebbe funzionato la fase di Fetch con un Instruction Register che conteneva la sola istruzione e non operando istruzione + operando, come nel computer SAP**.
 
 Immaginavo che una istruzione di somma tra l'Accumulatore e il valore contenuto in una cella di memoria specifica avrebbe avuto questa sequenza:
 
@@ -452,31 +443,10 @@ Immaginavo che una istruzione di somma tra l'Accumulatore e il valore contenuto 
 |    4 | RO-BI-CE  | Leggo dalla RAM il valore contenuto nella locazione selezionata e lo posiziono nel registro B; incremento il Program Counter che punta così alla locazione che contiene la prossima istruzione |
 |    5 | EO-AI     | Metto in A il valore della somma A + B |
 
-Legenda dei segnali:
-
-| Segnale | Operazione              | Descrizione                                                       |
-| ------  | ----------              | -----------                                                       |
-| CO      | Counter Output          | Il contenuto del Program Counter viene esposto sul bus            |
-| MI      | MAR In                  | Il contenuto del bus viene caricato nel Memory Address Register   |
-| RO      | RAM Output              | Il contenuto della RAM viene esposto sul bus                      |
-| II      | Instruction Register In | Il contenuto del bus viene caricato nell'Instruction Register     |
-| CE      | Counter Enable          | Il Program Counter viene incrementato                             |
-| BI      | B Register In           | Il contenuto del bus viene caricato nel registro B                |
-| AI      | A Register In           | Il contenuto del bus viene caricato nel registro A                |
-| EO      | Sum Out                 | L'adder computa A+B e il suo risultato viene esposto sul bus      |
-
 ---
 MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE
 
 • Nota che  livello generale ha definito due fasi di Fetch F1 ed F2 che sono comuni a tutte le istruzioni e sono sempre ripetute.
-• NQSAP:
-○ 8 step compresi due di Fetch
-○ #define F1    RP | WM       // Instruction fetch step 1
-○ #define F2    RR | WI |PI   // Instruction fetch step 2
-• NQSAP-PCB:
-○ 16 step compresi due di Fetch
-○ #define F1    RP | WM | PI  // Instruction fetch step 1: instruction address from PC to MAR
-\#define F2    RR | WI       // Instruction fetch step 2: instruction from RAM to IR
 
 Per fare il microcode sto usando:
 • https://www.masswerk.at/6502/6502_instruction_set.html
@@ -531,9 +501,10 @@ TO DO: finire http://www.6502.org/tutorials/compare_beyond.html da "In fact, man
 • Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
 
 Altre referenze Tom Nisbet per Flags
-Question for all 74ls181 alu people on reddit led to the design of the oVerflow flag.
-• How to add a decremental and incremental circuit to the ALU ? on reddit inspired the idea to drive the PC load line from the flags instead of running the flags through the microcode.
-• Opcodes and Flag decoding circuit on reddit has a different approach to conditional jumps using hardware. Instead of driving the LOAD line of the PC, the circuit sits between the Instruction Register and the ROM and conditionally jams a NOP or JMP instruction to the microcode depending on the state of the flags. One interesting part of the design is that the opcodes of the jump instructions are arranged so that the flag of interest can be determined by bits from the IR. NQSAP already did something similar with the ALU select lines, so the concept was used again for the conditional jump select lines.
+
+- Question for all 74ls181 alu people on reddit led to the design of the oVerflow flag.
+- How to add a decremental and incremental circuit to the ALU ? on reddit inspired the idea to drive the PC load line from the flags instead of running the flags through the microcode.
+- Opcodes and Flag decoding circuit on reddit has a different approach to conditional jumps using hardware. Instead of driving the LOAD line of the PC, the circuit sits between the Instruction Register and the ROM and conditionally jams a NOP or JMP instruction to the microcode depending on the state of the flags. One interesting part of the design is that the opcodes of the jump instructions are arranged so that the flag of interest can be determined by bits from the IR. NQSAP already did something similar with the ALU select lines, so the concept was used again for the conditional jump select lines.
 
 ## Differenze tra Control Logic dell'NQSAP e del BEAM
 
@@ -548,7 +519,7 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 
 ## Note
 
-- Attenzione : nello schema cè una led bar collegata al ring counter, Una led bar collegata alle uscite a - quattro a 11del bass delle rom, ma probabilmente qui manca un pezzettino di led bar per arrivare ai 12 indirizzi totaliindirizzatidai 12 pine in più manca la led bar del registro delle istruzioni
+- Per motivi di spazio, nello schema del BEAM non sono presenti una LED bar che mostra l'output del contatore '161 (nella realizzazione, è affiancata alla LED bar connessa all'uscita dell'Instruction Register, etichetta "EEPROM Address" nell'immagine ad inizio pagina) e una LED bar inserita tra i due 74LS377 dell'IR (etichetta "Instruction Register").
 
 ## Link utili
 
@@ -557,8 +528,17 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 ## TO DO
 
 - aggiornare lo schema Kicad con le le bar a 8 segmenti e aggiornare questa pagina con lo schema aggiornato
-- Una volta fatta una sezione nella pagina ALU per descrivere il comportamento del registro hfare un link da questa pagina nella sezione che parla della mutua esclusività dei segnali di controllo.
-- Ho aggiunto anche una barra a led per mostrare l'indirizzo correntemente In input sulle EEPROM
+- Una volta fatta una sezione nella pagina ALU per descrivere il comportamento del registro H, fare un link da questa pagina nella sezione che parla della mutua esclusività dei segnali di controllo.
 - Schema della Control Logic e dell’Instruction Register del SAP computer --- l'immagine probabilmente risulta troppo piccola su schermi "normali"
 - da qualche parte devo descrivere o meglio linkare a masswerk per gli indirizzamenti del 6502.
 - Forse utile fare una tabella per vedere le similitudini tra istruzione LDA nel SAP e LDA94 nel NQSAP
+- da aggiungere: In addition, the SAP-1 also drives address lines with the outputs of the Flags Register, so this causes uncertainty on any rising edge that modifies the flags.
+- Se /LDR-ACTIVE viene attivato (LO), LDR-ACTIVE passa a HI e disattiva le ROM2 e ROM3 collegate via /OE.
+
+## Forse interessante da tenere, espandere, collegare ad altri paragrafi
+
+La realizzazione del SAP mi ha permesso finalmente di capire cosa sia il microcode di un computer moderno.
+
+È piuttosto comune leggere ad esempio che è necessario aggiornare il bios dei server per indirizzare falle di sicurezza che sono state scoperte e che potrebbero essere utilizzate dagli hacker per ...
+
+Non capendo come potesse essere aggiornata una CPU, dal momento che si tratta di un componente non programmabile , non riuscivo a comprendere come fosse possibile arginare i problemi di sicurezza; con il microcode ho capito.
