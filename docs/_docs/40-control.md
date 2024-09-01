@@ -354,11 +354,11 @@ I '138 presentano un solo output attivo alla volta; la configurazione dei pin di
 - una coppia dedicata ai segnali di lettura dai registri;
 - una coppia dedicata ai segnali di scrittura sui registri.
 
-Un effetto collaterale positivo in questo tipo di gestione sta nel fatto che risulterà impossibile attivare più di un registro Read contemporaneamente, evitando così possibili involontari cortocircuiti tra uscite allo stato HI e uscite allo stato LO di moduli diversi.
+Un effetto collaterale positivo in questo tipo di gestione sta nel fatto che risulterà impossibile attivare più letture contemporanee, prevenendo così il rischio di cortocircuiti involontari tra uscite allo stato HI e uscite allo stato LO di moduli diversi.
 
-Il ragionamento per le scritture è diverso, perché è invece realmente necessario essere in grado di scrivere su più registri contemporaneamente. Un operazione di questo tipo non causa contenzioso sul bus ed è utilizzata, ad esempio, dall'istruzione di somma ADC, che prevede uno step che scrive contemporaneamente sul registro A e sul registro dei Flag.
+Il ragionamento per le operazioni di scrittura è diverso, poiché è effettivamente necessario poter scrivere su più registri contemporaneamente. Un operazione di questo tipo non causa conflitti sul bus ed è utilizzata, ad esempio, dall'istruzione di somma ADC, che prevede uno step in cui i dati vengono scritti simultaneamente sia nel registro A sia nel registro dei Flag.
 
-Nello schema si può notare che tutti i registri del computer che *non hanno tra loro* la necessità di essere attivi contemporaneamente - tanto in lettura quanto in scrittura - sono indirizzati con i DEMUX.
+Nello schema si può notare che tutti i registri del computer che *non hanno tra loro* la necessità di essere attivi contemporaneamente - tanto in lettura quanto in scrittura - sono indirizzati con i demultiplexer.
 
 Sono invece indispensabili segnali di controllo provenienti direttamente dalle EEPROM in tre casi:
 
@@ -370,10 +370,10 @@ Sono invece indispensabili segnali di controllo provenienti direttamente dalle E
 
 Riassumendo:
 
-- una prima EEPROM gestisce quattro DEMUX che pilotano i segnali di *lettura* di tutti i registri, i segnali di *scrittura* di tutti i registri (eccetto H e Flag) ed alcuni altri segnali di controllo;
+- una prima EEPROM gestisce quattro demultiplexer che pilotano i segnali di *lettura* di tutti i registri, i segnali di *caricamento* di tutti i registri (eccetto H e Flag) ed alcuni altri segnali di controllo;
 - altre tre EEPROM gestiscono tutti gli altri segnali.
 
-Notare che i segnali di uscita dei '138 realmente utilizzabili sono 30 e non 32, perché il microcode deve prevedere casi nei quali nessuno dei registri pilotati dai '138 debba essere attivo; in questa circostanza, uno dei pin di output di ogni coppia di '138 dovrà essere scollegato. Ad esempio, nel caso dell'NQSAP, un output 0000.0000 della prima EEPROM attiverà i pin D0 del primo '138 e del terzo '138: entrambi i pin sono scollegati, dunque sarà sufficiente mettere in output 0x00 sulla prima EEPROM per non attivare alcuno tra tutti i registri gestiti dai '138.
+Notare che i segnali di uscita dei '138 realmente utilizzabili sono 30 e non 32, perché il microcode deve prevedere casi nei quali nessuno dei registri pilotati debba essere attivo; in questa circostanza, uno dei pin di output di ogni coppia di '138 dovrà essere scollegato. Ad esempio, nel caso dell'NQSAP, un output 0000.0000 della prima EEPROM attiverà i pin D0 del primo '138 e del terzo '138: entrambi i pin sono scollegati, dunque sarà sufficiente mettere in output 0x00 sulla prima EEPROM per non attivare alcuno tra tutti i registri gestiti dai '138.
 
 ## Tabella segnali dell'NQSAP e del BEAM
 
