@@ -194,7 +194,7 @@ Il legame tra decodifica ed esecuzione è molto stretto, perché in ogni momento
 
 Si intuisce che una CPU deve conoscere in ogni momento quale istruzione sia attualmente in esecuzione (ne riceviamo indicazioni dall'Instruction Register) e quale sia lo step correntemente attivo, per conoscere il quale ci viene in aiuto il Ring Counter. SAP, NQSAP e BEAM sviluppano il Ring Counter attorno a un contatore <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">74LS161</a>, in grado di contare da 0 a 15, e a un demultiplexer <a href="https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target="_blank">74LS138</a>, che ci aiuta ad avere riscontro visivo della microistruzione in esecuzione.
 
-Come detto poc’anzi, la combinazione generata dall'opcode contenuto nell’Instruction Register e dallo step esposto dal Ring Counter indirizza una locazione di memoria specifica nelle EEPROM: tale locazione di memoria contiene la Control Word.
+Come detto poc’anzi, la combinazione dell'opcode contenuto nell’Instruction Register e dallo step fornito dal Ring Counter indirizza una locazione di memoria specifica nelle EEPROM: tale locazione di memoria contiene la Control Word.
 
 [![Output di IR ed RC e input delle EEPROM del BEAM](../../assets/control/40-cl-ir-cr-beam.png "Output di IR ed RC e input delle EEPROM del BEAM"){:width="100%"}](../../assets/control/40-cl-ir-cr-beam.png)
 
@@ -373,53 +373,53 @@ Riassumendo:
 - una prima EEPROM gestisce quattro demultiplexer che pilotano i segnali di *lettura* di tutti i registri, i segnali di *caricamento* di tutti i registri (eccetto H e Flag) ed alcuni altri segnali di controllo;
 - altre tre EEPROM gestiscono tutti gli altri segnali.
 
-Notare che i segnali di uscita dei '138 realmente utilizzabili sono 30 e non 32, perché il microcode deve prevedere casi nei quali nessuno dei registri pilotati debba essere attivo; in questa circostanza, uno dei pin di output di ogni coppia di '138 dovrà essere scollegato. Ad esempio, nel caso dell'NQSAP, un output 0000.0000 della prima EEPROM attiverà i pin D0 del primo '138 e del terzo '138: entrambi i pin sono scollegati, dunque sarà sufficiente mettere in output 0x00 sulla prima EEPROM per non attivare alcuno tra tutti i registri gestiti dai '138.
+Notare che i segnali di uscita dei '138 realmente utilizzabili sono 30 e non 32, perché il microcode deve prevedere situazioni in cui nessun registro pilotato deve essere attivo. Ad esempio, un output 0000.0000 della prima EEPROM attiverà i pin D0 del primo e del terzo demultiplexer: poiché entrambi i pin sono scollegati, sarà sufficiente impostare l'output sulla prima EEPROM a 0x00 per evitare l'attivazione di qualsiasi registro gestito dai '138.
 
-## Tabella segnali dell'NQSAP e del BEAM
 
-È forse utile fare qui una tabella che riassume tutti i vari segnali utilizzati nel computer ?
+## WORK IN PROGRESS HEREAFTER
 
-| NQSAP  | BEAM     | Descrizione                                                                              |
-| ------ | -------- | -----------                                                                              |
-| C0-C1  | C0-C1    | Utilizzati per determinare se il Carry da salvare nel Flag Register debba provenire dal Carry Output dell'ALU (operazioni aritmetice) o da H (operazioni di scorrimento e rotazione) |
-| CC-CS  | CC-CS    | Utilizzati per selezionare quale Carry presentare all'ALU e ad H (quello effettivamente presente in Flag C, oppure 0 o 1 fisse); [vedere spiegazione](../flags/#il-carry-e-i-registri-h-e-alu) |
-| DY-DZ  | DX/Y-DZ  | DX/Y HI espone X, LO espone Y agli adder; DZ non espone X e Y agli adder                 |
+## Riepilogo dei segnali dell'NQSAP e del BEAM
+
+| NQSAP  | BEAM     | Descrizione                                                                                           |
+| ------ | -------- | -----------                                                                                           |
+| C0-C1  | C0-C1    | Utilizzati per determinare se il Carry da salvare nel Flag Register debba provenire dal Carry Output dell'ALU (operazioni aritmetice) o da H (operazioni di scorrimento e rotazione);[vedere la spiegazione](../flags/#carry). |
+| CC-CS  | CC-CS    | Utilizzati per selezionare quale Carry presentare all'ALU e ad H (quello effettivamente presente nel registro dei Flag, oppure 0 o 1 fissi); [vedere la spiegazione](../flags/#il-carry-e-i-registri-h-e-alu). |
+| DY-DZ  | DX/Y-DZ  | DX/Y HI espone X, LO espone Y agli adder; DZ non espone X e Y agli adder; [vedere la spiegazione](../dyx/).     |
 | HL-HR  | HL-HR    | Definiscono l'operazione da eseguire sul registro H (caricamento parallelo, rotazione a destra o sinistra)      |
-| FN     | FN       | Caricamento del Flag N nel registro dei flag                                             |
-| FV     | FV       | Caricamento del Flag V nel registro dei flag                                             |
-| FZ     | FZ       | Caricamento del Flag Z nel registro dei flag                                             |
-| FC     | FC       | Caricamento del Flag C nel registro dei flag                                             |
-| FS     | FB       | Selezione dell'origine dei Flag da caricare nel registro dei Flag (computo oppure RAM)   |
-| SCE*   | SE       | Abilita la scrittura dello Stack Pointer                                                 |
-| SPI*   | SU/D     | Indica se lo Stack Pointer deve contare verso l'alto (stato HI) o verso il basso (stato LO)           |
-| EO     | Sum Out  | L'adder computa A+B e il suo risultato viene esposto sul bus                             |
-| LF     | LF       |                                                                                          |
-| WI     | WIR      | Abilita la scrittura dell'Instruction Register                                           |
-| N      | NI       | Next Instruction                                                                         |
-| JE     | PCJ      | Carica il Program Counter                                                                |
-| PI     | PCI      | Incrementa il Program Counter                                                            |
-| RR     | RR       | Espone il contenuto della RAM sul bus                                                    |
-| RA     | RA       | Espone il contenuto dell'accumulatore A sul bus                                          |
-| RB     | RB       | Espone il contenuto del registro B sul bus                                               |
-| RL     | RL       | Espone l'output della ALU sul bus                                                        |
-| RS     | RS       |                                                             |
-| RP     | RPC      | Espone il contenuto del Program Counter B sul bus                                        |
-| RD     | RD       | Espone il contenuto del registro D sul bus                                               |
-| RX     | RX       | Espone il contenuto del registro X sul bus                                               |
-| RY     | RY       | Espone il contenuto del registro Y sul bus                                               |
-| RH     | RH       | Espone il contenuto del registro H sul bus                                               |
-| RF     | RF       |                                                                                          |
+| FN     | FN       | Caricamento del Flag N nel registro dei flag                                                          |
+| FV     | FV       | Caricamento del Flag V nel registro dei flag                                                          |
+| FZ     | FZ       | Caricamento del Flag Z nel registro dei flag                                                          |
+| FC     | FC       | Caricamento del Flag C nel registro dei flag                                                          |
+| FS     | FB       | Origine dei Flag da caricare nel registro (computo oppure bus); [vedere la spiegazione](../flags/#componenti-e-funzionamento).   |
+| SCE*   | SE       | Abilita la scrittura dello Stack Pointer                                                              |
+| SPI*   | SU/D     | Indica se lo Stack Pointer deve contare verso l'alto o verso il basso                                 |
+| LF     | LF       | ALU Force; [vedere la spiegazione](../alu/#istruzioni-di-comparazione)                                |
+| WI     | WIR      | Abilita la scrittura dell'Instruction Register                                                        |
+| N      | NI       | Next Instruction                                                                                      |
+| JE     | PCJ      | Carica il Program Counter                                                                             |
+| PI     | PCI      | Incrementa il Program Counter                                                                         |
+| RR     | RR       | Espone il contenuto della RAM sul bus                                                                 |
+| RA     | RA       | Espone il contenuto dell'accumulatore A sul bus                                                       |
+| RB     | RB       | Espone il contenuto del registro B sul bus                                                            |
+| RL     | RL       | Espone l'output della ALU sul bus                                                                     |
+| RS     | RS       |                                                                                                       |
+| RP     | RPC      | Espone il contenuto del Program Counter B sul bus                                                     |
+| RD     | RD       | Espone il contenuto del registro D sul bus                                                            |
+| RX     | RX       | Espone il contenuto del registro X sul bus                                                            |
+| RY     | RY       | Espone il contenuto del registro Y sul bus                                                            |
+| RH     | RH       | Espone il contenuto del registro H sul bus                                                            |
+| RF     | RF       |                                                                                                       |
 
-| WR     | WR       | Scrive il contenuto del bus sulla RAM                                                    |
-| WA     | WA       | Scrive il contenuto del bus sull'accumulatore A                                          |
-| WB     | WB       | Scrive il contenuto del bus sul registro B                                               |
-| WS     | WS       |                                                |
-| WP     | WPC      | Scrive il contenuto del bus sul Program Counter                                          |
-| WD     | WD       | Scrive il contenuto del bus sul registro D                                               |
-| WM     | WM       | Scrive il contenuto del bus sul Memory Address Register                                  |
-| WX     | WX       | Scrive il contenuto del bus sul registro X                                               |
-| WY     | WY       | Scrive il contenuto del bus sul registro Y                                               |
-| WO     | WO       | Scrive il contenuto del bus sul registro di Output                                       |
+| WR     | WR       | Scrive il contenuto del bus sulla RAM                                                                 |
+| WA     | WA       | Scrive il contenuto del bus sull'accumulatore A                                                       |
+| WB     | WB       | Scrive il contenuto del bus sul registro B                                                            |
+| WS     | WS       |                                                                                                       |
+| WP     | WPC      | Scrive il contenuto del bus sul Program Counter                                                       |
+| WD     | WD       | Scrive il contenuto del bus sul registro D                                                            |
+| WM     | WM       | Scrive il contenuto del bus sul Memory Address Register                                               |
+| WX     | WX       | Scrive il contenuto del bus sul registro X                                                            |
+| WY     | WY       | Scrive il contenuto del bus sul registro Y                                                            |
+| WO     | WO       | Scrive il contenuto del bus sul registro di Output                                                    |
 
 \* Deduzione
 
@@ -535,26 +535,20 @@ Question for all 74ls181 alu people on reddit led to the design of the oVerflow 
 • How to add a decremental and incremental circuit to the ALU ? on reddit inspired the idea to drive the PC load line from the flags instead of running the flags through the microcode.
 • Opcodes and Flag decoding circuit on reddit has a different approach to conditional jumps using hardware. Instead of driving the LOAD line of the PC, the circuit sits between the Instruction Register and the ROM and conditionally jams a NOP or JMP instruction to the microcode depending on the state of the flags. One interesting part of the design is that the opcodes of the jump instructions are arranged so that the flag of interest can be determined by bits from the IR. NQSAP already did something similar with the ALU select lines, so the concept was used again for the conditional jump select lines.
 
-[![Schema della control logic del BEAM](../../assets/control/40-control-logic-schema.png "Schema della control logic del BEAM"){:width="100%"}](../../assets/control/40-control-logic-schema.png)
+## Differenze tra Control Logic dell'NQSAP e del BEAM
 
-*Schema della control logic del BEAM.*
+La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato da Tom Nisbet nell'NQSAP.
 
-## Differenze tra Moduli Flag dell'NQSAP e del BEAM
+[![Schema della Control Logic del BEAM](../../assets/control/40-control-logic-schema.png "Schema della Control Logic del BEAM"){:width="100%"}](../../assets/control/40-control-logic-schema.png)
 
-La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato da Tom Nisbet nell'NQSAP. Una differenza sostanziale sta nell'Instruction Register, che è sviluppato in modalità bufferizzata, come fatto da Tom nell'NQSAP PCB per rimediare ai problemi di Glitching.
+*Schema della Control Logic del BEAM.*
 
-[![Schema logico del modulo Flag del computer BEAM](../../assets/flags/30-flag-beam-schematics.png "Schema logico del modulo Flag del computer BEAM"){:width="100%"}](../../assets/flags/30-flag-beam-schematics.png)
-
-*Schema logico del modulo Flag del computer BEAM.*
-
-- Le istruzioni di Branch Relative consumano molti cicli, perciò Tom ha aggiunto anche delle istruzioni di Jump Relative. Evidenziare che ho risolto questa problematica facendo un instruction register a 16 step
-
-- Come già discusso, il BEAM prevede 16 step per le microistruzioni anziché solo 8. Anche l'NQSAP-PCB, evoluzione dell'NQSAP, prevede 16 step.
+- Una differenza sostanziale sta nell'Instruction Register, che è sviluppato in modalità bufferizzata come fatto da Tom nell'NQSAP PCB per rimediare ai problemi di glitching.
+- Il BEAM prevede 16 step per le microistruzioni anziché solo 8. Le istruzioni di Branch Relative richiedono più degli 8 step disponibili nel'NQSAP, perciò Tom ha aggiunto delle istruzioni di Jump Relative in alternativa alle istruzioni di salto condizionale.
 
 ## Note
 
 - Attenzione : nello schema cè una led bar collegata al ring counter, Una led bar collegata alle uscite a - quattro a 11del bass delle rom, ma probabilmente qui manca un pezzettino di led bar per arrivare ai 12 indirizzi totaliindirizzatidai 12 pine in più manca la led bar del registro delle istruzioni
-- Il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Come descritto in maggior dettaglio nella sezione riservate al microcode, con soli 8 step non sarebbe stato possibile emulare alcune delle istruzioni del 6502, come quelle di salto relativo ed altre. Questa è in realtà una differenza architetturale più legata alla Control Logic, però l’impatto principale sul numero di step disponibili si riflette in particolar modo sull’ALU ed ha dunque sicuramente senso citarla in questa sezione.
 
 ## Link utili
 
@@ -563,14 +557,8 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 ## TO DO
 
 - aggiornare lo schema Kicad con le le bar a 8 segmenti e aggiornare questa pagina con lo schema aggiornato
-- Evidenziare la nomenclatura dei segnali da fare nella pagina della control logic : l'approccio di ben era centri con rispetto al modulo , mentre l'approccio del computer NQSAP è relativo al computer nella sua interezza
-- non trovo riferimenti ad HL e HR in nessuna pagina; Poiché in questa pagina sto parlando del fatto che per alcuni registri sono necessari più segnali di controllo , come nel caso del registro h virgola che necessita di HLanche di HR volevo fare un link al registro h nella pagina del modulo ALU , ma vedo che anche lì non cè nessuna indicazione di HL anche di HR ("quando un registro presenta più segnali di ingresso che possono essere attivi contemporaneamente (ad esempio il registro dei Flag, oppure il registro H");)
+- Una volta fatta una sezione nella pagina ALU per descrivere il comportamento del registro hfare un link da questa pagina nella sezione che parla della mutua esclusività dei segnali di controllo.
 - Ho aggiunto anche una barra a led per mostrare l'indirizzo correntemente In input sulle EEPROM
-- verificare quando spiegare cosa fa il 138: se metto prima Ring Counter o la speigazione delle uscite dei 4x 138 della prima ROM
-- sistemare "\*\* In una successiva sezione si tratterà della durata delle micro istruzioni delle istruzioni e dei miglioramenti apportati dall'NQSAP."
-- intorno a riga 179, bisogna verificare... Perché il caricamento della control World al falling edge è  solo una parte, perché dobbiamo considerare anche l'IR
 - Schema della Control Logic e dell’Instruction Register del SAP computer --- l'immagine probabilmente risulta troppo piccola su schermi "normali"
 - da qualche parte devo descrivere o meglio linkare a masswerk per gli indirizzamenti del 6502.
-- Come detto poc’anzi, la combinazione generata dall’Opcode contenuto nell’Instruction Register e dallo step esposto dal Ring Counter indirizza una locazione di memoria specifica nelle EEPROM: tale locazione di memoria contiene la Control Word... **ridondante**, sistemare
-- È importante sottolineare che la configurazione delle operazioni di lettura e scrittura da parte della Control Word segue tempi diversi: **da sistemare, non segue tempi diversi... non si capisce bene**
 - Forse utile fare una tabella per vedere le similitudini tra istruzione LDA nel SAP e LDA94 nel NQSAP
