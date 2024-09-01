@@ -272,32 +272,19 @@ Se nel computer sono presenti registri privi di un segnale di Enable, il caricam
 
 *Registro Y dell'NQSAP*.
 
-La risposta alla domanda è che il caricamento dell'Instruction Register al momento 7 genera un glitch sul segnale /WY, che potrebbe causare un caricamento indesiderato di Y. Questo accade perché l'operazione NOR tra il clock invertito e /WY rende l'output della NOR dipendente da quest'ultimo segnale. Conseguentemente al caricamento dell'IR, le EEPROM stanno ancora stabilizzando i segnali in uscita e l'output della NOR può risultare instabile, portando a un possibile caricamento non voluto di Y.
+La risposta alla domanda è che il caricamento dell'Instruction Register al momento 7 genera un glitch sul segnale /WY, che potrebbe causare un caricamento indesiderato di Y. Questo accade perché l'operazione NOR tra il clock invertito e /WY rende l'output della NOR dipendente da quest'ultimo segnale; l'instabilità dell'output della NOR potrebbe quindi provocare una scrittura non voluta del registro.
 
-[![Registro Y dell'NQSAP](../../assets/control/40-nqsap-ldy.png "Registro Y dell'NQSAP"){:width="100%"}](../../assets/control/40-nqsap-ldy.png)
+[![Glitching all'istruzione LDY nell'NQSAP](../../assets/control/40-nqsap-ldy.png "Glitching all'istruzione LDY nell'NQSAP"){:width="100%"}](../../assets/control/40-nqsap-ldy.png)
 
 *Glitching all'istruzione LDY nell'NQSAP*.
 
-![Alt text](image-1.png)
+Ed è qui che il design dell'IR dell'NQSAP-PCB, l'evoluzione dell'NQSAP, prende forma.
 
-il caricamento dell'Instruction Register al momento 7 genera un glitch sul segnale /WY, che potrebbe risultare in un errato caricamento di Y: l'operazione NOR tra un segnale /clock basso ed un altro segnale comporta che l'output dipende da quest'altro segnale, che, poiché le EEPROM stanno ancora stabilizzando i segnali in uscita, può generare un output indesiderato e un caricamento indesiderato del registro.
-
-Yes, OR-ing WX with anything can potentially get you a glitch there because the low signal of CLK won't do anything to gate the unknown state on the WX line. That's why I double buffered my IR so that it only changes the EEPROM address lines on the low clock transition.
-
-
-
+Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF da 8 registri in cascata, così il primo viene aggiornato al normale caricamento dell'IR (che corrisponderebbe a T7 (step 1), ma causando un glitch sulla ROM)… invece di collegare il FF agli ingressi delle ROM, viene collegato a un altro FF che viene caricato col Falling Edge del CLK / Rising Edge del CLK, così le uscite delle ROM vengono aggiornate alla fine della microistruzione quando i segnali sono stabili 😁
 
 **da aggiungere**:  In addition, the SAP-1 also drives address lines with the outputs of the Flags Register, so this causes uncertainty on any rising edge that modifies the flags.
 
-**Possibile riprendere qui il discorso dell'IR e del caricamento?** IR bufferizzato e anche questo in effetti deve essere pronto prima... etc etc etc
-
-
-Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF da 8 registri in cascata, così il primo viene aggior  to al normale caricamento dell'IR (che corrisponderebbe a T7 (step 1), ma causando un glitch sulla ROM)… invece di collegare il FF agli ingressi delle ROM, viene collegato a un altro FF che viene caricato col Falling Edge del CLK / Rising Edge del CLK, così le uscite delle ROM vengono aggiornate alla fine della microistruzione quando i segnali sono stabili 😁
-
-**devo spiegare il funzionamento dell'IR**, Riprendendo spunto dal fatto che il registro delle istruzioni questa volta è bufferizzato.
-
 ---
-
 
 È importante sottolineare che la configurazione delle operazioni di lettura e scrittura da parte della Control Word segue tempi diversi. Al Falling Edge del clock:
 
