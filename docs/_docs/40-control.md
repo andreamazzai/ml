@@ -323,13 +323,15 @@ Il momento del caricamento del contatore è visibile a pagina 11 del <a href="ht
 
 In definitiva, il segnale /Load azzera il Ring Counter in sincronia con il Falling Edge del clock.
 
-Potrebbe sorgere una domanda: perché non collegare il segnale N del microcode direttamente al pin di reset del contatore?
-
 **NOTA BENE** mettere i nomi giusti di N o NI spiegando quale computer si sta analizzando
 
-Il reset del '161 è *asincrono*, che significa che è indipendente dal clock: di conseguenza, il contatore verrebbe resettato nel momento stesso in cui la Control Word fosse emessa dalle EEPROM, non permettendo la continuazione dell'esecuzione della microistruzione!
+Potrebbe sorgere una domanda: perché non collegare il segnale N del microcode direttamente al pin di Reset del contatore?
 
-In realtà, fa notare Tom - sarebbe comunque possibile utilizzare il Reset del '161 collegato direttamente al segnale N, ma questo significherebbe dover aggiungere uno step dedicato al reset come ultima microistruzione di ogni istruzione. Utilizzando invece il caricamento sincrono, non è necessario uno step di reset dedicato.
+Il reset del '161 è *asincrono*, che significa che è indipendente dal clock: di conseguenza, il contatore verrebbe resettato nel momento stesso in cui la Control Word fosse impostata dalla microistruzione, non permettendo il completamento dello step!
+
+In realtà, fa notare Tom, sarebbe comunque possibile utilizzare il Reset del '161 collegato direttamente al segnale N, ma questo significherebbe dover aggiungere uno step dedicato al reset come ultima microistruzione di ogni istruzione. Utilizzando invece il caricamento sincrono, non è necessario uno step di reset dedicato.
+
+
 
 Assomiglia un po' al JUMP del Program Counter. Notare il /CLK, che è invertito rispetto al CLK principale e che dunque permette di lasciar terminare l'esecuzione della microistruzione corrente prima di fare il LOAD.
 
