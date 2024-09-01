@@ -278,22 +278,22 @@ La risposta alla domanda è che il caricamento dell'Instruction Register al mome
 
 *Glitching all'istruzione LDY nell'NQSAP*.
 
-Ed è da qui che prende forma il design dell'Instruction Register dell'NQSAP-PCB, evoluzione dell'NQSAP.
+Ed è da qui che prende forma il design dell'Instruction Register dell'<a href="https://tomnisbet.github.io/nqsap-pcb/" target="_blank">NQSAP-PCB</a>, evoluzione dell'NQSAP.
 
-Per risolvere i problemi di glitching, Tom ha ridisegnato l'IR sostituendo i 74LS173 con due registri <a href="https://www.ti.com/lit/ds/symlink/sn74ls377.pdf" target="_blank">74LS377</a> in cascata. Il primo si aggiorna come di consueto durante il normale caricamento dell'IR, che avviene al Rising Edge del clock al momento 7 dello step 1 e mantiene inalterata l'operatività del computer. L'output del primo registro viene portato come input al secondo '377, che si carica al Falling Edge del clock in contemporanea al Ring Counter. In questo modo, tutti gli ingressi delle EEPROM vengono aggiornati simultaneamente al Falling Edge, garantendo che i segnali di controllo in uscita dalle EEPROM siano stabilizzati quando è il momento di caricare i registri al Rising Edge.
+Per risolvere i problemi di glitching, Tom ha ridisegnato l'IR sostituendo i 74LS173 con due registri <a href="https://www.ti.com/lit/ds/symlink/sn74ls377.pdf" target="_blank">74LS377</a> in cascata. Il primo si aggiorna come di consueto durante il normale caricamento dell'IR, che avviene al Rising Edge del clock al momento 7 dello step 1 e mantiene inalterata l'operatività del computer. L'output del primo registro viene portato come input al secondo '377, che si carica al Falling Edge in contemporanea al Ring Counter. In questo modo, tutti gli ingressi delle EEPROM vengono aggiornati simultaneamente al Falling Edge, garantendo che i segnali di controllo in uscita dalle EEPROM siano stabilizzati quando è il momento di caricare i registri al Rising Edge.
 
 Questa modifica è stata recepita nel BEAM, che cerca di includere tutti gli aspetti positivi dei due progetti di Tom.
 
 [![Schema dell'Instruction Register del BEAM](../../assets/control/40-cl-ir-beam.png "Schema dell'Instruction Register del BEAM"){:width="66%"}](../../assets/control/40-cl-ir-beam.png)
 
-**approfondire** Forse utile provare a fare il wavedrom per vedere il cambiamento.
-
 *Schema dell'Instruction Register del BEAM.*
+
+**approfondire** Forse utile provare a fare il wavedrom del BEAM per vedere il cambiamento.
 
 Concludendo la sezione, è importante ricordare che le operazioni di lettura e scrittura impostate dalla Control Word vengono eseguite secondo tempistiche diverse. Al Falling Edge del clock:
 
 - I segnali di lettura impostati dalla Control Word attivano immediatamente l'eventuale modulo interessato da una Read, il quale presenta subito il suo output sul bus; ad esempio, l'attivazione di un bus transceiver <a href="https://www.mouser.com/datasheet/2/308/74LS245-1190460.pdf" target="_blank">74LS245</a> è immediata.
-- Viceversa, i segnali di scrittura preparano i moduli interessati, ma le operazioni di Write vengono eseguite solo al successivo Rising Edge del clock, assicurando così che i registri da aggiornare ricevano segnali già stabilizzati. Un esempio è il registro tipo D 74LS377 citato poc'anzi.
+- Viceversa, i segnali di caricamento preparano i moduli interessati, ma le operazioni di Write vengono eseguite solo al successivo Rising Edge del clock, assicurando così che i registri da aggiornare ricevano segnali già stabilizzati. Un esempio è il registro tipo D 74LS377 citato poc'anzi.
 
 **da aggiungere**:  In addition, the SAP-1 also drives address lines with the outputs of the Flags Register, so this causes uncertainty on any rising edge that modifies the flags.
 
@@ -319,32 +319,21 @@ L'NQSAP di Tom prevede un accorgimento molto furbo (tra gli altri) e migliora le
 
 In altre parole, si mette anticipatamente fine ad ogni istruzione inserendo nell'ultimo step del microcode un segnale di Load del Ring Counter, così da non dover aspettare l'esecuzione di tutti gli step vuoti; il vantaggio nell'operare questa scelta aumenta man mano che si desidera implementare istruzioni sempre più complesse che necessitano di un numero massimo di step sempre maggiore. Ad esempio, nel BEAM la lunghezza massima possibile di un'istruzione è di 16 step, ma un'istruzione semplice come TXA può essere eseguita in soli 3 step, senza sprecare gli altri 13 cicli.
 
-Il momento del caricamento del contatore è visibile a pagina 11 del <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">datasheet</a>: quando il pin /Load viene portato allo stato LO*, in corrispondenza del successivo Falling Edge** del clock le uscite QA-QD assumono gli stati presenti agli ingressi A-D (vedere l'istante Preset nella ascissa).
+Il momento del caricamento del contatore è visibile a pagina 11 del <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">datasheet</a>: con /Load allo stato LO*, al successivo Rising Edge** del clock le uscite QA-QD assumono gli stati LO presenti agli ingressi A-D (istante Preset nella ascissa).
 
-In definitiva, il segnale /Load azzera il Ring Counter in sincronia con il Falling Edge del clock.
+In pratica, il Ring Counter ritorna allo step iniziale.
 
 **NOTA BENE** mettere i nomi giusti di N o NI spiegando quale computer si sta analizzando
 
 Potrebbe sorgere una domanda: perché non collegare il segnale N del microcode direttamente al pin di Reset del contatore?
 
-Il reset del '161 è *asincrono*, che significa che è indipendente dal clock: di conseguenza, il contatore verrebbe resettato nel momento stesso in cui la Control Word fosse impostata dalla microistruzione, non permettendo il completamento dello step!
+Il reset del '161 è *asincrono*, che significa che è indipendente dal clock: di conseguenza, il contatore verrebbe resettato al Falling Edge nel momento stesso dell'impostazione della Control Word, non permettendo il completamento dello step al Rising Edge!
 
-In realtà, fa notare Tom, sarebbe comunque possibile utilizzare il Reset del '161 collegato direttamente al segnale N, ma questo significherebbe dover aggiungere uno step dedicato al reset come ultima microistruzione di ogni istruzione. Utilizzando invece il caricamento sincrono, non è necessario uno step di reset dedicato.
+In realtà, fa notare Tom, sarebbe comunque possibile utilizzare il Reset asincrono del '161 collegato direttamente al segnale N, ma questo significherebbe dover aggiungere uno step dedicato al reset come ultima microistruzione di ogni istruzione. Utilizzando invece il caricamento sincrono, non è necessario uno step di reset dedicato.
 
+\* e \*\*: Ricordando quanto esposto alla fine della sezione precedente in relazione all'impostazione della Control Word e ai momenti di caricamento dei registri, troviamo qui un primo esempio concreto: il segnale /Load viene settato dalla Control Word durante il Falling Edge del clock, mentre l'effettivo caricamento del registro avviene in concomitanza con il Rising Edge.
 
-
-Assomiglia un po' al JUMP del Program Counter. Notare il /CLK, che è invertito rispetto al CLK principale e che dunque permette di lasciar terminare l'esecuzione della microistruzione corrente prima di fare il LOAD.
-
-**nota** quando il pin /Load viene portato allo stato LO*, e in corrispondenza del successivo Falling Edge** del clock... è giusto?
-
-\* e \*\*: Ricordando quanto esposto in precedenza relativamente all'impostazione della Control Word e ai momenti di caricamento dei registri, bisogna troviamo qui un primo esempio concreto: il segnale /Load viene settato dalla Control Word durante il Falling Edge del clock, mentre l'effettivo caricamento del registro avviene in concomitanza con il Rising Edge.
-
-Come indicato anche nella sezione [Differenze](.../alu/#differenze-tra-moduli-alu-dellnqsap-e-del-beam) della pagina dell'ALU, bisogna notare che il computer NQSAP prevedeva solo 8 step per le microistruzioni. Per emulare le istruzioni del 6502 di salto condizionale, di scorrimento / rotazione e di salto a subroutine servono più step, pertanto, sul computer BEAM ne sono stati previsti 16.
-
-• Gli ingressi D0-D3 sono tutti a 0, così quando arriva il /LOAD (o /PE) sincrono (segnale "N" per Tom), il conteggio ricomincia da zero
-• Le uscite Q0-Q2 del 161 vanno a MA0-MA2 per avere 8 step di microistruzioni, ma se aggiungo un quarto pin al contatore, posso avere 16 step
-• Il /LOAD arriva da N 17 della ROM0
-CEP e CET sono a +Vcc
+Come indicato anche nella sezione [Differenze](.../alu/#differenze-tra-moduli-alu-dellnqsap-e-del-beam) della pagina dell'ALU, bisogna notare che il computer NQSAP prevede solo 8 step per le microistruzioni. Per emulare le istruzioni del 6502 di salto condizionale, di scorrimento / rotazione e di salto a subroutine servono più step, pertanto, sul computer BEAM ne sono stati previsti 16.
 
 ### I 74LS138 per la gestione dei segnali
 
