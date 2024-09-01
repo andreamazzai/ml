@@ -307,17 +307,17 @@ Il SAP prevedeva un numero fisso di 5 step; conseguentemente, tutte le istruzion
 
 *Microcode del computer SAP.*
 
-Nello schema del *Ring Counter del SAP* si nota che il contatore '161 presenta le sue uscite agli ingressi di selezione del DEMUX '138, che attiva in sequenza le uscite invertite (active = LO) da 00 a 05: ad ogni attivazione di quest'ultima, le due NAND attivano l'ingresso di Reset /MR del '161, che riporta il conteggio degli step allo zero iniziale, cominciando così una nuova istruzione.
+Nello schema del *Ring Counter del SAP* si nota che il contatore '161 presenta le sue uscite agli ingressi di selezione del demultiplexer '138, che attiva in sequenza le uscite invertite (active = LO) da 00 a 05: ad ogni attivazione di quest'ultima, le due NAND attivano l'ingresso di Reset /MR del '161, che riporta il conteggio degli step allo zero iniziale, cominciando così una nuova istruzione.
 
 E' abbastanza immediato notare questa architettura comporta uno spreco di cicli di elaborazione durante l'esecuzione delle istruzioni con pochi step, perché il RC deve comunque attendere l'attivazione dell'ultima uscita 05 per poter essere resettato.
 
-[![Ring Counter del SAP](../../assets/control/40-control-sap-rc.png "Ring Counter del SAP"){:width="33%"}](../../assets/control/40-control-sap-rc.png)
+[![Ring Counter del SAP](../../assets/control/40-control-sap-rc.png "Ring Counter del SAP"){:width="50%"}](../../assets/control/40-control-sap-rc.png)
 
 *Ring Counter del SAP.*
 
 L'NQSAP di Tom prevede un accorgimento molto furbo (tra gli altri) e migliora le prestazioni del computer introducendo la durata variabile delle istruzioni; infatti, l'ultima microistruzione di ogni istruzione include un segnale N, che attiva il pin di caricamento parallelo del '161: poiché tutti gli input del contatore sono impostati sullo 0, il conteggio ritorna allo zero iniziale.
 
-In altre parole, si mette anticipatamente fine ad ogni istruzione inserendo nell'ultimo step un segnale di Load del Ring Counter, così da non dover aspettare l'esecuzione di tutti gli step vuoti; il vantaggio nell'operare questa scelta aumenta man mano che si desidera implementare istruzioni sempre più complesse e che necessitano di un numero massimo di step sempre maggiore.
+In altre parole, si mette anticipatamente fine ad ogni istruzione inserendo nell'ultimo step del microcode un segnale di Load del Ring Counter, così da non dover aspettare l'esecuzione di tutti gli step vuoti; il vantaggio nell'operare questa scelta aumenta man mano che si desidera implementare istruzioni sempre più complesse che necessitano di un numero massimo di step sempre maggiore. Ad esempio, nel BEAM la lunghezza massima possibile di un'istruzione è di 16 step, ma un'istruzione semplice come TXA può essere eseguita in soli 3 step, senza sprecare gli altri 13 cicli.
 
 Il momento del caricamento del contatore è visibile a pagina 11 del <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">datasheet</a>: quando il pin /Load viene portato allo stato LO*, in corrispondenza del successivo Falling Edge** del clock le uscite QA-QD assumono gli stati presenti agli ingressi A-D (vedere l'istante Preset nella ascissa).
 
