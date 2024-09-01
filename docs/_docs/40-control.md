@@ -180,7 +180,7 @@ Per finalizzare l'analisi dell'istruzione LDA #$94, riepiloghiamo lo stato del c
 
 ### Fasi
 
-Per garantire il corretto funzionamento del processore, la Control Logic deve settare la giusta *Control Word* per ogni microistruzione. La Control Word è quella stringa di bit utilizzata per governare e coordinare il comportamento dei vari componenti del processore durante l'esecuzione di una microistruzione ed è definita nel microcode memorizzato nelle EEPROM; ad ogni bit / pin di output delle EEPROM corrisponde un segnale di controllo (come RPC, WM, PCI, RR eccetera).
+Per garantire il corretto funzionamento del processore, la Control Logic deve impostare la giusta *Control Word* per ogni microistruzione. La Control Word è quella stringa di bit utilizzata per governare e coordinare il comportamento dei vari componenti del processore durante l'esecuzione di una microistruzione ed è definita nel microcode memorizzato nelle EEPROM; ad ogni bit / pin di output delle EEPROM corrisponde un segnale di controllo (come RPC, WM, PCI, RR eccetera).
 
 Le operazioni di una CPU passano per diverse fasi, che possiamo riassumere in:
 
@@ -212,7 +212,7 @@ In generale, i momenti essenziali di un ciclo di clock in un computer sono due: 
 
 - Rising Edge: la maggior parte dei componenti sequenziali* (quali contatori, registri, flip-flop) modifica il proprio stato durante la transizione del segnale di clock dallo stato logico LO allo stato logico HI; le azioni di caricamento di tutti i moduli del computer (PC, MAR, RAM, A, B, H, Registri Indice, Flag, SP, O) avvengono in questo momento, con qualche eccezione.
 
-- Falling Edge: poiché ad ogni Rising Edge i componenti sequenziali caricano i dati in ingresso, si intuisce che è necessario trovare un momento *antecedente*, durante il quale settare la Control Word di tutti i moduli del sistema in modo che i dati siano presenti agli ingressi dei componenti col dovuto anticipo. Il Falling Edge si configura come il momento migliore per settare la Control Word; invertendo la fase del clock inviato al Ring Counter, si esegue la configurazione della Control Word - e dunque della microistruzione - proprio in corrispondenza del Falling Edge.
+- Falling Edge: poiché ad ogni Rising Edge i componenti sequenziali caricano i dati in ingresso, si intuisce che è necessario trovare un momento *antecedente*, durante il quale impostare la Control Word di tutti i moduli del sistema in modo che i dati siano presenti agli ingressi dei componenti col dovuto anticipo. Il Falling Edge si configura come il momento migliore per settare la Control Word; invertendo la fase del clock inviato al Ring Counter, si esegue la configurazione della Control Word - e dunque della microistruzione - proprio in corrispondenza del Falling Edge.
 
 \* I componenti sequenziali producono un output che dipende non solo dagli ingressi attuali, ma anche dallo stato precedente, a differenza dei circuiti combinatori che dipendono esclusivamente dagli ingressi presenti.
 
@@ -228,13 +228,13 @@ Tale sincronia si ritrova anche nell'NQSAP:
 
 Quali sono le possibili conseguenze del caricamento dell'IR al Rising Edge del clock?
 
-Bisogna prendere in considerazione una proprietà delle EEPROM: quando l'indirizzo di ingresso cambia, le uscite possono diventare instabili, oscillando ("glitching", problema tecnico) tra gli stati logici prima di assestarsi definitivamente sul valore corretto. Se il fenomeno non viene gestito, possono verificarsi effetti collaterali indesiderati, quali impulsi di clock non voluti nel caso si usino gate per gestire l'enable nei chip che ne sono sprovvisti (come il [registro B](../alu/#lalu-dellnqsap) o i [registri D, X e Y](../dxy/) dell'NQSAP), oppure l'output contemporaneo di più moduli sul bus, generando contese e assorbimenti di corrente elevati.
+Bisogna prendere in considerazione una proprietà delle EEPROM: quando l'indirizzo di ingresso cambia, le uscite possono diventare instabili, oscillando ("glitching", problema tecnico) tra gli stati logici prima di assestarsi definitivamente sul valore corretto. Se il fenomeno non viene gestito, possono verificarsi effetti collaterali indesiderati, quali impulsi di clock non voluti se si usano gate per gestire l'Enable nei chip che ne sono sprovvisti (come il [registro B](../alu/#lalu-dellnqsap) o i [registri D, X e Y](../dxy/) dell'NQSAP), oppure l'output contemporaneo di più moduli sul bus, generando contese e assorbimenti di corrente elevati.
 
 Nelle EEPROM come la <a href="https://ww1.microchip.com/downloads/en/DeviceDoc/doc0006.pdf" target="_blank">AT28C256</a>, il parametro che indica la durata dell'incertezza all'output è tipicamente chiamato "Address Access Time" o "t<sub>ACC</sub>" e indica il periodo che intercorre tra l'applicazione di un nuovo indirizzo di ingresso e il momento in cui i dati corretti sono disponibili sull'uscita, come visibile in figura:
 
 [![AC Read Waveforms EEPROM AT28C256](../../assets/control/40-28C256-read-waveform.png "AC Read Waveforms EEPROM AT28C256"){:width="50%"}](../../assets/control/40-28C256-read-waveform.png)
 
-Ad esempio, un <a href="https://www.reddit.com/r/beneater/comments/f7gcvx/glitches_on_eeprom_datalines_when_their_adress/" target="_blank">thread su Reddit</a> di rolf-electronics evidenzia il fenomeno nei primi 3 quadranti della seguente immagine, con dei segnali di output che mostrano oscillazioni significative al momento del cambiamento degli input delle EEPROM:
+Ad esempio, un <a href="https://www.reddit.com/r/beneater/comments/f7gcvx/glitches_on_eeprom_datalines_when_their_adress/" target="_blank">thread su Reddit</a> di rolf-electronics evidenzia il fenomeno nei primi 3 quadranti della seguente immagine, con i segnali di output che mostrano oscillazioni significative al momento del cambiamento degli input delle EEPROM:
 
 [![Glitching nel SAP di Rolf Electronics](../../assets/control/40-glitching-rolf.png "Glitching nel SAP di Rolf Electronics"){:width="66%"}](../../assets/control/40-glitching-rolf.png)
 
@@ -245,7 +245,7 @@ Il grafico seguente mostra i fronti di salita e di discesa dei soli segnali di c
 Il glitching dovuto alle variazioni degli indirizzi di ingresso delle EEPROM del SAP (ma è così anche nell'NQSAP) avviene:
 
 - ad ogni Falling Edge del clock come conseguenza del cambiamento delle uscite del Ring Counter (momenti 1, 5, 9, 13, 17)
-- al Rising Edge del Clock per il caricamento dell'istruzione nell'Instruction Register (momento 7 nello step 1).
+- al Rising Edge del Clock durante il caricamento dell'istruzione nell'Instruction Register (momento 7 nello step 1).
 
 Risulta evidente che il fenomeno si manifesta su tutti i segnali di controllo, sia quelli variati di proposito, sia quelli che non vengono modificati nello step corrente. Come nota a latere, bisogna segnalare che *tutti* i segnali di controllo del computer sono soggetti a questo fenomeno, anche se non indicati nel grafico.
 
@@ -262,34 +262,36 @@ Prima di continuare, è interessante esaminare gli step di questa istruzione e r
 
 Dopo questa breve digressione, ritorniamo al discorso principale.
 
-Tutti questi segnali spuri generalmente non sono un problema per il SAP, perché le microistruzioni scrivono su registri tipo D <a href="https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf" target="_blank">74LS173</a> attivati al Rising Edge, cioè quando i segnali di controllo hanno avuto tempo a sufficienza per stabilizzarsi. Ad esempio, il glitching di MI al momento 7 non è fonte di problemi, perché il '173 memorizza nuovi valori solo col segnale di Enable attivo ***e*** il Rising Edge del clock: in questo momento, il segnale si trova in uno stato stabile e non c'è rischio di caricare dati non corretti.
+Tutti questi segnali spuri generalmente non sono un problema per il SAP, perché le microistruzioni scrivono su registri tipo D <a href="https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf" target="_blank">74LS173</a> attivati al Rising Edge del clock, cioè quando i segnali di controllo hanno avuto tempo a sufficienza per stabilizzarsi. Ad esempio, il glitching di MI al momento 7 non è fonte di problemi, perché il '173 del MAR memorizza nuovi valori solo col segnale di Enable attivo ***e*** il Rising Edge del clock: in quel momento, i segnali di controllo si trovano in uno stato stabile e non c'è rischio di caricare dati non corretti.
 
 Possiamo ora riprendere la domanda fatta in precedenza in questa sezione: "Quali sono le possibili conseguenze del caricamento dell'IR al Rising Edge del clock?"
 
-Se nel computer sono presenti registri privi di un segnale di Enable, il caricamento di tali registri può essere effettuato implementando una logica combinatoria tra il clock e il segnale di controllo dedicato. Ad esempio, nell'NQSAP i [registri D, X e Y](../dxy) sono realizzati con <a href="https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf" target="_blank">74LS574</a> e porte NOR.
+Se nel computer sono presenti registri privi di un segnale di Enable, il caricamento di tali registri può essere effettuato implementando una logica combinatoria tra il clock e il segnale di controllo dedicato. Ad esempio, nell'NQSAP i [registri D, X e Y](../dxy) e il [registro B](../alu/#lalu-dellnqsap) sono realizzati con <a href="https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf" target="_blank">74LS574</a> e porte NOR.
 
 [![Registro Y dell'NQSAP](../../assets/control/40-NQSAP-dxy-y.png "Registro Y dell'NQSAP"){:width="66%"}](../../assets/control/40-NQSAP-dxy-y.png)
 
 *Registro Y dell'NQSAP*.
 
-La risposta alla domanda è che il caricamento dell'Instruction Register al momento 7 genera un glitch sul segnale /WY, che potrebbe causare un caricamento indesiderato di Y. Questo accade perché l'operazione NOR tra il clock invertito e /WY rende l'output della NOR dipendente da quest'ultimo segnale; l'instabilità dell'output della NOR potrebbe quindi provocare una scrittura non voluta del registro.
+La risposta alla domanda è che il caricamento dell'Instruction Register al momento 7 genera un glitch sul segnale /WY, che può causare un caricamento indesiderato di Y. L'Enable del '574 dipende infatti dall'operazione NOR tra il clock invertito e /WY. Se quest'ultimo è instabile, potrebbe verificarsi una scrittura non voluta del registro.
 
 [![Glitching all'istruzione LDY nell'NQSAP](../../assets/control/40-nqsap-ldy.png "Glitching all'istruzione LDY nell'NQSAP"){:width="100%"}](../../assets/control/40-nqsap-ldy.png)
 
 *Glitching all'istruzione LDY nell'NQSAP*.
 
-Ed è qui che il design dell'IR dell'NQSAP-PCB, l'evoluzione dell'NQSAP, prende forma.
+Ed è da qui che prende forma il design dell'Instruction Register dell'NQSAP-PCB, evoluzione dell'NQSAP.
 
-Per indirizzare i problemi di glitching Tom ha bufferizzato l'IR, cioè due FF da 8 registri in cascata, così il primo viene aggiornato al normale caricamento dell'IR (che corrisponderebbe a T7 (step 1), ma causando un glitch sulla ROM)… invece di collegare il FF agli ingressi delle ROM, viene collegato a un altro FF che viene caricato col Falling Edge del CLK / Rising Edge del CLK, così le uscite delle ROM vengono aggiornate alla fine della microistruzione quando i segnali sono stabili 😁
+Per risolvere i problemi di glitching, Tom lo ha ridisegnato sostituendo i 74LS173 con due registri 74LS377 in cascata. Il primo si aggiorna come di consueto durante il normale caricamento dell'IR, che avviene come di consueto al Rising Edge del clock al momento 7 dello step 1, mantenendo inalterata l'operatività del computer. L'output del primo registro viene portato come input al secondo '377, che si carica al Falling Edge del clock in contemporanea al Ring Counter. In questo modo, tutti gli ingressi delle EEPROM vengono aggiornati simultaneamente al Falling Edge del clock, garantendo che i segnali di controllo in uscita dalle EEPROM siano stabilizzati quando è il momento di caricare i registri al Rising Edge.
+
+Questa modifica è stata recepita nel BEAM, che cerca di includere tutti gli aspetti positivi delle due build di Tom.
 
 **da aggiungere**:  In addition, the SAP-1 also drives address lines with the outputs of the Flags Register, so this causes uncertainty on any rising edge that modifies the flags.
 
 ---
 
-È importante sottolineare che la configurazione delle operazioni di lettura e scrittura da parte della Control Word segue tempi diversi. Al Falling Edge del clock:
+È importante sottolineare che la configurazione delle operazioni di lettura e scrittura da parte della Control Word segue tempistiche diverse. Al Falling Edge del clock:
 
-- i segnali di lettura settati dalla Control Word attivano immediatamente l'eventuale modulo interessato da una Read, il quale presenta subito il suo output sul bus;
-- viceversa, i segnali di scrittura preparano i moduli interessati, ma le operazioni di Write vengono eseguite solo al successivo Rising Edge del clock, assicurando così che i registri che devono essere aggiornati trovino in input segnali ormai stabilizzati.
+- i segnali di lettura impostati dalla Control Word attivano immediatamente l'eventuale modulo interessato da una Read, il quale presenta subito il suo output sul bus;
+- viceversa, i segnali di scrittura preparano i moduli interessati, ma le operazioni di Write vengono eseguite solo al successivo Rising Edge del clock, assicurando così che i registri da aggiornare ricevano segnali già stabilizzati.
 
 ### Lunghezza delle istruzioni
 
@@ -348,7 +350,7 @@ L'aumento del numero di EEPROM e l'inserimento di quattro 3-Line To 8-Line Decod
 
 Come visibile nello schema, ogni '138 presenta 8 pin di output, 3 pin di selezione e 3 pin di Enable; connettendo opportunamente i pin di selezione ed Enable, è possibile pilotare ben quattro '138 (per un totale di 32 segnali di output) usando solo 8 segnali in uscita da una singola EEPROM. In altre parole, i '138 fungono da *demoltiplicatori* e permettono di indirizzare un numero elevato di segnali a partire da un numero limitato di linee in ingresso.
 
-Quando attive, le uscite dei '138 presentano uno stato LO; questa circostanza risulta molto comoda per la gestione dei segnali del computer, in quanto molti dei chip presenti nei vari moduli utilizzano ingressi di Enable invertiti (ad esempio i transceiver 74LS245 e i registri 74LS377).
+Quando attive, le uscite dei '138 presentano uno stato LO; questa circostanza risulta molto comoda per la gestione dei segnali del computer, in quanto molti dei chip presenti nei vari moduli utilizzano ingressi di Enable invertiti (ad esempio i transceiver 74LS245 e i registri tipo D <a href="https://www.ti.com/lit/ds/symlink/sn74ls377.pdf" target="_blank">74LS377</a>).
 
 I '138 presentano un solo output attivo alla volta; la configurazione dei pin di selezione ed Enable adottata nello schema permette di creare due coppie di '138, ognuna delle quali presenta un solo output attivo alla volta:
 
@@ -485,7 +487,7 @@ Per fare il microcode sto usando:
 • Ad esempio inizialmente ho trovato difficoltà a capire quali Flag fossero modificati da CPY, che viene indicata come:
 
 • In quali combinazioni si attivano i vari flag N, Z e C?
-• Ho trovato supporto su http://www.6502.org/tutorials/compare_beyond.html nel quale si spiega che fare un confronto equivale a settare il carry e fare la differenza, ma senza effettivamente scrivere il risultato nel registro di partenza:
+• Ho trovato supporto su http://www.6502.org/tutorials/compare_beyond.html nel quale si spiega che fare un confronto equivale a impostare il carry e fare la differenza, ma senza effettivamente scrivere il risultato nel registro di partenza:
 CMP NUM
 is very similar to:
 SEC
@@ -515,11 +517,11 @@ No Z e C, coerentemente con quanto spiegato sopra, ma N, perché il numero risul
 Su BEAM: LDY #$40; CPY #$30 e ottengo nessun Flag, mentre dovrei avere C.
 La ALU presenta il COUT acceso, dunque la sua uscita è a livello logico basso. DA CAPIRE!!! Cosa volevo dire?
 
-Teoricamente dunque dovrei attivare l’ingresso di uno del 151 di Carry Input settando opportunamente i segnali C0 e C1.
+Teoricamente dunque dovrei attivare l’ingresso di uno del 151 di Carry Input impostando opportunamente i segnali C0 e C1.
 
 In conseguenza di questo, verifico sul BEAM il comportamento del Carry Out dell'ALU nei 3 casi descritti e poi modifico il microcode di conseguenza. In effetti, il comportamento non era quello desiderato da teoria e ho fatto le modifiche necessarie:
 
-• Aggiunti i segnali C0 e C1, che non avevo ancora cablato, che permettono al 151 di scelta del Carry Input di selezionare cosa prendere in ingresso. L'ALU emette un Carry invertito (0 = Attivo), dunque, per poter settare a 1 il Flag del Carry Input, lo devo prendere in ingresso dall'ALU attraverso una NOT su uno dei 4 ingressi attivi del 151, che seleziono appunto con i segnali C0 e C1 attivando il solo C0.
+• Aggiunti i segnali C0 e C1, che non avevo ancora cablato, che permettono al 151 di scelta del Carry Input di selezionare cosa prendere in ingresso. L'ALU emette un Carry invertito (0 = Attivo), dunque, per poter impostando a 1 il Flag del Carry Input, lo devo prendere in ingresso dall'ALU attraverso una NOT su uno dei 4 ingressi attivi del 151, che seleziono appunto con i segnali C0 e C1 attivando il solo C0.
 • Ho poi incluso nel microcode anche LF, in quanto ho definito l'utilizzo di LF su tutte le istruzioni di comparazione, tranne CPX abs.
 • Considerare anche che tipo di Carry devo iniettare nella ALU… In realtà, poiché per fare il confronto utilizzo l’istruzione SBC, devo utilizzare il normale LHHL con Carry, cioè CIN = LO, che nel microcode corrisponde ad attivare il segnale CS.
 
@@ -574,3 +576,4 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 - da qualche parte devo descrivere o meglio linkare a masswerk per gli indirizzamenti del 6502.
 - Come detto poc’anzi, la combinazione generata dall’Opcode contenuto nell’Instruction Register e dallo step esposto dal Ring Counter indirizza una locazione di memoria specifica nelle EEPROM: tale locazione di memoria contiene la Control Word... **ridondante**, sistemare
 - È importante sottolineare che la configurazione delle operazioni di lettura e scrittura da parte della Control Word segue tempi diversi: **da sistemare, non segue tempi diversi... non si capisce bene**
+- Forse utile fare una tabella per vedere le similitudini tra istruzione LDA nel SAP e LDA94 nel NQSAP

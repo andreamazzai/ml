@@ -76,5 +76,7 @@
         url: "https://github.com/andreamazzai/beam"
       - title: <a href = "https://eater.net/8bit/" target = "_blank">> SAP di Ben Eater</a>
         url: ""
-      - title: <a href = "https://github.com/TomNisbet/nqsap" target = "_blank">> NQSAP di Tom Nisbet su GitHub</a>
+      - title: <a href = "https://github.com/TomNisbet/nqsap" target = "_blank">> NQSAP di Tom Nisbet</a>
+        url: ""
+      - title: <a href = "https://tomnisbet.github.io/nqsap-pcb/" target = "_blank">> NQSAP-PCB di Tom Nisbet</a>
         url: ""
