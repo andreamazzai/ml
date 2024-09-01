@@ -84,7 +84,7 @@ Ogni istruzione del computer, grazie alla personalizzazione del microcode, può 
 
 - Il flag C viene esportato anche verso i '181 e il registro H del modulo ALU; si veda la sezione [Il Carry e i registri H e ALU](#il-carry-e-i-registri-h-e-alu) in questa stessa pagina.
 
-Un transceiver 74LS245 permette infine di esportare i 4 flag NVZC sul bus per salvarli in memoria, o più precisamente nello Stack, similarmente a quanto accade nel 6502 con l'istruzione Push Processor Status (PHP).
+Un bus transceiver <a href="https://www.mouser.com/datasheet/2/308/74LS245-1190460.pdf" target="_blank">74LS245</a> permette infine di esportare i 4 flag NVZC sul bus per salvarli in memoria, o più precisamente nello Stack, similarmente a quanto accade nel 6502 con l'istruzione Push Processor Status (PHP).
 
 Interessante notare che le istruzioni CLC, CLV e SEC non hanno bisogno di segnali dedicati della CL per azzerare o settare i flag C e V: si utilizza la ALU per mettere 0x00 o 0xFF sul bus e si modifica il solo flag di interesse attivando opportunamente il segnale di controllo FC o FV.
 

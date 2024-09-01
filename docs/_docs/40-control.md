@@ -280,7 +280,7 @@ La risposta alla domanda è che il caricamento dell'Instruction Register al mome
 
 Ed è da qui che prende forma il design dell'Instruction Register dell'NQSAP-PCB, evoluzione dell'NQSAP.
 
-Per risolvere i problemi di glitching, Tom ha ridisegnato l'IR sostituendo i 74LS173 con due registri 74LS377 in cascata. Il primo si aggiorna come di consueto durante il normale caricamento dell'IR, che avviene al Rising Edge del clock al momento 7 dello step 1 e mantiene inalterata l'operatività del computer. L'output del primo registro viene portato come input al secondo '377, che si carica al Falling Edge del clock in contemporanea al Ring Counter. In questo modo, tutti gli ingressi delle EEPROM vengono aggiornati simultaneamente al Falling Edge, garantendo che i segnali di controllo in uscita dalle EEPROM siano stabilizzati quando è il momento di caricare i registri al Rising Edge.
+Per risolvere i problemi di glitching, Tom ha ridisegnato l'IR sostituendo i 74LS173 con due registri <a href="https://www.ti.com/lit/ds/symlink/sn74ls377.pdf" target="_blank">74LS377</a> in cascata. Il primo si aggiorna come di consueto durante il normale caricamento dell'IR, che avviene al Rising Edge del clock al momento 7 dello step 1 e mantiene inalterata l'operatività del computer. L'output del primo registro viene portato come input al secondo '377, che si carica al Falling Edge del clock in contemporanea al Ring Counter. In questo modo, tutti gli ingressi delle EEPROM vengono aggiornati simultaneamente al Falling Edge, garantendo che i segnali di controllo in uscita dalle EEPROM siano stabilizzati quando è il momento di caricare i registri al Rising Edge.
 
 Questa modifica è stata recepita nel BEAM, che cerca di includere tutti gli aspetti positivi dei due progetti di Tom.
 
@@ -292,8 +292,8 @@ Questa modifica è stata recepita nel BEAM, che cerca di includere tutti gli asp
 
 Concludendo la sezione, è importante ricordare che le operazioni di lettura e scrittura impostate dalla Control Word vengono eseguite secondo tempistiche diverse. Al Falling Edge del clock:
 
-- I segnali di lettura impostati dalla Control Word attivano immediatamente l'eventuale modulo interessato da una Read, il quale presenta subito il suo output sul bus; ad esempio, l'attivazione di un transceiver 74LS245 
-- viceversa, i segnali di scrittura preparano i moduli interessati, ma le operazioni di Write vengono eseguite solo al successivo Rising Edge del clock, assicurando così che i registri da aggiornare ricevano segnali già stabilizzati.
+- I segnali di lettura impostati dalla Control Word attivano immediatamente l'eventuale modulo interessato da una Read, il quale presenta subito il suo output sul bus; ad esempio, l'attivazione di un bus transceiver <a href="https://www.mouser.com/datasheet/2/308/74LS245-1190460.pdf" target="_blank">74LS245</a> è immediata.
+- Viceversa, i segnali di scrittura preparano i moduli interessati, ma le operazioni di Write vengono eseguite solo al successivo Rising Edge del clock, assicurando così che i registri da aggiornare ricevano segnali già stabilizzati. Un esempio è il registro tipo D 74LS377 citato poc'anzi.
 
 **da aggiungere**:  In addition, the SAP-1 also drives address lines with the outputs of the Flags Register, so this causes uncertainty on any rising edge that modifies the flags.
 
@@ -307,7 +307,7 @@ Il SAP prevedeva un numero fisso di 5 step; conseguentemente, tutte le istruzion
 
 *Microcode del computer SAP.*
 
-Dallo schema del *Ring Counter del SAP* si nota che il contatore '161 presenta le sue uscite agli ingressi di selezione del DEMUX '138, che attiva in sequenza le uscite invertite (active = LO) da 00 a 05: ad ogni attivazione di quest'ultima, le due NAND attivano l'ingresso di Reset /MR del '161, che riporta il conteggio degli step allo zero iniziale, cominciando così una nuova istruzione.
+Nello schema del *Ring Counter del SAP* si nota che il contatore '161 presenta le sue uscite agli ingressi di selezione del DEMUX '138, che attiva in sequenza le uscite invertite (active = LO) da 00 a 05: ad ogni attivazione di quest'ultima, le due NAND attivano l'ingresso di Reset /MR del '161, che riporta il conteggio degli step allo zero iniziale, cominciando così una nuova istruzione.
 
 E' abbastanza immediato notare questa architettura comporta uno spreco di cicli di elaborazione durante l'esecuzione delle istruzioni con pochi step, perché il RC deve comunque attendere l'attivazione dell'ultima uscita 05 per poter essere resettato.
 
