@@ -3,8 +3,6 @@ title: "Control Logic"
 permalink: /docs/control/
 excerpt: "Control Logic del BEAM computer"
 ---
-## WORK IN PROGRESS
-
 [![Control Logic del BEAM computer](../../assets/control/40-beam-control.png "Control Logic del BEAM computer"){:width="100%"}](../../assets/control/40-beam-control.png)
 
 In generale, la gestione delle istruzioni è affidata alla Control Logic, che consta di tre capisaldi: Instruction Register, Ring Counter e Microcode. L'Instruction Register contiene l'istruzione in esecuzione, il Ring Counter tiene traccia delle microistruzioni che compongono l'istruzione e il Microcode definisce i segnali di controllo necessari per eseguire le microistruzioni.
@@ -245,7 +243,7 @@ Il grafico seguente mostra i fronti di salita e di discesa dei soli segnali di c
 Il glitching dovuto alle variazioni degli indirizzi di ingresso delle EEPROM del SAP (ma è così anche nell'NQSAP) avviene:
 
 - ad ogni Falling Edge del clock come conseguenza del cambiamento delle uscite del Ring Counter (momenti 1, 5, 9, 13, 17)
-- al Rising Edge del Clock durante il caricamento dell'istruzione nell'Instruction Register (momento 7 nello step 1).
+- al Rising Edge del Clock come conseguenza del caricamento dell'istruzione nell'Instruction Register (momento 7 nello step 1).
 
 Risulta evidente che il fenomeno si manifesta su tutti i segnali di controllo, sia quelli variati di proposito, sia quelli che non vengono modificati nello step corrente. Come nota a latere, bisogna segnalare che *tutti* i segnali di controllo del computer sono soggetti a questo fenomeno, anche se non indicati nel grafico.
 
@@ -496,9 +494,6 @@ Ho posizionato in uscita sul Carry dell'ALU un LED (ricordare che l'uscita è ne
 
 Dopo queste modifiche, le istruzioni di comparazione sembrano funzionare correttamente.
 
-TO DO: finire http://www.6502.org/tutorials/compare_beyond.html da "In fact, many 6502 assemblers will allow BLT (Branch on Less Than) "
-
-• Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
 
 Altre referenze Tom Nisbet per Flags
 
@@ -534,6 +529,8 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 - Forse utile fare una tabella per vedere le similitudini tra istruzione LDA nel SAP e LDA94 nel NQSAP
 - da aggiungere: In addition, the SAP-1 also drives address lines with the outputs of the Flags Register, so this causes uncertainty on any rising edge that modifies the flags.
 - Se /LDR-ACTIVE viene attivato (LO), LDR-ACTIVE passa a HI e disattiva le ROM2 e ROM3 collegate via /OE.
+- finire http://www.6502.org/tutorials/compare_beyond.html da "In fact, many 6502 assemblers will allow BLT (Branch on Less Than) "
+- Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
 
 ## Forse interessante da tenere, espandere, collegare ad altri paragrafi
 
