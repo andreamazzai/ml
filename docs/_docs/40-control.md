@@ -278,13 +278,25 @@ La risposta alla domanda è che il caricamento dell'Instruction Register al mome
 
 Ed è da qui che prende forma il design dell'Instruction Register dell'<a href="https://tomnisbet.github.io/nqsap-pcb/" target="_blank">NQSAP-PCB</a>, evoluzione dell'NQSAP.
 
-Per risolvere i problemi di glitching, Tom ha ridisegnato l'IR sostituendo i 74LS173 con due registri <a href="https://www.ti.com/lit/ds/symlink/sn74ls377.pdf" target="_blank">74LS377</a> in cascata. Il primo si aggiorna come di consueto durante il normale caricamento dell'IR, che avviene al Rising Edge del clock al momento 7 dello step 1 e mantiene inalterata l'operatività del computer. L'output del primo registro viene portato come input al secondo '377, che si carica al Falling Edge in contemporanea al Ring Counter. In questo modo, tutti gli ingressi delle EEPROM vengono aggiornati simultaneamente al Falling Edge, garantendo che i segnali di controllo in uscita dalle EEPROM siano stabilizzati quando è il momento di caricare i registri al Rising Edge.
+Per risolvere i problemi di glitching, Tom ha ridisegnato l'IR sostituendo i 74LS173 con due registri tipo D <a href="https://www.ti.com/lit/ds/symlink/sn74ls377.pdf" target="_blank">74LS377</a> in cascata. Il primo si aggiorna come di consueto durante il normale caricamento dell'IR, che avviene al Rising Edge del clock al momento 7 dello step 1 e mantiene inalterata l'operatività del computer. L'output del primo registro viene portato come input al secondo '377, che si carica al Falling Edge in contemporanea al Ring Counter. In questo modo, tutti gli ingressi delle EEPROM vengono aggiornati simultaneamente al Falling Edge, garantendo che i segnali di controllo in uscita dalle EEPROM siano stabilizzati quando è il momento di caricare i registri al Rising Edge.
 
 Questa modifica è stata recepita nel BEAM, che cerca di includere tutti gli aspetti positivi dei due progetti di Tom.
 
 [![Schema dell'Instruction Register del BEAM](../../assets/control/40-cl-ir-beam.png "Schema dell'Instruction Register del BEAM"){:width="66%"}](../../assets/control/40-cl-ir-beam.png)
 
 *Schema dell'Instruction Register del BEAM.*
+
+Tutti i registri del BEAM sono realizzati con 74LS377 dotati di Enable e clock separati, pertanto non si possono verificare caricamenti indesiderati, perché al momento del Rising Edge del clock i segnali di controllo sono sempre stabili.
+
+Risulta comunque interessante visualizzare il comportamento dei segnali di controllo al momento 7.
+
+[![Nessun glitching sul BEAM al momento 7 nello step 1](../../assets/control/40-beam-ldy.png "Nessun glitching sul BEAM al momento 7 nello step 1"){:width="100%"}](../../assets/control/40-beam-ldy.png)
+
+*Nessun glitching sul BEAM al momento 7 nello step 1*.
+
+Al Falling Edge del clock al punto 5 vi è glitching dovuto al caricamento del RC e al cambiamento delle sue uscite; al punto 7, viene aggiornato il primo dei due '377, che però non è connesso agli ingressi delle EEPROM e dunque in questo momento non si verificano variazioni degli ingressi di queste. Il secondo '377, grazie alla negazione del suo ingresso di clock, caricherà quanto presente sulle uscite del '377, modificando le sue uscite e generando glitching sulle ROM, che avviene a questo punto in contemporanea con il caricamento del RC. Non vi sono effetti negativi perché i segnali di controllo hanno tempo di stabilizzarsi in attesa del punto 11, che caricherà i registri secondo le microistruzioni impostate dallo step 2.
+
+**NB** Far notare che al punto 7 l'unico registro che viene caricato è l'IR.
 
 **approfondire** Forse utile provare a fare il wavedrom del BEAM per vedere il cambiamento.
 
@@ -531,6 +543,7 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 - Se /LDR-ACTIVE viene attivato (LO), LDR-ACTIVE passa a HI e disattiva le ROM2 e ROM3 collegate via /OE.
 - finire http://www.6502.org/tutorials/compare_beyond.html da "In fact, many 6502 assemblers will allow BLT (Branch on Less Than) "
 - Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
+- verificare se l'immagine "Glitching all’istruzione LDY nell’NQSAP." è corretta o no, come da chat con Tom sul fatto che forse i segnali sono come allo stato 0... forse nel momento del caricamento di Y non c'è glitch?
 
 ## Forse interessante da tenere, espandere, collegare ad altri paragrafi
 
