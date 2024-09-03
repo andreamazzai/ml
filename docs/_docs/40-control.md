@@ -114,7 +114,7 @@ Tirando le fila, per un computer come l'NQSAP o il BEAM:
 
 Per l'NQSAP Tom ha deciso di utilizzare comunque EEPROM da 256Kb anziché da 64Kb; il BEAM richiede invece obbligatoriamente EEPROM da 256Kb, perché le EEPROM da 128Kb con interfaccia parallela <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">non sono disponibili in commercio</a>.
 
-Come si vedrà in seguito parlando del Ring Counter, un aspetto importante del caricamento dei registri è il [*momento*](#il-clock-e-il-glitching-delle-eeprom) in cui vengono caricati: al Falling Edge del clock, oppure al Rising Edge: il caricamento dell'Instruction Register del SAP e dell'NQSAP avviene al Rising Edge, mentre quello del BEAM avviene al Falling Edge.
+Come si vedrà in seguito parlando del Ring Counter, un aspetto importante del caricamento dei registri è il [*momento*](#il-clock-il-glitching-delle-eeprom-e-linstruction-register-parte-2) in cui vengono caricati: al Falling Edge del clock, oppure al Rising Edge: il caricamento dell'Instruction Register del SAP e dell'NQSAP avviene al Rising Edge, mentre quello del BEAM avviene al Falling Edge.
 
 Prima di approfondire l'argomento, è opportuno iniziare a parlare anche del Ring Counter, che ha un ruolo primario nel caricamento di tutti i registri, IR compreso.
 
@@ -295,15 +295,51 @@ Risulta comunque interessante visualizzare il comportamento dei segnali di contr
 
 *Nessun glitching sul BEAM al momento 7 nello step 1*.
 
-Il primo dei due '377 dell'IR viene aggiornato al Rising Edge nel momento 7, come avviene anche nel SAP. Le uscite di questo primo registro sono inviate come input al secondo '377, che si aggiorna al momento 9 in contemporanea con l'incremento del RC al Falling Edge del clock. In questo modo, tutti i segnali di controllo hanno tempo di stabilizzarsi in attesa del momento 11, quando i registri vengono caricati secondo le microistruzioni impostate dallo step 2.
+Il primo dei due '377 dell'IR viene aggiornato al Rising Edge nel momento 7, come avviene anche nel SAP. Le uscite di questo primo registro sono inviate come input al secondo '377, che si aggiorna al momento 9 in contemporanea con l'incremento del RC al Falling Edge del clock. In questo modo, tutti gli ingressi delle EEPROM vengono aggiornati contemporaneamente e hanno tempo di stabilizzarsi in attesa del momento 11, quando i registri vengono caricati secondo le microistruzioni impostate dallo step 2.
 
-**sistemare il wavedro, perché l'istruzione LDY del BEAM ha il PCI all'ultimo step e non penultimo**
+Sì, d'accordo, ma come possiamo valutare che l'eliminazione del glitching deriva effettivamente dalla modifica al Program Counter? Tutti i registri 8 bit del BEAM sono realizzati con '377, ma vi sono alcuni registri che abbisognano di un gate in ingresso per creare un segnale di abilitazione artificiale: i Flag.
 
-**DA FINIRE aggiungere qui la wavedrom del caricamento del flag** Se tutti registri 8 bit del beam sono realizzati con 377, vi sono in realtà alcuni registri che abbisognano di un gate in ingresso per creare un segnale di  abilitazione artificiale: Flag. Per modificare un Flag possiamo prendere in esame la semplice istruzione CLC che azzera il carry.
+![Registro Flag C del BEAM](../../assets/control/40-beam-c-flag.png "Nessun glitching sul BEAM al momento 7 nello step 1"){:width="66%"}
+
+*Registro Flag C del BEAM*.
+
+Per vedere come si modifica un Flag, possiamo prendere in esame la semplice istruzione CLC, che azzera il Carry.
+
+~~~text
+| ---- | --------------------|
+| Step | Microistruzione     |
+| ---- | --------------------|
+| 1*   | RPC | WM            |
+| 2*   | RR  | WIR | PCI     |
+| 3    | CC  | FC  | RL  | N |
+| ---- | --------------------|
+~~~
+
+*Scomposizione dell'istruzione SEC nelle sue tre microistruzioni elementari*.
+
+1. Il primo step carica l'indirizzo del Program Counter nel Memory Address Register:
+    - RPC, Read Program Counter - espone sul bus l'indirizzo del Program Counter
+    - WM, Write Memory Address Register - scrive il contenuto del bus nel MAR
+2. Il secondo step carica l'opcode dell'istruzione nell'IR e incrementa il PC per farlo puntare alla locazione di memoria successiva (che nel caso dell'istruzione LDA contiene l'operando):
+    - RR, Read RAM - espone sul bus il contenuto della locazione di memoria puntata dal MAR
+    - WIR, Write Instruction Register - scrive il contenuto del bus nell'Instruction Register
+    - PCI, Program Counter Increment - incrementa il Program Counter
+3. Il terzo step scrive 1 sul registro C del 74LS74:
+    - CC, Clear Carry - espone il contenuto del Program Counter sul bus
+    - FC, Flag C - scrive il contenuto del bus nel MAR
+    - RL, Read ALU - espone sul bus il contenuto dell'ALU
+    - N, Next - resetta il Ring Counter
+
+CC attivo invia un segnale HI sul pin ALU-Cin; l'[opcode 03](..alu/#relazione-diretta-hardwired-tra-instruction-register-e-alu) con ALU-Cin attivo obbliga l'ALU ad emettere tutti 1 in output sul bus, dunque sul pin D del Flip-Flop ci sarà un 1.
+
+Poiché il FF non dispone di un ingresso Enable, questo viene realizzato utilizzando un gate AND tra clock e segnale di controllo FC.
+
+
+
 
 ---
 
-Concludendo la sezione, è importante ricordare che le operazioni di lettura e scrittura impostate dalla Control Word vengono eseguite secondo tempistiche diverse. Al Falling Edge del clock:
+Concludendo la sezione, è importante ricordare che tutti i segnali di una microistruzione sono attivati contemporaneamente, ma che le operazioni di lettura e scrittura impostate dalla Control Word vengono eseguite secondo tempistiche diverse. Al Falling Edge del clock:
 
 - I segnali di lettura impostati dalla Control Word attivano immediatamente l'eventuale modulo interessato da una Read, il quale presenta subito il suo output sul bus; ad esempio, l'attivazione di un bus transceiver <a href="https://www.mouser.com/datasheet/2/308/74LS245-1190460.pdf" target="_blank">74LS245</a> è immediata.
 - Viceversa, i segnali di caricamento preparano i moduli interessati, ma le operazioni di Write vengono eseguite solo al successivo Rising Edge del clock, assicurando così che i registri da aggiornare ricevano segnali già stabilizzati. Un esempio è il registro tipo D 74LS377 citato poc'anzi.
