@@ -297,13 +297,13 @@ Risulta comunque interessante visualizzare il comportamento dei segnali di contr
 
 Il primo dei due '377 dell'IR viene aggiornato al Rising Edge nel momento 7, come avviene anche nel SAP. Le uscite di questo primo registro sono inviate come input al secondo '377, che si aggiorna al momento 9 in contemporanea con l'incremento del RC al Falling Edge del clock. In questo modo, tutti gli ingressi delle EEPROM vengono aggiornati contemporaneamente e hanno tempo di stabilizzarsi in attesa del momento 11, quando i registri vengono caricati secondo le microistruzioni impostate dallo step 2.
 
-Sì, d'accordo, ma come possiamo valutare che l'eliminazione del glitching deriva effettivamente dalla modifica al Program Counter? Tutti i registri 8 bit del BEAM sono realizzati con '377, ma vi sono alcuni registri che abbisognano di un gate in ingresso per creare un segnale di abilitazione artificiale: i Flag.
+Come possiamo valutare che l'eliminazione del glitching deriva effettivamente dalla bufferizzazione del Program Counter? Tutti i registri 8 bit del BEAM sono realizzati con '377 dotati di ingresso Enable; alcuni altri registri sono privi di tale ingresso, come il Flip-Flop 74LS74 utilizzato per memorizzare i Flag. Una porta AND permette di realizzare un segnale di Enable artificiale.
 
-![Registro Flag C del BEAM](../../assets/control/40-beam-c-flag.png "Nessun glitching sul BEAM al momento 7 nello step 1"){:width="66%"}
+![Registro Flag C del BEAM](../../assets/control/40-beam-c-flag.png "Registro Flag C del BEAM"){:width="66%"}
 
 *Registro Flag C del BEAM*.
 
-Per vedere come si modifica un Flag, possiamo prendere in esame la semplice istruzione CLC, che azzera il Carry.
+Esaminiamo la semplice istruzione SEC, che imposta il Carry.
 
 ~~~text
 | ---- | --------------------|
@@ -325,14 +325,13 @@ Per vedere come si modifica un Flag, possiamo prendere in esame la semplice istr
     - WIR, Write Instruction Register - scrive il contenuto del bus nell'Instruction Register
     - PCI, Program Counter Increment - incrementa il Program Counter
 3. Il terzo step scrive 1 sul registro C del 74LS74:
-    - CC, Clear Carry - espone il contenuto del Program Counter sul bus
-    - FC, Flag C - scrive il contenuto del bus nel MAR
+    - CC, Clear Carry - imposta l'ingresso ALU-Cin dell'ALU (ricordare che il Carry del '181 è [invertito](../alu/#funzioni-logiche-e-operazioni-aritmetiche): stato HI = inattivo)
+    - FC, Flag C - predispone il caricamento del Flag C
     - RL, Read ALU - espone sul bus il contenuto dell'ALU
     - N, Next - resetta il Ring Counter
 
-CC attivo invia un segnale HI sul pin ALU-Cin; l'[opcode 03](..alu/#relazione-diretta-hardwired-tra-instruction-register-e-alu) con ALU-Cin attivo obbliga l'ALU ad emettere tutti 1 in output sul bus, dunque sul pin D del Flip-Flop ci sarà un 1.
+CC invia un segnale HI sul pin ALU-Cin; l'[opcode 03](..alu/#relazione-diretta-hardwired-tra-instruction-register-e-alu) senza Carry imposta l'ALU per emettere tutti 1 in output sul bus, dunque sul pin D del Flip-Flop ci sarà un 1, che sarà caricato sul registro C, effettivamente settando il Carry.
 
-Poiché il FF non dispone di un ingresso Enable, questo viene realizzato utilizzando un gate AND tra clock e segnale di controllo FC.
 
 
 
