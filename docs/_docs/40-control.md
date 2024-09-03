@@ -87,7 +87,7 @@ In conseguenza del numero di bit utilizzato per l'istruzione, la connessione tra
 
 *Schema della Control Logic e dell'Instruction Register del SAP.*
 
-Una fondamentale differenza tra l'IR del SAP e quello dell'NQSAP e del BEAM è la dimensione. Il 6502 ha un set di istruzioni *relativamente* piccolo, composto da 56 istruzioni di base; tuttavia, queste istruzioni possono essere utilizzate con diverse modalità di indirizzamento, il che porta il numero totale di combinazioni possibili a circa 150.
+Una fondamentale differenza tra l'IR del SAP e quello dell'NQSAP e del BEAM è la dimensione. Il 6502 ha un set di istruzioni *relativamente* piccolo, composto da 56 istruzioni di base; tuttavia, queste istruzioni possono essere utilizzate con diverse modalità di <a href="https://www.masswerk.at/6502/6502_instruction_set.html#modes" target="_blank">indirizzamento</a>, il che porta il numero totale di combinazioni possibili a circa 150.
 
 Per poter gestire queste combinazioni ed emulare così il set di istruzioni del 6502, la dimensione dell'opcode deve essere di un intero byte e l'architettura del sistema deve gestire istruzioni di lunghezza variabile:
 
@@ -126,7 +126,7 @@ Infatti, ogni istruzione di un microprocessore (ad esempio, "carica un valore ne
 
 Il Ring Counter (RC) tiene traccia dello stato di avanzamento delle microistruzioni. Ogni stato del RC corrisponde a un particolare step nel ciclo di esecuzione di un'istruzione, quindi può essere visto come un meccanismo che avanza attraverso le diverse microistruzioni necessarie per eseguire un'istruzione completa della CPU.
 
-Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio del 6502 si traduce in "carica nell'accumulatore il valore esadecimale $94") è composta dai seguenti quattro step / microistruzioni:
+Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio mnemonico del 6502 si traduce in "carica nell'accumulatore il valore esadecimale $94") è composta dai seguenti quattro step / microistruzioni:
 
 ~~~text
 | ---- | ------------------------- |
@@ -174,6 +174,7 @@ Per finalizzare l'analisi dell'istruzione LDA #$94, riepiloghiamo lo stato del c
 
 - il Flag Z non sarà attivo (il risultato dell'operazione di caricamento dell'accumulatore non è uguale a zero);
 - il Flag N sarà attivo (secondo il metodo di [rappresentazione dei numeri Signed](../math/#numeri-unsigned-e-numeri-signed) a 8 bit in Complemento a 2, $94 / 1001.0100 è un numero negativo, in quanto il bit più significativo è allo stato logico 1);
+- i Flag V e C non saranno modificati rispetto allo stato precedente;
 - l'accumulatore A e il registro H conterranno il valore $94 esadecimale.
 
 ### Fasi
@@ -204,7 +205,7 @@ Utilizzando una logica combinatoria, è possibile costruire il microcode da cari
 
 Nell'immagine si può osservare che le uscite del contatore controllano anche il demultiplexer, che viene utilizzato per visualizzare lo stato dell'RC. Anziché impiegare 16 LED (e due '138), un singolo LED "esteso" è pilotato dal pin più significativo del '161, che ha un valore pari ad 8: lo step correntemente in esecuzione sarà indicato dal LED acceso dal '138, al quale sommare 8 se il LED "esteso" è acceso.
 
-### Il clock e il "glitching" delle EEPROM
+### Il clock, il "glitching" delle EEPROM e l'Instruction Register (parte 2)
 
 In generale, i momenti essenziali di un ciclo di clock in un computer sono due: il Rising Edge ↗ (passaggio del segnale dallo stato logico LO allo stato logico HI) e il Falling Edge ↘ (viceversa).
 
@@ -295,6 +296,12 @@ Risulta comunque interessante visualizzare il comportamento dei segnali di contr
 *Nessun glitching sul BEAM al momento 7 nello step 1*.
 
 Il primo dei due '377 dell'IR viene aggiornato al Rising Edge nel momento 7, come avviene anche nel SAP. Le uscite di questo primo registro sono inviate come input al secondo '377, che si aggiorna al momento 9 in contemporanea con l'incremento del RC al Falling Edge del clock. In questo modo, tutti i segnali di controllo hanno tempo di stabilizzarsi in attesa del momento 11, quando i registri vengono caricati secondo le microistruzioni impostate dallo step 2.
+
+**sistemare il wavedro, perché l'istruzione LDY del BEAM ha il PCI all'ultimo step e non penultimo**
+
+**DA FINIRE aggiungere qui la wavedrom del caricamento del flag** Se tutti registri 8 bit del beam sono realizzati con 377, vi sono in realtà alcuni registri che abbisognano di un gate in ingresso per creare un segnale di  abilitazione artificiale: Flag. Per modificare un Flag possiamo prendere in esame la semplice istruzione CLC che azzera il carry.
+
+---
 
 Concludendo la sezione, è importante ricordare che le operazioni di lettura e scrittura impostate dalla Control Word vengono eseguite secondo tempistiche diverse. Al Falling Edge del clock:
 
@@ -530,17 +537,16 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 
 ## TO DO
 
-- aggiornare lo schema Kicad con le le bar a 8 segmenti e aggiornare questa pagina con lo schema aggiornato
+- aggiornare lo schema Kicad con le bar a 8 segmenti e aggiornare questa pagina con lo schema aggiornato
 - Una volta fatta una sezione nella pagina ALU per descrivere il comportamento del registro H, fare un link da questa pagina nella sezione che parla della mutua esclusività dei segnali di controllo.
 - Schema della Control Logic e dell’Instruction Register del SAP computer --- l'immagine probabilmente risulta troppo piccola su schermi "normali"
-- da qualche parte devo descrivere o meglio linkare a masswerk per gli indirizzamenti del 6502.
 - Forse utile fare una tabella per vedere le similitudini tra istruzione LDA nel SAP e LDA94 nel NQSAP
-- da aggiungere: In addition, the SAP-1 also drives address lines with the outputs of the Flags Register, so this causes uncertainty on any rising edge that modifies the flags.
 - Se /LDR-ACTIVE viene attivato (LO), LDR-ACTIVE passa a HI e disattiva le ROM2 e ROM3 collegate via /OE.
 - finire http://www.6502.org/tutorials/compare_beyond.html da "In fact, many 6502 assemblers will allow BLT (Branch on Less Than) "
 - Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
-- verificare se l'immagine "Glitching all’istruzione LDY nell’NQSAP." è corretta o no, come da chat con Tom sul fatto che forse i segnali sono come allo stato 0... forse nel momento del caricamento di Y non c'è glitch?
+- "Glitching all’istruzione LDY nell’NQSAP." controllare la risposta di Tom, dice che al momento 15 ritorniamo al punto zero?
 - Far notare da qualche parte che al punto 7 l'unico registro che viene caricato è l'IR.
+- veririficare i nomi dei segnali N e NI, nel microcode del BEAM è N, ma nello schema è NI...
 
 ## Forse interessante da tenere, espandere, collegare ad altri paragrafi
 
