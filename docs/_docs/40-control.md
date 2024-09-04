@@ -7,7 +7,7 @@ excerpt: "Control Logic del BEAM computer"
 
 In generale, la gestione delle istruzioni è affidata alla Control Logic, che consta di tre capisaldi: Instruction Register, Ring Counter e Microcode. L'Instruction Register contiene l'istruzione in esecuzione, il Ring Counter tiene traccia delle microistruzioni che compongono l'istruzione e il Microcode definisce i segnali di controllo necessari per eseguire le microistruzioni.
 
-Questa pagina descrive le Control Logic dell'NQSAP e del BEAM, evidenzia le differenze con la Control Logic del SAP di Ben Eater e approfondisce gli argomenti che avevo trovato più ostici o più interessanti.
+Questa pagina descrive le Control Logic dell'NQSAP e del BEAM, evidenzia alcune differenze con la Control Logic del SAP di Ben Eater e approfondisce gli argomenti che avevo trovato più ostici o più interessanti.
 
 Per facilità di consultazione e semplificazione del confronto fra i tre computer SAP, NQSAP e BEAM, è opportuno riepilogare in tabella alcuni degli aspetti ricorrenti nel testo.
 
@@ -62,7 +62,7 @@ Ad esempio:
 
 - L'istruzione LDA 15 all'indirizzo di memoria 0000 è composta dai 4 bit più significativi (MSB) 0001 (che nel microcode definiscono un'operazione di caricamento accumulatore) e dai 4 bit meno significativi (LSB) 1111, che indicano l'indirizzo di memoria 15, nel quale è presente il valore 5 da caricare nell'accumulatore A.
 - L'istruzione ADD 14 all'indirizzo di memoria 0001 è composta dai 4 bit MSB 0010 (che nel microcode definiscono un'operazione di somma) e dai 4 bit LSB 1110, che indicano l'indirizzo di memoria 14, nel quale è presente il valore 6 da sommare al valore già presente nell'accumulatore A.
-- L'istruzione OUT non necessita di operando: espone sul modulo di Output il contenuto di A, pertanto i 4 LSB sono irrilevanti.
+- L'istruzione OUT non necessita di operando: espone il contenuto di A sul modulo di Output, pertanto i 4 LSB sono irrilevanti.
 
 | Mnemonico | Indirizzo | Istruzione.Operando |
 | -         | -         | -                   |
@@ -109,16 +109,16 @@ Tirando le fila, per un computer come l'NQSAP o il BEAM:
 - la connessione tra IR ed EEPROM deve avere un'ampiezza di 8 bit e non più di soli 4 bit come nel SAP;
 - sono necessarie EEPROM con 13 (NQSAP, 2^13 = 64Kb) o 14 (BEAM, 2^14 = 128Kb) pin di indirizzamento:
   - 8 pin per le istruzioni (2^8 = 256 istruzioni)
-  - 3 o 4 pin per le microistruzioni (2^3 = 8 step, 2^4 = 16 step), delle quali si parla nella sezione dedicata al [Ring Counter](#ring-counter-e-microistruzioni)
+  - 3 o 4 pin per le microistruzioni (NQSAP, 2^3 = 8 step; BEAM, 2^4 = 16 step), delle quali si parla nella sezione dedicata al [Ring Counter](#ring-counter-e-microistruzioni)
   - 2 pin per la selezione delle EEPROM
 
 Per l'NQSAP Tom ha deciso di utilizzare comunque EEPROM da 256Kb anziché da 64Kb; il BEAM richiede invece obbligatoriamente EEPROM da 256Kb, perché le EEPROM da 128Kb con interfaccia parallela <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">non sono disponibili in commercio</a>.
 
 Come si vedrà in seguito parlando del Ring Counter, un aspetto importante del caricamento dei registri è il [*momento*](#il-clock-il-glitching-delle-eeprom-e-linstruction-register-parte-2) in cui vengono caricati: al Falling Edge\* del clock, oppure al Rising Edge\*: il caricamento dell'Instruction Register del SAP e dell'NQSAP avviene al Rising Edge, mentre quello del BEAM avviene al Falling Edge.
 
-Prima di approfondire l'argomento, è opportuno iniziare a parlare anche del Ring Counter, che ha un ruolo primario nel caricamento di tutti i registri, IR compreso.
-
 \* Questa pagina utilizza sempre i termini Rising Edge e Falling Edge in riferimento al clock normale (CLK). Alcuni componenti ricevono un segnale di clock invertito (/CLK), che in alcuni grafici è rappresentato solo per evidenziare visivamente il segnale effettivo ricevuto.
+
+Prima di approfondire l'argomento, è opportuno iniziare a parlare anche del Ring Counter, che ha un ruolo primario nel caricamento di tutti i registri, IR compreso.
 
 ## Ring Counter e Microistruzioni
 
@@ -131,14 +131,14 @@ Il Ring Counter (RC) tiene traccia dello stato di avanzamento delle microistruzi
 Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio mnemonico del 6502 si traduce in "carica nell'accumulatore il valore esadecimale $94") è composta dai seguenti quattro step / microistruzioni:
 
 ~~~text
-| ---- | ------------------------- |
-| Step | Microistruzione           |
-| ---- | ------------------------- |
-| 1*   | RPC | WM                  |
-| 2*   | RR  | WIR | PCI           |
-| 3    | RPC | WM                  |
-| 4    | RR  | FNZ | WAH | PCI | N |
-| ---- | ------------------------- |
+| ---- | -------------------------- |
+| Step | Microistruzione            |
+| ---- | -------------------------- |
+| 1*   | RPC | WM                   |
+| 2*   | RR  | WIR | PCI            |
+| 3    | RPC | WM                   |
+| 4    | RR  | FNZ | WAH | PCI | NI |
+| ---- | -------------------------- |
 ~~~
 
 *Scomposizione dell'istruzione LDA nelle sue quattro microistruzioni elementari*.
@@ -158,7 +158,7 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio mnemonico del 65
     - FNZ, Flag N & Z - abilita la scrittura dei Flag N e Z
     - WAH, Write A & H - scrive il contenuto del bus su A e H*
     - PCI, Program Counter Increment - incrementa il Program Counter
-    - N, Next - resetta il Ring Counter**
+    - NI, Next Instruction - resetta il Ring Counter**
 
 \* Perché anche H? Si veda la sezione dedicata alla spiegazione del [registro H](../alu/#il-registro-h) nella pagina dell'ALU.
 
@@ -254,14 +254,14 @@ Il fenomeno del glitching si manifesta su tutti i segnali di controllo, sia quel
 
 *SAP computer - istruzione LDA*.
 
-Non è invece visibile nel grafico un'ulteriore fonte di instabilità derivante dall'implementazione del registro dei Flag: pilotando direttamente gli ingressi delle EEPROM, causa di incertezze a ogni Rising Edge che modifica i Flag.
+Non è invece visibile nel grafico un'ulteriore fonte di instabilità del SAP derivante dall'implementazione del registro dei Flag, che, pilotando direttamente gli ingressi delle EEPROM, provoca glitching a ogni Rising Edge che modifica i Flag stessi.
 
 Prima di continuare, è interessante esaminare gli step di questa istruzione e ricollegarsi alla spiegazione dell'istruzione [LDA #$94](#ring-counter-e-microistruzioni) dell'NQSAP per vedere le similitudini:
 
-1. PC esposto sul bus (CO) e caricamento del MAR (MI)
-2. RAM esposta sul bus (RO), caricamento dell'IR (II) e incremento del PC (CE)
-3. IR esposto sul bus (IO), caricamento del MAR (MI)
-4. RAM esposta sul bus (RO), caricamento di A (AI)
+1. PC esposto sul bus (CO, Counter Out) e caricamento del MAR (MI, Memory Address Register In)
+2. RAM esposta sul bus (RO, RAM Out), caricamento dell'IR (II, Instruction Register In) e incremento del PC (CE, Counter Enable)
+3. IR esposto sul bus (IO, Instruction Register Out), caricamento del MAR (MI, Memory Address Register In)
+4. RAM esposta sul bus (RO, RAM Out), caricamento di A (AI, A In)
 
 Dopo questa breve digressione, ritorniamo al discorso principale.
 
@@ -271,7 +271,7 @@ Possiamo ora riprendere la domanda fatta in precedenza in questa sezione: "Quali
 
 Se nel computer sono presenti registri privi di un segnale di Enable, il loro caricamento può essere effettuato implementando una logica combinatoria tra il clock e il segnale di controllo dedicato. Ad esempio, nell'NQSAP i [registri D, X e Y](../dxy) e il [registro B](../alu/#lalu-dellnqsap) sono realizzati con <a href="https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf" target="_blank">74LS574</a> e porte NOR.
 
-[![Registro Y dell'NQSAP](../../assets/control/40-NQSAP-dxy-y.png "Registro Y dell'NQSAP"){:width="66%"}](../../assets/control/40-NQSAP-dxy-y.png)
+[![Registro Y dell'NQSAP](../../assets/control/40-NQSAP-dxy-y.png "Registro Y dell'NQSAP"){:width="75%"}](../../assets/control/40-NQSAP-dxy-y.png)
 
 *Registro Y dell'NQSAP*.
 
@@ -285,7 +285,7 @@ Ed è da qui che prende forma il design dell'Instruction Register dell'<a href="
 
 Questa miglioria è stata recepita nel BEAM, che cerca di includere tutti gli aspetti positivi dei due progetti di Tom:
 
-[![Schema dell'Instruction Register del BEAM](../../assets/control/40-cl-ir-beam.png "Schema dell'Instruction Register del BEAM"){:width="66%"}](../../assets/control/40-cl-ir-beam.png)
+[![Schema dell'Instruction Register del BEAM](../../assets/control/40-cl-ir-beam-nqsap.png "Schema dell'Instruction Register del BEAM"){:width="66%"}](../../assets/control/40-cl-ir-beam-nqsap.png)
 
 *Schema dell'Instruction Register del BEAM.*
 
@@ -576,6 +576,7 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 
 ## TO DO
 
+- aggiungere i link a masswerk
 - aggiornare lo schema Kicad con le bar a 8 segmenti e aggiornare questa pagina con lo schema aggiornato
 - Una volta fatta una sezione nella pagina ALU per descrivere il comportamento del registro H, fare un link da questa pagina nella sezione che parla della mutua esclusività dei segnali di controllo.
 - Schema della Control Logic e dell’Instruction Register del SAP computer --- l'immagine probabilmente risulta troppo piccola su schermi "normali"
@@ -586,6 +587,8 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 - Far notare da qualche parte che al punto 7 l'unico registro che viene caricato è l'IR.
 - veririficare i nomi dei segnali N e NI, nel microcode del BEAM è N, ma nello schema è NI...
 - Il segnale LDR-Active allo stato HI permette al Loader di prendere il controllo della Control Logic, disabilitando le prime due EEPROM...  del circuito di clock, disattivandone completamente l’output e fermando l’esecuzione del programma. In questa circostanza, il Loader può iniettare nel computer il suo segnale di clock LDR-CLK, che viene utilizzato per programmare la RAM.
+- notare le istruzioni non implementate e quelle aggiuntive: INA DEA RTI BCD
+- a questo punto "Tutti questi segnali spuri generalmente non sono un problema per il SAP, perché le microistruzioni scrivono su registri tipo D 74LS173 attivati al Rising Edge del clock, cioè quando i segnali di controllo sono stabili. Ad esempio, il glitching di MI al momento 7 non è fonte di problemi, perché il ‘173 del MAR memorizza nuovi valori solo col segnale di Enable attivo e il Rising Edge del clock: in quel momento, i segnali di controllo si trovano in uno stato stabile e non c’è rischio di caricare dati non corretti." bisogna capire il discorso dei FLAG se / che causano glitching e capire dove dire "eccetto i flag"
 
 ## Forse interessante da tenere, espandere, collegare ad altri paragrafi
 
