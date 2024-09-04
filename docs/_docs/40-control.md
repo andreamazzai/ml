@@ -289,7 +289,7 @@ Questa miglioria è stata recepita nel BEAM, che cerca di includere tutti gli as
 
 Per risolvere i problemi di glitching, Tom ha ridisegnato l'IR sostituendo i 74LS173 con due registri tipo D <a href="https://www.ti.com/lit/ds/symlink/sn74ls377.pdf" target="_blank">74LS377</a> in cascata. Il primo si aggiorna come di consueto durante il normale caricamento dell'IR, che avviene al Rising Edge del clock al momento 7 dello step 1 e mantiene inalterata l'operatività del computer. L'output del primo registro viene portato come input al secondo '377, che viene aggiornato al Falling Edge in contemporanea all'incremento del Ring Counter. In questo modo, tutti gli ingressi delle EEPROM vengono aggiornati simultaneamente, garantendo che i segnali di controllo in uscita siano stabili quando i registri del computer vengono aggiornati al Rising Edge.
 
-Peraltro, *tutti* i registri a 8 bit del BEAM sono realizzati con 74LS377 dotati di Enable e clock separati, pertanto non si possono verificare caricamenti indesiderati, in quanto al Rising Edge del clock i segnali di controllo sono sempre stabili.
+Inoltre, *tutti* i registri a 8 bit del BEAM sono realizzati con 74LS377, dotati di Enable e clock separati. Conseguentemente, non si possono verificare caricamenti indesiderati poiché, al Rising Edge del clock, i segnali di controllo sono sempre stabili.
 
 Risulta comunque interessante visualizzare il comportamento dei segnali di controllo al momento 7:
 
@@ -297,7 +297,7 @@ Risulta comunque interessante visualizzare il comportamento dei segnali di contr
 
 *Nessun glitching sul BEAM al momento 7 nello step 1*.
 
-Il primo dei due '377 dell'IR viene aggiornato al Rising Edge nel momento 7, come avviene anche nel SAP. Le uscite di questo primo registro sono inviate come input al secondo '377, che si aggiorna al momento 9 in contemporanea con l'incremento del RC al Falling Edge del clock. In questo modo, tutti gli ingressi delle EEPROM vengono aggiornati contemporaneamente e hanno tempo di stabilizzarsi in attesa del momento 11, quando i registri vengono caricati secondo le microistruzioni impostate nello step 2.
+Il primo dei due '377 viene aggiornato al Rising Edge nel momento 7, come avviene anche nel SAP. Le uscite di questo primo registro sono inviate come input al secondo '377, che si aggiorna al Falling Edge del clock al momento 9 in contemporanea con l'incremento del RC. In questo modo, tutti gli ingressi delle EEPROM vengono aggiornati contemporaneamente e hanno tempo di stabilizzarsi in attesa del momento 11, quando i registri vengono caricati secondo le microistruzioni impostate nello step 2.
 
 Come possiamo essere certi che l'eliminazione del glitching nel BEAM derivi effettivamente dalla bufferizzazione del Program Counter? Tutti i registri 8 bit sono realizzati con '377 dotati di ingresso Enable, ma alcuni altri registri sono privi di tale ingresso, come il Flip-Flop 74LS74 utilizzato per memorizzare i Flag. Una porta AND permette di realizzare un segnale di Enable artificiale, come nello schema *Registro Y dell’NQSAP*.
 
