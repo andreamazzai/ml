@@ -283,15 +283,15 @@ La risposta alla domanda è che il caricamento dell'Instruction Register al mome
 
 Ed è da qui che prende forma il design dell'Instruction Register dell'<a href="https://tomnisbet.github.io/nqsap-pcb/" target="_blank">NQSAP-PCB</a>, evoluzione dell'NQSAP.
 
-Questa miglioria è stata recepita nel BEAM, che cerca di includere tutti gli aspetti positivi dei due progetti di Tom:
+Questa miglioria è stata recepita nel BEAM, che cerca di includere tutti gli aspetti positivi dei due progetti di Tom.
+
+Per risolvere i problemi di glitching, Tom ha ridisegnato l'IR sostituendo i 74LS173 con due registri tipo D <a href="https://www.ti.com/lit/ds/symlink/sn74ls377.pdf" target="_blank">74LS377</a> in cascata. Il primo si aggiorna come di consueto durante il normale caricamento dell'IR, che avviene al Rising Edge del clock al momento 7 dello step 1 e mantiene inalterata l'operatività del computer. L'output del primo registro viene portato come input al secondo '377, che viene aggiornato al Falling Edge in contemporanea all'incremento del Ring Counter. In questo modo, tutti gli ingressi delle EEPROM vengono aggiornati simultaneamente, garantendo che i segnali di controllo in uscita siano stabili quando i registri del computer vengono aggiornati al Rising Edge.
 
 [![Schemi dell'Instruction Register dell'NQSAP e del BEAM](../../assets/control/40-cl-ir-beam-nqsap.png "Schemi dell'Instruction Register dell'NQSAP e del BEAM"){:width="100%"}](../../assets/control/40-cl-ir-beam-nqsap.png)
 
 *Schemi dell'Instruction Register dell'NQSAP e del BEAM.*
 
-Per risolvere i problemi di glitching, Tom ha ridisegnato l'IR sostituendo i 74LS173 con due registri tipo D <a href="https://www.ti.com/lit/ds/symlink/sn74ls377.pdf" target="_blank">74LS377</a> in cascata. Il primo si aggiorna come di consueto durante il normale caricamento dell'IR, che avviene al Rising Edge del clock al momento 7 dello step 1 e mantiene inalterata l'operatività del computer. L'output del primo registro viene portato come input al secondo '377, che viene aggiornato al Falling Edge in contemporanea all'incremento del Ring Counter. In questo modo, tutti gli ingressi delle EEPROM vengono aggiornati simultaneamente, garantendo che i segnali di controllo in uscita siano stabili quando i registri del computer vengono aggiornati al Rising Edge.
-
-Peraltro, *tutti* i registri a 8 bit del BEAM sono realizzati con 74LS377, dotati di Enable e clock separati. Conseguentemente, non si possono verificare caricamenti indesiderati poiché, al Rising Edge del clock, i segnali di controllo sono sempre stabili.
+Peraltro, *tutti* i registri a 8 bit del BEAM sono realizzati con componenti dotati di Enable e Clock separati. Conseguentemente, non si possono verificare caricamenti indesiderati poiché, al Rising Edge del clock, i segnali di controllo sono sempre stabili.
 
 Risulta comunque interessante visualizzare il comportamento dei segnali di controllo al momento 7:
 
@@ -301,7 +301,7 @@ Risulta comunque interessante visualizzare il comportamento dei segnali di contr
 
 Il primo dei due '377 si aggiorna al Rising Edge al momento 7, senza causare glitching nelle EEPROM, poiché i loro ingressi non vengono modificati. Le uscite di questo primo registro vengono quindi inviate come input al secondo '377, che si aggiorna al Falling Edge del clock al momento 9, contemporaneamente all'incremento del RC. Solo ora tutti gli ingressi delle EEPROM vengono aggiornati simultaneamente, consentendo ai segnali di controllo di stabilizzarsi in attesa del momento 11, quando i registri vengono caricati secondo le microistruzioni impostate nello step 2.
 
-Come possiamo essere certi che l'eliminazione del glitching nel BEAM derivi effettivamente dalla doppia bufferizzazione del Program Counter? Tutti i registri 8 bit sono realizzati con '377 dotati di ingresso Enable, ma alcuni altri registri sono privi di tale ingresso, come il Flip-Flop 74LS74 utilizzato per memorizzare i Flag. Una porta AND permette di realizzare un segnale di Enable artificiale, similarmente allo schema del *Registro Y dell’NQSAP*.
+Come possiamo essere certi che l'eliminazione del glitching nel BEAM derivi effettivamente dalla doppia bufferizzazione del Program Counter? Tutti i registri a 8 bit realizzati con componenti dotati di Enable e Clock separati sono immuni al fenomeno, ma alcuni altri registri sono privi di tale ingresso, come il Flip-Flop 74LS74 utilizzato per memorizzare i Flag. Una porta AND permette di realizzare un segnale di Enable artificiale, similarmente allo schema del *Registro Y dell’NQSAP*.
 
 ![Registro Flag C del BEAM](../../assets/control/40-beam-c-flag.png "Registro Flag C del BEAM"){:width="66%"}
 
@@ -310,13 +310,13 @@ Come possiamo essere certi che l'eliminazione del glitching nel BEAM derivi effe
 Esaminiamo la semplice istruzione SEC, che imposta il Carry.
 
 ~~~text
-| ---- | --------------------|
-| Step | Microistruzione     |
-| ---- | --------------------|
-| 1*   | RPC | WM            |
-| 2*   | RR  | WIR | PCI     |
-| 3    | CC  | FC  | RL  | N |
-| ---- | --------------------|
+| ---- | ---------------------|
+| Step | Microistruzione      |
+| ---- | ---------------------|
+| 1*   | RPC | WM             |
+| 2*   | RR  | WIR | PCI      |
+| 3    | CC  | FC  | RL  | NI |
+| ---- | ---------------------|
 ~~~
 
 *Scomposizione dell'istruzione SEC nelle sue tre microistruzioni elementari*.
@@ -332,15 +332,15 @@ Esaminiamo la semplice istruzione SEC, che imposta il Carry.
     - CC, Clear Carry - imposta l'ingresso ALU-Cin dell'ALU (ricordare che il Carry del '181 è [invertito](../alu/#funzioni-logiche-e-operazioni-aritmetiche): stato HI = inattivo)
     - FC, Flag C - predispone il caricamento del Flag C
     - RL, Read ALU - espone sul bus il contenuto dell'ALU
-    - N, Next - resetta il Ring Counter
+    - NI, Next Instruction - resetta il Ring Counter
 
-CC invia un segnale HI al pin ALU-Cin e l'[opcode 03](..alu/#relazione-diretta-hardwired-tra-instruction-register-e-alu), senza Carry, configura l'ALU per emettere un output di tutti 1 sul bus. Al Rising Edge del clock, il valore 1 presente al pin D del Flip-Flop viene caricato e mantenuto, impostando cosi il Flag di Carry.
+CC attivo al momento 9 invia un segnale HI al pin ALU-Cin e l'[opcode 03](..alu/#relazione-diretta-hardwired-tra-instruction-register-e-alu), senza Carry, configura l'ALU per emettere un output di tutti 1 sul bus.
 
 [![Nessun glitching sul BEAM al caricamento del Flag C](../../assets/control/40-beam-sec.png "Nessun glitching sul BEAM al caricamento del Flag C"){:width="100%"}](../../assets/control/40-beam-sec.png)
 
 *Nessun glitching sul BEAM al caricamento del Flag C*.
 
-I registri vengono aggiornati al Rising Edge del clock: il segnale FC è stabile e il Flip-Flop che contiene il Flag C viene aggiornato senza effetti collaterali.
+ Al Rising Edge del clock, il valore 1 presente al pin D del Flip-Flop viene caricato e mantenuto, impostando cosi il Flag di Carry: al momento 11 il segnale FC è stabile e il Flip-Flop che contiene il Flag C viene aggiornato senza effetti collaterali.
 
 ---
 
@@ -377,7 +377,7 @@ In pratica, il Ring Counter ritorna allo step iniziale.
 
 Potrebbe sorgere una domanda: perché non collegare il segnale N del microcode direttamente al pin di Reset del contatore?
 
-Il reset del '161 è *asincrono*, che significa che è indipendente dal clock: di conseguenza, il contatore verrebbe resettato al Falling Edge nel momento stesso dell'impostazione della Control Word, non permettendo il completamento dello step al Rising Edge!
+Il reset del '161 è *asincrono*, che significa che è indipendente dal clock: di conseguenza, il contatore verrebbe resettato al Falling Edge del clock nel momento stesso dell'impostazione della Control Word, non permettendo il completamento dello step al Rising Edge!
 
 In realtà, fa notare Tom, sarebbe comunque possibile utilizzare il Reset asincrono del '161 collegato direttamente al segnale N, ma questo significherebbe dover aggiungere uno step dedicato al reset come ultima microistruzione di ogni istruzione. Utilizzando invece il caricamento sincrono, non è necessario uno step di reset dedicato.
 
