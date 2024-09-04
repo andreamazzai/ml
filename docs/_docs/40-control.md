@@ -99,7 +99,7 @@ Per poter gestire queste combinazioni ed emulare così il set di istruzioni del 
 
 \* Un computer con 256 byte di RAM non necessita di istruzioni a 3 byte, perché un operando della lunghezza di un singolo byte è in grado di indirizzare tutta la memoria del computer, come brevemente discusso anche nella sezione [Indirizzamenti](../alu/#indirizzamenti) della pagina dedicata all'ALU.
 
-[![Schemi dell'Instruction Register dell'NQSAP e del BEAM](../../assets/control/40-cl-ir-beam-nqsap.png "Schemi dell'Instruction Register dell'NQSAP e del BEAM"){:width="66%"}](../../assets/control/40-cl-ir-beam-nqsap.png.png)
+[![Schemi dell'Instruction Register dell'NQSAP e del BEAM](../../assets/control/40-cl-ir-beam-nqsap.png "Schemi dell'Instruction Register dell'NQSAP e del BEAM"){:width="100%"}](../../assets/control/40-cl-ir-beam-nqsap.png)
 
 *Schemi dell'Instruction Register dell'NQSAP e del BEAM.*
 
