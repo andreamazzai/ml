@@ -83,8 +83,6 @@ Ad esempio:
 
 In conseguenza del numero di bit utilizzato per l'istruzione, la connessione tra Instruction Register del SAP ed EEPROM contenenti il microcode poteva avere una ampiezza di soli 4 bit, come visibile in figura:
 
-![Alt text](image.png)
-
 [![Schema della Control Logic e dell'Instruction Register del SAP](../../assets/control/40-control-logic-schema-SAP.png "Schema della Control Logic e dell'Instruction Register del SAP"){:width="100%"}](../../assets/control/40-control-logic-schema-SAP.png)
 
 *Schema della Control Logic e dell'Instruction Register del SAP.*
