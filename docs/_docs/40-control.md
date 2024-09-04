@@ -285,9 +285,9 @@ Ed è da qui che prende forma il design dell'Instruction Register dell'<a href="
 
 Questa miglioria è stata recepita nel BEAM, che cerca di includere tutti gli aspetti positivi dei due progetti di Tom:
 
-[![Schema dell'Instruction Register del BEAM](../../assets/control/40-cl-ir-beam-nqsap.png "Schema dell'Instruction Register del BEAM"){:width="66%"}](../../assets/control/40-cl-ir-beam-nqsap.png)
+[![Schemi dell'Instruction Register dell'NQSAP e del BEAM](../../assets/control/40-cl-ir-beam-nqsap.png "Schemi dell'Instruction Register dell'NQSAP e del BEAM"){:width="66%"}](../../assets/control/40-cl-ir-beam-nqsap.png)
 
-*Schema dell'Instruction Register del BEAM.*
+*Schemi dell'Instruction Register dell'NQSAP e del BEAM.*
 
 Per risolvere i problemi di glitching, Tom ha ridisegnato l'IR sostituendo i 74LS173 con due registri tipo D <a href="https://www.ti.com/lit/ds/symlink/sn74ls377.pdf" target="_blank">74LS377</a> in cascata. Il primo si aggiorna come di consueto durante il normale caricamento dell'IR, che avviene al Rising Edge del clock al momento 7 dello step 1 e mantiene inalterata l'operatività del computer. L'output del primo registro viene portato come input al secondo '377, che viene aggiornato al Falling Edge in contemporanea all'incremento del Ring Counter. In questo modo, tutti gli ingressi delle EEPROM vengono aggiornati simultaneamente, garantendo che i segnali di controllo in uscita siano stabili quando i registri del computer vengono aggiornati al Rising Edge.
 
