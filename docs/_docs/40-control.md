@@ -250,11 +250,11 @@ Il glitching dovuto alle variazioni degli indirizzi di ingresso delle EEPROM del
 
 Il fenomeno del glitching si manifesta su tutti i segnali di controllo, sia quelli variati di proposito, sia quelli che non vengono modificati nello step corrente. Come nota a latere, bisogna segnalare che *tutti* i segnali di controllo del computer sono soggetti a questo fenomeno, anche se non indicati nel grafico.
 
-Un'ulteriore fonte di instabilità nel SAP deriva dall'implementazione del registro dei Flag, che pilota direttamente gli ingressi delle EEPROM, causando incertezze a ogni Rising Edge che modifica i Flag.
-
 [![SAP computer - istruzione LDA](../../assets/control/40-wavedrom-sap-lda.png "SAP computer - istruzione LDA"){:width="100%"}](../../assets/control/40-wavedrom-sap-lda.png)
 
 *SAP computer - istruzione LDA*.
+
+Non è invece visibile nel grafico un'ulteriore fonte di instabilità derivante dall'implementazione del registro dei Flag: pilotando direttamente gli ingressi delle EEPROM, causa di incertezze a ogni Rising Edge che modifica i Flag.
 
 Prima di continuare, è interessante esaminare gli step di questa istruzione e ricollegarsi alla spiegazione dell'istruzione [LDA #$94](#ring-counter-e-microistruzioni) dell'NQSAP per vedere le similitudini:
 
