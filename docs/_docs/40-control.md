@@ -83,6 +83,8 @@ Ad esempio:
 
 In conseguenza del numero di bit utilizzato per l'istruzione, la connessione tra Instruction Register del SAP ed EEPROM contenenti il microcode poteva avere una ampiezza di soli 4 bit, come visibile in figura:
 
+![Alt text](image.png)
+
 [![Schema della Control Logic e dell'Instruction Register del SAP](../../assets/control/40-control-logic-schema-SAP.png "Schema della Control Logic e dell'Instruction Register del SAP"){:width="100%"}](../../assets/control/40-control-logic-schema-SAP.png)
 
 *Schema della Control Logic e dell'Instruction Register del SAP.*
@@ -579,13 +581,13 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 - aggiornare lo schema Kicad con le bar a 8 segmenti e aggiornare questa pagina con lo schema aggiornato
 - Una volta fatta una sezione nella pagina ALU per descrivere il comportamento del registro H, fare un link da questa pagina nella sezione che parla della mutua esclusività dei segnali di controllo.
 - Schema della Control Logic e dell’Instruction Register del SAP computer --- l'immagine probabilmente risulta troppo piccola su schermi "normali"
-- Forse utile fare una tabella per vedere le similitudini tra istruzione LDA nel SAP e LDA94 nel NQSAP
 - Se /LDR-ACTIVE viene attivato (LO), LDR-ACTIVE passa a HI e disattiva le ROM2 e ROM3 collegate via /OE.
 - finire http://www.6502.org/tutorials/compare_beyond.html da "In fact, many 6502 assemblers will allow BLT (Branch on Less Than) "
 - Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
 - "Glitching all’istruzione LDY nell’NQSAP." controllare la risposta di Tom, dice che al momento 15 ritorniamo al punto zero?
 - Far notare da qualche parte che al punto 7 l'unico registro che viene caricato è l'IR.
 - veririficare i nomi dei segnali N e NI, nel microcode del BEAM è N, ma nello schema è NI...
+- Il segnale LDR-Active allo stato HI permette al Loader di prendere il controllo della Control Logic, disabilitando le prime due EEPROM...  del circuito di clock, disattivandone completamente l’output e fermando l’esecuzione del programma. In questa circostanza, il Loader può iniettare nel computer il suo segnale di clock LDR-CLK, che viene utilizzato per programmare la RAM.
 
 ## Forse interessante da tenere, espandere, collegare ad altri paragrafi
 
