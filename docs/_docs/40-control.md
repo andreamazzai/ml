@@ -248,7 +248,9 @@ Il glitching dovuto alle variazioni degli indirizzi di ingresso delle EEPROM del
 - ad ogni Falling Edge del clock come conseguenza del cambiamento delle uscite del Ring Counter (momenti 1, 5, 9, 13, 17)
 - al Rising Edge del Clock come conseguenza del caricamento dell'istruzione nell'Instruction Register (momento 7 nello step 1).
 
-Risulta evidente che il fenomeno si manifesta su tutti i segnali di controllo, sia quelli variati di proposito, sia quelli che non vengono modificati nello step corrente. Come nota a latere, bisogna segnalare che *tutti* i segnali di controllo del computer sono soggetti a questo fenomeno, anche se non indicati nel grafico.
+Il fenomeno del glitching si manifesta su tutti i segnali di controllo, sia quelli variati di proposito, sia quelli che non vengono modificati nello step corrente. Come nota a latere, bisogna segnalare che *tutti* i segnali di controllo del computer sono soggetti a questo fenomeno, anche se non indicati nel grafico.
+
+Un'ulteriore fonte di instabilità nel SAP deriva dall'implementazione del registro dei Flag, che pilota direttamente gli ingressi delle EEPROM, causando incertezze a ogni Rising Edge che modifica i Flag.
 
 [![SAP computer - istruzione LDA](../../assets/control/40-wavedrom-sap-lda.png "SAP computer - istruzione LDA"){:width="100%"}](../../assets/control/40-wavedrom-sap-lda.png)
 
@@ -297,9 +299,9 @@ Risulta comunque interessante visualizzare il comportamento dei segnali di contr
 
 *Nessun glitching sul BEAM al momento 7 nello step 1*.
 
-Il primo dei due '377 viene aggiornato al Rising Edge nel momento 7, come avviene anche nel SAP; nessun glitching  delle EEPROM, perché i loro ingressi non vengono aggiornati. Le uscite di questo primo registro sono inviate come input al secondo '377, che si aggiorna al Falling Edge del clock al momento 9 in contemporanea con l'incremento del RC. Solo ora tutti gli ingressi delle EEPROM vengono aggiornati contemporaneamente, dando modo ai segnali di controllo di stabilizzarsi in attesa del momento 11, quando i registri vengono caricati secondo le microistruzioni impostate nello step 2.
+Il primo dei due '377 si aggiorna al Rising Edge al momento 7, senza causare glitching nelle EEPROM, poiché i loro ingressi non vengono modificati. Le uscite di questo primo registro vengono quindi inviate come input al secondo '377, che si aggiorna al Falling Edge del clock al momento 9, contemporaneamente all'incremento del RC. Solo ora tutti gli ingressi delle EEPROM vengono aggiornati simultaneamente, consentendo ai segnali di controllo di stabilizzarsi in attesa del momento 11, quando i registri vengono caricati secondo le microistruzioni impostate nello step 2.
 
-Come possiamo essere certi che l'eliminazione del glitching nel BEAM derivi effettivamente dalla bufferizzazione del Program Counter? Tutti i registri 8 bit sono realizzati con '377 dotati di ingresso Enable, ma alcuni altri registri sono privi di tale ingresso, come il Flip-Flop 74LS74 utilizzato per memorizzare i Flag. Una porta AND permette di realizzare un segnale di Enable artificiale, come nello schema *Registro Y dell’NQSAP*.
+Come possiamo essere certi che l'eliminazione del glitching nel BEAM derivi effettivamente dalla doppia bufferizzazione del Program Counter? Tutti i registri 8 bit sono realizzati con '377 dotati di ingresso Enable, ma alcuni altri registri sono privi di tale ingresso, come il Flip-Flop 74LS74 utilizzato per memorizzare i Flag. Una porta AND permette di realizzare un segnale di Enable artificiale, similarmente allo schema del *Registro Y dell’NQSAP*.
 
 ![Registro Flag C del BEAM](../../assets/control/40-beam-c-flag.png "Registro Flag C del BEAM"){:width="66%"}
 
@@ -332,7 +334,7 @@ Esaminiamo la semplice istruzione SEC, che imposta il Carry.
     - RL, Read ALU - espone sul bus il contenuto dell'ALU
     - N, Next - resetta il Ring Counter
 
-CC invia un segnale HI al pin ALU-Cin e l'[opcode 03](..alu/#relazione-diretta-hardwired-tra-instruction-register-e-alu), senza Carry, configura l'ALU per emettere un output di tutti 1 sul bus. Al Rising Edge del clock il valore 1 presente al pin D del Flip-Flop viene caricato e mantenuto, impostando il Flag di Carry.
+CC invia un segnale HI al pin ALU-Cin e l'[opcode 03](..alu/#relazione-diretta-hardwired-tra-instruction-register-e-alu), senza Carry, configura l'ALU per emettere un output di tutti 1 sul bus. Al Rising Edge del clock, il valore 1 presente al pin D del Flip-Flop viene caricato e mantenuto, impostando cosi il Flag di Carry.
 
 [![Nessun glitching sul BEAM al caricamento del Flag C](../../assets/control/40-beam-sec.png "Nessun glitching sul BEAM al caricamento del Flag C"){:width="100%"}](../../assets/control/40-beam-sec.png)
 
@@ -346,8 +348,6 @@ Concludendo la sezione, è importante ricordare che tutti i segnali di una micro
 
 - I segnali di lettura impostati dalla Control Word attivano immediatamente l'eventuale modulo interessato da una Read, il quale presenta subito il suo output sul bus; ad esempio, l'attivazione di un bus transceiver <a href="https://www.mouser.com/datasheet/2/308/74LS245-1190460.pdf" target="_blank">74LS245</a> è immediata.
 - Viceversa, i segnali di caricamento preparano i moduli interessati, ma le operazioni di Write vengono eseguite solo al successivo Rising Edge del clock, assicurando così che i registri da aggiornare ricevano segnali già stabilizzati. Un esempio è il registro tipo D 74LS377 citato poc'anzi.
-
-**da aggiungere**:  In addition, the SAP-1 also drives address lines with the outputs of the Flags Register, so this causes uncertainty on any rising edge that modifies the flags.
 
 ### Lunghezza delle istruzioni
 
