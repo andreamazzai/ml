@@ -35,7 +35,7 @@ Legenda: IR = Instruction Register; RC = Ring Counter
 
 Alcune note propedeutiche:
 
-1. Nel computer SAP di Ben Eater, la denominazione dei segnali è "modulo-centrica", riflettendo la funzione specifica di ciascun modulo: ad esempio, il segnale RO (RAM Out) esporta il contenuto della RAM sul bus, mentre AI (A Input) carica il registro A. Nel computer NQSAP di Tom Nisbet e nel BEAM, invece, la nomenclatura è "computer-centrica", adottando un punto di vista a livello di bus: per esempio, RO diventa RR (RAM Read) e AI diventa WA (Write A).
+1. Nel computer SAP di Ben Eater, la denominazione dei segnali di controllo è "modulo-centrica", riflettendo la funzione specifica di ciascun modulo: ad esempio, il segnale RO (RAM Out) esporta il contenuto della RAM sul bus, mentre AI (A Input) carica il registro A. Nel computer NQSAP di Tom Nisbet e nel BEAM, invece, la nomenclatura è "computer-centrica", adottando un punto di vista a livello di bus: per esempio, RO diventa RR (RAM Read) e AI diventa WA (Write A).
 
 2. Nell'NQSAP e nel BEAM l'Instruction Register (IR) è incluso nello schema della Control Logic, mentre negli schemi del SAP stava su un foglio separato.
 
@@ -279,7 +279,7 @@ La risposta alla domanda è che il caricamento dell'Instruction Register al mome
 
 Ed è da qui che prende forma il design dell'Instruction Register dell'<a href="https://tomnisbet.github.io/nqsap-pcb/" target="_blank">NQSAP-PCB</a>, evoluzione dell'NQSAP.
 
-Per risolvere i problemi di glitching, Tom ha ridisegnato l'IR sostituendo i 74LS173 con due registri tipo D <a href="https://www.ti.com/lit/ds/symlink/sn74ls377.pdf" target="_blank">74LS377</a> in cascata. Il primo si aggiorna come di consueto durante il normale caricamento dell'IR, che avviene al Rising Edge del clock al momento 7 dello step 1 e mantiene inalterata l'operatività del computer. L'output del primo registro viene portato come input al secondo '377, che si carica al Falling Edge in contemporanea all'incremento del Ring Counter. In questo modo, tutti gli ingressi delle EEPROM vengono aggiornati simultaneamente al Falling Edge, garantendo che i segnali di controllo in uscita dalle EEPROM siano stabilizzati quando è il momento di caricare i registri al Rising Edge.
+Per risolvere i problemi di glitching, Tom ha ridisegnato l'IR sostituendo i 74LS173 con due registri tipo D <a href="https://www.ti.com/lit/ds/symlink/sn74ls377.pdf" target="_blank">74LS377</a> in cascata. Il primo si aggiorna come di consueto durante il normale caricamento dell'IR, che avviene al Rising Edge del clock al momento 7 dello step 1 e mantiene inalterata l'operatività del computer. L'output del primo registro viene portato come input al secondo '377, che viene aggiornato al Falling Edge in contemporanea all'incremento del Ring Counter. In questo modo, tutti gli ingressi delle EEPROM vengono aggiornati simultaneamente, garantendo che i segnali di controllo in uscita dalle EEPROM siano stabilizzati quando i registri del computer vengono aggiornati al Rising Edge.
 
 Questa modifica è stata recepita nel BEAM, che cerca di includere tutti gli aspetti positivi dei due progetti di Tom:
 
@@ -295,9 +295,9 @@ Risulta comunque interessante visualizzare il comportamento dei segnali di contr
 
 *Nessun glitching sul BEAM al momento 7 nello step 1*.
 
-Il primo dei due '377 dell'IR viene aggiornato al Rising Edge nel momento 7, come avviene anche nel SAP. Le uscite di questo primo registro sono inviate come input al secondo '377, che si aggiorna al momento 9 in contemporanea con l'incremento del RC al Falling Edge del clock. In questo modo, tutti gli ingressi delle EEPROM vengono aggiornati contemporaneamente e hanno tempo di stabilizzarsi in attesa del momento 11, quando i registri vengono caricati secondo le microistruzioni impostate dallo step 2.
+Il primo dei due '377 dell'IR viene aggiornato al Rising Edge nel momento 7, come avviene anche nel SAP. Le uscite di questo primo registro sono inviate come input al secondo '377, che si aggiorna al momento 9 in contemporanea con l'incremento del RC al Falling Edge del clock. In questo modo, tutti gli ingressi delle EEPROM vengono aggiornati contemporaneamente e hanno tempo di stabilizzarsi in attesa del momento 11, quando i registri vengono caricati secondo le microistruzioni impostate nello step 2.
 
-Come possiamo valutare che l'eliminazione del glitching deriva effettivamente dalla bufferizzazione del Program Counter? Tutti i registri 8 bit del BEAM sono realizzati con '377 dotati di ingresso Enable; alcuni altri registri sono privi di tale ingresso, come il Flip-Flop 74LS74 utilizzato per memorizzare i Flag. Una porta AND permette di realizzare un segnale di Enable artificiale.
+Come possiamo essere certi che l'eliminazione del glitching nel BEAM derivi effettivamente dalla bufferizzazione del Program Counter? Tutti i registri 8 bit sono realizzati con '377 dotati di ingresso Enable, ma alcuni altri registri sono privi di tale ingresso, come il Flip-Flop 74LS74 utilizzato per memorizzare i Flag. Una porta AND permette di realizzare un segnale di Enable artificiale, come nello schema *Registro Y dell’NQSAP*.
 
 ![Registro Flag C del BEAM](../../assets/control/40-beam-c-flag.png "Registro Flag C del BEAM"){:width="66%"}
 
@@ -320,7 +320,7 @@ Esaminiamo la semplice istruzione SEC, che imposta il Carry.
 1. Il primo step carica l'indirizzo del Program Counter nel Memory Address Register:
     - RPC, Read Program Counter - espone sul bus l'indirizzo del Program Counter
     - WM, Write Memory Address Register - scrive il contenuto del bus nel MAR
-2. Il secondo step carica l'opcode dell'istruzione nell'IR e incrementa il PC per farlo puntare alla locazione di memoria successiva (che nel caso dell'istruzione LDA contiene l'operando):
+2. Il secondo step carica l'opcode dell'istruzione nell'IR e incrementa il PC per farlo puntare alla locazione di memoria successiva (che nel caso dell'istruzione SEC, lunga un solo byte, sarà la prossima istruzione):
     - RR, Read RAM - espone sul bus il contenuto della locazione di memoria puntata dal MAR
     - WIR, Write Instruction Register - scrive il contenuto del bus nell'Instruction Register
     - PCI, Program Counter Increment - incrementa il Program Counter
@@ -330,11 +330,13 @@ Esaminiamo la semplice istruzione SEC, che imposta il Carry.
     - RL, Read ALU - espone sul bus il contenuto dell'ALU
     - N, Next - resetta il Ring Counter
 
-CC invia un segnale HI sul pin ALU-Cin; l'[opcode 03](..alu/#relazione-diretta-hardwired-tra-instruction-register-e-alu) senza Carry imposta l'ALU per emettere tutti 1 in output sul bus, dunque sul pin D del Flip-Flop ci sarà un 1, che sarà caricato sul registro C, effettivamente settando il Carry.
+CC invia un segnale HI al pin ALU-Cin e l'[opcode 03](..alu/#relazione-diretta-hardwired-tra-instruction-register-e-alu), senza Carry, configura l'ALU per emettere un output di tutti 1 sul bus. Al Rising Edge del clock il valore 1 presente al pin D del Flip-Flop viene caricato e mantenuto, impostando il Flag di Carry.
 
+[![Nessun glitching sul BEAM al caricamento del Flag C](../../assets/control/40-beam-sec.png "Nessun glitching sul BEAM al caricamento del Flag C"){:width="100%"}](../../assets/control/40-beam-sec.png)
 
+*Nessun glitching sul BEAM al caricamento del Flag C*.
 
-
+I registri vengono aggiornati al Rising Edge del clock: il segnale FC è stabile e il Flip-Flop che contiene il Flag C viene aggiornato senza effetti collaterali.
 
 ---
 
@@ -383,7 +385,7 @@ Come indicato anche nella sezione [Differenze](.../alu/#differenze-tra-moduli-al
 
 ### I 74LS138 per la gestione dei segnali
 
-La complessità dell'NQSAP è tale per cui i soli 16 segnali disponibili nella Control Logic del SAP non sarebbero stati sufficienti per pilotare moduli complessi come ad esempio l'ALU e il registro dei Flag; in conseguenza di questo, diventava necessario ampliare in maniera considerevole il numero di linee di controllo utilizzabili.
+La complessità dell'NQSAP è tale per cui i soli 16 segnali di controllo disponibili nella Control Logic del SAP non sarebbero stati sufficienti per pilotare moduli complessi come ad esempio l'ALU e il registro dei Flag; in conseguenza di questo, diventava necessario ampliare in maniera considerevole il numero di linee di controllo utilizzabili.
 
 L'aumento del numero di EEPROM e l'inserimento di quattro demultiplexer <a href="https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target="_blank">74LS138</a> ha permesso di gestire l'elevato numero di segnali richiesti dall'NQSAP e dal BEAM.
 
