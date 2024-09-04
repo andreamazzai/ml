@@ -285,7 +285,7 @@ Ed è da qui che prende forma il design dell'Instruction Register dell'<a href="
 
 Questa miglioria è stata recepita nel BEAM, che cerca di includere tutti gli aspetti positivi dei due progetti di Tom:
 
-[![Schemi dell'Instruction Register dell'NQSAP e del BEAM](../../assets/control/40-cl-ir-beam-nqsap.png "Schemi dell'Instruction Register dell'NQSAP e del BEAM"){:width="66%"}](../../assets/control/40-cl-ir-beam-nqsap.png)
+[![Schemi dell'Instruction Register dell'NQSAP e del BEAM](../../assets/control/40-cl-ir-beam-nqsap.png "Schemi dell'Instruction Register dell'NQSAP e del BEAM"){:width="100%"}](../../assets/control/40-cl-ir-beam-nqsap.png)
 
 *Schemi dell'Instruction Register dell'NQSAP e del BEAM.*
 
