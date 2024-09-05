@@ -420,8 +420,8 @@ Sono invece indispensabili segnali di controllo provenienti direttamente dalle E
 
 Riassumendo:
 
-- una prima EEPROM gestisce quattro demultiplexer che pilotano i segnali di *lettura* di tutti i registri, i segnali di *caricamento* di tutti i registri (eccetto H e Flag) ed alcuni altri segnali di controllo;
-- altre tre EEPROM gestiscono tutti gli altri segnali.
+- una prima EEPROM gestisce quattro demultiplexer che pilotano i segnali di *lettura* di tutti i registri e i segnali di *caricamento* di tutti i registri (eccetto H e Flag);
+- altre tre EEPROM gestiscono tutti gli altri segnali, inclusi quelli che governano H e Flag.
 
 Notare che i segnali di uscita dei '138 realmente utilizzabili sono 30 e non 32, perché il microcode deve prevedere situazioni in cui nessun registro pilotato deve essere attivo. Ad esempio, un output 0000.0000 della prima EEPROM attiverà i pin D0 del primo e del terzo demultiplexer: poiché entrambi i pin sono scollegati, sarà sufficiente impostare l'output sulla prima EEPROM a 0x00 per evitare l'attivazione di qualsiasi registro gestito dai '138.
 
@@ -429,44 +429,44 @@ Notare che i segnali di uscita dei '138 realmente utilizzabili sono 30 e non 32,
 
 | NQSAP  | BEAM     | Descrizione                                                                                           |
 | ------ | -------- | -----------                                                                                           |
-| C0-C1  | C0-C1    | Utilizzati per determinare se il Carry da salvare nel Flag Register debba provenire dal Carry Output dell'ALU (operazioni aritmetice) o da H (operazioni di scorrimento e rotazione); [vedere la spiegazione](../flags/#carry). |
-| CC-CS  | CC-CS    | Utilizzati per selezionare quale Carry presentare all'ALU e ad H (quello effettivamente presente nel registro dei Flag, oppure 0 o 1 fissi); [vedere la spiegazione](../flags/#il-carry-e-i-registri-h-e-alu). |
-| DY-DZ  | DX/Y-DZ  | DX/Y HI espone X, LO espone Y agli adder; DZ non espone X e Y agli adder; [vedere la spiegazione](../dyx/).     |
-| FC     | FC       | Caricamento del Flag C nel registro dei flag                                                          |
-| FN     | FN       | Caricamento del Flag N nel registro dei flag                                                          |
-| FB     | FS       | Origine dei Flag da caricare nel registro (computo oppure bus); [vedere la spiegazione](../flags/#componenti-e-funzionamento).   |
-| FV     | FV       | Caricamento del Flag V nel registro dei flag                                                          |
-| FZ     | FZ       | Caricamento del Flag Z nel registro dei flag                                                          |
+| C0-C1  | C0-C1    | Utilizzati per determinare se il Carry da salvare nel Flag Register debba provenire dal Carry Output dell'ALU (operazioni aritmetiche) o da H (operazioni di scorrimento e rotazione); [vedere la spiegazione](../flags/#carry). |
+| CC-CS  | CC-CS    | Utilizzati per selezionare quale Carry presentare agli input di ALU e H (quello effettivamente presente nel registro dei Flag, oppure 0 o 1 fissi); [vedere la spiegazione](../flags/#il-carry-e-i-registri-h-e-alu).            |
+| DY-DZ  | DX/Y-DZ  | DX/Y HI espone X, LO espone Y agli adder; DZ non espone X e Y agli adder; [vedere la spiegazione](../dxy/).     |
+| FC     | FC       | Caricamento del Flag C nel registro dei flag.                                                                   |
+| FN     | FN       | Caricamento del Flag N nel registro dei flag.                                                                   |
+| FB     | FS       | Origine dei Flag da caricare nel registro dei Flag (computo oppure bus); [vedere la spiegazione](../flags/#componenti-e-funzionamento).   |
+| FV     | FV       | Caricamento del Flag V nel registro dei flag.                                                         |
+| FZ     | FZ       | Caricamento del Flag Z nel registro dei flag.                                                         |
 | LF     | LF       | ALU Force; [vedere la spiegazione](../alu/#istruzioni-di-comparazione).                               |
-| HL-HR  | HL-HR    | Definiscono l'operazione da eseguire sul registro H (caricamento parallelo, rotazione dx o sx)        |
+| HL-HR  | HL-HR    | Definiscono l'operazione da eseguire sul registro H (caricamento parallelo, rotazione dx o sx).       |
 | JE     | JE       | Attiva le istruzioni di salto condizionale; [vedere la spiegazione](../flags/#i-salti-condizionali).  |
 | N      | NI       | Next Instruction; [vedere la spiegazione](#lunghezza-delle-istruzioni).                               |
-| PI     | PCI      | Incrementa il Program Counter                                                                         |
-| RR     | RR       | Espone sul bus il contenuto della RAM                                                                 |
-| RA     | RA       | Espone sul bus il contenuto dell'accumulatore A                                                       |
-| RB     | RB       | Espone sul bus il contenuto del registro B                                                            |
-| RD     | RD       | Espone sul bus il contenuto del registro D                                                            |
-| RF     | RF       | Espone sul bus il contenuto del registro dei Flag                                                     |
-| RH     | RH       | Espone sul bus il contenuto del registro H                                                            |
-| RL     | RL       | Espone sul bus l'output della ALU                                                                     |
-| RP     | RPC      | Espone sul bus il contenuto del Program Counter                                                       |
-| RR     | RR       | Espone sul bus il contenuto della RAM                                                                 |
-| RS     | RS       | Espone sul bus il valore dello Stack Pointer                                                          |
-| RX     | RX       | Espone sul bus il contenuto del registro X                                                            |
-| RY     | RY       | Espone sul bus il contenuto del registro Y                                                            |
-| SCE*   | SE       | Attiva incremento/decremento dello Stack Pointer                                                      |
-| SPI*   | SU/D     | Indica se lo Stack Pointer deve contare verso l'alto o verso il basso                                 |
-| WA     | WA       | Scrive il contenuto del bus nell'accumulatore A                                                       |
-| WB     | WB       | Scrive il contenuto del bus nel registro B                                                            |
-| WD     | WD       | Scrive il contenuto del bus nel registro D                                                            |
-| WI     | WIR      | Scrive il contenuto del bus nell'Instruction Register                                                 |
-| WM     | WM       | Scrive il contenuto del bus nel Memory Address Register                                               |
-| WO     | WO       | Scrive il contenuto del bus nel registro di Output                                                    |
-| WR     | WR       | Scrive il contenuto del bus nella RAM                                                                 |
-| WS     | WS       | Scrive il contenuto del bus nello Stack Pointer                                                       |
-| WP     | WPC      | Scrive il contenuto del bus nel Program Counter                                                       |
-| WX     | WX       | Scrive il contenuto del bus nel registro X                                                            |
-| WY     | WY       | Scrive il contenuto del bus nel registro Y                                                            |
+| PI     | PCI      | Incrementa il Program Counter.                                                                        |
+| RR     | RR       | Espone sul bus il contenuto della RAM.                                                                |
+| RA     | RA       | Espone sul bus il contenuto dell'accumulatore A.                                                      |
+| RB     | RB       | Espone sul bus il contenuto del registro B.                                                           |
+| RD     | RD       | Espone sul bus il contenuto del registro D.                                                           |
+| RF     | RF       | Espone sul bus il contenuto del registro dei Flag.                                                    |
+| RH     | RH       | Espone sul bus il contenuto del registro H.                                                           |
+| RL     | RL       | Espone sul bus l'output della ALU.                                                                    |
+| RP     | RPC      | Espone sul bus il contenuto del Program Counter.                                                      |
+| RR     | RR       | Espone sul bus il contenuto della RAM.                                                                |
+| RS     | RS       | Espone sul bus il valore dello Stack Pointer.                                                         |
+| RX     | RX       | Espone sul bus il contenuto del registro X.                                                           |
+| RY     | RY       | Espone sul bus il contenuto del registro Y.                                                           |
+| SCE*   | SE       | Attiva incremento/decremento dello Stack Pointer.                                                     |
+| SPI*   | SU/D     | Indica se lo Stack Pointer deve contare verso l'alto o verso il basso.                                |
+| WA     | WA       | Scrive il contenuto del bus nell'accumulatore A.                                                      |
+| WB     | WB       | Scrive il contenuto del bus nel registro B.                                                           |
+| WD     | WD       | Scrive il contenuto del bus nel registro D.                                                           |
+| WI     | WIR      | Scrive il contenuto del bus nell'Instruction Register.                                                |
+| WM     | WM       | Scrive il contenuto del bus nel Memory Address Register.                                              |
+| WO     | WO       | Scrive il contenuto del bus nel registro di Output.                                                   |
+| WR     | WR       | Scrive il contenuto del bus nella RAM.                                                                |
+| WS     | WS       | Scrive il contenuto del bus nello Stack Pointer.                                                      |
+| WP     | WPC      | Scrive il contenuto del bus nel Program Counter.                                                      |
+| WX     | WX       | Scrive il contenuto del bus nel registro X.                                                           |
+| WY     | WY       | Scrive il contenuto del bus nel registro Y.                                                           |
 
 ## WORK IN PROGRESS HEREAFTER
 
@@ -501,26 +501,32 @@ MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE
 • Nota che  livello generale ha definito due fasi di Fetch F1 ed F2 che sono comuni a tutte le istruzioni e sono sempre ripetute.
 
 Per fare il microcode sto usando:
-• https://www.masswerk.at/6502/6502_instruction_set.html
-• https://www.masswerk.at/6502/ che è utile per simulare le istruzioni e capire quali Flag esse modifichino durante la loro esecuzione.
-• Ad esempio inizialmente ho trovato difficoltà a capire quali Flag fossero modificati da CPY, che viene indicata come:
+- https://www.masswerk.at/6502/6502_instruction_set.html
+- https://www.masswerk.at/6502/ che è utile per simulare le istruzioni e capire quali Flag esse modifichino durante la loro esecuzione.
 
-• In quali combinazioni si attivano i vari flag N, Z e C?
-• Ho trovato supporto su http://www.6502.org/tutorials/compare_beyond.html nel quale si spiega che fare un confronto equivale a impostare il carry e fare la differenza, ma senza effettivamente scrivere il risultato nel registro di partenza:
+Ad esempio inizialmente ho trovato difficoltà a capire quali Flag fossero modificati da CPY, che viene indicata come:
+
+- In quali combinazioni si attivano i vari flag N, Z e C?
+- Ho trovato supporto su http://www.6502.org/tutorials/compare_beyond.html nel quale si spiega che fare un confronto equivale a impostare il carry e fare la differenza, ma senza effettivamente scrivere il risultato nel registro di partenza:
 CMP NUM
 is very similar to:
 SEC
 SBC NUM
 
-• If the Z flag is 0, then A <> NUM and BNE will branch
-• If the Z flag is 1, then A = NUM and BEQ will branch
-• If the C flag is 0, then A (unsigned) < NUM (unsigned) and BCC will branch
-• If the C flag is 1, then A (unsigned) >= NUM (unsigned) and BCS will branch
+- If the Z flag is 0, then A <> NUM and BNE will branch
+- If the Z flag is 1, then A = NUM and BEQ will branch
+- If the C flag is 0, then A (unsigned) < NUM (unsigned) and BCC will branch
+- If the C flag is 1, then A (unsigned) >= NUM (unsigned) and BCS will branch
 
 Facciamo le prove:
+
 Codice:
+
+~~~text
 LDY #$40
 CPY #$30
+~~~
+
 Viene attivato il C, coerentemente con quanto spiegato sopra… direi perché nell'equivalenza si fa il SEC prima di SBC; essendo il numero da comparare inferiore, non faccio "il prestito" (borrow) del Carry e dunque alla fine dell'istruzione me lo ritrovo attivo come in partenza.
 
 Codice:
@@ -533,21 +539,26 @@ LDY #$40
 CPY #$50
 No Z e C, coerentemente con quanto spiegato sopra, ma N, perché il numero risultante è negativo: in 2C il primo bit è 1 ☺️. C è diventato Zero perché l'ho "preso in prestito".
 
-Su BEAM: LDY #$40; CPY #$30 e ottengo nessun Flag, mentre dovrei avere C.
+Su BEAM:
+
+~~~text
+LDY #$40
+CPY #$30
+~~~
+
+e ottengo nessun Flag, mentre dovrei avere C.
+
 La ALU presenta il COUT acceso, dunque la sua uscita è a livello logico basso. DA CAPIRE!!! Cosa volevo dire?
 
-Teoricamente dunque dovrei attivare l’ingresso di uno del 151 di Carry Input impostando opportunamente i segnali C0 e C1.
+- Aggiunti i segnali C0 e C1, che non avevo ancora cablato, che permettono al 151 di scelta del Carry Input di selezionare cosa prendere in ingresso. L'ALU emette un Carry invertito (0 = Attivo), dunque, per poter impostando a 1 il Flag del Carry Input, lo devo prendere in ingresso dall'ALU attraverso una NOT su uno dei 4 ingressi attivi del 151, che seleziono appunto con i segnali C0 e C1 attivando il solo C0.
 
-In conseguenza di questo, verifico sul BEAM il comportamento del Carry Out dell'ALU nei 3 casi descritti e poi modifico il microcode di conseguenza. In effetti, il comportamento non era quello desiderato da teoria e ho fatto le modifiche necessarie:
+- Ho poi incluso nel microcode anche LF, in quanto ho definito l'utilizzo di LF su tutte le istruzioni di comparazione, tranne CPX abs.
 
-• Aggiunti i segnali C0 e C1, che non avevo ancora cablato, che permettono al 151 di scelta del Carry Input di selezionare cosa prendere in ingresso. L'ALU emette un Carry invertito (0 = Attivo), dunque, per poter impostando a 1 il Flag del Carry Input, lo devo prendere in ingresso dall'ALU attraverso una NOT su uno dei 4 ingressi attivi del 151, che seleziono appunto con i segnali C0 e C1 attivando il solo C0.
-• Ho poi incluso nel microcode anche LF, in quanto ho definito l'utilizzo di LF su tutte le istruzioni di comparazione, tranne CPX abs.
-• Considerare anche che tipo di Carry devo iniettare nella ALU… In realtà, poiché per fare il confronto utilizzo l’istruzione SBC, devo utilizzare il normale LHHL con Carry, cioè CIN = LO, che nel microcode corrisponde ad attivare il segnale CS.
+- Considerare anche che tipo di Carry devo iniettare nella ALU… In realtà, poiché per fare il confronto utilizzo l’istruzione SBC, devo utilizzare il normale LHHL con Carry, cioè CIN = LO, che nel microcode corrisponde ad attivare il segnale CS.
 
 Ho posizionato in uscita sul Carry dell'ALU un LED (ricordare che l'uscita è negata, dunque anodo a Vcc e catodo verso il pin del chip). Anche l’ingresso Carry è negato e dunque attivo a zero, pertanto anche qui ho un LED con anodo a Vcc e catodo sul Pin.
 
 Dopo queste modifiche, le istruzioni di comparazione sembrano funzionare correttamente.
-
 
 Altre referenze Tom Nisbet per Flags
 
