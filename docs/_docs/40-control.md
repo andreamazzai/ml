@@ -367,13 +367,17 @@ E' abbastanza immediato notare questa architettura comporta uno spreco di cicli 
 
 *Ring Counter del SAP.*
 
-L'NQSAP di Tom prevede un accorgimento molto furbo (tra gli altri) e migliora le prestazioni del computer introducendo la durata variabile delle istruzioni; infatti, l'ultima microistruzione di ogni istruzione include un segnale N, che attiva il pin di caricamento parallelo del '161: poiché tutti gli input del contatore sono impostati sullo 0, il conteggio ritorna allo zero iniziale.
+L'NQSAP di Tom prevede un accorgimento molto furbo (tra gli altri) e migliora le prestazioni del computer introducendo la durata variabile delle istruzioni; infatti, l'ultima microistruzione di ogni istruzione include un segnale N (NI nel BEAM), che attiva il pin di caricamento parallelo del '161: poiché tutti gli input del contatore sono impostati sullo 0, il conteggio ritorna allo zero iniziale.
 
 In altre parole, si mette anticipatamente fine ad ogni istruzione inserendo nell'ultimo step del microcode un segnale di Load del RC, così da non dover attendere l'esecuzione di tutti gli step vuoti; il vantaggio nell'operare questa scelta aumenta man mano che si desidera implementare istruzioni sempre più complesse che necessitano di un numero massimo di step sempre maggiore. Ad esempio, nel BEAM la lunghezza massima possibile di un'istruzione è di 16 step, ma un'istruzione semplice come TXA può essere eseguita in soli 3 step, senza sprecare gli altri 13 cicli.
 
 Il momento del caricamento del contatore è visibile a pagina 11 del <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">datasheet</a>: con /Load allo stato LO*, al successivo Rising Edge** del clock le uscite QA-QD assumono gli stati LO presenti agli ingressi A-D (istante Preset nella ascissa).
 
 In pratica, il Ring Counter ritorna allo step iniziale.
+
+[![Segnale Next Instruction nel Ring Counter del BEAM](../../assets/control/40-beam-ni.png "Segnale Next Instruction nel Ring Counter del BEAM"){:width="66%"}](../../assets/control/40-beam-ni.png)
+
+*Segnale Next Instruction nel Ring Counter del BEAM.*
 
 Potrebbe sorgere una domanda: perché non collegare il segnale N del microcode direttamente al pin di Reset del contatore?
 
