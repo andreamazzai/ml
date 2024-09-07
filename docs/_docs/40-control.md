@@ -474,6 +474,16 @@ Notare che i segnali di uscita dei '138 realmente utilizzabili sono 30 e non 32,
 
 ## WORK IN PROGRESS HEREAFTER
 
+## Altri segnali dell'NQSAP e del BEAM
+
+| NQSAP           | BEAM     | Descrizione                                                                                           |
+| --------------  | -------- | -----------                                                                                           |
+| MC-RRx e MC-RWX | N0..7    | Utilizzati dal Loader per settare i registri controllati dalla EEPROM 0); [vedere la spiegazione](../flags/#carry). |
+| CC-CS           | CC-CS    | Utilizzati per selezionare quale Carry presentare agli input di ALU e H (quello effettivamente presente nel registro dei Flag, oppure 0 o 1 fissi); [vedere la spiegazione](../flags/#il-carry-e-i-registri-h-e-alu).            |
+| DY-DZ           | DX/Y-DZ  | DX/Y HI espone X, LO espone Y agli adder; DZ non espone X e Y agli adder; [vedere la spiegazione](../dxy/).     |
+| FC              | FC       | Caricamento del Flag C nel registro dei flag.                                                                   |
+
+
 HLT
 
 Riepilogo dei segnali NON di controllo?
@@ -486,20 +496,6 @@ IR-M e S0-S3
 
 \* Deduzione
 
-• C0 e C1 **sono condivisi con C0 e C1**
-
-Immaginavo che una istruzione di somma tra l'Accumulatore e il valore contenuto in una cella di memoria specifica avrebbe avuto questa sequenza:
-
-| Step | Segnale   | Operazione |
-| ---- | ------    | ----------- |
-|    0 | CO-MI     | Carico l'indirizzo dell'istruzione nel MAR |
-|    1 | RO-II-CE  | Leggo l'istruzione dalla RAM e la metto nell'Instruction Register; incremento il Program Counter che punta così alla locazione che contiene l'operando |
-|    2 | CO-MI     | Metto nel MAR l'indirizzo della cella che contiene l'operando |
-|    3 | RO-MI     | Leggo dalla RAM l'operando, che rappresenta l'indirizzo della locazione che contiene il valore che desidero addizionare all'accumulatore |
-|    4 | RO-BI-CE  | Leggo dalla RAM il valore contenuto nella locazione selezionata e lo posiziono nel registro B; incremento il Program Counter che punta così alla locazione che contiene la prossima istruzione |
-|    5 | EO-AI     | Metto in A il valore della somma A + B |
-
----
 MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE
 
 • Nota che  livello generale ha definito due fasi di Fetch F1 ed F2 che sono comuni a tutte le istruzioni e sono sempre ripetute.
@@ -534,13 +530,21 @@ CPY #$30
 Viene attivato il C, coerentemente con quanto spiegato sopra… direi perché nell'equivalenza si fa il SEC prima di SBC; essendo il numero da comparare inferiore, non faccio "il prestito" (borrow) del Carry e dunque alla fine dell'istruzione me lo ritrovo attivo come in partenza.
 
 Codice:
+
+~~~text
 LDY #$40
 CPY #$40
+~~~
+
 Vengono attivati sia Z sia C: Z perché 40 - 40 = 0 e dunque il risultato è Zero e il contenuto del registro e del confronto numeri sono uguali; essendo il numero da comparare inferiore, non faccio "il prestito" (borrow) del Carry.
 
 Codice:
+
+~~~text
 LDY #$40
 CPY #$50
+~~~
+
 No Z e C, coerentemente con quanto spiegato sopra, ma N, perché il numero risultante è negativo: in 2C il primo bit è 1 ☺️. C è diventato Zero perché l'ho "preso in prestito".
 
 Su BEAM:
@@ -553,8 +557,6 @@ CPY #$30
 e ottengo nessun Flag, mentre dovrei avere C.
 
 La ALU presenta il COUT acceso, dunque la sua uscita è a livello logico basso. DA CAPIRE!!! Cosa volevo dire?
-
-- Aggiunti i segnali C0 e C1, che non avevo ancora cablato, che permettono al 151 di scelta del Carry Input di selezionare cosa prendere in ingresso. L'ALU emette un Carry invertito (0 = Attivo), dunque, per poter impostando a 1 il Flag del Carry Input, lo devo prendere in ingresso dall'ALU attraverso una NOT su uno dei 4 ingressi attivi del 151, che seleziono appunto con i segnali C0 e C1 attivando il solo C0.
 
 - Ho poi incluso nel microcode anche LF, in quanto ho definito l'utilizzo di LF su tutte le istruzioni di comparazione, tranne CPX abs.
 
@@ -574,12 +576,12 @@ Altre referenze Tom Nisbet per Flags
 
 La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato da Tom Nisbet nell'NQSAP.
 
-[![Schema della Control Logic del BEAM](../../assets/control/40-control-logic-schema.png "Schema della Control Logic del BEAM"){:width="100%"}](../../assets/control/40-control-logic-schema.png)
+[![Schema della Control Logic del BEAM](../../assets/control/40-control-logic-schema-beam.png "Schema della Control Logic del BEAM"){:width="100%"}](../../assets/control/40-control-logic-schema-beam.png)
 
 *Schema della Control Logic del BEAM.*
 
-- Una differenza sostanziale sta nell'Instruction Register, che è sviluppato in modalità bufferizzata come fatto da Tom nell'NQSAP PCB per rimediare ai problemi di glitching.
-- Il BEAM prevede 16 step per le microistruzioni anziché solo 8. Le istruzioni di Branch Relative richiedono più degli 8 step disponibili nel'NQSAP, perciò Tom ha aggiunto delle istruzioni di Jump Relative in alternativa alle istruzioni di salto condizionale.
+- Una differenza sostanziale sta nell'Instruction Register, che è sviluppato in modalità bufferizzata come fatto da Tom nell'NQSAP-PCB per rimediare ai problemi di glitching.
+- Il BEAM prevede 16 step per le microistruzioni anziché solo 8. Le istruzioni di Branch Relative richiedono più degli 8 step disponibili nel'NQSAP, perciò Tom ha aggiunto delle istruzioni di Jump Relative in alternativa alle istruzioni di salto condizionale, mentre nel BEAM sono pienamente funzionali similarmente all'implementazione nativa del 6502.
 
 ## Note
 
