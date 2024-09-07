@@ -477,41 +477,37 @@ Notare che i segnali di uscita dei '138 realmente utilizzabili sono 30 e non 32,
 
 ## Altri segnali dell'NQSAP e del BEAM
 
-| NQSAP           | BEAM           | Descrizione                                                                                           |
-| --------------- | -------------- | -----------                                                                                           |
-| D0..7           | D0..7          | Bus del computer.                                                                                             |
-| MC-RR0..3 e MC-RW0..3 | N0..7     | Utilizzati dal Loader per settare i '138 controllati dalla EEPROM 0; [vedere la spiegazione](../flags/#carry). |
-| CLK             | CLK            | ......................                                                 |
-| RST             | RST            | Reset asincrono del computer; [vedere la spiegazione](../flags/#il-carry-).            |
-| PROG            | PROG           | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
-| LDR-Active      | LDR-Active     | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
-| LDR-CLK         | LDR-CLK        | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
-| CLK-Start       | CLK-Start      | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
-| PC-Load         | PCJ            | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
-| H-Q7            | H-Q7           | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
-| B-Q7            | B-Q7           | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
-| H-Q0\*          | H-Q0           | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
-| H-Q0            | H-Q0           | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
-| ALU-Q7          | ALU-Q7         | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
-| ALU-Cout        | ALU-Cout       | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
-| ALU-Cin         | ALU-Cin        | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
-| H-Cin           | H-Cin          | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
-|                 | MA0-MA7        | Collega il MAR alla RAM; [vedere la spiegazione](../flags/#il-carry-).            |
-|                 | H0..7, B0..7   | Bus tra uscita di H e ingressi di ALU; [vedere la spiegazione](../flags/#il-carry-).            |
-|                 | Q0..7          | Bus tra uscita di H e ingressi di ALU; [vedere la spiegazione](../flags/#il-carry-).            |
-| IR-Q0 / Q4      | IR-S0..3, IR-M | sia per il '151 del V, sia per pilotare l'ALU; [vedere la spiegazione](../flags/#il-carry-).            |
-| IR-Q5 / Q7      | IR-A0 / A2     | Per pilotare il 151 dei salti condizionali; [vedere la spiegazione](../flags/#il-carry-).            |
-| SELECTOR INPUTS | X0..7, Y0..7   | Bus tra uscita di H e ingressi di ALU; [vedere la spiegazione](../flags/#il-carry-).            |
-| ADDER INPUTS    | DQ0..7 XY0..7  | Bus tra uscita di H e ingressi di ALU; [vedere la spiegazione](../flags/#il-carry-).            |
-| ADDER OUTPUTS   | AQ0..7         | Bus tra uscita di H e ingressi di ALU; [vedere la spiegazione](../flags/#il-carry-).            |
+| NQSAP           | BEAM                      | Moduli di riferimento         | Descrizione                                                                                           |
+| --------------- | --------------            | -                   | -----------                                                                                           |
+| D0..7           | D0..7                     | BEAM                | Bus del computer.                                                                                             |
+| MC-RR0..3       | N0..3                     | Loader --> CL       | Utilizzati dal Loader per settare i '138 dedicati alla lettura dei registri; [vedere la spiegazione](#i-74ls138-per-la-gestione-dei-segnali). |
+| MC-RW0..3       | N4..7                     | Loader --> CL       | Utilizzati dal Loader per settare i '138 dedicati alla scrittura dei registri; [vedere la spiegazione](#i-74ls138-per-la-gestione-dei-segnali). |
+| CLK             | CLK                       |                     | ......................                                                 |
+| PC-Load         | PCJ                       | Flag --> PC         | Caricamento del PC per salti; [vedere la spiegazione](../flags/#il-carry-).            |
+| PROG            | PROG                      | MAR --> RAM         | Selezione tra modalità di programmazione della RAM o di esecuzione del programma; [vedere la spiegazione](../flags/#il-carry-).            |
+| RST             | RST                       |                     | Reset asincrono del computer; [vedere la spiegazione](../flags/#il-carry-).            |
+| LDR-Active      | LDR-Active                | Loader --> Clock    | Disattivazione delle EEPROM della Control Logic; [vedere la spiegazione](../flags/#il-carry-).            |
+| LDR-CLK         | LDR-CLK                   | Loader --> Clock    | Iniezione del clock del Loader nel computer; [vedere la spiegazione](../flags/#il-carry-).            |
+| CLK-Start       | CLK-Start                 | Loader --> Clock    | Start del clock di sistema dopo il caricamento del programma in RAM; [vedere la spiegazione](../flags/#il-carry-).            |
+| ALU-Cin         | ALU-Cin                   | Flag --> ALU        | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
+| ALU-Cout        | ALU-Cout                  | ALU --> Flag        | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
+| ALU-Q7          | ALU-Q7                    | ALU --> Flag        | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
+| B-Q7            | B-Q7                      | ALU --> Flag        | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
+| H-Cin           | H-Cin                     | Flag --> ALU        | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
+| H-Q0\*          | H-Q0                      | ALU --> Flag        | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
+| H-Q7            | H-Q7                      | ALU --> Flag        | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
+| IR-Q0 / Q4      | IR-S0..3, IR-M            | CL --> ALU          | Ingressi di selezione dell'operazione dell'ALU; [vedere la spiegazione](../alu/#funzioni-logiche-e-operazioni-aritmetiche).            |
+| IR-Q5 / Q7      | IR-A0 / A2                | CL --> Flag         | Ingressi di selezione dei salti condizionali del registro dei Flag; [vedere la spiegazione](../flags/#i-salti-condizionali).            |
+| ALU-to-register interconnect | H0..7, B0..7 | ALU                 | Bus tra output dei registri B e H e input dell'ALU; [vedere la spiegazione](../alu/#lalu-dellnqsap).            |
+| ALU output      | Q0..7                     | ALU                 | Bus tra output dell'ALU e input del transceiver di output al bus del computer; [vedere la spiegazione](../alu/#lalu-dellnqsap).            |
+| ?               | MA0-MA7                   | MAR --> RAM         | Bus tra output del MAR e input della RAM Collega il MAR alla RAM; [vedere la spiegazione](../flags/#il-carry-).            |
+| Selector Inputs | X0..7, Y0..7              | DXY                 | Bus tra output di X e Y e input dei selettori X/Y; [vedere la spiegazione](../dxy/#utilizzo-con-le-modalità-di-indirizzamento-indicizzate).            |
+| Adder Inputs    | DQ0..7 XY0..7             | DXY                 | Bus tra output di D e selettori X/Y e input degli adder; [vedere la spiegazione](../dxy/#utilizzo-con-le-modalità-di-indirizzamento-indicizzate).            |
+| Adder Outputs   | AQ0..7                    | DXY                 | Bus tra output degli adder e input del transceiver di output al bus del computer; [vedere la spiegazione](../dxy/#utilizzo-con-le-modalità-di-indirizzamento-indicizzate).            |
 
 Riepilogo dei segnali NON di controllo?
-| JE     | PCJ      | Carica il Program Counter                                   |
-LDR-Active, LDR-CLK. CLK-Start
-IR-M e S0-S3
 
 \* manca nel modulo ALU, dimenticanza di Tom
-
 
 MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE
 
