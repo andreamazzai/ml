@@ -88,7 +88,7 @@ Un bus transceiver <a href="https://www.mouser.com/datasheet/2/308/74LS245-11904
 
 Interessante notare che le istruzioni CLC, CLV e SEC non hanno bisogno di segnali dedicati della CL per azzerare o settare i flag C e V: si utilizza la ALU per mettere 0x00 o 0xFF sul bus e si modifica il solo flag di interesse attivando opportunamente il segnale di controllo FC o FV.
 
-## I salti condizionali
+## I salti condizionali e incondizionati
 
 Ogni variazione di un flag nel computer SAP di Ben Eater generava una variazione degli indirizzi delle EEPROM, così da poter attivare segnali in uscita opportunamente diversi in conseguenza delle diverse combinazioni degli stati dei flag.
 
