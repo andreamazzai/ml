@@ -443,6 +443,7 @@ Notare che i segnali di uscita dei '138 realmente utilizzabili sono 30 e non 32,
 | FZ     | FZ       | Caricamento del Flag Z nel registro dei flag.                                                         |
 | LF     | LF       | ALU Force; [vedere la spiegazione](../alu/#istruzioni-di-comparazione).                               |
 | HL-HR  | HL-HR    | Definiscono l'operazione da eseguire sul registro H (caricamento parallelo, rotazione dx o sx).       |
+| HLT    | HLT      | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
 | JE     | JE       | Attiva le istruzioni di salto condizionale; [vedere la spiegazione](../flags/#i-salti-condizionali).  |
 | N      | NI       | Next Instruction; [vedere la spiegazione](#lunghezza-delle-istruzioni).                               |
 | PI     | PCI      | Incrementa il Program Counter.                                                                        |
@@ -476,25 +477,41 @@ Notare che i segnali di uscita dei '138 realmente utilizzabili sono 30 e non 32,
 
 ## Altri segnali dell'NQSAP e del BEAM
 
-| NQSAP           | BEAM     | Descrizione                                                                                           |
-| --------------  | -------- | -----------                                                                                           |
-| MC-RRx e MC-RWX | N0..7    | Utilizzati dal Loader per settare i registri controllati dalla EEPROM 0); [vedere la spiegazione](../flags/#carry). |
-| CC-CS           | CC-CS    | Utilizzati per selezionare quale Carry presentare agli input di ALU e H (quello effettivamente presente nel registro dei Flag, oppure 0 o 1 fissi); [vedere la spiegazione](../flags/#il-carry-e-i-registri-h-e-alu).            |
-| DY-DZ           | DX/Y-DZ  | DX/Y HI espone X, LO espone Y agli adder; DZ non espone X e Y agli adder; [vedere la spiegazione](../dxy/).     |
-| FC              | FC       | Caricamento del Flag C nel registro dei flag.                                                                   |
-
-
-HLT
+| NQSAP           | BEAM           | Descrizione                                                                                           |
+| --------------- | -------------- | -----------                                                                                           |
+| D0..7           | D0..7          | Bus del computer.                                                                                             |
+| MC-RR0..3 e MC-RW0..3 | N0..7     | Utilizzati dal Loader per settare i '138 controllati dalla EEPROM 0; [vedere la spiegazione](../flags/#carry). |
+| CLK             | CLK            | ......................                                                 |
+| RST             | RST            | Reset asincrono del computer; [vedere la spiegazione](../flags/#il-carry-).            |
+| PROG            | PROG           | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
+| LDR-Active      | LDR-Active     | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
+| LDR-CLK         | LDR-CLK        | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
+| CLK-Start       | CLK-Start      | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
+| PC-Load         | PCJ            | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
+| H-Q7            | H-Q7           | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
+| B-Q7            | B-Q7           | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
+| H-Q0\*          | H-Q0           | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
+| H-Q0            | H-Q0           | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
+| ALU-Q7          | ALU-Q7         | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
+| ALU-Cout        | ALU-Cout       | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
+| ALU-Cin         | ALU-Cin        | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
+| H-Cin           | H-Cin          | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
+|                 | MA0-MA7        | Collega il MAR alla RAM; [vedere la spiegazione](../flags/#il-carry-).            |
+|                 | H0..7, B0..7   | Bus tra uscita di H e ingressi di ALU; [vedere la spiegazione](../flags/#il-carry-).            |
+|                 | Q0..7          | Bus tra uscita di H e ingressi di ALU; [vedere la spiegazione](../flags/#il-carry-).            |
+| IR-Q0 / Q4      | IR-S0..3, IR-M | sia per il '151 del V, sia per pilotare l'ALU; [vedere la spiegazione](../flags/#il-carry-).            |
+| IR-Q5 / Q7      | IR-A0 / A2     | Per pilotare il 151 dei salti condizionali; [vedere la spiegazione](../flags/#il-carry-).            |
+| SELECTOR INPUTS | X0..7, Y0..7   | Bus tra uscita di H e ingressi di ALU; [vedere la spiegazione](../flags/#il-carry-).            |
+| ADDER INPUTS    | DQ0..7 XY0..7  | Bus tra uscita di H e ingressi di ALU; [vedere la spiegazione](../flags/#il-carry-).            |
+| ADDER OUTPUTS   | AQ0..7         | Bus tra uscita di H e ingressi di ALU; [vedere la spiegazione](../flags/#il-carry-).            |
 
 Riepilogo dei segnali NON di controllo?
-| JE     | PCJ      | Carica il Program Counter                                                                             |
+| JE     | PCJ      | Carica il Program Counter                                   |
 LDR-Active, LDR-CLK. CLK-Start
-RST
-prog
-H-Cin, H-Q7, H-Q0, B-Q7, ALU-Q7, ~{ALU-Cout}, ~{ALU-Cin}
 IR-M e S0-S3
 
-\* Deduzione
+\* manca nel modulo ALU, dimenticanza di Tom
+
 
 MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE MICROCODE
 
