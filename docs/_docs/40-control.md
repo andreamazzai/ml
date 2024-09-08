@@ -429,7 +429,7 @@ Riassumendo:
 
 Notare che i segnali di uscita dei '138 realmente utilizzabili sono 30 e non 32, perché il microcode deve prevedere situazioni in cui nessun registro pilotato deve essere attivo. Ad esempio, un output 0000.0000 della prima EEPROM attiverà i pin D0 del primo e del terzo demultiplexer: poiché entrambi i pin sono scollegati, sarà sufficiente impostare l'output sulla prima EEPROM a 0x00 per evitare l'attivazione di qualsiasi registro gestito dai '138.
 
-### Caricamento di un programma dal Loader
+## Caricamento di un programma dal Loader
 
 NQSAP e BEAM consentono di automatizzare Il caricamento di un programma grazie alla presenza di un Loader basato su Arduino Nano.
 
@@ -439,7 +439,7 @@ Una spiegazione più dettagliata è presente nella pagina dedicata al [Loader](.
 
 ## Riepilogo segnali dell'NQSAP e del BEAM
 
-** SISTEMARE ** In questa sezione riepiloghiamo sia i segnali di controllo originati dalla Control Logic sia i segnali di controllo e di scambio informazioni tra diversi moduli del computer e i bus esisteni nel computer, sia tra moduli diversi sia all'interno di un modulo. Nella seconda tabella, nella colonna RIFERIMENTO Prima si indica il modulo sorgente del segnale e successivamente il modulo destinatario di tale segnale.
+**SISTEMARE** In questa sezione riepiloghiamo sia i segnali di controllo originati dalla Control Logic sia i segnali di controllo e di scambio informazioni tra diversi moduli del computer e i bus esisteni nel computer, sia tra moduli diversi sia all'interno di un modulo. Nella seconda tabella, nella colonna RIFERIMENTO Prima si indica il modulo sorgente del segnale e successivamente il modulo destinatario di tale segnale.
 
 ### Segnali di controllo
 
@@ -487,16 +487,22 @@ Una spiegazione più dettagliata è presente nella pagina dedicata al [Loader](.
 
 ## Bus e altri segnali
 
-| NQSAP           | BEAM                      | Moduli di riferimento nel BEAM | Descrizione                                                                                           |
-| --------------- | --------------            | -                              | -----------                                                                                           |
-| D0..7           | D0..7                     | BEAM                           | Bus del computer.                                                                                             |
-| MC-RR0..3       | N0..3                     | Loader --> CL                  | Utilizzati dal Loader per impostare i '138 dedicati ai segnali di lettura dei registri; [vedere la spiegazione](#i-74ls138-per-la-gestione-dei-segnali).   |
-| MC-RW0..3       | N4..7                     | Loader --> CL                  | Utilizzati dal Loader per impostare i '138 dedicati ai segnali di scrittura dei registri; [vedere la spiegazione](#i-74ls138-per-la-gestione-dei-segnali). |
-| CLK             | CLK                       | BEAM                           | Segnale di clock inviato a tutti i moduli del computer.                                                                                         |
-| PC-Load         | PCJ                       | Flag --> PC                    | Caricamento del PC per salti; [vedere la spiegazione](../flags/#i-salti-condizionali-e-incondizionati).                                         |
+| NQSAP           | BEAM                      | Ambito o direzione del segnale | Descrizione                                                          |
+| --------------- | --------------            | -                              | -----------                                                          |
+| D0..7           | D0..7                     | BEAM                           | Bus del computer.                                                    |
+| ALU-to-register interconnect | H0..7, B0..7 | ALU                            | Bus tra output dei registri B e H e input dell'ALU; [vedere la spiegazione](../alu/#lalu-dellnqsap).                    |
+| ALU output      | Q0..7                     | ALU                            | Bus tra output dell'ALU e transceiver di output al bus del computer; [vedere la spiegazione](../alu/#lalu-dellnqsap).   |
+| ?               | MA0-MA7                   | MAR --> RAM                    | Bus tra output del MAR e input della RAM; [vedere la spiegazione](../ram/#design-dei-moduli-mar-e-ram).                 |
+| Selector Inputs | X0..7, Y0..7              | DXY                            | Bus tra output di X e Y e input dei selettori X/Y; [vedere la spiegazione](../dxy/#utilizzo-con-le-modalità-di-indirizzamento-indicizzate).     |
+| Adder Inputs    | DQ0..7 XY0..7             | DXY                            | Bus tra output di D e selettori X/Y e input degli adder; [vedere la spiegazione](../dxy/#utilizzo-con-le-modalità-di-indirizzamento-indicizzate).                  |
+| Adder Outputs   | AQ0..7                    | DXY                            | Bus tra output degli adder e transceiver di output al bus del computer; [vedere la spiegazione](../dxy/#utilizzo-con-le-modalità-di-indirizzamento-indicizzate).   |
+| MC-RR0..3       | N0..3                     | Loader --> CL                  | Utilizzati dal Loader per impostare i '138 dei segnali di lettura; [vedere la spiegazione](#i-74ls138-per-la-gestione-dei-segnali).   |
+| MC-RW0..3       | N4..7                     | Loader --> CL                  | Utilizzati dal Loader per impostare i '138 dei segnali di scrittura; [vedere la spiegazione](#i-74ls138-per-la-gestione-dei-segnali). |
+| CLK             | CLK                       | BEAM                           | Segnale di clock inviato a tutti i moduli del computer.                                                                               |
+| PC-Load         | PCJ                       | Flag --> PC                    | Controlla il caricamento del PC per i salti condizionali e incondizionati; [vedere la spiegazione](../flags/#i-salti-condizionali-e-incondizionati).               |
 | PROG            | PROG                      | MAR --> RAM                    | Selezione tra modalità di programmazione della RAM o di esecuzione del programma; [vedere la spiegazione](../ram/#mux-program-mode-e-run-mode). |
 | RST             | RST                       |                                | DA FAREEEEEEEEEEE Reset asincrono del computer; [vedere la spiegazione](../flags/#il-carry-).                                                   |
-| LDR-Active      | LDR-Active                | Loader --> Clock               | DA FAREEEEEEEEEEE Disattivazione delle EEPROM della Control Logic; [vedere la spiegazione](../flags/#il-carry-).                                |
+| LDR-ACTIVE      | LDR-Active                | Loader --> Clock               | DA FAREEEEEEEEEEE Disattivazione delle EEPROM della Control Logic; [vedere la spiegazione](../flags/#il-carry-).                                |
 | LDR-CLK         | LDR-CLK                   | Loader --> Clock               | DA FAREEEEEEEEEEE Iniezione del clock del Loader nel computer; [vedere la spiegazione](../flags/#il-carry-).                                    |
 | CLK-Start       | CLK-Start                 | Loader --> Clock               | DA FAREEEEEEEEEEE Start del clock di sistema dopo il caricamento del programma in RAM; [vedere la spiegazione](../flags/#il-carry-).            |
 | ALU-Cin         | ALU-Cin                   | Flag --> ALU                   | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
@@ -508,12 +514,6 @@ Una spiegazione più dettagliata è presente nella pagina dedicata al [Loader](.
 | H-Q7            | H-Q7                      | ALU --> Flag                   | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
 | IR-Q0 / Q4      | IR-S0..3, IR-M            | CL --> ALU                     | Ingressi di selezione dell'operazione dell'ALU; [vedere la spiegazione](../alu/#funzioni-logiche-e-operazioni-aritmetiche).                     |
 | IR-Q5 / Q7      | IR-A0 / A2                | CL --> Flag                    | Ingressi di selezione dei salti condizionali del registro dei Flag; [vedere la spiegazione](../flags/#i-salti-condizionali-e-incondizionati).   |
-| ALU-to-register interconnect | H0..7, B0..7 | ALU                            | Bus tra output dei registri B e H e input dell'ALU; [vedere la spiegazione](../alu/#lalu-dellnqsap).                                            |
-| ALU output      | Q0..7                     | ALU                            | Bus tra output dell'ALU e input del transceiver di output al bus del computer; [vedere la spiegazione](../alu/#lalu-dellnqsap).                 |
-| ?               | MA0-MA7                   | MAR --> RAM                    | Bus tra output del MAR e input della RAM Collega il MAR alla RAM; [vedere la spiegazione](../ram/#design-dei-moduli-mar-e-ram).                 |
-| Selector Inputs | X0..7, Y0..7              | DXY                            | Bus tra output di X e Y e input dei selettori X/Y; [vedere la spiegazione](../dxy/#utilizzo-con-le-modalità-di-indirizzamento-indicizzate).     |
-| Adder Inputs    | DQ0..7 XY0..7             | DXY                            | Bus tra output di D e selettori X/Y e input degli adder; [vedere la spiegazione](../dxy/#utilizzo-con-le-modalità-di-indirizzamento-indicizzate).                            |
-| Adder Outputs   | AQ0..7                    | DXY                            | Bus tra output degli adder e input del transceiver di output al bus del computer; [vedere la spiegazione](../dxy/#utilizzo-con-le-modalità-di-indirizzamento-indicizzate).   |
 
 Riepilogo dei segnali NON di controllo?
 
@@ -616,16 +616,14 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 
 ## TO DO
 
+- RST	 	DA FAREEEEEEEEEEE Reset asincrono del computer; vedere la spiegazione.
+- Segnale HLT XXXXXXXXXXXX; vedere la spiegazione .
 - aggiungere i link a masswerk
-- aggiornare lo schema Kicad con le bar a 8 segmenti e aggiornare questa pagina con lo schema aggiornato
 - Una volta fatta una sezione nella pagina ALU per descrivere il comportamento del registro H, fare un link da questa pagina nella sezione che parla della mutua esclusività dei segnali di controllo.
-- Schema della Control Logic e dell’Instruction Register del SAP computer --- l'immagine probabilmente risulta troppo piccola su schermi "normali"
-- Se /LDR-ACTIVE viene attivato (LO), LDR-ACTIVE passa a HI e disattiva le ROM2 e ROM3 collegate via /OE.
 - finire http://www.6502.org/tutorials/compare_beyond.html da "In fact, many 6502 assemblers will allow BLT (Branch on Less Than) "
 - Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
 - "Glitching all’istruzione LDY nell’NQSAP." controllare la risposta di Tom, dice che al momento 15 ritorniamo al punto zero?
 - Far notare da qualche parte che al punto 7 l'unico registro che viene caricato è l'IR.
-- veririficare i nomi dei segnali N e NI, nel microcode del BEAM è N, ma nello schema è NI...
 - notare le istruzioni non implementate e quelle aggiuntive: INA DEA RTI BCD
 - a questo punto "Tutti questi segnali spuri generalmente non sono un problema per il SAP, perché le microistruzioni scrivono su registri tipo D 74LS173 attivati al Rising Edge del clock, cioè quando i segnali di controllo sono stabili. Ad esempio, il glitching di MI al momento 7 non è fonte di problemi, perché il ‘173 del MAR memorizza nuovi valori solo col segnale di Enable attivo e il Rising Edge del clock: in quel momento, i segnali di controllo si trovano in uno stato stabile e non c’è rischio di caricare dati non corretti." bisogna capire il discorso dei FLAG se / che causano glitching e capire dove dire "eccetto i flag"
 
