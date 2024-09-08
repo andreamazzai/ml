@@ -435,7 +435,7 @@ NQSAP e BEAM consentono di automatizzare Il caricamento di un programma grazie a
 
 Il Loader controlla alcuni segnali della Control Logic e alcuni segnali del modulo di clock. Il Loader può inibire le prime due EEPROM e sostituirsi nel controllo dei '138 grazie ai segnali N0-N7. Inibendo anche il circuito di clock, il Loader può iniettare nel computer un segnale di clock dedicato ed utilizzarlo per caricare i registri MAR e RAM.
 
-Una spiegazione più dettagliata è presente nella pagina dedicata al [Loader](../loader/loader).
+Una spiegazione più dettagliata è presente nella pagina dedicata al [Loader](../loader/).
 
 ## Riepilogo segnali dell'NQSAP e del BEAM
 
