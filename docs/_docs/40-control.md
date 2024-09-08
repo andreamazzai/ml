@@ -429,6 +429,14 @@ Riassumendo:
 
 Notare che i segnali di uscita dei '138 realmente utilizzabili sono 30 e non 32, perché il microcode deve prevedere situazioni in cui nessun registro pilotato deve essere attivo. Ad esempio, un output 0000.0000 della prima EEPROM attiverà i pin D0 del primo e del terzo demultiplexer: poiché entrambi i pin sono scollegati, sarà sufficiente impostare l'output sulla prima EEPROM a 0x00 per evitare l'attivazione di qualsiasi registro gestito dai '138.
 
+### Caricamento di un programma dal Loader
+
+NQSAP e BEAM consentono di automatizzare Il caricamento di un programma grazie alla presenza di un Loader basato su Arduino Nano.
+
+Il Loader controlla alcuni segnali della Control Logic e alcuni segnali del modulo di clock. Il Loader può inibire le prime due EEPROM e sostituirsi nel controllo dei '138 grazie ai segnali N0-N7. Inibendo anche il circuito di clock, il Loader può iniettare nel computer un segnale di clock dedicato ed utilizzarlo per caricare i registri MAR e RAM.
+
+Una spiegazione più dettagliata è presente nella pagina dedicata al [Loader](../loader/loader).
+
 ## Riepilogo segnali dell'NQSAP e del BEAM
 
 ** SISTEMARE ** In questa sezione riepiloghiamo sia i segnali di controllo originati dalla Control Logic sia i segnali di controllo e di scambio informazioni tra diversi moduli del computer e i bus esisteni nel computer, sia tra moduli diversi sia all'interno di un modulo. Nella seconda tabella, nella colonna RIFERIMENTO Prima si indica il modulo sorgente del segnale e successivamente il modulo destinatario di tale segnale.
