@@ -507,18 +507,18 @@ Una spiegazione più dettagliata è presente nella pagina dedicata al [Loader](.
 | PC-Load         | PCJ                       | Flag → PC                  | Controlla il caricamento del PC per i salti condizionali e incondizionati; [spiegazione](../flags/#i-salti-condizionali-e-incondizionati).               |
 | PROG            | PROG                      | MAR → RAM                  | Selezione tra modalità di programmazione della RAM o di esecuzione del programma; [spiegazione](../ram/#mux-program-mode-e-run-mode). |
 | RST             | RST                       |                            | Reset asincrono del computer; [spiegazione](../flags/#il-carry).                                                   |
-| LDR-ACTIVE      | LDR-Active                | Loader → Clock e → CL      | Disattivazione delle EEPROM della Control Logic; [spiegazione](../flags/#il-carry).                                |
+| LDR-ACTIVE      | LDR-Active                | Loader → Clock e → CL      | Disattivazione clock e EEPROM Control Logic; [spiegazione](../flags/#il-carry).                                    |
 | LDR-CLK         | LDR-CLK                   | Loader → Clock             | Iniezione del clock del Loader nel computer; [spiegazione](../flags/#il-carry).                                    |
-| CLK-Start       | CLK-Start                 | Loader → Clock             | (Re-)Start del clock di sistema dopo il caricamento del programma in RAM; [spiegazione](../flags/#il-carry).            |
+| CLK-Start       | CLK-Start                 | Loader → Clock             | (Re-)Start del clock di sistema dopo il caricamento del programma in RAM; [spiegazione](../flags/#il-carry).       |
 | ALU-Cin         | ALU-Cin                   | Flag → ALU                 | Selezione del Carry da inviare in input ai '181 dell'ALU; [spiegazione](../flags/#il-carry-e-i-registri-h-e-alu).  |
-| H-Cin           | H-Cin                     | Flag → ALU                 | Selezione del Carry da inviare in input al registro H; [spiegazione Flag C](../flags/#carry).  |
-| ALU-Cout        | ALU-Cout                  | ALU → Flag                 | Carry output dell'ALU da inviare al registro dei Flag; [spiegazione Flag C](../flags/#carry).  |
-| ALU-Q7          | ALU-Q7                    | ALU → Flag                 | MSB dell'ALU da inviare al registro dei Flag; [spiegazione Flag V](../flags/#overflow).                              |
+| H-Cin           | H-Cin                     | Flag → ALU                 | Selezione del Carry da inviare in input al registro H; [spiegazione Flag C](../flags/#carry).                      |
+| ALU-Cout        | ALU-Cout                  | ALU → Flag                 | Carry output dell'ALU da inviare al registro dei Flag; [spiegazione Flag C](../flags/#carry).                      |
+| ALU-Q7          | ALU-Q7                    | ALU → Flag                 | MSB dell'ALU da inviare al registro dei Flag; [spiegazione Flag V](../flags/#overflow).                            |
 | B-Q7            | B-Q7                      | ALU → Flag                 | MSB del registro B da inviare al registro dei Flag; [spiegazione Flag V](../flags/#overflow).                    |
 | H-Q0\*          | H-Q0                      | ALU → Flag                 | LSB di H da inviare al registro dei Flag; [spiegazione Flag C](../flags/#carry).                                 |
 | H-Q7            | H-Q7                      | ALU → Flag                 | MSB di H da inviare al registro dei Flag; [spiegazione Flag V](../flags/#overflow) e [Flag C](../flags/#carry).  |
 
-\* manca nel modulo ALU, dimenticanza di Tom
+\* Manca nel modulo ALU; dimenticanza nello schema di Tom.
 
 ## MICROCODE MICROCODE MICROCODE DA FARE
 
