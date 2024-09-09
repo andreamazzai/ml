@@ -445,19 +445,19 @@ Una spiegazione più dettagliata è presente nella pagina dedicata al [Loader](.
 
 | NQSAP  | BEAM     | Descrizione                                                                                           |
 | ------ | -------- | -----------                                                                                           |
-| C0-C1  | C0-C1    | Utilizzati per determinare se il Carry da salvare nel Flag Register debba provenire dal Carry Output dell'ALU (operazioni aritmetiche) o da H (operazioni di scorrimento e rotazione); [vedere la spiegazione](../flags/#carry). |
-| CC-CS  | CC-CS    | Utilizzati per selezionare quale Carry presentare agli input di ALU e H (quello effettivamente presente nel registro dei Flag, oppure 0 o 1 fissi); [vedere la spiegazione](../flags/#il-carry-e-i-registri-h-e-alu).            |
-| DY-DZ  | DX/Y-DZ  | DX/Y HI espone X, LO espone Y agli adder; DZ non espone X e Y agli adder; [vedere la spiegazione](../dxy/).     |
+| C0-C1  | C0-C1    | Utilizzati per determinare se il Carry da salvare nel Flag Register debba provenire dal Carry Output dell'ALU (operazioni aritmetiche) o da H (operazioni di scorrimento e rotazione); [spiegazione](../flags/#carry). |
+| CC-CS  | CC-CS    | Utilizzati per selezionare quale Carry presentare agli input di ALU e H (quello effettivamente presente nel registro dei Flag, oppure 0 o 1 fissi); [spiegazione](../flags/#il-carry-e-i-registri-h-e-alu).            |
+| DY-DZ  | DX/Y-DZ  | DX/Y HI espone X, LO espone Y agli adder; DZ non espone X e Y agli adder; [spiegazione](../dxy/).     |
 | FC     | FC       | Caricamento del Flag C nel registro dei flag.                                                                   |
 | FN     | FN       | Caricamento del Flag N nel registro dei flag.                                                                   |
-| FB     | FS       | Origine dei Flag da caricare nel registro dei Flag (computo oppure bus); [vedere la spiegazione](../flags/#componenti-e-funzionamento).   |
+| FB     | FS       | Origine dei Flag da caricare nel registro dei Flag (computo oppure bus); [spiegazione](../flags/#componenti-e-funzionamento).   |
 | FV     | FV       | Caricamento del Flag V nel registro dei flag.                                                         |
 | FZ     | FZ       | Caricamento del Flag Z nel registro dei flag.                                                         |
-| LF     | LF       | ALU Force; [vedere la spiegazione](../alu/#istruzioni-di-comparazione).                               |
+| LF     | LF       | ALU Force; [spiegazione](../alu/#istruzioni-di-comparazione).                               |
 | HL-HR  | HL-HR    | Definiscono l'operazione da eseguire sul registro H (caricamento parallelo, rotazione dx o sx).       |
-| HLT    | HLT      | XXXXXXXXXXXX; [vedere la spiegazione](../flags/#il-carry-).            |
-| JE     | JE       | Attiva le istruzioni di salto condizionale; [vedere la spiegazione](../flags/#i-salti-condizionali-e-incondizionati).  |
-| N      | NI       | Next Instruction; [vedere la spiegazione](#lunghezza-delle-istruzioni).                               |
+| HLT    | HLT      | XXXXXXXXXXXX; [spiegazione](../flags/#il-carry-).            |
+| JE     | JE       | Attiva le istruzioni di salto condizionale; [spiegazione](../flags/#i-salti-condizionali-e-incondizionati).  |
+| N      | NI       | Next Instruction; [spiegazione](#lunghezza-delle-istruzioni).                               |
 | PI     | PCI      | Incrementa il Program Counter.                                                                        |
 | RR     | RR       | Espone sul bus il contenuto della RAM.                                                                |
 | RA     | RA       | Espone sul bus il contenuto dell'accumulatore A.                                                      |
@@ -493,30 +493,30 @@ Una spiegazione più dettagliata è presente nella pagina dedicata al [Loader](.
 | --------------- | --------------            | -                              | -----------                                                |
 | CLK             | CLK                       | BEAM                           | Segnale di clock inviato a tutti i moduli del computer.    |
 | D0..7           | D0..7                     | BEAM                           | Bus del computer.                                          |
-| MA0 - MA10      | A0..11                    | CL                             | Bus tra output di RC ed IR e input delle EEPROM; vedere la spiegazione in questa stessa pagina.                                                 |
-| IR-Q0 / IR-Q4   | IR-S0..3, IR-M            | CL --> ALU                     | Ingressi di selezione dell'operazione dell'ALU; [vedere la spiegazione](../alu/#funzioni-logiche-e-operazioni-aritmetiche).                     |
-| IR-Q5 / IR-Q7   | IR-A0 / IR-A2             | CL --> Flag                    | Ingressi di selezione dei salti condizionali del registro dei Flag; [vedere la spiegazione](../flags/#i-salti-condizionali-e-incondizionati).   |
-| ALU-to-register interconnect | H0..7, B0..7 | ALU                            | Bus tra output dei registri B e H e input dell'ALU; [vedere la spiegazione](../alu/#lalu-dellnqsap).                                            |
-| ALU output      | Q0..7                     | ALU                            | Bus tra output dell'ALU e transceiver di output al bus del computer; [vedere la spiegazione](../alu/#lalu-dellnqsap).                           |
-| ?               | MA0-MA7                   | MAR --> RAM                    | Bus tra output del MAR e input della RAM; [vedere la spiegazione](../ram/#design-dei-moduli-mar-e-ram).                                         |
-| Selector Inputs | X0..7, Y0..7              | DXY                            | Bus tra output di X e Y e input dei selettori X/Y; [vedere la spiegazione](../dxy/#utilizzo-con-le-modalità-di-indirizzamento-indicizzate).     |
-| Adder Inputs    | DQ0..7 XY0..7             | DXY                            | Bus tra output di D e selettori X/Y e input degli adder; [vedere la spiegazione](../dxy/#utilizzo-con-le-modalità-di-indirizzamento-indicizzate).                  |
-| Adder Outputs   | AQ0..7                    | DXY                            | Bus tra output degli adder e transceiver di output al bus del computer; [vedere la spiegazione](../dxy/#utilizzo-con-le-modalità-di-indirizzamento-indicizzate).   |
-| MC-RR0..3       | N0..3                     | Loader --> CL                  | Utilizzati dal Loader per impostare i '138 dei segnali di lettura; [vedere la spiegazione](#i-74ls138-per-la-gestione-dei-segnali).                                |
-| MC-RW0..3       | N4..7                     | Loader --> CL                  | Utilizzati dal Loader per impostare i '138 dei segnali di scrittura; [vedere la spiegazione](#i-74ls138-per-la-gestione-dei-segnali).                              |
-| PC-Load         | PCJ                       | Flag --> PC                    | Controlla il caricamento del PC per i salti condizionali e incondizionati; [vedere la spiegazione](../flags/#i-salti-condizionali-e-incondizionati).               |
-| PROG            | PROG                      | MAR --> RAM                    | Selezione tra modalità di programmazione della RAM o di esecuzione del programma; [vedere la spiegazione](../ram/#mux-program-mode-e-run-mode). |
-| RST             | RST                       |                                | Reset asincrono del computer; [vedere la spiegazione](../flags/#il-carry).                                                   |
-| LDR-ACTIVE      | LDR-Active                | Loader --> Clock e --> CL      | Disattivazione delle EEPROM della Control Logic; [vedere la spiegazione](../flags/#il-carry).                                |
-| LDR-CLK         | LDR-CLK                   | Loader --> Clock               | Iniezione del clock del Loader nel computer; [vedere la spiegazione](../flags/#il-carry).                                    |
-| CLK-Start       | CLK-Start                 | Loader --> Clock               | (Re-)Start del clock di sistema dopo il caricamento del programma in RAM; [vedere la spiegazione](../flags/#il-carry).            |
-| ALU-Cin         | ALU-Cin                   | Flag --> ALU                   | Selezione del Carry da inviare in input ai '181 dell'ALU; [vedere spiegazione](../flags/#il-carry-e-i-registri-h-e-alu).  |
-| H-Cin           | H-Cin                     | Flag --> ALU                   | Selezione del Carry da inviare in input al registro H; [vedere spiegazione Flag C](../flags/#carry).  |
-| ALU-Cout        | ALU-Cout                  | ALU --> Flag                   | Carry output dell'ALU da inviare al registro dei Flag; [vedere spiegazione Flag C](../flags/#carry).  |
-| ALU-Q7          | ALU-Q7                    | ALU --> Flag                   | MSB dell'ALU da inviare al registro dei Flag; [vedere spiegazione Flag V](../flags/#overflow).                              |
-| B-Q7            | B-Q7                      | ALU --> Flag                   | MSB del registro B da inviare al registro dei Flag; [vedere spiegazione Flag V](../flags/#overflow).                    |
-| H-Q0\*          | H-Q0                      | ALU --> Flag                   | LSB di H da inviare al registro dei Flag; [vedere spiegazione Flag C](../flags/#carry).                                 |
-| H-Q7            | H-Q7                      | ALU --> Flag                   | MSB di H da inviare al registro dei Flag; [vedere spiegazione Flag V](../flags/#overflow) e [Flag C](../flags/#carry).  |
+| MA0 - MA10      | A0..11                    | CL                             | Bus tra output di RC ed IR e input delle EEPROM; spiegazione in questa stessa pagina.                                                 |
+| IR-Q0 / IR-Q4   | IR-S0..3, IR-M            | CL --> ALU                     | Ingressi di selezione dell'operazione dell'ALU; [spiegazione](../alu/#funzioni-logiche-e-operazioni-aritmetiche).                     |
+| IR-Q5 / IR-Q7   | IR-A0 / IR-A2             | CL --> Flag                    | Ingressi di selezione dei salti condizionali del registro dei Flag; [spiegazione](../flags/#i-salti-condizionali-e-incondizionati).   |
+| ALU-to-register interconnect | H0..7, B0..7 | ALU                            | Bus tra output dei registri B e H e input dell'ALU; [spiegazione](../alu/#lalu-dellnqsap).                                            |
+| ALU output      | Q0..7                     | ALU                            | Bus tra output dell'ALU e transceiver di output al bus del computer; [spiegazione](../alu/#lalu-dellnqsap).                           |
+| ?               | MA0-MA7                   | MAR --> RAM                    | Bus tra output del MAR e input della RAM; [spiegazione](../ram/#design-dei-moduli-mar-e-ram).                                         |
+| Selector Inputs | X0..7, Y0..7              | DXY                            | Bus tra output di X e Y e input dei selettori X/Y; [spiegazione](../dxy/#utilizzo-con-le-modalità-di-indirizzamento-indicizzate).     |
+| Adder Inputs    | DQ0..7 XY0..7             | DXY                            | Bus tra output di D e selettori X/Y e input degli adder; [spiegazione](../dxy/#utilizzo-con-le-modalità-di-indirizzamento-indicizzate).                  |
+| Adder Outputs   | AQ0..7                    | DXY                            | Bus tra output degli adder e transceiver di output al bus del computer; [spiegazione](../dxy/#utilizzo-con-le-modalità-di-indirizzamento-indicizzate).   |
+| MC-RR0..3       | N0..3                     | Loader --> CL                  | Utilizzati dal Loader per impostare i '138 dei segnali di lettura; [spiegazione](#i-74ls138-per-la-gestione-dei-segnali).                                |
+| MC-RW0..3       | N4..7                     | Loader --> CL                  | Utilizzati dal Loader per impostare i '138 dei segnali di scrittura; [spiegazione](#i-74ls138-per-la-gestione-dei-segnali).                              |
+| PC-Load         | PCJ                       | Flag --> PC                    | Controlla il caricamento del PC per i salti condizionali e incondizionati; [spiegazione](../flags/#i-salti-condizionali-e-incondizionati).               |
+| PROG            | PROG                      | MAR --> RAM                    | Selezione tra modalità di programmazione della RAM o di esecuzione del programma; [spiegazione](../ram/#mux-program-mode-e-run-mode). |
+| RST             | RST                       |                                | Reset asincrono del computer; [spiegazione](../flags/#il-carry).                                                   |
+| LDR-ACTIVE      | LDR-Active                | Loader --> Clock e --> CL      | Disattivazione delle EEPROM della Control Logic; [spiegazione](../flags/#il-carry).                                |
+| LDR-CLK         | LDR-CLK                   | Loader --> Clock               | Iniezione del clock del Loader nel computer; [spiegazione](../flags/#il-carry).                                    |
+| CLK-Start       | CLK-Start                 | Loader --> Clock               | (Re-)Start del clock di sistema dopo il caricamento del programma in RAM; [spiegazione](../flags/#il-carry).            |
+| ALU-Cin         | ALU-Cin                   | Flag --> ALU                   | Selezione del Carry da inviare in input ai '181 dell'ALU; [spiegazione](../flags/#il-carry-e-i-registri-h-e-alu).  |
+| H-Cin           | H-Cin                     | Flag --> ALU                   | Selezione del Carry da inviare in input al registro H; [spiegazione Flag C](../flags/#carry).  |
+| ALU-Cout        | ALU-Cout                  | ALU --> Flag                   | Carry output dell'ALU da inviare al registro dei Flag; [spiegazione Flag C](../flags/#carry).  |
+| ALU-Q7          | ALU-Q7                    | ALU --> Flag                   | MSB dell'ALU da inviare al registro dei Flag; [spiegazione Flag V](../flags/#overflow).                              |
+| B-Q7            | B-Q7                      | ALU --> Flag                   | MSB del registro B da inviare al registro dei Flag; [spiegazione Flag V](../flags/#overflow).                    |
+| H-Q0\*          | H-Q0                      | ALU --> Flag                   | LSB di H da inviare al registro dei Flag; [spiegazione Flag C](../flags/#carry).                                 |
+| H-Q7            | H-Q7                      | ALU --> Flag                   | MSB di H da inviare al registro dei Flag; [spiegazione Flag V](../flags/#overflow) e [Flag C](../flags/#carry).  |
 
 \* manca nel modulo ALU, dimenticanza di Tom
 
@@ -617,8 +617,8 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 
 ## TO DO
 
-- Segnale HLT XXXXXXXXXXXX; vedere la spiegazione .
-- Selezione del Carry da mettere in input al registro H; [vedere la spiegazione](../flags/#carry).  |>>>>>>>>>> Da fare dopo aver aggiunto una breve spiegazione del registro h nella pagina ALU
+- Segnale HLT XXXXXXXXXXXX; spiegazione .
+- Selezione del Carry da mettere in input al registro H; [spiegazione](../flags/#carry).  |>>>>>>>>>> Da fare dopo aver aggiunto una breve spiegazione del registro h nella pagina ALU
 - aggiungere i link a masswerk
 - Una volta fatta una sezione nella pagina ALU per descrivere il comportamento del registro H, fare un link da questa pagina nella sezione che parla della mutua esclusività dei segnali di controllo.
 - finire http://www.6502.org/tutorials/compare_beyond.html da "In fact, many 6502 assemblers will allow BLT (Branch on Less Than) "

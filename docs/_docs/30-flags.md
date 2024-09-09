@@ -287,4 +287,4 @@ Da notare che il computer NQSAP prevedeva 8 step per le microistruzioni, mentre 
 - Effetto non desiderato: "le istruzioni di salto condizionato non eseguite sprecano cicli di clock"… non si potrebbe semplicemente usare N per terminare anticipatamente l'istruzione? Lui sembra renderla un po' complicata
 - 29/01/2023 leggendo bene dice che dovrebbe essere possibile fare in modo che la logica elettronica dell'istruzione Jump vada ad attivare N se il salto non deve esserci… da verificare
 - sistemare "l’output delle EEPROM non si modifica durante l’esecuzione della singola istruzione (ma nel SAP-1 come si comportava? 04/10/2022 l’ho compreso andando a rileggere gli appunti del BE 8 bit computer). Teoricamente, e l’avevo letto anche altrove, questo potrebbe essere un problema perché causa “glitching”."
-
+- spiegare in "Il Carry e i registri H e ALU" a cosa serve HCIN... vedi frase "le istruzioni ASL ed LSR (Arithmetic Shift Left e Logical Shift Right) richiedono l’inserimento di uno 0 rispettivamente nell’LSB e nell’MSB.", bisogna inserire una nota che HCIN va in H, che è il registro di shift
