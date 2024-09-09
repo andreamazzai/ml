@@ -453,7 +453,7 @@ Una spiegazione più dettagliata è presente nella pagina dedicata al [Loader](.
 | FB     | FS       | Origine dei Flag da caricare nel registro dei Flag (computo oppure bus); [spiegazione](../flags/#componenti-e-funzionamento).   |
 | FV     | FV       | Caricamento del Flag V nel registro dei flag.                                                         |
 | FZ     | FZ       | Caricamento del Flag Z nel registro dei flag.                                                         |
-| LF     | LF       | ALU Force; [spiegazione](../alu/#istruzioni-di-comparazione).                               |
+| LF     | LF       | ALU Force; [spiegazione 1](../alu/#istruzioni-di-comparazione) e [spiegazione 2](../alu/#riepilogo-sottrazioni-comparazioni-e-indirizzamenti).  |
 | HL-HR  | HL-HR    | Definiscono l'operazione da eseguire sul registro H (caricamento parallelo, rotazione dx o sx).       |
 | HLT    | HLT      | XXXXXXXXXXXX; [spiegazione](../flags/#il-carry-).            |
 | JE     | JE       | Attiva le istruzioni di salto condizionale; [spiegazione](../flags/#i-salti-condizionali-e-incondizionati).  |
