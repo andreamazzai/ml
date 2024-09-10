@@ -122,3 +122,4 @@ Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 - Se pensate che con questo bla bla bla io abbia violato il vostro copyright, vi chiedo gentilmente di segnalarmelo e provvederò immediatamente alla rimozione del materiale
 - Ringraziare ancora Tom che , anche in fase di redazione della documentazione, non ha esitatoa darmi qualche chiarimento
 - Fare una bella review della parola segnali per distinguere bene i segnali di controllo dai segnali dati
+- E decidere se i segnali devono essere in grassetto o no... dare una coerenza
