@@ -445,47 +445,47 @@ La colonna "Ambito o direzione segnale" indica il contesto di un bus, oppure sor
 
 ### Segnali di controllo
 
-| NQSAP         | BEAM           | Ambito o direzione segnale | Descrizione                                                                                           |
-| ------        | --------       |                            | -----------                                                                                           |
-| C0-C1         | C0-C1          | CL → Flag                  | Utilizzati per determinare se il Carry da salvare nel Flag Register debba provenire dal Carry Output dell'ALU (operazioni aritmetiche) o da H (operazioni di scorrimento e rotazione); [spiegazione](../flags/#carry). |
-| CC-CS         | CC-CS          | CL → Flag                  | Utilizzati per selezionare quale Carry presentare agli input di ALU e H (quello effettivamente presente nel registro dei Flag, oppure 0 o 1 fissi); [spiegazione](../flags/#il-carry-e-i-registri-h-e-alu).            |
+| NQSAP         | BEAM           | Ambito o direzione segnale | Descrizione                                                                                                  |
+| ------        | --------       |                            | -----------                                                                                                  |
+| C0-C1         | C0-C1          | CL → Flag                  | Determina se il Carry da salvare nel Flag C provenga dal Carry Output dell'ALU o da H (scorrimento e rotazione); [spiegazione](../flags/#carry). |
+| CC-CS         | CC-CS          | CL → Flag                  | Seleziona quale Carry presentare agli input di ALU e H (quello reale, oppure 0 o 1 fissi); [spiegazione](../flags/#il-carry-e-i-registri-h-e-alu).            |
 | DY-DZ         | DX/Y-DZ        | CL → DXY                   | DX/Y HI espone X agli adder, LO espone Y; DZ espone zero; [spiegazione](../dxy/#utilizzo-con-le-modalità-di-indirizzamento-indicizzate).     |
-| FC            | FC             | CL → Flag                  | Caricamento del Flag C nel registro dei flag.                                                                   |
-| FN            | FN             | CL → Flag                  | Caricamento del Flag N nel registro dei flag.                                                                   |
-| FB            | FS             | CL → Flag                  | Origine dei Flag da caricare nel registro dei Flag (computo oppure bus); [spiegazione](../flags/#componenti-e-funzionamento).   |
-| FV            | FV             | CL → Flag                  | Caricamento del Flag V nel registro dei flag.                                                         |
-| FZ            | FZ             | CL → Flag                  | Caricamento del Flag Z nel registro dei flag.                                                         |
+| FC            | FC             | CL → Flag                  | Caricamento del Flag C nel registro dei flag.                                                                |
+| FN            | FN             | CL → Flag                  | Caricamento del Flag N nel registro dei flag.                                                                |
+| FB            | FS             | CL → Flag                  | Origine dei Flag da caricare nel registro dei Flag (computo oppure bus); [spiegazione](../flags/#componenti-e-funzionamento).         |
+| FV            | FV             | CL → Flag                  | Caricamento del Flag V nel registro dei flag.                                                                |
+| FZ            | FZ             | CL → Flag                  | Caricamento del Flag Z nel registro dei flag.                                                                |
 | LF            | LF             | CL → ALU                   | ALU Force; [spiegazione 1](../alu/#istruzioni-di-comparazione) e [spiegazione 2](../alu/#riepilogo-sottrazioni-comparazioni-e-indirizzamenti).  |
-| HL-HR         | HL-HR          | CL → ALU                   | Definiscono l'operazione da eseguire sul registro H (caricamento parallelo, rotazione dx o sx).       |
+| HL-HR         | HL-HR          | CL → ALU                   | Definiscono l'operazione da eseguire sul registro H (caricamento parallelo, rotazione dx o sx).              |
 | IR-Q0 / IR-Q4 | IR-S0..3, IR-M | CL → ALU                   | Ingressi di selezione dell'operazione dell'ALU; [spiegazione](../alu/#funzioni-logiche-e-operazioni-aritmetiche).                     |
-| HLT           | HLT            | CL → Clock                 | Interrompe il programma in esecuzione; [spiegazione](../clock/#note-sul-microcode).            |
+| HLT           | HLT            | CL → Clock                 | Interrompe il programma in esecuzione; [spiegazione](../clock/#note-sul-microcode).                          |
 | JE            | JE             | CL → Flag                  | Attiva le istruzioni di salto condizionale; [spiegazione](../flags/#i-salti-condizionali-e-incondizionati).  |
-| N             | NI             | CL                         | Next Instruction; [spiegazione](#lunghezza-delle-istruzioni).                                         |
-| PI            | PCI            | CL → PC                    | Incrementa il Program Counter.                                                                        |
-| RA            | RA             | CL → ALU                   | Espone sul bus il contenuto dell'accumulatore A.                                                      |
-| RB            | RB             | CL → ALU                   | Espone sul bus il contenuto del registro B.                                                           |
-| RD            | RD             | CL → DXY                   | Espone sul bus il contenuto del registro D.                                                           |
-| RF            | RF             | CL → Flag                  | Espone sul bus il contenuto del registro dei Flag.                                                    |
-| RH            | RH             | CL → ALU                   | Espone sul bus il contenuto del registro H.                                                           |
-| RL            | RL             | CL → ALU                   | Espone sul bus l'output della ALU.                                                                    |
-| RP            | RPC            | CL → PC                    | Espone sul bus il contenuto del Program Counter.                                                      |
-| RR            | RR             | CL → RAM                   | Espone sul bus il contenuto della RAM.                                                                |
-| RX            | RX             | CL → DXY                   | Espone sul bus il contenuto del registro X.                                                           |
-| RY            | RY             | CL → DXY                   | Espone sul bus il contenuto del registro Y.                                                           |
-| RS            | RS             | CL → SP                    | Espone sul bus il valore dello Stack Pointer.                                                         |
-| SCE\*         | SE             | CL → SP                    | Attiva incremento/decremento dello Stack Pointer.                                                     |
-| SPI*          | SU/D           | CL → SP                    | Indica se lo Stack Pointer deve contare verso l'alto (HI) o verso il basso (LO).                      |
-| WA            | WA             | CL → ALU                   | Scrive il contenuto del bus nell'accumulatore A.                                                      |
-| WB            | WB             | CL → ALU                   | Scrive il contenuto del bus nel registro B.                                                           |
-| WD            | WD             | CL → DXY                   | Scrive il contenuto del bus nel registro D.                                                           |
-| WI            | WIR            | CL                         | Scrive il contenuto del bus nell'Instruction Register.                                                |
-| WM            | WM             | CL → MAR                   | Scrive il contenuto del bus nel Memory Address Register.                                              |
-| WO            | WO             | CL → Output                | Scrive il contenuto del bus nel registro di Output.                                                   |
-| WR            | WR             | CL → RAM                   | Scrive il contenuto del bus nella RAM.                                                                |
-| WS            | WS             | CL → SP                    | Scrive il contenuto del bus nello Stack Pointer.                                                      |
-| WP            | WPC            | CL → PC                    | Scrive il contenuto del bus nel Program Counter.                                                      |
-| WX            | WX             | CL → DXY                   | Scrive il contenuto del bus nel registro X.                                                           |
-| WY            | WY             | CL → DXY                   | Scrive il contenuto del bus nel registro Y.                                                           |
+| N             | NI             | CL                         | Next Instruction; [spiegazione](#lunghezza-delle-istruzioni).                                                |
+| PI            | PCI            | CL → PC                    | Incrementa il Program Counter.                                                                               |
+| RA            | RA             | CL → ALU                   | Espone sul bus il contenuto dell'accumulatore A.                                                             |
+| RB            | RB             | CL → ALU                   | Espone sul bus il contenuto del registro B.                                                                  |
+| RD            | RD             | CL → DXY                   | Espone sul bus il contenuto del registro D.                                                                  |
+| RF            | RF             | CL → Flag                  | Espone sul bus il contenuto del registro dei Flag.                                                           |
+| RH            | RH             | CL → ALU                   | Espone sul bus il contenuto del registro H.                                                                  |
+| RL            | RL             | CL → ALU                   | Espone sul bus l'output della ALU.                                                                           |
+| RP            | RPC            | CL → PC                    | Espone sul bus il contenuto del Program Counter.                                                             |
+| RR            | RR             | CL → RAM                   | Espone sul bus il contenuto della RAM.                                                                       |
+| RX            | RX             | CL → DXY                   | Espone sul bus il contenuto del registro X.                                                                  |
+| RY            | RY             | CL → DXY                   | Espone sul bus il contenuto del registro Y.                                                                  |
+| RS            | RS             | CL → SP                    | Espone sul bus il valore dello Stack Pointer.                                                                |
+| SCE\*         | SE             | CL → SP                    | Attiva incremento/decremento dello Stack Pointer.                                                            |
+| SPI*          | SU/D           | CL → SP                    | Indica se lo Stack Pointer deve contare verso l'alto (HI) o verso il basso (LO).                             |
+| WA            | WA             | CL → ALU                   | Scrive il contenuto del bus nell'accumulatore A.                                                             |
+| WB            | WB             | CL → ALU                   | Scrive il contenuto del bus nel registro B.                                                                  |
+| WD            | WD             | CL → DXY                   | Scrive il contenuto del bus nel registro D.                                                                  |
+| WI            | WIR            | CL                         | Scrive il contenuto del bus nell'Instruction Register.                                                       |
+| WM            | WM             | CL → MAR                   | Scrive il contenuto del bus nel Memory Address Register.                                                     |
+| WO            | WO             | CL → Output                | Scrive il contenuto del bus nel registro di Output.                                                          |
+| WR            | WR             | CL → RAM                   | Scrive il contenuto del bus nella RAM.                                                                       |
+| WS            | WS             | CL → SP                    | Scrive il contenuto del bus nello Stack Pointer.                                                             |
+| WP            | WPC            | CL → PC                    | Scrive il contenuto del bus nel Program Counter.                                                             |
+| WX            | WX             | CL → DXY                   | Scrive il contenuto del bus nel registro X.                                                                  |
+| WY            | WY             | CL → DXY                   | Scrive il contenuto del bus nel registro Y.                                                                  |
 
 ## Bus e altri segnali
 
