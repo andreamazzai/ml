@@ -433,13 +433,15 @@ Notare che i segnali di uscita dei '138 realmente utilizzabili sono 30 e non 32,
 
 NQSAP e BEAM consentono di automatizzare il caricamento di un programma grazie alla presenza di un Loader basato su Arduino Nano.
 
-Il Loader controlla alcuni segnali della Control Logic e del modulo di clock. Grazie al segnale LDR-Active può inibire le prime due EEPROM e sostituirsi nel controllo dei '138 mediante i segnali N0-N7. Inibendo anche il circuito di clock, il Loader può iniettare nel computer un proprio clock dedicato ed utilizzarlo per caricare i registri MAR e RAM.
+Il Loader controlla alcuni segnali della Control Logic e del modulo di clock. Il segnale LDR-Active può inibire le prime due EEPROM e consente al Loader di sostituirsi nel controllo dei '138 utilizzando i segnali N0-N7. Inibendo il clock principale del computer, il Loader può iniettare un proprio clock ed utilizzarlo per caricare i registri MAR e RAM.
 
 Una spiegazione più dettagliata è presente nella pagina dedicata al [Loader](../loader/).
 
 ## Riepilogo segnali dell'NQSAP e del BEAM
 
-**SISTEMARE** In questa sezione riepiloghiamo sia i segnali di controllo originati dalla Control Logic sia i segnali di controllo e di scambio informazioni tra diversi moduli del computer e i bus esisteni nel computer, sia tra moduli diversi sia all'interno di un modulo. Nella seconda tabella, nella colonna RIFERIMENTO Prima si indica il modulo sorgente del segnale e successivamente il modulo destinatario di tale segnale.
+La prima tabella riassume i segnali di controllo originati dalla Control Logic.
+
+La seconda tabella comprende una descrizione dei bus esistenti nel computer e la lista dei segnali di controllo non provenienti dalla Control Logic.La colonna "Ambito o direzione segnale" indica il contesto di un bus, oppure sorgente e destinazione di un segnale di controllo.
 
 ### Segnali di controllo
 
@@ -503,7 +505,7 @@ Una spiegazione più dettagliata è presente nella pagina dedicata al [Loader](.
 | MC-RW0..3       | N4..7                     | Loader → CL                | Utilizzati dal Loader per impostare i '138 dei segnali di scrittura; [spiegazione](#i-74ls138-per-la-gestione-dei-segnali).                              |
 | PC-Load         | PCJ                       | Flag → PC                  | Controlla il caricamento del PC per i salti condizionali e incondizionati; [spiegazione](../flags/#i-salti-condizionali-e-incondizionati).               |
 | PROG            | PROG                      | MAR → RAM                  | Selezione tra modalità di programmazione della RAM o di esecuzione del programma; [spiegazione](../ram/#mux-program-mode-e-run-mode). |
-| RST             | RST                       |                            | 2DO Reset asincrono del computer; [spiegazione](../flags/#il-carry).                                                   |
+| RST             | RST                       | Computer                   | 2DO Reset asincrono del computer; [spiegazione](../flags/#il-carry).                                                   |
 | LDR-ACTIVE      | LDR-Active                | Loader → Clock e → CL      | 2DO Disattivazione clock e EEPROM Control Logic; [spiegazione](../flags/#il-carry).                                    |
 | LDR-CLK         | LDR-CLK                   | Loader → Clock             | 2DO Iniezione del clock del Loader nel computer; [spiegazione](../flags/#il-carry).                                    |
 | CLK-Start       | CLK-Start                 | Loader → Clock             | 2DO (Re-)Start del clock di sistema dopo il caricamento del programma in RAM; [spiegazione](../flags/#il-carry).       |
