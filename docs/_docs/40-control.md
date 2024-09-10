@@ -447,21 +447,23 @@ La colonna "Ambito o direzione segnale" indica il contesto di un bus, oppure sor
 
 | NQSAP         | BEAM           | Ambito o direzione segnale | Descrizione                                                                                                  |
 | ------        | --------       |                            | -----------                                                                                                  |
-| C0-C1         | C0-C1          | CL → Flag                  | Determina se il Carry da salvare nel Flag C provenga dal Carry Output dell'ALU o da H (scorrimento e rotazione); [spiegazione](../flags/#carry). |
-| CC-CS         | CC-CS          | CL → Flag                  | Seleziona quale Carry presentare agli input di ALU e H (quello reale, oppure 0 o 1 fissi); [spiegazione](../flags/#il-carry-e-i-registri-h-e-alu).            |
+| N             | NI             | CL                         | Next Instruction; [spiegazione](#lunghezza-delle-istruzioni).                                                |
+| LF            | LF             | CL → ALU                   | ALU Force; [spiegazione 1](../alu/#istruzioni-di-comparazione) e [spiegazione 2](../alu/#riepilogo-sottrazioni-comparazioni-e-indirizzamenti).  |
+| HL-HR         | HL-HR          | CL → ALU                   | Definiscono l'operazione da eseguire sul registro H (caricamento parallelo, rotazione dx o sx).              |
+| IR-Q0 / IR-Q4 | IR-S0..3, IR-M | CL → ALU                   | Determinano l'operazione che l'ALU deve eseguire; [spiegazione](../alu/#funzioni-logiche-e-operazioni-aritmetiche).                     |
+| HLT           | HLT            | CL → Clock                 | Interrompe il programma in esecuzione; [spiegazione](../clock/#note-sul-microcode).                          |
 | DY-DZ         | DX/Y-DZ        | CL → DXY                   | DX/Y HI espone X agli adder, LO espone Y; DZ espone zero; [spiegazione](../dxy/#utilizzo-con-le-modalità-di-indirizzamento-indicizzate).     |
+| C0-C1         | C0-C1          | CL → Flag                  | Determinano se il Carry da salvare nel Flag C provenga dal Carry Output dell'ALU o da H (scorrimento e rotazione); [spiegazione](../flags/#carry). |
+| CC-CS         | CC-CS          | CL → Flag                  | Selezionano quale Carry presentare agli input di ALU e H (quello reale, oppure 0 o 1 fissi); [spiegazione](../flags/#il-carry-e-i-registri-h-e-alu).            |
 | FC            | FC             | CL → Flag                  | Caricamento del Flag C nel registro dei flag.                                                                |
 | FN            | FN             | CL → Flag                  | Caricamento del Flag N nel registro dei flag.                                                                |
 | FB            | FS             | CL → Flag                  | Origine dei Flag da caricare nel registro dei Flag (computo oppure bus); [spiegazione](../flags/#componenti-e-funzionamento).         |
 | FV            | FV             | CL → Flag                  | Caricamento del Flag V nel registro dei flag.                                                                |
 | FZ            | FZ             | CL → Flag                  | Caricamento del Flag Z nel registro dei flag.                                                                |
-| LF            | LF             | CL → ALU                   | ALU Force; [spiegazione 1](../alu/#istruzioni-di-comparazione) e [spiegazione 2](../alu/#riepilogo-sottrazioni-comparazioni-e-indirizzamenti).  |
-| HL-HR         | HL-HR          | CL → ALU                   | Definiscono l'operazione da eseguire sul registro H (caricamento parallelo, rotazione dx o sx).              |
-| IR-Q0 / IR-Q4 | IR-S0..3, IR-M | CL → ALU                   | Ingressi di selezione dell'operazione dell'ALU; [spiegazione](../alu/#funzioni-logiche-e-operazioni-aritmetiche).                     |
-| HLT           | HLT            | CL → Clock                 | Interrompe il programma in esecuzione; [spiegazione](../clock/#note-sul-microcode).                          |
 | JE            | JE             | CL → Flag                  | Attiva le istruzioni di salto condizionale; [spiegazione](../flags/#i-salti-condizionali-e-incondizionati).  |
-| N             | NI             | CL                         | Next Instruction; [spiegazione](#lunghezza-delle-istruzioni).                                                |
 | PI            | PCI            | CL → PC                    | Incrementa il Program Counter.                                                                               |
+| SCE\*         | SE             | CL → SP                    | Attiva incremento/decremento dello Stack Pointer.                                                            |
+| SPI\*         | SU/D           | CL → SP                    | Indica se lo Stack Pointer deve contare verso l'alto (HI) o verso il basso (LO).                             |
 | RA            | RA             | CL → ALU                   | Espone sul bus il contenuto dell'accumulatore A.                                                             |
 | RB            | RB             | CL → ALU                   | Espone sul bus il contenuto del registro B.                                                                  |
 | RD            | RD             | CL → DXY                   | Espone sul bus il contenuto del registro D.                                                                  |
@@ -473,19 +475,17 @@ La colonna "Ambito o direzione segnale" indica il contesto di un bus, oppure sor
 | RX            | RX             | CL → DXY                   | Espone sul bus il contenuto del registro X.                                                                  |
 | RY            | RY             | CL → DXY                   | Espone sul bus il contenuto del registro Y.                                                                  |
 | RS            | RS             | CL → SP                    | Espone sul bus il valore dello Stack Pointer.                                                                |
-| SCE\*         | SE             | CL → SP                    | Attiva incremento/decremento dello Stack Pointer.                                                            |
-| SPI*          | SU/D           | CL → SP                    | Indica se lo Stack Pointer deve contare verso l'alto (HI) o verso il basso (LO).                             |
+| WI            | WIR            | CL                         | Scrive il contenuto del bus nell'Instruction Register.                                                       |
 | WA            | WA             | CL → ALU                   | Scrive il contenuto del bus nell'accumulatore A.                                                             |
 | WB            | WB             | CL → ALU                   | Scrive il contenuto del bus nel registro B.                                                                  |
 | WD            | WD             | CL → DXY                   | Scrive il contenuto del bus nel registro D.                                                                  |
-| WI            | WIR            | CL                         | Scrive il contenuto del bus nell'Instruction Register.                                                       |
+| WX            | WX             | CL → DXY                   | Scrive il contenuto del bus nel registro X.                                                                  |
+| WY            | WY             | CL → DXY                   | Scrive il contenuto del bus nel registro Y.                                                                  |
 | WM            | WM             | CL → MAR                   | Scrive il contenuto del bus nel Memory Address Register.                                                     |
 | WO            | WO             | CL → Output                | Scrive il contenuto del bus nel registro di Output.                                                          |
 | WR            | WR             | CL → RAM                   | Scrive il contenuto del bus nella RAM.                                                                       |
 | WS            | WS             | CL → SP                    | Scrive il contenuto del bus nello Stack Pointer.                                                             |
 | WP            | WPC            | CL → PC                    | Scrive il contenuto del bus nel Program Counter.                                                             |
-| WX            | WX             | CL → DXY                   | Scrive il contenuto del bus nel registro X.                                                                  |
-| WY            | WY             | CL → DXY                   | Scrive il contenuto del bus nel registro Y.                                                                  |
 
 ## Bus e altri segnali
 
@@ -519,56 +519,59 @@ La colonna "Ambito o direzione segnale" indica il contesto di un bus, oppure sor
 
 \* Manca nel modulo ALU; dimenticanza nello schema di Tom.
 
-## MICROCODE MICROCODE MICROCODE DA FARE
+## MICROCODE MICROCODE MICROCODE DA COMPLETARE
 
-• Nota che  livello generale ha definito due fasi di Fetch F1 ed F2 che sono comuni a tutte le istruzioni e sono sempre ripetute.
+La fase di scrittura del microcode non è stata *troppo* complessa. 
 
-Per fare il microcode sto usando:
-- https://www.masswerk.at/6502/6502_instruction_set.html
-- https://www.masswerk.at/6502/ che è utile per simulare le istruzioni e capire quali Flag esse modifichino durante la loro esecuzione.
+E' stata invece particolarmente difficile la realizzazione dell'instruction set, che, col senno di poi, avrei definito diversamente.
 
-Ad esempio inizialmente ho trovato difficoltà a capire quali Flag fossero modificati da CPY, che viene indicata come:
+Infatti il codice di Tomstra che è possibile automatizzare la generazione del micro code per molte operazioni grazie al fatto che le app opportunamente posizionate all'interno della tabella , cosa che ionon sono riuscito a fare in quanto all'inizio del task non mi era chiaro quale sarebbe stato il beneficio . inoltre la mia conoscenza del linguaggio c è limitata e non sono riuscito a comprendere chiaramente cosa facesse il codice di Tom.
 
-- In quali combinazioni si attivano i vari flag N, Z e C?
-- Ho trovato supporto su http://www.6502.org/tutorials/compare_beyond.html nel quale si spiega che fare un confronto equivale a impostare il carry e fare la differenza, ma senza effettivamente scrivere il risultato nel registro di partenza:
-CMP NUM
-is very similar to:
-SEC
-SBC NUM
+Il mio codice è commentato e dovrebbe essere abbastanza esplicativo.
 
-- If the Z flag is 0, then A <> NUM and BNE will branch
-- If the Z flag is 1, then A = NUM and BEQ will branch
-- If the C flag is 0, then A (unsigned) < NUM (unsigned) and BCC will branch
-- If the C flag is 1, then A (unsigned) >= NUM (unsigned) and BCS will branch
+Nota che a livello generale ha definito due fasi di Fetch F1 ed F2 che sono comuni a tutte le istruzioni e sono sempre ripetute.
 
-Facciamo le prove:
+Riferimenti utilissimi che ho utilizzato:
 
-Codice:
+- Un <a href="https://www.atarimania.com/documents/6502%20(65xx)%20Microprocessor%20Instant%20Reference%20Card.pdf" target="_blank">compendio della Micro Logic</a> incredibilmente utile, che in sole due pagine include opcode, modalità di indirizzamento, flag e istruzioni che li modificano, funzionamento delle istruzioni di scorrimento e molto altro. Insostituibile.
+- Un valido riferimento per l'analisi della relazione tra Control Logic (CL) ed IR è stata la pagina <a href="https://www.masswerk.at/6502/6502_instruction_set.html" target="_blank">6502 Instruction Set</a> di Norbert Landsteiner. Offre una comoda vista tabellare dell'instruction set dalla quale ho ricavato la vista Excel che ho in seguito utilizzato per definire gli opcode delle istruzioni.
+- Invito a consultare anche il <a href="https://www.masswerk.at/6502/assembler.html" target="_blank">6502 Assembler</a> e il <a href="https://www.masswerk.at/6502/" target="_blank">Virtual 6502</a> che ho utilizzato in fase di debug del microcode: utilissimi per simulare le istruzioni passo dopo passo, comprendere quali flag modifichino durante la loro esecuzione ed aggiustare il microcode di conseguenza.
+
+Inizialmente ho incontrato difficoltà nel comprendere quali Flag venissero modificati dalle istruzioni di comparazione. Un supporto eccellente si trova nel <a href="http://www.6502.org/tutorials/compare_beyond.html" target="_blank">tutorial</a> su 6502.org, che descrive come un'operazione di confronto equivalga ad impostare il Carry e [fare la differenza](../alu/#relazione-diretta-hardwired-tra-instruction-register-e-alu), mantenendo solamente i Flag modificati e scartando il valore della sottrazione. Illuminante.
+
+Se dopo l'operazione di comparazione CMP NUM, che equivale a SEC e SBC NUM...
+
+- il Flag Z è 0, allora A <> NUM e il salto condizionale BNE viene eseguito
+- il Flag Z è 1, allora A = NUM e il salto condizionale BEQ viene eseguito
+- il Flag C è 0, allora A (senza segno) < NUM (senza segno) e il salto condizionale BCC viene eseguito
+- il Flag C è 1, allora A (senza segno) >= NUM (senza segno) e il salto condizionale BCS viene eseguito
+
+Mi sono dilettato dunque in alcune prove. Il codice:
 
 ~~~text
 LDY #$40
 CPY #$30
 ~~~
 
-Viene attivato il C, coerentemente con quanto spiegato sopra… direi perché nell'equivalenza si fa il SEC prima di SBC; essendo il numero da comparare inferiore, non faccio "il prestito" (borrow) del Carry e dunque alla fine dell'istruzione me lo ritrovo attivo come in partenza.
+attiva il Flag C, coerentemente con quanto spiegato sopra. Il Carry viene settato (SEC) prima di eseguire la sottrazione (SBC); il numero da comparare è inferiore, dunque la sottrazione simulata non ricorre al "prestito" (borrow) del Carry, che alla fine dell'operazione è attivo, come era all'inizio.
 
-Codice:
+Il codice:
 
 ~~~text
 LDY #$40
 CPY #$40
 ~~~
 
-Vengono attivati sia Z sia C: Z perché 40 - 40 = 0 e dunque il risultato è Zero e il contenuto del registro e del confronto numeri sono uguali; essendo il numero da comparare inferiore, non faccio "il prestito" (borrow) del Carry.
+attiva i Flag Z e C: Z perché $40 - $40 = 0, dunque il risultato della sottrazione è pari a zero e Z viene settato; inoltre, poiché il numero da comparare è inferiore, non si ricorre al prestito e C rimane attivo.
 
-Codice:
+Il codice:
 
 ~~~text
 LDY #$40
 CPY #$50
 ~~~
 
-No Z e C, coerentemente con quanto spiegato sopra, ma N, perché il numero risultante è negativo: in 2C il primo bit è 1 ☺️. C è diventato Zero perché l'ho "preso in prestito".
+non attiva né Z né C, coerentemente con quanto spiegato sopra; attiva invece N, perché la sottrazione simulata genera un risultato negativo: un numero negativo presenta il primo bit a 1, che è anche il bit utilizzato per caricare il Flag N. Il Flag C, settato all'inizio della comparazione, diventa Zero perché viene "preso in prestito".
 
 Su BEAM:
 
