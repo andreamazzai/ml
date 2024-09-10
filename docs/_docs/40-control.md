@@ -431,9 +431,9 @@ Notare che i segnali di uscita dei '138 realmente utilizzabili sono 30 e non 32,
 
 ## Caricamento di un programma dal Loader
 
-NQSAP e BEAM consentono di automatizzare Il caricamento di un programma grazie alla presenza di un Loader basato su Arduino Nano.
+NQSAP e BEAM consentono di automatizzare il caricamento di un programma grazie alla presenza di un Loader basato su Arduino Nano.
 
-Il Loader controlla alcuni segnali della Control Logic e alcuni segnali del modulo di clock. Il Loader può inibire le prime due EEPROM e sostituirsi nel controllo dei '138 grazie ai segnali N0-N7. Inibendo anche il circuito di clock, il Loader può iniettare nel computer un segnale di clock dedicato ed utilizzarlo per caricare i registri MAR e RAM.
+Il Loader controlla alcuni segnali della Control Logic e del modulo di clock. Grazie al segnale LDR-Active può inibire le prime due EEPROM e sostituirsi nel controllo dei '138 mediante i segnali N0-N7. Inibendo anche il circuito di clock, il Loader può iniettare nel computer un proprio clock dedicato ed utilizzarlo per caricare i registri MAR e RAM.
 
 Una spiegazione più dettagliata è presente nella pagina dedicata al [Loader](../loader/).
 
@@ -459,7 +459,6 @@ Una spiegazione più dettagliata è presente nella pagina dedicata al [Loader](.
 | JE     | JE       | Attiva le istruzioni di salto condizionale; [spiegazione](../flags/#i-salti-condizionali-e-incondizionati).  |
 | N      | NI       | Next Instruction; [spiegazione](#lunghezza-delle-istruzioni).                               |
 | PI     | PCI      | Incrementa il Program Counter.                                                                        |
-| RR     | RR       | Espone sul bus il contenuto della RAM.                                                                |
 | RA     | RA       | Espone sul bus il contenuto dell'accumulatore A.                                                      |
 | RB     | RB       | Espone sul bus il contenuto del registro B.                                                           |
 | RD     | RD       | Espone sul bus il contenuto del registro D.                                                           |
@@ -472,7 +471,7 @@ Una spiegazione più dettagliata è presente nella pagina dedicata al [Loader](.
 | RX     | RX       | Espone sul bus il contenuto del registro X.                                                           |
 | RY     | RY       | Espone sul bus il contenuto del registro Y.                                                           |
 | SCE*   | SE       | Attiva incremento/decremento dello Stack Pointer.                                                     |
-| SPI*   | SU/D     | Indica se lo Stack Pointer deve contare verso l'alto o verso il basso.                                |
+| SPI*   | SU/D     | Indica se lo Stack Pointer deve contare verso l'alto (HI) o verso il basso (LO).                      |
 | WA     | WA       | Scrive il contenuto del bus nell'accumulatore A.                                                      |
 | WB     | WB       | Scrive il contenuto del bus nel registro B.                                                           |
 | WD     | WD       | Scrive il contenuto del bus nel registro D.                                                           |
@@ -487,12 +486,10 @@ Una spiegazione più dettagliata è presente nella pagina dedicata al [Loader](.
 
 ## Bus e altri segnali
 
-**è possibile sostituire** le frecce con carattere unico? → →→ →
-
 | NQSAP           | BEAM                      | Ambito o direzione segnale | Descrizione                                                |
 | --------------- | --------------            | -                          | -----------                                                |
-| CLK             | CLK                       | BEAM                       | Segnale di clock inviato a tutti i moduli del computer.    |
-| D0..7           | D0..7                     | BEAM                       | Bus del computer.                                          |
+| CLK             | CLK                       | Computer                   | Segnale di clock inviato a tutti i moduli del computer.    |
+| D0..7           | D0..7                     | Computer                   | Bus del computer.                                          |
 | MA0 - MA10      | A0..11                    | CL                         | Bus tra output di RC ed IR e input delle EEPROM; spiegazione in questa stessa pagina.                                                 |
 | IR-Q0 / IR-Q4   | IR-S0..3, IR-M            | CL → ALU                   | Ingressi di selezione dell'operazione dell'ALU; [spiegazione](../alu/#funzioni-logiche-e-operazioni-aritmetiche).                     |
 | IR-Q5 / IR-Q7   | IR-A0 / IR-A2             | CL → Flag                  | Ingressi di selezione dei salti condizionali del registro dei Flag; [spiegazione](../flags/#i-salti-condizionali-e-incondizionati).   |
@@ -506,15 +503,15 @@ Una spiegazione più dettagliata è presente nella pagina dedicata al [Loader](.
 | MC-RW0..3       | N4..7                     | Loader → CL                | Utilizzati dal Loader per impostare i '138 dei segnali di scrittura; [spiegazione](#i-74ls138-per-la-gestione-dei-segnali).                              |
 | PC-Load         | PCJ                       | Flag → PC                  | Controlla il caricamento del PC per i salti condizionali e incondizionati; [spiegazione](../flags/#i-salti-condizionali-e-incondizionati).               |
 | PROG            | PROG                      | MAR → RAM                  | Selezione tra modalità di programmazione della RAM o di esecuzione del programma; [spiegazione](../ram/#mux-program-mode-e-run-mode). |
-| RST             | RST                       |                            | Reset asincrono del computer; [spiegazione](../flags/#il-carry).                                                   |
-| LDR-ACTIVE      | LDR-Active                | Loader → Clock e → CL      | Disattivazione clock e EEPROM Control Logic; [spiegazione](../flags/#il-carry).                                    |
-| LDR-CLK         | LDR-CLK                   | Loader → Clock             | Iniezione del clock del Loader nel computer; [spiegazione](../flags/#il-carry).                                    |
-| CLK-Start       | CLK-Start                 | Loader → Clock             | (Re-)Start del clock di sistema dopo il caricamento del programma in RAM; [spiegazione](../flags/#il-carry).       |
-| ALU-Cin         | ALU-Cin                   | Flag → ALU                 | Selezione del Carry da inviare in input ai '181 dell'ALU; [spiegazione](../flags/#il-carry-e-i-registri-h-e-alu).  |
-| H-Cin           | H-Cin                     | Flag → ALU                 | Selezione del Carry da inviare in input al registro H; [spiegazione Flag C](../flags/#carry).                      |
+| RST             | RST                       |                            | 2DO Reset asincrono del computer; [spiegazione](../flags/#il-carry).                                                   |
+| LDR-ACTIVE      | LDR-Active                | Loader → Clock e → CL      | 2DO Disattivazione clock e EEPROM Control Logic; [spiegazione](../flags/#il-carry).                                    |
+| LDR-CLK         | LDR-CLK                   | Loader → Clock             | 2DO Iniezione del clock del Loader nel computer; [spiegazione](../flags/#il-carry).                                    |
+| CLK-Start       | CLK-Start                 | Loader → Clock             | 2DO (Re-)Start del clock di sistema dopo il caricamento del programma in RAM; [spiegazione](../flags/#il-carry).       |
+| ALU-Cin         | ALU-Cin                   | Flag → ALU                 | Selezione del Carry da inviare in input ai '181; [spiegazione](../flags/#il-carry-e-i-registri-h-e-alu).  |
+| H-Cin           | H-Cin                     | Flag → ALU                 | Selezione del Carry da inviare in input al registro H; [spiegazione Flag C](../flags/#il-carry-e-i-registri-h-e-alu).                      |
 | ALU-Cout        | ALU-Cout                  | ALU → Flag                 | Carry output dell'ALU da inviare al registro dei Flag; [spiegazione Flag C](../flags/#carry).                      |
 | ALU-Q7          | ALU-Q7                    | ALU → Flag                 | MSB dell'ALU da inviare al registro dei Flag; [spiegazione Flag V](../flags/#overflow).                            |
-| B-Q7            | B-Q7                      | ALU → Flag                 | MSB del registro B da inviare al registro dei Flag; [spiegazione Flag V](../flags/#overflow).                    |
+| B-Q7            | B-Q7                      | ALU → Flag                 | MSB di B da inviare al registro dei Flag; [spiegazione Flag V](../flags/#overflow).                    |
 | H-Q0\*          | H-Q0                      | ALU → Flag                 | LSB di H da inviare al registro dei Flag; [spiegazione Flag C](../flags/#carry).                                 |
 | H-Q7            | H-Q7                      | ALU → Flag                 | MSB di H da inviare al registro dei Flag; [spiegazione Flag V](../flags/#overflow) e [Flag C](../flags/#carry).  |
 
