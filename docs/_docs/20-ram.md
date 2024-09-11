@@ -127,7 +127,7 @@ Tra i vari link sondati per l'upgrade della RAM, c'era anche <a href="https://ww
 
 Per aggiungere un ulteriore link utile per la comprensione delle architetture del modulo di RAM, evidenzio questo <a href="https://www.reddit.com/r/beneater/comments/ad2uko/upgrading_the_ram_module_to_256_bytes/" target="_blank">post su Reddit</a>. Le spiegazioni sono molto ben fatte e utili. Il chip di RAM utilizzato è interessante perché si presenta come due RAM distinte, ognuna con accessi dedicati e un segnale di Busy per gestire le richieste parallele sulla stessa locazione. Altro aspetto degno di nota nell'implementazione di questo utente è la possibilità di aumentare fino a 256 il numero di istruzioni del computer, grazie alla scelta di utilizzare un byte intero per l'istruzione ed un eventuale byte successivo per l'operando, anziché avere un unico byte di cui i 4 Most Significant Bit (MSB) rappresentano l'opcode e di cui i 4 Least Significant Bit (LSB) sono l'operando, come nel SAP di Ben Eater.
 
-Un aspetto collaterale (ma importantissimo) dell'aumento del numero di istruzioni era la necessità di aumentare la dimensione delle EEPROM ospitanti il [microcode](../control): volendo gestire (fino a) 256 istruzioni, erano necessari 8 bit di istruzioni, 3 di step e 2 di flag = 13 pin totali, portanto si rendevano necessarie delle 28C64... e avevo dimenticato che mi sarebbe servito un bit aggiuntivo per la selezione delle due EEPROM! In quel momento, non sapevo ancora che avrei speso *intere settimane* a comprendere il fantastico modulo dei [Flag](../flags) dell'NQSAP di Tom Nisbet, che ha un approccio completamente diverso e che non necessita di segnali in uscita dalle EEPROM.
+Un aspetto collaterale (ma importantissimo) dell'aumento del numero di istruzioni era la necessità di aumentare la dimensione delle EEPROM ospitanti il [microcode](../control/#instruction-register-e-istruzioni): volendo gestire (fino a) 256 istruzioni, erano necessari 8 bit di istruzioni, 3 di step e 2 di flag = 13 pin totali, portanto si rendevano necessarie delle 28C64... e avevo dimenticato che mi sarebbe servito un bit aggiuntivo per la selezione delle due EEPROM! In quel momento, non sapevo ancora che avrei speso *intere settimane* a comprendere il fantastico modulo dei [Flag](../flags) dell'NQSAP di Tom Nisbet, che ha un approccio completamente diverso e che non necessita di segnali in uscita dalle EEPROM.
 
 ## Gestione della RAM
 
@@ -300,7 +300,7 @@ A un certo punto ho capito che nello schema c'era un problema piuttosto importan
 
 *Tabella riepilogativa rivista analisi stati logici seconda versione modulo RAM.*
 
-Quando sono arrivato a questo punto ho realizzato di aver lavorato inutilmente: a cosa mi servono due MUX e un '245? Sono sufficienti due '245, uno per gestire l'I/O sul bus e uno per gestire il dip-switch, che in effetti è quanto aveva fatto The8BitEnthusiast! Ero stato illuminato e in quel momento mi è sembrato tutto chiaro!
+Quando sono arrivato a questo punto ho realizzato di aver lavorato inutilmente: a cosa servono due MUX e un '245? Sono sufficienti due '245, uno per gestire l'I/O sul bus e uno per gestire il dip-switch, che in effetti è quanto aveva fatto The8BitEnthusiast! Ero stato illuminato e in quel momento mi è sembrato tutto chiaro!
 
 Nel frattempo avevo anche iniziato a rinominare i segnali logici prendendo come punto di vista il computer e non il modulo:
 

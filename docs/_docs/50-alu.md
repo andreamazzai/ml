@@ -19,9 +19,9 @@ Inoltre, poiché nel modulo si utilizzano due '181 per poter comporre una word d
 
 ## Il registro A
 
-Il registro a non è elettronicamente collegato alla ALU , ma , analizzando quanto accade a livello logico nel computer , ha senso includerlo in questa pagina. Il registro a è un semplice registro senza fronzoli è molto simile ai registri AEB già disponibili già visibili nel computer sap di ben eat , però qui ho utilizzato il solito chip 377 anzichéaltri registri .
+Il registro A non è direttamente connesso alla ALU, ma, analizzando a livello logico quanto accade nel computer, ha senso includerno la descrizione questa pagina. Il registro A è un registro molto semplice, molto simile ai registri A e B già visti nel SAP di Ben Eater; nel BEAM ho però utilizzato il '377, come per il registro B descritto poche righe più sotto.
 
-Peraltro il registroha del computer NQSAP ed è del computer be AM sono molto simili dal punto di vista funzionale , pertantoquesto schema è perfettamente riutilizzabile nella spiegazione che segue che è principalmente votata alla descrizione del modulo ALU del computer NQSAPalla fine di questa pagina ci saranno invece esposte le differenze tra i due computer.
+Peraltro, il registro A dell'NQSAP e del BEAM sono molto simili dal punto di vista funzionale, pertanto lo schema seguente, pur facendo riferimento al BEAM, è perfettamente riutilizzabile nelle spiegazioni che seguono e che sono principalmente votate alla descrizione del modulo ALU del computer NQSAP, evidenziando via via eventuali variazioni applicate nel BEAM.
 
 [![Schema del Registro A del BEAM computer](../../assets/alu/45-a-beam-schema.png "Schema del Registro A del BEAM computer"){:width="100%"}](../../assets/alu/45-a-beam-schema.png)
 

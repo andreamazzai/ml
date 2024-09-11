@@ -293,7 +293,7 @@ Per risolvere i problemi di glitching, Tom ha ridisegnato l'IR sostituendo i 74L
 
 Peraltro, *tutti* i registri a 8 bit del BEAM sono realizzati con componenti dotati di Enable e Clock separati. Conseguentemente, non si possono verificare caricamenti indesiderati poiché, al Rising Edge del clock, i segnali di controllo sono sempre stabili.
 
-Risulta comunque interessante visualizzare il comportamento dei segnali di controllo al momento 7:
+Risulta comunque interessante visualizzare il comportamento dei segnali di controllo al momento 7, durante il quale - come ormai assodato - l'unico registro aggiornato è l'IR:
 
 [![Nessun glitching sul BEAM al momento 7 nello step 1](../../assets/control/40-beam-ldy.png "Nessun glitching sul BEAM al momento 7 nello step 1"){:width="100%"}](../../assets/control/40-beam-ldy.png)
 
@@ -519,27 +519,31 @@ La colonna "Ambito o direzione segnale" indica il contesto di un bus, oppure sor
 
 \* Manca nel modulo ALU; dimenticanza nello schema di Tom.
 
-## MICROCODE MICROCODE MICROCODE DA COMPLETARE
+## WORK IN PROGRESS  
 
-La fase di scrittura del microcode non è stata *troppo* complessa. 
+## Microcode
 
-E' stata invece particolarmente difficile la realizzazione dell'instruction set, che, col senno di poi, avrei definito diversamente.
+La fase di scrittura del microcode non è stata *troppo* complessa. L'esperienza fatta col SAP, lo studio approfondito dell'NQSAP e molta pazienza mi avevano portato a comprendere piuttosto bene come sviluppare gli step delle microistruzioni, anche quelle più complesse, e i meccanismi per simulare le modalità di indirizzamento del 6502.
 
-Infatti il codice di Tomstra che è possibile automatizzare la generazione del micro code per molte operazioni grazie al fatto che le app opportunamente posizionate all'interno della tabella , cosa che ionon sono riuscito a fare in quanto all'inizio del task non mi era chiaro quale sarebbe stato il beneficio . inoltre la mia conoscenza del linguaggio c è limitata e non sono riuscito a comprendere chiaramente cosa facesse il codice di Tom.
+E' stata invece particolarmente difficile la *definizione* dell'instruction set, sul quale, col senno di poi, avrei investito più tempo. Purtroppo ho notato di non essere riuscito a costruirlo in maniera organica solo alla fine della definizione dello stesso, quando avevo già iniziato a lavorare sulla realizzazione hardware e non volevo più tornare indietro.
+
+In effetti, la realizzazione del BEAM non ha avuto un percorso molto lungo di *trial and error*, perché il lungo studio per la realizzazione dei moduli aveva fatto in modo che funzionassero al primo tentativo, o comunque con poche variazioni finali.
+
+Infatti il codice di Tom mostra che è possibile automatizzare la generazione del micro code per molte operazioni grazie al fatto che le app opportunamente posizionate all'interno della tabella , cosa che ionon sono riuscito a fare in quanto all'inizio del task non mi era chiaro quale sarebbe stato il beneficio . inoltre la mia conoscenza del linguaggio c è limitata e non sono riuscito a comprendere chiaramente cosa facesse il codice di Tom.
 
 Il mio codice è commentato e dovrebbe essere abbastanza esplicativo.
 
 Nota che a livello generale ha definito due fasi di Fetch F1 ed F2 che sono comuni a tutte le istruzioni e sono sempre ripetute.
 
-Riferimenti utilissimi che ho utilizzato:
+Alcuni link:
 
 - Un <a href="https://www.atarimania.com/documents/6502%20(65xx)%20Microprocessor%20Instant%20Reference%20Card.pdf" target="_blank">compendio della Micro Logic</a> incredibilmente utile, che in sole due pagine include opcode, modalità di indirizzamento, flag e istruzioni che li modificano, funzionamento delle istruzioni di scorrimento e molto altro. Insostituibile.
-- Un valido riferimento per l'analisi della relazione tra Control Logic (CL) ed IR è stata la pagina <a href="https://www.masswerk.at/6502/6502_instruction_set.html" target="_blank">6502 Instruction Set</a> di Norbert Landsteiner. Offre una comoda vista tabellare dell'instruction set dalla quale ho ricavato la vista Excel che ho in seguito utilizzato per definire gli opcode delle istruzioni.
-- Invito a consultare anche il <a href="https://www.masswerk.at/6502/assembler.html" target="_blank">6502 Assembler</a> e il <a href="https://www.masswerk.at/6502/" target="_blank">Virtual 6502</a> che ho utilizzato in fase di debug del microcode: utilissimi per simulare le istruzioni passo dopo passo, comprendere quali flag modifichino durante la loro esecuzione ed aggiustare il microcode di conseguenza.
+- Un validissimo riferimento per l'analisi della relazione tra Control Logic (CL) ed IR è stata la pagina <a href="https://www.masswerk.at/6502/6502_instruction_set.html" target="_blank">6502 Instruction Set</a> di Norbert Landsteiner. Offre una comoda vista tabellare dell'instruction set dalla quale ho ricavato la vista Excel che ho in seguito utilizzato per definire gli opcode delle istruzioni del BEAM.
+- Sempre di Norbert, invito a consultare anche il <a href="https://www.masswerk.at/6502/assembler.html" target="_blank">6502 Assembler</a> e il <a href="https://www.masswerk.at/6502/" target="_blank">Virtual 6502</a> che ho utilizzato in fase di debug del microcode: utilissimi per simulare l'esecuzione passo dopo passo delle istruzioni, visualizzando gli aggiornamenti dei flag ed aggiustando di conseguenza il microcode del BEAM.
 
-Inizialmente ho incontrato difficoltà nel comprendere quali Flag venissero modificati dalle istruzioni di comparazione. Un supporto eccellente si trova nel <a href="http://www.6502.org/tutorials/compare_beyond.html" target="_blank">tutorial</a> su 6502.org, che descrive come un'operazione di confronto equivalga ad impostare il Carry e [fare la differenza](../alu/#relazione-diretta-hardwired-tra-instruction-register-e-alu), mantenendo solamente i Flag modificati e scartando il valore della sottrazione. Illuminante.
+Inizialmente avevo incontrato qualche difficoltà nel comprendere la logica della variazione dei Flag nelle istruzioni di comparazione. Un supporto eccellente si trova nel <a href="http://www.6502.org/tutorials/compare_beyond.html" target="_blank">tutorial</a> su 6502.org, che descrive come un'operazione di confronto equivalga ad impostare il Carry ed [eseguire la differenza](../alu/#relazione-diretta-hardwired-tra-instruction-register-e-alu), mantenendo solamente i Flag modificati e scartando il valore della sottrazione. Illuminante.
 
-Se dopo l'operazione di comparazione CMP NUM, che equivale a SEC e SBC NUM...
+Se dopo l'operazione di comparazione CMP NUM, che equivale a SEC seguito da SBC NUM:
 
 - il Flag Z è 0, allora A <> NUM e il salto condizionale BNE viene eseguito
 - il Flag Z è 1, allora A = NUM e il salto condizionale BEQ viene eseguito
@@ -562,7 +566,7 @@ LDY #$40
 CPY #$40
 ~~~
 
-attiva i Flag Z e C: Z perché $40 - $40 = 0, dunque il risultato della sottrazione è pari a zero e Z viene settato; inoltre, poiché il numero da comparare è inferiore, non si ricorre al prestito e C rimane attivo.
+attiva i Flag Z e C: Z perché $40 - $40 = 0, dunque il risultato della sottrazione è pari a zero e Z viene settato; inoltre, poiché il numero da comparare è uguale, non si ricorre al prestito e C rimane attivo.
 
 Il codice:
 
@@ -592,11 +596,9 @@ Ho posizionato in uscita sul Carry dell'ALU un LED (ricordare che l'uscita è ne
 
 Dopo queste modifiche, le istruzioni di comparazione sembrano funzionare correttamente.
 
-Altre referenze Tom Nisbet per Flags
+## WORK IN PROGRESS - Istruzioni non presenti e istruzioni nuove
 
-- Question for all 74ls181 alu people on reddit led to the design of the oVerflow flag.
-- How to add a decremental and incremental circuit to the ALU ? on reddit inspired the idea to drive the PC load line from the flags instead of running the flags through the microcode.
-- Opcodes and Flag decoding circuit on reddit has a different approach to conditional jumps using hardware. Instead of driving the LOAD line of the PC, the circuit sits between the Instruction Register and the ROM and conditionally jams a NOP or JMP instruction to the microcode depending on the state of the flags. One interesting part of the design is that the opcodes of the jump instructions are arranged so that the flag of interest can be determined by bits from the IR. NQSAP already did something similar with the ALU select lines, so the concept was used again for the conditional jump select lines.
+- notare le istruzioni non implementate e quelle aggiuntive: INA DEA RTI BCD BRK
 
 ## Differenze tra Control Logic dell'NQSAP e del BEAM
 
@@ -606,12 +608,12 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 
 *Schema della Control Logic del BEAM.*
 
-- Una differenza sostanziale sta nell'Instruction Register, che è sviluppato in modalità bufferizzata come fatto da Tom nell'NQSAP-PCB per rimediare ai problemi di glitching.
+- Una differenza sostanziale sta nell'Instruction Register, che è sviluppato in modalità bufferizzata come nell'NQSAP-PCB di Tom per rimediare ai problemi di glitching.
 - Il BEAM prevede 16 step per le microistruzioni anziché solo 8. Le istruzioni di Branch Relative richiedono più degli 8 step disponibili nel'NQSAP, perciò Tom ha aggiunto delle istruzioni di Jump Relative in alternativa alle istruzioni di salto condizionale, mentre nel BEAM sono pienamente funzionali similarmente all'implementazione nativa del 6502.
 
 ## Note
 
-- Per motivi di spazio, nello schema del BEAM non sono presenti una LED bar che mostra l'output del contatore '161 (nella realizzazione, è affiancata alla LED bar connessa all'uscita dell'Instruction Register, etichetta "EEPROM Address" nell'immagine ad inizio pagina) e una LED bar inserita tra i due 74LS377 dell'IR (etichetta "Instruction Register").
+- Per motivi di spazio, nello schema del BEAM non sono presenti la LED bar che mostra l'output del contatore '161 (nella realizzazione, è affiancata alla LED bar connessa all'uscita dell'Instruction Register, etichetta "EEPROM Address" nell'immagine ad inizio pagina) e la LED bar inserita tra i due 74LS377 dell'IR (etichetta "Instruction Register").
 
 ## Link utili
 
@@ -620,19 +622,20 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 ## TO DO
 
 - Selezione del Carry da mettere in input al registro H; [spiegazione](../flags/#carry).  |>>>>>>>>>> Da fare dopo aver aggiunto una breve spiegazione del registro h nella pagina ALU
-- aggiungere i link a masswerk
 - Una volta fatta una sezione nella pagina ALU per descrivere il comportamento del registro H, fare un link da questa pagina nella sezione che parla della mutua esclusività dei segnali di controllo.
-- finire http://www.6502.org/tutorials/compare_beyond.html da "In fact, many 6502 assemblers will allow BLT (Branch on Less Than) "
 - Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
 - "Glitching all’istruzione LDY nell’NQSAP." controllare la risposta di Tom, dice che al momento 15 ritorniamo al punto zero?
-- Far notare da qualche parte che al punto 7 l'unico re gistro che viene caricato è l'IR.
-- notare le istruzioni non implementate e quelle aggiuntive: INA DEA RTI BCD
 - a questo punto "Tutti questi segnali spuri generalmente non sono un problema per il SAP, perché le microistruzioni scrivono su registri tipo D 74LS173 attivati al Rising Edge del clock, cioè quando i segnali di controllo sono stabili. Ad esempio, il glitching di MI al momento 7 non è fonte di problemi, perché il ‘173 del MAR memorizza nuovi valori solo col segnale di Enable attivo e il Rising Edge del clock: in quel momento, i segnali di controllo si trovano in uno stato stabile e non c’è rischio di caricare dati non corretti." bisogna capire il discorso dei FLAG se / che causano glitching e capire dove dire "eccetto i flag"
 - da sistemare dopo aver completao pagina Loader:
   - Reset asincrono del computer; 
   - Disattivazione delle EEPROM della Control Logic
   - Iniezione del clock del Loader nel computer
   - (Re-)Start del clock di sistema dopo il carica.....
+
+- Altre referenze Tom Nisbet per Flags
+  - Question for all 74ls181 alu people on reddit led to the design of the oVerflow flag.
+  - How to add a decremental and incremental circuit to the ALU ? on reddit inspired the idea to drive the PC load line from the flags instead of running the flags through the microcode.
+  - Opcodes and Flag decoding circuit on reddit has a different approach to conditional jumps using hardware. Instead of driving the LOAD line of the PC, the circuit sits between the Instruction Register and the ROM and conditionally jams a NOP or JMP instruction to the microcode depending on the state of the flags. One interesting part of the design is that the opcodes of the jump instructions are arranged so that the flag of interest can be determined by bits from the IR. NQSAP already did something similar with the ALU select lines, so the concept was used again for the conditional jump select lines.
 
 ## Forse interessante da tenere, espandere, collegare ad altri paragrafi
 
