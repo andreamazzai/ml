@@ -632,11 +632,6 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
   - Iniezione del clock del Loader nel computer
   - (Re-)Start del clock di sistema dopo il carica.....
 
-- Altre referenze Tom Nisbet per Flags
-  - Question for all 74ls181 alu people on reddit led to the design of the oVerflow flag.
-  - How to add a decremental and incremental circuit to the ALU ? on reddit inspired the idea to drive the PC load line from the flags instead of running the flags through the microcode.
-  - Opcodes and Flag decoding circuit on reddit has a different approach to conditional jumps using hardware. Instead of driving the LOAD line of the PC, the circuit sits between the Instruction Register and the ROM and conditionally jams a NOP or JMP instruction to the microcode depending on the state of the flags. One interesting part of the design is that the opcodes of the jump instructions are arranged so that the flag of interest can be determined by bits from the IR. NQSAP already did something similar with the ALU select lines, so the concept was used again for the conditional jump select lines.
-
 ## Forse interessante da tenere, espandere, collegare ad altri paragrafi
 
 La realizzazione del SAP mi ha permesso finalmente di capire cosa sia il microcode di un computer moderno.

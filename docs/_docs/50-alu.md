@@ -19,9 +19,9 @@ Inoltre, poiché nel modulo si utilizzano due '181 per poter comporre una word d
 
 ## Il registro A
 
-Il registro A non è direttamente connesso alla ALU, ma, analizzando a livello logico quanto accade nel computer, ha senso includerno la descrizione questa pagina. Il registro A è un registro molto semplice, molto simile ai registri A e B già visti nel SAP di Ben Eater; nel BEAM ho però utilizzato il '377, come per il registro B descritto poche righe più sotto.
+Il registro A non è direttamente connesso alla ALU, ma, analizzando a livello logico quanto accade nel computer, ha senso includerne la descrizione questa pagina. Il registro A è un registro molto semplice, simile ai registri A e B già visti nel SAP di Ben Eater; nel BEAM ho però utilizzato un registro tipo D <a href="https://www.ti.com/lit/ds/symlink/sn54ls377.pdf" target="_blank">74LS377</a>.
 
-Peraltro, il registro A dell'NQSAP e del BEAM sono molto simili dal punto di vista funzionale, pertanto lo schema seguente, pur facendo riferimento al BEAM, è perfettamente riutilizzabile nelle spiegazioni che seguono e che sono principalmente votate alla descrizione del modulo ALU del computer NQSAP, evidenziando via via eventuali variazioni applicate nel BEAM.
+Peraltro, il registro A dell'NQSAP e del BEAM sono molto simili dal punto di vista funzionale, pertanto lo schema seguente, pur facendo riferimento al BEAM, è riutilizzabile nelle spiegazioni che seguono e che sono principalmente votate alla descrizione del modulo ALU del computer NQSAP, evidenziando via via eventuali variazioni applicate nel BEAM.
 
 [![Schema del Registro A del BEAM computer](../../assets/alu/45-a-beam-schema.png "Schema del Registro A del BEAM computer"){:width="100%"}](../../assets/alu/45-a-beam-schema.png)
 
@@ -43,7 +43,7 @@ Il modulo ALU è sommariamente composto da due registri di input H e B e da una 
 
 Sul computer SAP di Ben Eater i registri di input all'ALU erano A e B, mentre nell'NQSAP sono H e B. Come indicato nella sezione precedente, il registro H si può anche comportare come un comune registro a 8 bit in tutti quei casi nei quali sia necessario avere due registri standard di input per tutte le operazioni che l'ALU deve eseguire. E' dunque necessario che A ed H siano sempre allineati, così che i '181 ritrovino trasparentemente in H il contenuto di A (ad esempio una somma ADC sarà effettivamente realizzata dando in input ai '181 i registri H e B: essendo H una copia di A, il risultato della somma sarà A + B).
 
-Il registro H sarà anche fondamentale come registro temporaneo di appoggio da utilizzare per la realizzazione del microcode di molte altre istruzioni: anche in tutti questi casi una delle operazioni eseguite dal microcode sarà la copia di A su H:
+Il registro H sarà anche fondamentale come registro temporaneo di appoggio da utilizzare per la realizzazione del microcode di molte altre istruzioni: anche in tutti questi casi, una delle operazioni eseguite dal microcode sarà la copia di A su H:
 
 ![Microcode dell'istruzione INX](../../assets/alu/50-alu-RAWH.png){:width="50%"}
 
