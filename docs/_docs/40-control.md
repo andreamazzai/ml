@@ -623,6 +623,10 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 
 - Selezione del Carry da mettere in input al registro H; [spiegazione](../flags/#carry).  |>>>>>>>>>> Da fare dopo aver aggiunto una breve spiegazione del registro h nella pagina ALU
 - Una volta fatta una sezione nella pagina ALU per descrivere il comportamento del registro H, fare un link da questa pagina nella sezione che parla della mutua esclusività dei segnali di controllo.
+
+- Effetto non desiderato: "le istruzioni di salto condizionato non eseguite sprecano cicli di clock"… non si potrebbe semplicemente usare N per terminare anticipatamente l'istruzione? Lui sembra renderla un po' complicata
+- 29/01/2023 leggendo bene dice che dovrebbe essere possibile fare in modo che la logica elettronica dell'istruzione Jump vada ad attivare N se il salto non deve esserci… da verificare
+
 - Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
 - "Glitching all’istruzione LDY nell’NQSAP." controllare la risposta di Tom, dice che al momento 15 ritorniamo al punto zero?
 - a questo punto "Tutti questi segnali spuri generalmente non sono un problema per il SAP, perché le microistruzioni scrivono su registri tipo D 74LS173 attivati al Rising Edge del clock, cioè quando i segnali di controllo sono stabili. Ad esempio, il glitching di MI al momento 7 non è fonte di problemi, perché il ‘173 del MAR memorizza nuovi valori solo col segnale di Enable attivo e il Rising Edge del clock: in quel momento, i segnali di controllo si trovano in uno stato stabile e non c’è rischio di caricare dati non corretti." bisogna capire il discorso dei FLAG se / che causano glitching e capire dove dire "eccetto i flag"

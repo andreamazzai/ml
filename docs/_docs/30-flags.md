@@ -53,7 +53,7 @@ I miglioramenti derivanti da questa architettura sono:
 
 - possibilità di settare i flag anche singolarmente;
 - risparmio di linee di indirizzamento delle EEPROM;
-- l'output delle EEPROM non si modifica durante l'esecuzione della singola istruzione (**ma nel SAP-1 come si comportava? 04/10/2022 l'ho compreso andando a rileggere gli appunti** del BE 8 bit computer). Teoricamente, e l'avevo letto anche altrove, questo potrebbe essere un problema perché causa "glitching".
+- un aggiornamento dei flag non modifica l'istruzione correntemente in esecuzione, causa di [glitching](../control/#il-clock-il-glitching-delle-eeprom-e-linstruction-register-parte-2).
 
 ## Componenti e funzionamento
 
@@ -225,31 +225,29 @@ L'utilizzo di un altro '151 rappresenta il sistema più efficiente per seleziona
 
 ## Il Carry e i registri H e ALU
 
-**Carry Input**
-
 Oltre ad essere utilizzato per eseguire salti condizionali, il Carry trova chiaramente uso nel [modulo ALU](../alu/#lalu-dellnqsap) per eseguire operazioni aritmetiche ('181) e di shift/rotazione ('194).
 
 ![Selezione del Carry da passare al Carry Input di H e dei '181 del modulo ALU](../../assets/flags/30-flag-c-h-alu.png){:width="50%"}
 
 *Selezione del Carry da passare al Carry Input di H e dei '181 del modulo ALU.*
 
-L'opportuna programmazione del microcode dei segnali **CC** (**C**arry **C**lear) e **CS** (**C**arry **S**et) dell'istruzione in esecuzione può passare al Carry Input di H e dei '181:
+L'opportuna programmazione dei segnali **CC** (**C**arry **C**lear) e **CS** (**C**arry **S**et) nel microcode può di volta in volta passare al Carry Input di H (**H-Cin**) e dei '181 (**ALU-Cin**):
 
 - un valore *hard-coded* 0
 - un valore *hard-coded* 1
 - il valore realmente presente nel registro del flag C
 
-La necessità di inviare all'ALU non solo il valore reale del flag C, ma anche di valori predefiniti 0 o 1, dipende da due fattori:
+La necessità di inviare all'ALU non solo il valore reale del flag C, ma anche valori predefiniti 0 o 1, dipende da due fattori:
 
 - alcune operazioni aritmetiche del '181 richiedono uno specifico stato del Carry: ad esempio le operazioni A Minus 1 e A Plus B richiedono assenza del Carry in ingresso, mentre le operazioni A Plus 1 e A Minus B richiedono la sua presenza;
 - le istruzioni ASL ed LSR (Arithmetic Shift Left e Logical Shift Right) richiedono l'inserimento di uno 0 rispettivamente nell'LSB e nell'MSB.
 
-| CS | CC | Selezione del Carry                                      |
-| -  | -  | -                                                          |
+| CS | CC | Selezione del Carry                 |
+| -  | -  | -                                   |
 | LO | LO | Valore presente nel registro Flag C |
-| LO | HI | Output LO |
-| HI | LO | Output HI |
-| HI | HI | Non usato |
+| LO | HI | Output LO                           |
+| HI | LO | Output HI                           |
+| HI | HI | Non usato                           |
 
 La negazione del segnale inviato in ingresso al Carry Input del '181 deriva dal fatto che la configurazione utilizzata dall'ALU (logica attiva alta, “Active-High data”) richiede un segnale Carry In invertito.
 
@@ -286,7 +284,4 @@ Da notare che il computer NQSAP prevedeva 8 step per le microistruzioni, mentre 
 ## TO DO
 
 - Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
-- Effetto non desiderato: "le istruzioni di salto condizionato non eseguite sprecano cicli di clock"… non si potrebbe semplicemente usare N per terminare anticipatamente l'istruzione? Lui sembra renderla un po' complicata
-- 29/01/2023 leggendo bene dice che dovrebbe essere possibile fare in modo che la logica elettronica dell'istruzione Jump vada ad attivare N se il salto non deve esserci… da verificare
-- sistemare "l’output delle EEPROM non si modifica durante l’esecuzione della singola istruzione (ma nel SAP-1 come si comportava? 04/10/2022 l’ho compreso andando a rileggere gli appunti del BE 8 bit computer). Teoricamente, e l’avevo letto anche altrove, questo potrebbe essere un problema perché causa “glitching”."
 - spiegare in "Il Carry e i registri H e ALU" a cosa serve HCIN... vedi frase "le istruzioni ASL ed LSR (Arithmetic Shift Left e Logical Shift Right) richiedono l’inserimento di uno 0 rispettivamente nell’LSB e nell’MSB.", bisogna inserire una nota che HCIN va in H, che è il registro di shift
