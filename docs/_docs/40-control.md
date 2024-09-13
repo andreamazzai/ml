@@ -108,15 +108,15 @@ Tirando le fila, per un computer come l'NQSAP o il BEAM:
 - l'Instruction Register deve essere dedicato alle sole istruzioni ed avere dimensione di un byte;
 - la connessione tra IR ed EEPROM deve avere un'ampiezza di 8 bit e non più di soli 4 bit come nel SAP;
 - sono necessarie EEPROM con 13 (NQSAP, 2^13 = 64Kb) o 14 (BEAM, 2^14 = 128Kb) pin di indirizzamento:
-  - 8 pin per le istruzioni (2^8 = 256 istruzioni)
-  - 3 o 4 pin per le microistruzioni (NQSAP, 2^3 = 8 step; BEAM, 2^4 = 16 step), delle quali si parla nella sezione dedicata al [Ring Counter](#ring-counter-e-microistruzioni)
-  - 2 pin per la selezione delle EEPROM
+  - 8 pin per le istruzioni (2^8 = 256 istruzioni);
+  - 3 o 4 pin per le microistruzioni (NQSAP, 2^3 = 8 step; BEAM, 2^4 = 16 step), delle quali si parla nella sezione dedicata al [Ring Counter](#ring-counter-e-microistruzioni);
+  - 2 pin per la selezione delle EEPROM.
 
-Per l'NQSAP Tom ha deciso di utilizzare comunque EEPROM da 256Kb anziché da 64Kb; il BEAM richiede invece obbligatoriamente EEPROM da 256Kb, perché le EEPROM da 128Kb con interfaccia parallela <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">non sono disponibili in commercio</a>.
+Per l'NQSAP, Tom ha deciso di utilizzare comunque EEPROM da 256Kb anziché da 64Kb; il BEAM richiede invece obbligatoriamente EEPROM da 256Kb, perché le EEPROM da 128Kb con interfaccia parallela <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">non sono disponibili in commercio</a>.
 
 Come si vedrà in seguito parlando del Ring Counter, un aspetto importante del caricamento dei registri è il [*momento*](#il-clock-il-glitching-delle-eeprom-e-linstruction-register-parte-2) in cui vengono caricati: al Falling Edge\* del clock, oppure al Rising Edge\*: il caricamento dell'Instruction Register del SAP e dell'NQSAP avviene al Rising Edge, mentre quello del BEAM avviene al Falling Edge.
 
-\* Questa pagina utilizza sempre i termini Rising Edge e Falling Edge in riferimento al clock normale (CLK). Alcuni componenti ricevono un segnale di clock invertito (/CLK), che in alcuni grafici è rappresentato solo per evidenziare visivamente il segnale effettivo ricevuto.
+\* Questa pagina utilizza sempre i termini Rising Edge e Falling Edge in riferimento al clock normale (CLK). Alcuni componenti ricevono un segnale di clock invertito (/CLK), che in alcuni grafici è rappresentato solo per evidenziare visivamente la fase del segnale effettivamente ricevuto.
 
 Prima di approfondire l'argomento, è opportuno iniziare a parlare anche del Ring Counter, che ha un ruolo primario nel caricamento di tutti i registri, IR compreso.
 
@@ -638,10 +638,12 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
   - Iniezione del clock del Loader nel computer
   - (Re-)Start del clock di sistema dopo il carica.....
 
-## Forse interessante da tenere, espandere, collegare ad altri paragrafi
+## Riflessione sul microcode
 
-La realizzazione del SAP mi ha permesso finalmente di capire cosa sia il microcode di un computer moderno.
+Più o meno regolarmente si scoprono vulnerabilità nelle CPU, ad esempio una macchina virtuale (VM) potrebbe essere in grado <a href="https://en.wikipedia.org/wiki/Meltdown_(security_vulnerability)" target="_blank">leggere la memoria di un'altra VM</a> e i produttori di sistemi rilasciano aggiornamenti del firmware per indirizzare le falle di sicurezza.
 
-È piuttosto comune leggere ad esempio che è necessario aggiornare il bios dei server per indirizzare falle di sicurezza che sono state scoperte e che potrebbero essere utilizzate dagli hacker per ...
+Prima della realizzazione del progetto SAP, non riuscivo a comprendere il legame tra firmware e risoluzione del problema di sicurezza identificato in una CPU, dato che una CPU non è propriamente un componente programmabile; di conseguenza, non capivo come un aggiornamento potesse risolvere i problemi di sicurezza nati da una progettazione parzialmente problematica di un componente hardware.
 
-Non capendo come potesse essere aggiornata una CPU, dal momento che si tratta di un componente non programmabile , non riuscivo a comprendere come fosse possibile arginare i problemi di sicurezza; con il microcode ho capito.
+Dopo aver costruito il SAP, ho compreso il ruolo del <a href="https://en.wikipedia.org/wiki/Microcode" target="_blank">microde</a>. Le CPU industriali contengono un proprio microcode, similarmente a quello del SAP, dell'NQSAP, del BEAM. Tale microcode è scritto in una memoria non volatile della CPU e dunque non può essere modificato, ma la CPU comprende anche un'area di memoria volatile nella quale possono essere caricati aggiornamenti del microcode.
+
+Quando viene distribuito un aggiornamento del microcode, il sistema operativo carica la  versione aggiornata del microcode nella CPU durante il boot; questa modifica è temporanea e risiede nella RAM della CPU, dove rimane caricata fino al prossimo riavvio.
