@@ -254,8 +254,6 @@ Il fenomeno del glitching si manifesta su tutti i segnali di controllo, sia quel
 
 *SAP computer - istruzione LDA*.
 
-Non è invece visibile nel grafico un'ulteriore fonte di instabilità del SAP derivante dall'implementazione del registro dei Flag, che, pilotando direttamente gli ingressi delle EEPROM, provoca glitching a ogni Rising Edge che modifica i Flag stessi.
-
 Prima di continuare, è interessante esaminare gli step di questa istruzione e ricollegarsi alla spiegazione dell'istruzione [LDA #$94](#ring-counter-e-microistruzioni) dell'NQSAP per vedere le similitudini:
 
 1. PC esposto sul bus (CO, Counter Out) e caricamento del MAR (MI, Memory Address Register In)
@@ -266,6 +264,8 @@ Prima di continuare, è interessante esaminare gli step di questa istruzione e r
 Dopo questa breve digressione, ritorniamo al discorso principale.
 
 Tutti questi segnali spuri generalmente non sono un problema per il SAP, perché le microistruzioni scrivono su registri tipo D <a href="https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf" target="_blank">74LS173</a> attivati al Rising Edge del clock, cioè quando i segnali di controllo sono stabili. Ad esempio, il glitching di MI al momento 7 non è fonte di problemi, perché il '173 del MAR memorizza nuovi valori solo col segnale di Enable attivo ***e*** il Rising Edge del clock: in quel momento, i segnali di controllo si trovano in uno stato stabile e non c'è rischio di caricare dati non corretti.
+
+Vi è un'eccezione durante il caricamento dei Flag: poiché questi sono mappati direttamente sugli ingressi delle EEPROM, ogni variazione di C o F provoca glitching a ogni Rising Edge che li modifica. Per semplicità, il grafico precedente non include la rappresentazione di questo momento di instabilità.
 
 Possiamo ora riprendere la domanda fatta in precedenza in questa sezione: "Quali sono le possibili conseguenze del caricamento dell'IR al Rising Edge del clock?"
 
@@ -629,9 +629,6 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 - Effetto non desiderato: "le istruzioni di salto condizionato non eseguite sprecano cicli di clock"… non si potrebbe semplicemente usare N per terminare anticipatamente l'istruzione? 
 - 29/01/2023  dovrebbe essere possibile fare in modo che la logica elettronica dell'istruzione Jump vada ad attivare N se il salto non deve esserci… da verificare
 
-- Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
-- "Glitching all’istruzione LDY nell’NQSAP." controllare la risposta di Tom, dice che al momento 15 ritorniamo al punto zero?
-- a questo punto "Tutti questi segnali spuri generalmente non sono un problema per il SAP, perché le microistruzioni scrivono su registri tipo D 74LS173 attivati al Rising Edge del clock, cioè quando i segnali di controllo sono stabili. Ad esempio, il glitching di MI al momento 7 non è fonte di problemi, perché il ‘173 del MAR memorizza nuovi valori solo col segnale di Enable attivo e il Rising Edge del clock: in quel momento, i segnali di controllo si trovano in uno stato stabile e non c’è rischio di caricare dati non corretti." bisogna capire il discorso dei FLAG se / che causano glitching e capire dove dire "eccetto i flag"
 - da sistemare dopo aver completao pagina Loader:
   - Reset asincrono del computer; 
   - Disattivazione delle EEPROM della Control Logic
@@ -640,10 +637,10 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 
 ## Riflessione sul microcode
 
-Più o meno regolarmente si scoprono vulnerabilità nelle CPU, ad esempio una macchina virtuale (VM) potrebbe essere in grado <a href="https://en.wikipedia.org/wiki/Meltdown_(security_vulnerability)" target="_blank">leggere la memoria di un'altra VM</a> e i produttori di sistemi rilasciano aggiornamenti del firmware per indirizzare le falle di sicurezza.
+Più o meno regolarmente si scoprono vulnerabilità nelle CPU: ad esempio, una macchina virtuale (VM) potrebbe essere in grado di <a href="https://en.wikipedia.org/wiki/Meltdown_(security_vulnerability)" target="_blank">leggere la memoria di un'altra VM</a>; per indirizzare le vulnerabilità, i produttori di sistemi rilasciano aggiornamenti del firmware per indirizzare le falle di sicurezza.
 
-Prima della realizzazione del progetto SAP, non riuscivo a comprendere il legame tra firmware e risoluzione del problema di sicurezza identificato in una CPU, dato che una CPU non è propriamente un componente programmabile; di conseguenza, non capivo come un aggiornamento potesse risolvere i problemi di sicurezza nati da una progettazione parzialmente problematica di un componente hardware.
+Prima della realizzazione del progetto SAP, non riuscivo a comprendere il legame tra aggiornamento del firmware e risoluzione del problema di sicurezza identificato in una CPU. Poiché una CPU non è propriamente un componente programmabile, non capivo come un aggiornamento potesse risolvere i problemi di sicurezza nati da una progettazione parzialmente problematica di un componente hardware.
 
-Dopo aver costruito il SAP, ho compreso il ruolo del <a href="https://en.wikipedia.org/wiki/Microcode" target="_blank">microde</a>. Le CPU industriali contengono un proprio microcode, similarmente a quello del SAP, dell'NQSAP, del BEAM. Tale microcode è scritto in una memoria non volatile della CPU e dunque non può essere modificato, ma la CPU comprende anche un'area di memoria volatile nella quale possono essere caricati aggiornamenti del microcode.
+Dopo aver costruito il SAP, ho compreso il ruolo del <a href="https://en.wikipedia.org/wiki/Microcode" target="_blank">microcode</a>. Le CPU industriali contengono un proprio microcode, similarmente a quello del SAP, dell'NQSAP, del BEAM. Tale microcode è scritto in una memoria non volatile della CPU e dunque non può essere modificato, ma la CPU comprende anche un'area di memoria volatile nella quale possono essere caricati aggiornamenti del microcode.
 
-Quando viene distribuito un aggiornamento del microcode, il sistema operativo carica la  versione aggiornata del microcode nella CPU durante il boot; questa modifica è temporanea e risiede nella RAM della CPU, dove rimane caricata fino al prossimo riavvio.
+Quando viene distribuito un aggiornamento del microcode, il sistema operativo carica la  versione aggiornata del microcode nella CPU ad ogni boot; questa modifica è temporanea e risiede nella RAM della CPU, dove rimane caricata fino al prossimo riavvio.
