@@ -53,7 +53,7 @@ I miglioramenti derivanti da questa architettura sono:
 
 - possibilità di settare i flag anche singolarmente;
 - risparmio di linee di indirizzamento delle EEPROM;
-- un aggiornamento dei flag non modifica l'istruzione correntemente in esecuzione, causa di [glitching](../control/#il-clock-il-glitching-delle-eeprom-e-linstruction-register-parte-2).
+- l'aggiornamento dei flag non modifica gli indirizzi delle EEPROM nel bel mezzo dell'esecuzione di un'istruzione, che è causa di [glitching](../control/#il-clock-il-glitching-delle-eeprom-e-linstruction-register-parte-2).
 
 ## Componenti e funzionamento
 
@@ -237,19 +237,19 @@ L'opportuna programmazione dei segnali **CC** (**C**arry **C**lear) e **CS** (**
 - un valore *hard-coded* 1
 - il valore realmente presente nel registro del flag C
 
-La necessità di inviare all'ALU non solo il valore reale del flag C, ma anche valori predefiniti 0 o 1, dipende da due fattori:
+La necessità di inviare al modulo ALU non solo il valore reale del flag C, ma anche valori predefiniti 0 o 1, dipende da due fattori:
 
-- alcune operazioni aritmetiche del '181 richiedono uno specifico stato del Carry: ad esempio le operazioni A Minus 1 e A Plus B richiedono assenza del Carry in ingresso, mentre le operazioni A Plus 1 e A Minus B richiedono la sua presenza;
-- le istruzioni ASL ed LSR (Arithmetic Shift Left e Logical Shift Right) richiedono l'inserimento di uno 0 rispettivamente nell'LSB e nell'MSB.
+- Alcune operazioni aritmetiche del '181 richiedono uno specifico stato del Carry: ad esempio le operazioni A Minus 1 e A Plus B richiedono assenza del Carry in ingresso, mentre le operazioni A Plus 1 e A Minus B richiedono la sua presenza; il segnale inviato ai '181 è ALU-Cin.
+- Le istruzioni ASL ed LSR (Arithmetic Shift Left e Logical Shift Right) eseguite dal '194 richiedono l'inserimento di uno 0 rispettivamente nell'LSB e nell'MSB di H; il segnale inviato ai '194 è H-Cin.
 
-| CS | CC | Selezione del Carry                 |
+| CS | CC | Carry presentato al modulo ALU      |
 | -  | -  | -                                   |
 | LO | LO | Valore presente nel registro Flag C |
-| LO | HI | Output LO                           |
-| HI | LO | Output HI                           |
+| LO | HI | LO                                  |
+| HI | LO | HI                                  |
 | HI | HI | Non usato                           |
 
-La negazione del segnale inviato in ingresso al Carry Input del '181 deriva dal fatto che la configurazione utilizzata dall'ALU (logica attiva alta, “Active-High data”) richiede un segnale Carry In invertito.
+La negazione del segnale inviato in ingresso al Carry Input del '181 deriva dal fatto che la configurazione utilizzata dall'ALU (logica attiva alta, “Active-High data”) richiede un segnale Carry In [invertito](../alu/#funzioni-logiche-e-operazioni-aritmetiche).
 
 Si noti che la Truth Table della tabella richiederebbe i componenti evidenziati nello schema seguente, ma l'applicazione del teorema di De Morgan permette la semplificazione utilizzata poi nello schema adottato nell'NQSAP.
 
@@ -284,4 +284,3 @@ Da notare che il computer NQSAP prevedeva 8 step per le microistruzioni, mentre 
 ## TO DO
 
 - Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
-- spiegare in "Il Carry e i registri H e ALU" a cosa serve HCIN... vedi frase "le istruzioni ASL ed LSR (Arithmetic Shift Left e Logical Shift Right) richiedono l’inserimento di uno 0 rispettivamente nell’LSB e nell’MSB.", bisogna inserire una nota che HCIN va in H, che è il registro di shift

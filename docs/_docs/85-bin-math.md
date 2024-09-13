@@ -77,12 +77,12 @@ Il metodo **Signed Magnitude** è molto facile da comprendere: si sacrifica un b
 
 Nell'immagine (semplificata a soli 4 bit per ragioni di spazio) si nota un problema non secondario: lo zero appare due volte (0000 e 1000): noi sappiamo che lo zero non ha segno, pertanto questa rappresentazione non è la migliore possibile.
 
-NB: nella pagina citata, vi è un esempio errato di sottrazione "5 - 2". L'immagine di riferimento è la seguente:
+NB: nella pagina citata, vi è un'immagina errata nella sottrazione "5 - 2". L'immagine è la seguente:
 
 ![Errore sottrazione](../../assets/math/math_mistake.gif
 ){:width="15%"}
 
-Quanto si desiderava in realtà rappresentare era una sottrazione utilizzando il metodo Modulo e Segno, che permette di trasformare l'operazione da "5 - 2" in "5 + (-2)" invertendo il primo bit del numero 2, che dunque da 0010 diventa 1010:
+Quanto si desiderava in realtà rappresentare era una sottrazione utilizzando il metodo Modulo e Segno, che *dovrebbe* permettere di trasformare l'operazione da "5 - 2" in "5 + (-2)" invertendo il primo bit del numero 2, che dunque da 0010 diventa 1010:
 
 ~~~text
    Dec        Bin 
@@ -92,9 +92,9 @@ B    -2  ==>  1010
 Q     3       1111 ==> -7
 ~~~
 
-Come si vede, la somma binaria di 0101 (5) e 1010 (-2) non porta al risultato aspettato (3), bensì a un chiaro errore.
+Tuttavia, la somma binaria di 0101 (5) e 1010 (-2) non porta al risultato aspettato (3), bensì a un chiaro errore. La rappresentazione Modulo e Segno non permette di trasformare un'operazione "A - B" in "A + (-B)".
 
-Tralasciando la spiegazione del metodo **Complemento a 1 (1C)**, anch'esso non ottimale, il **Complemento a 2 (2C)** risulta invece perfetto per la rappresentazione dei numeri negativi, portando tra l'altro in dote una grandissima semplificazione nell'esecuzione delle sottrazioni.
+Tralasciando la spiegazione del metodo **Complemento a 1 (1C)** (inversione di tutti i bit del numero), anch'esso non ottimale, il **Complemento a 2 (2C)** risulta invece perfetto per la rappresentazione dei numeri negativi, portando tra l'altro in dote una grandissima semplificazione nell'esecuzione delle sottrazioni.
 
 ![Rappresentazione in Complemento a 2 dei numeri a 4 bit](../../assets/math/math_2c.gif){:width="100%"}
 

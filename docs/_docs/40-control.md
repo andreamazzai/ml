@@ -600,13 +600,15 @@ Dopo queste modifiche, le istruzioni di comparazione sembrano funzionare corrett
 
 - notare le istruzioni non implementate e quelle aggiuntive: INA DEA RTI BCD BRK
 
-## Differenze tra Control Logic dell'NQSAP e del BEAM
-
-La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato da Tom Nisbet nell'NQSAP.
+## Schema
 
 [![Schema della Control Logic del BEAM](../../assets/control/40-control-logic-schema-beam.png "Schema della Control Logic del BEAM"){:width="100%"}](../../assets/control/40-control-logic-schema-beam.png)
 
 *Schema della Control Logic del BEAM.*
+
+## Differenze tra Control Logic dell'NQSAP e del BEAM
+
+La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato da Tom Nisbet nell'NQSAP.
 
 - Una differenza sostanziale sta nell'Instruction Register, che è sviluppato in modalità bufferizzata come nell'NQSAP-PCB di Tom per rimediare ai problemi di glitching.
 - Il BEAM prevede 16 step per le microistruzioni anziché solo 8. Le istruzioni di Branch Relative richiedono più degli 8 step disponibili nel'NQSAP, perciò Tom ha aggiunto delle istruzioni di Jump Relative in alternativa alle istruzioni di salto condizionale, mentre nel BEAM sono pienamente funzionali similarmente all'implementazione nativa del 6502.
@@ -624,8 +626,8 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 - Selezione del Carry da mettere in input al registro H; [spiegazione](../flags/#carry).  |>>>>>>>>>> Da fare dopo aver aggiunto una breve spiegazione del registro h nella pagina ALU
 - Una volta fatta una sezione nella pagina ALU per descrivere il comportamento del registro H, fare un link da questa pagina nella sezione che parla della mutua esclusività dei segnali di controllo.
 
-- Effetto non desiderato: "le istruzioni di salto condizionato non eseguite sprecano cicli di clock"… non si potrebbe semplicemente usare N per terminare anticipatamente l'istruzione? Lui sembra renderla un po' complicata
-- 29/01/2023 leggendo bene dice che dovrebbe essere possibile fare in modo che la logica elettronica dell'istruzione Jump vada ad attivare N se il salto non deve esserci… da verificare
+- Effetto non desiderato: "le istruzioni di salto condizionato non eseguite sprecano cicli di clock"… non si potrebbe semplicemente usare N per terminare anticipatamente l'istruzione? 
+- 29/01/2023  dovrebbe essere possibile fare in modo che la logica elettronica dell'istruzione Jump vada ad attivare N se il salto non deve esserci… da verificare
 
 - Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
 - "Glitching all’istruzione LDY nell’NQSAP." controllare la risposta di Tom, dice che al momento 15 ritorniamo al punto zero?
