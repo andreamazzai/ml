@@ -12,52 +12,54 @@
   #   url: /sitemap/
 
   docs:
-  - title: "Overview"
+  - title: "OVERVIEW"
     children:
-      - title: "What is NQSAP?"
+      - title: "> Il computer BEAM"
         url: /
+      - title: "> Per iniziare"
+        url: /docs/beginning/
       # - title: "Why?"
       #   url: /docs/why/
-  - title: "Build"
+  - title: "MODULI"
     children:
-  #     - title: "Getting Started"
-  #       url: /docs/getting-started/
-  #     - title: "Clock"
-  #       url: /docs/clock/
-  #     - title: "Registers"
-  #       url: /docs/registers/
-  #     - title: "ALU"
-  #       url: /docs/alu/
-      - title: "RAM"
+      - title: "> Clock"
+        url: /docs/clock/
+      - title: "> RAM e MAR"
         url: /docs/ram/
-  #     - title: "Loader"
-  #       url: /docs/loader/
+      - title: "> Flag"
+        url: /docs/flags/
+      - title: "> Program Counter"
+        url: /docs/programcounter/
+      - title: "> Control Logic"
+        url: /docs/control/
+      - title: "> ALU"
+        url: /docs/alu/
+      - title: "> Registri DXY"
+        url: /docs/dxy/
+      - title: "> Output"
+        url: /docs/output/
+      - title: "> Stack Pointer"
+        url: /docs/stack/
+      - title: "> Arduino Loader"
+        url: /docs/loader/
+      - title: "> EEPROM Programmer"
+        url: /docs/eeprom-programmer/
   #     - title: "Ring Counter"
   #       url: /docs/ring-counter/
-  #     - title: "Output Register"
-  #       url: /docs/output-register/
   #     - title: "Control"
-  #       url: /docs/control/
-  #     - title: "Microcode"
   #       url: /docs/microcode/
-  #     - title: "Stack Pointer"
-  #       url: /docs/stack-pointer/
-  #     - title: "DXY Registers"
-  #       url: /docs/dxy-registers/
-      - title: "Flags"
-        url: /docs/flags/
   # - title: "Wrap-up"
   #   children:
   #     - title: "Tips"
   #       url: /docs/tips/
   #     - title: "Build History"
   #       url: /docs/build-history/
-  # - title: "Instruction Set"
-  #   children:
-  #     - title: "Instruction Summary"
-  #       url: /docs/in-summary/
-  #     - title: "Instruction Details"
-  #       url: /docs/in-details/
+  - title: "APPROFONDIMENTI"
+    children:
+      - title: "> Aritmetica Binaria"
+        url: /docs/math/
+      # - title: "> Instruction Summary"
+      #   url: /docs/in-summary/
   #     - title: "Opcode Table"
   #       url: /docs/in-by-opcode/
   #     - title: "Mode Group Table"
@@ -68,7 +70,13 @@
   #       url: /docs/74181-alu-notes/
   #     - title: "Further Reading"
   #       url: /docs/further-reading/
-  - title: "Links"
+  - title: "RIFERIMENTI"
     children:
-      - title: "Code Repository"
+      - title: "> BEAM su GitHub"
         url: "https://github.com/andreamazzai/beam"
+      - title: <a href = "https://eater.net/8bit/" target = "_blank">> SAP di Ben Eater</a>
+        url: ""
+      - title: <a href = "https://github.com/TomNisbet/nqsap" target = "_blank">> NQSAP di Tom Nisbet</a>
+        url: ""
+      - title: <a href = "https://tomnisbet.github.io/nqsap-pcb/" target = "_blank">> NQSAP-PCB di Tom Nisbet</a>
+        url: ""
