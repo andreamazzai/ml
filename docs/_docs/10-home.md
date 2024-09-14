@@ -1,124 +1,239 @@
 ---
 title: "BEAM computer"
 permalink: /
-excerpt: "Il mio breadboard computer TTL a 8 bit basato sulla realizzazione di Ben Eater e sui miglioramenti di Tom Nisbet"
-header:
-#   image: /assets/beam.jpg
-  overlay_image: /assets/beam.png
-  overlay_filter: 0.5
+excerpt: "Il mio computer BEAM a 8 bit basato sul lavoro di Ben Eater e Tom Nisbet"
 ---
-## WORK IN PROGRESS - WORK IN PROGRESS - WORK IN PROGRESS
 
-## BEAM 8-bit computer
-
-<!-- TLDR: vai subito alla [documentazione del BEAM 8-bit computer](https://andreamazzai.github.io/beam/) su GitHub Pages -->
-
->NOTA: in alcuni punti della documentazione si presuppone che il lettore abbia realizzato o comprenda il progetto del SAP Computer di Ben Eater. Ove possibile, vengono fornite delle referenze per facilitare la consultazione.
-
-Dopo diversi decenni dalla fine degli studi (diploma di scuola superiore ad indirizzo elettronico conseguito nel 1989), nel 2021 ho deciso di rimettere mano all'elettronica, in particolar modo a quella digitale. Ho iniziato ad interessarmi ad Arduino e Raspberry Pi, riscontrando subito una certa difficoltà: le mie basi di programmazione e di amministrazione di sistemi erano da una parte ben poco sviluppate, dall'altra molto arrugginite; non avevo alcuna conoscenza di C o di altri linguaggi compilati e la mia conoscenza di Linux era molto modesta.
-
-### Il primo progetto: 6502
-
-Verso la fine dell'anno ho scoperto casualmente il blog di <a href="https://eater.net/" target="_blank">Ben Eater</a> e i suoi <a href="https://www.youtube.com/@BenEater/playlists" target="_blank">video</a> e, memore del mio primo computer (Commodore 64, 1984) e del fatto che all'epoca avevo fatto un po' di programmazione in assembly, ho costruito il breadboard computer di Ben basato su 6502 e ho iniziato a leggere parecchi blog e forum sul tema, riesumando un po' di vecchie conoscenze.
-
-### Computer a 8 bit in logica TTL: SAP
-
-Nei primi mesi del 2022, dopo aver completato i primi moduli base del computer 6502, ho seguito la <a href="https://www.youtube.com/playlist?list=PLowKtXNTBypGqImE405J2565dvjafglHU" target="_blank">playlist</a> del computer **SAP** (Simple As Possible) in logica TTL a 8-bit, al quale mi sono appassionato ancora di più. Durante la costruzione ho appreso moltissimo - sia per l'eccellente stile di esposizione di Ben, sia per il grande impegno che ho profuso nell'approfondimento della materia su altri siti e libri.
-
-### Evoluzione del computer a 8 bit: BEAM
-
-Ho completato il SAP computer a settembre, ma già in precedenza avevo cominciato a studiare i miglioramenti e le espansioni fatte da altri follower di Ben, soprattutto in merito alla possibilità di automatizzare l'inserimento del programma da eseguire con un bootloader, nonché alla necessità di incrementare la RAM oltre i 16 byte; durante l'estate di quell'anno ho scoperto il fantastico progetto <a href="https://tomnisbet.github.io/nqsap/" target="_blank">NQSAP</a> di **Tom Nisbet**: un computer a 8-bit basato su quello di Ben Eater, ma ingegnerizzato per emulare le istruzioni del 6502. Ho realizzato velocemente che sarebbe stato il mio successivo progetto, perché metteva insieme molti aspetti che trovavo di grande interesse:
-
-1. evoluzione del computer di Ben Eater, col quale avevo iniziato a riacquistare confidenza con l'elettronica digitale
-2. emulazione del processore del mio primo computer, completa di registri indice, modalità di indirizzamento e Stack Pointer
-3. espansione del progetto originale: il computer di Ben Eater aveva solo 16 byte di RAM - pur sufficienti per programmare una sequenza di Fibonacci minimale, ma assolutamente insufficienti per scrivere programmi minimamente più complessi
-4. possibilità / necessità di imparare almeno le basi del C, utilizzato per la programmazione delle EEPROM e per la creazione del bootloader
-
-### BEAM?
-
-Cercando un nome per il mio progetto, ho identificato in "BEAM" quello ideale: desideravo dare merito a Ben Eater per avermi fatto riavvicinare a questo meraviglioso mondo e aggiungere qualcosa di mio, perciò è nato il **B**en **E**ater **A**ndrea **M**azzai ==> **BEAM**.
-
-### Studio e progettazione
-
-I primi 8 mesi di lavoro sul progetto BEAM sono stati interamente devoluti allo studio: volevo capire ogni dettaglio dell'NQSAP, che presentava moltissime aggiunte al SAP e diverse idee davvero "clever"!
-
-Tra gli aspetti da citare e sui quali ho speso molto, **molto**, ***davvero molto*** tempo:
-
-- comprensione del funzionamento dell'ALU 74181, per la quale ho realizzato un bench di test sulla base di quanto appreso da David Courtney
-- comprensione dell'aritmetica binaria in complemento di 2
-- comprensione dell'overflow, strettamente legato al punto precedente
-- integrazione dell'ALU 74181 e dell'Instruction Register (IR) in modalità "hardware wired" per poter generare "automaticamente" i segnali di ingresso dell'ALU a seconda dell'istruzione presente nell'IR
-- nuovo modulo di memoria basato su SRAM con pin IO comuni, a differenza dei 74189 utilizzati nel SAP con porte di Input e di Output dedicate
-- il registro dei flag - sicuramente il più complesso del computer:
-  - utilizzo del 74151 per decodificare lo stato di overflow e la gestione del flag stesso - argomento strettamente legato alla perfetta comprensione dell'aritmetica binaria
-  - utilizzo del 74151 per poter gestire le istruzioni di relative branch in modalità "hardware wired", similarmente a quanto fatto per la ALU
-- comprensione dello stack pointer e scrittura del microcode per le istruzioni che ne fanno uso
-- sviluppo del software del programmatore di EEPROM / microcode basato su Arduino: ho studiato a fondo il codice di Tom, che ho compreso in buona parte:
-  - schematizzazione delle istruzioni del 6502 e suddivisione in categorie
-  - comprensione del metodo molto smart sviluppato da Tom per poter indirizzare più di 16 istruzioni aritmetiche avendo a disposizione solo 5 segnali da dedicare ai segnali di selezione dell'operazione dell'ALU
-- comprensione del problema del "glitch"
-- sviluppo del software del bootloader
-- disegno degli schemi con Kicad
-
-[![Schema logico luglio 2023](assets/hand-drawn-logic.jpg "Schema logico luglio 2023"){:width="66%"}](assets/hand-drawn-logic.jpg)
-
-A luglio 2023 ho cercato di ricomporre tutto ciò che avevo appreso e ho provato trascriverlo su carta: avevo compreso molto bene il funzionamento di alcuni moduli, mentre su altri avevo ancora molti dubbi. Inoltre, non mi erano ancora chiare diverse interazioni tra i moduli, soprattutto nei segnali di controllo dei flag; rileggendo il materiale che avevo studiato e gli appunti che avevo trascritto su OneNote nei mesi precedenti, ho unito i puntini e realizzato lo schema logico del computer, iniziando a intravedere non più una serie di moduli a se' stanti, bensì un costrutto logico sensato:
-
-[![Rappresentazione su carta di una possibile disposizione dei moduli](assets/beam-paper-breadboards.png "Rappresentazione su carta di una possibile disposizione dei moduli"){:width="66%"}](assets/beam-paper-breadboards.png)
-
-*Rappresentazione su carta di una possibile disposizione dei moduli.*
-
-## Realizzazione
-
-La fase costruttiva è iniziata a ottobre 2023 e si è conclusa nei primi giorni di maggio 2024. Il risultato è quello visibile in foto.
-
-In queste pagine si trovano analisi dei moduli dell'NQSAP, quanto ho imparato ed applicato nella realizzazione del BEAM, alcune differenze tra i due sistemi, qualche confronto anche con il SAP, note, appunti e approfondimenti.
-
-[![BEAM Breadboard Computer](assets/beam.png "BEAM breadboard computer"){:width="66%"}](assets/beam.png)
-
-Benefici:
-
-1. aver compreso bene i flag del 6502 e il loro ruolo e le interazioni all'interno di un computer
-2. aver compreso bene il ruolo di una ALU e la numerazione in complemento di 2
-3. realizzazione di un programmatore di EEPROM molto veloce
-4. iniziato a studiare il linguaggio C
-
-Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-### Note
-
-- Gli schemi KiCad non includono la gran parte dei LED: sono indicati solamente i LED del modulo Clock e i LED che segnalano le modalità Program Mode / Run Mode nel modulo RAM / MAR. Sono invece rappresentate tutte le LED Bar.
-
-## Crediti e ringraziamenti
-
-- Ben Eater per la sua grande capacità di creazione di [contenuti così interessanti](https://www.youtube.com/@BenEater/playlists/) e in particolar modo per la playlist [Building an 8-bit breadboard computer!](https://www.youtube.com/playlist?list=PLowKtXNTBypGqImE405J2565dvjafglHU);
-- Tom Nisbet che ha realizzato l'[NQSAP](https://https://tomnisbet.github.io/nqsap/) espandendo e migliorando in maniera sostanziale il progetto di Ben Eater;
-- il subreddit [r/beneater](https://www.reddit.com/r/beneater/) - in particolar modo [The8BitEnthusiast](https://www.reddit.com/user/The8BitEnthusiast/) e [Tom Nisbet](https://www.reddit.com/user/nib85/) - grazie!
-- Ken Shirrif per alcuni [interessantissimi articoli](https://www.righto.com/) su Overflow, 6502 e 74181 (e molto altro!);
-- il sito [6502.org](http://6502.org) e il suo forum: documentazione dettagliata senza fronzoli e utenti davvero esperti.
-
-## Altri link
-
-- <a href="https://archive.org/details/Programming_the_6502_OCR)" target="_blank">Programming the 6502</a> di Rodnay Zaks.
-- Masswerk: 
-
-## TO DO
-
-- mettere i link ai miei post su Reddit
-- qualche idea è stata presa anche da NQSAP-pCB, ad esempio i 74LS377
-- quel professore dell'università del Montana
-- Libro di Malvino
-- Includere appunti su acquisto dei materiali, cavi utilizzati
-- problemi di alimentazione
-- lkink al video dell'ALU
-- Controllare dove ho scritto computer BEAM oppure BEAM computer e SAP e NQSAP su tutte le pagine e sugli schemi elettrici
-- non ho utilizzato HC perché... bla bla bla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla bla
-- sistemare il paragrafo BENEFICI
-- cosa non è stato emulato? IRQ, BCD
-- Spiegare che avevo preso il meglio da nqsap e da sua versione PCB, cioè dopo aver letto il primo avevo letto anche la documentazione del secondo nella quale Tom aveva effettuato diversi miglioramenti migliorie e ho cercato di prendere il meglio di tutte e due lemacchine 
-- Aritmetica binaria e tutti gli altri... se è il nome di qualcosa, va in maiuscolo, altrimenti no... ad esempio alla sezione **numeri signed** della pagina dedicata all'aritmetica binaria ==> In questo caso forse sarebbe meglio averlo in minuscolo
-- Registri indice maiscuolo, minuscolo etc... ???
-- Se pensate che con questo bla bla bla io abbia violato il vostro copyright, vi chiedo gentilmente di segnalarmelo e provvederò immediatamente alla rimozione del materiale
-- Ringraziare ancora Tom che , anche in fase di redazione della documentazione, non ha esitatoa darmi qualche chiarimento
-- Fare una bella review della parola segnali per distinguere bene i segnali di controllo dai segnali dati
-- E decidere se i segnali devono essere in grassetto o no... dare una coerenza
+21/09/2022 - Flags and Conditional Jumps NQSAP	https://tomnisbet.github.io/nqsap/docs/flags/
+	Bisogna dire che più volte, leggendo il blog di Tom Nisbet, ho trovato delle idee molto clever.
+	
+	Questo non è il disegno originale dell'autore, ma il mio rivisto.
+	        • 04/10/2022 Ho spostato le porte di collegamento tra IR e ALU-S0 nel foglio della Control Logic.
+	        
+	
+	
+	Il Flags Register emula quello del 6502 con questi flag:
+	        • Zero
+	        • Carry
+	        • OVerflow che non mi è chiarissimo cosa sia
+	        • Negative
+	
+	E' differente dall'8-bit computer originario, dove un unico FF '173 memorizzava entrambi i flag nello stesso momento - e dunque, ricordo qualcosa, si era ripetuta per 4 volte la programmazione delle EEPROM perché avendo due flag C ed F le combinazioni possibili sono 4 (00, 01, 10, 11) e dunque avevo bisogno di 4 set di microcode, uno per ogni combinazione degli indirizzi in ingresso C ed F. Da verificare.
+	        23/10/2022 In questo nuovo caso le istruzioni non variano a seconda dello stato dei flag, che non sono più Input alle ROM che poi variavano l'output in base all'indirizzo/flag presentato in ingresso! Nella configurazione sviluppata da Tom, a un certo punto nel codice si trova un'istruzione di salto condizionale legata a un flag, magari JZ: ad essa corrisponde un segnale in uscita di JUMP (uguale per tutte le istruzioni) che attiva con /E il Selector 151; la selezione del flag da mettere in uscita dipende dal microcode (i 3 bit Select del 151 sono direttamente collegati all'Instruction Register) perciò se per esempio l'istruzione di JZ Jump on Zero è 010 questo andrà a selezionare il pin I2 di ingresso del 151 che, se attivo (cioè output FF del flag Z = 1), andrà ad abilitare il PC-LOAD e permettere il caricamento del nuovo indirizzo nel PC 😎
+	
+	La logica del salto condizionale del SAP-1 era implementata nel microcode, utilizzando linee di indirizzamento delle ROM. Poiché i flag dell'NQSAP sono implementati in hardware, non c'è bisogno di usare linee preziose linee di indirizzamento delle ROM. Miglioramenti derivanti:
+	        • è possibile settare i flag anche singolarmente
+	        • risparmio delle linee di indirizzamento ROM
+	        • non si modifica l'output della ROM durante l'esecuzione della singola istruzione (ma nel SAP-1 come si comportava? 04/10/2022 l'ho compreso andando a rileggere gli appunti del BE 8 bit computer). Teoricamente, e l'avevo letto anche altrove, questo potrebbe essere un problema perché causa "glitching".
+	
+FLAG e gestione	• Un multiplexer '157 permette di copiare i valori dei flag dalla memoria (tipo istruzione Pull Processor Status PLP). Questi FF non vengono mai pre-settati dunque /Preset resta sempre collegato a Vcc (e dunque mai attivo), mentre hanno invece collegamento al reset generale del sistema /RST.
+	• I FF '74 hanno come ingresso le uscite del MUX '157, che prende 4 segnali scegliendone la provenienza:
+	        1. dal bus (tranne il flag Negative, che viene sempre preso direttamente dalla linea D7 del bus, perché i numeri negativi Signed hanno l'uno iniziale sull'MSB 😁)
+	                a. 24/10/2022 ma… questo significa allora che NQSAP lavora in complemento di due? Devo chiedere a Tom… no, la domanda giusta è se il computer lavora con i numeri Signed o Unsigned!
+	                b. 09/01/2023 in realtà il 74181 lavora in 2C
+	                c. 06/01/2024 meglio dire, che sono io a decidere come lavorare, col programma che faccio girare.
+	        2. dai segnali C, Z e V
+	                a. C con il Data Selector / Multiplexer /151
+	                b. Z col comparatore '588:
+	                c. V con il Data Selector / Multiplexer /151
+	• I 4 flag FC, FV, FZ, FN sono attivati grazie a segnali dedicati che vengono ANDati col CLK (caricamento registri al Rising Edge del clock). Si segnala che in questo modo una singola istruzione può settare più di un flag alla volta, ad esempio ADC potrebbe settarli tutti (in effetti l'istruzione ADC impatta tutti i flag contemporaneamente).
+	• Le istruzioni CLC, CLV e SEC possono settare o pulire i flag senza usare linee ROM; infatti la ALU può mettere in uscita tutti 0 o tutti 1 e così possiamo pulire o settare il bus e caricare solo il flag che ci interessa mandando il flag apposito.
+	• Un '245 permette di esportare i Flag su bus per salvarli in una location di memoria con Push Processor Status (PHP).
+	
+	
+Salto condizionale	• Quando un flag veniva variato nel SP-1, venivano cambiati gli indirizzi delle ROM per presentare una logica opportunamente diversa in uscita. In questo modo, ad ogni flag corrispondevano anche delle linee di indirizzamento "rubate" alle ROM.
+	• Nell'NQSAP i valori dei flag presenti nei 74LS74, sia Q sia /Q, vengono passati al Data Selector / Multiplexer '151, che funge da selettore delle uscite dei FF (seleziona il flag e ne seleziona anche "il genere", ad esempio l'istruzione di salto del Carry potrebbe essere BCC o BCS), dunque grazie ai segnali di selezione in ingresso nel '151 IR-Q5, IR-Q6 e IR-Q7 prendo direttamente dal FF il Flag che mi interessa, normale o invertito.
+	IR-Q5, IR-Q6 e IR-Q7 arrivano infatti dall'Instruction Register, dunque una determinata istruzione di Branch predetermina il flag da esporre e sul quale effettuare il salto o no a seconda che il test sia vero o falso.
+	• Mi stavo domandando… come faccio a far stare tutto (le istruzioni di branch (3 bit), le istruzioni dell'ALU (5 bit) e tutte le altre istruzioni in soli 8 bit? Come faccio a gestire tutte le combinazioni e a costruire una matrice di istruzioni funzionante?
+	        • Poi ho notato che nel '151 dei flag c'è un segnale di controllo JE; questo è sicuramente "acceso" dalle istruzioni di salto condizionale, dunque
+	                ○ se JE è HI, attivo l'uscita del '151 e dunque attivo il segnale di caricamento del Program Counter se l'input dal FF del flag di interesse è positivo;
+	                ○ se JE è LO, disattivo l'uscita del '151 e dunque ignoro lo stato dei selettori S0, S1 ed S2 e non vado ad attivare il segnale di caricamento del Program Counter;
+	                ○ mi aspetto ad esempio che l'istruzione BCS/JCS (Jump on Carry Set)
+	                        § configuri S0, S1 ed S2 in modo da portare in output Z il valore del pin 4, che è collegato all'FF del C
+	                        § dunque S0 = LO, S1 = LO ed S2 = LO portano in Z il flag C
+	                        § se C = 1 l'output della NOR è LO (/(1+x) = 0) e dunque il valore presente nel bus viene caricato nel PC.
+	• Si dice anche che "questo semplifica il microcode perché tutte le operazioni di Jump utilizzeranno lo stesso microcode" similarmente a quanto accade coi 5 bit di gestione delle istruzioni ALU… e qui mi sfugge qualcosa, devo capire bene
+	        • come si costruisce la matrice delle istruzioni 20/06/2023 capito
+	        • perché tutte le istruzioni dovrebbero essere "uguali"… 04/10/2022 forse ho capito perché… in effetti la scelta del flag dipende dal codice dell'istruzione stessa, che essendo in output dall'Instruction Register viene applicata agli ingressi Select del '151… e dunque è sufficiente che nell'istruzione venga abilitato il JE 😁, tutte le istruzioni sono dunque uguali.
+	Incrocio l'uscita del '151 con una NOR:
+	        • Se parlo di un salto condizionato, il flag selezionato normale o invertito mi genera un'uscita HI sul '151 --> il NOR presenta output LO che (da verificare, ma credo sia così) mi attiva il caricamento sul Program Counter del valore presente sul bus (che altri non è l'operando dell'istruzione di branch condizionale tipo BCC, BCS, BVC etc.).
+	                ○ 20/06/2023 Attenzione: l'operando è un valore relativo, dunque dovrò fare un po' di microistruzioni per calcolare il valore corretto da mettere sul PC… 31/01/2024 in realtà si usa D e X: in D metto il PC attuale, mentre in X metto il valore del Branch relativo, che è calcolato a partire dal byte successivo all'operando dell'istruzione Branch.
+	        • Se invece ho un salto incondizionato, WP dalle ROM sarà a LO e mi attiverà comunque il caricamento sul PC del valore presente sul bus (la NOR lavora (/(1+x) = 0) e dunque attiva /PC-LOAD. Questo è l'operando dell'istruzione di salto incondizionato (JMP $XX).
+	• Le istruzioni di salto condizionato alla fine sono identiche a quelle di salto incondizionato, ma in più c'è il /JE: se il flag (normale o invertito che sia) non è HI, allora il Program Counter non viene caricato
+	        • Downside: "le istruzioni di salto condizionato non eseguite sprecano cicli di clock"… non si potrebbe semplicemente usare N per terminare anticipatamente l'istruzione? Lui sembra renderla un po' complicata
+	        • 29/01/2023 leggendo bene dice che dovrebbe essere possibile fare in modo che la logica elettronica dell'istruzione Jump vada ad attivare N se il salto non deve esserci… da verificare
+	
+	
+	
+	
+• Calcolo dei Flag	• Il flag Negative è semplicemente il MSB del bus 😁 (06/01/2023 direi perché sto ragionando con numeri Signed). Interessante che essendo mappato sul bus e non direttamente sull'ALU, potrei rilevare un Negative anche in contesti esterni all'ALU, ad esempio uno shift del shift-register o un trasferimento di dato da un registro a un altro.
+• Utilizzo del Carry da ALU e H	
+	• Il flag Zero si attiva se il valore presente nel bus è zero; invece di usare una serie di AND (come nel SAP-1) per verificare se tutte le linee fossero LO, ecco che il comparatore 74HCT688 può svolgere lo stesso lavoro. Anche questo opera sul bus e non sulla sola ALU.
+	
+	
+	
+	Zero
+	
+	
+	Overflow
+	
+	        • The Overflow flag is calculated using a 74LS151 8-to-1 selector as described in "74181 with V_Flag" on 6502.org http://6502.org/users/dieter/v_flag/v_4.htm.
+	        • The MSB of the ALU operands in H and B, as well as the MSB of the ALU result, are used as inputs.
+	                ○ 30/10/2022 Dunque, come sto iniziando a capire un pochino, l'overflow è un calcolo molto semplice e preciso di bit… 
+	        • Two of the ALU operation select lines are used to differentiate between addition and subtraction. 06/01/2023 ho capito il riferimento:
+	                ○ IR-Q1 HI e IR-Q3 LO = addizione
+	                ○ IR-Q1 LO e IR-Q3 HI = sottrazione
+	                ○ 20/06/2023 attenzione anche qui alla congruenza tra istruzioni e collegamenti
+	
+	• 23/10/2022 oggi ho approfondito l'Overflow: se nella somma di due numeri signed noto un cambiamento di segno, allora ho un overflow
+	• però l'NQSAP non lavora in complemento di due, dunque attenzione a cosa diciamo… qui non mi sembra di poter applicare il caso precedente… 27/11/2022 e in effetti rileggendo la questione è che stiamo lavorando non in complemento di due, ma con numeri signed… 06/01/2023 rileggendo ulteriormente direi che non è proprio corretto. Il complemento di 2 è semplicemente il modo di rappresentare i numeri signed, dove MSB = LO indica numero positivo e MSB = HI indica numero negativo.
+	Overflow
+	
+	
+	
+	
+	• Nel Flags Register ho un Carry Input che scrivo nel registro C e che può derivare da diverse  operazioni:
+	        • per i calcoli matematici corrisponde al Carry Output dell'ALU '181.
+	        • per le operazioni Shift, si tratta dell'LSB (pin H-Q0) o MSB (pin H-Q7) del registro H.
+	                ○ Verificare se MSB = risultato di Shift Left o Right
+	        • Un Multiplexer / Data Selector '151, a seconda dei suoi input C0 e C1, determina la sorgente del Carry:
+	                ○ ALU (sia normale sia invertito), oppure
+	                ○ MSB del registro H, oppure
+	                ○ LSB del registro H.
+	
+	Il valore in input del registro Carry Input dipende anche dall'istruzione che è stata eseguita: può arrivare da ALU o da H, CLC e SEC. Vedi tabella per l'uso del Carry nelle varie situazioni:
+	
+	
+	
+	Suppongo che il significato sia:
+	        • Se il registro sorgente dell'operazione è l'ALU
+	                ○ per istruzioni somma/sottrazione passo il Carry esistente negato
+	                ○ per istruzioni INC o DEC passo il Carry "normale"
+	        • Se il registro sorgente dell'operazione è H (usato per le varie rotazioni) prendo MSB per rotazione a sinistra e LSB per rotazione a destra… ma questo non mi convince… 26/09/2022 ma ora che ci penso mi pare ok: prendo il MSB  e poi faccio shift a sinistra, dunque "salvo" il MSB e viceversa quando faccio shift a destra
+	
+	L'ultimo caso perché noi pensiamo in logica positiva col Carry che, se presente come conseguenza del risultato dell'operazione, è HI per l'addizione e LO per il prestito, come nel 6502, mentre la ALU '181 lavora in logica negativa, con LO che indica che il Carry  è presente nell'addizione e con HI che indica che c'è un prestito nella sottrazione.
+	        • ma non mi è chiaro… mi pare che lavori in entrambi i modi a seconda degli input che le vengono passati. 06/10/2022 credo di aver capito. Praticamente il 181 nella modalità High-Active Data utilizza HI per indicare un Carry assente e LO per indicare il Carry presente, come vedo nel datasheet…
+	        • Però poi non mi è chiaro davvero cosa significa che la ALU lavora in logica positiva o negativa… perché anche gli input sono in logica negativa, ma un semplice esercizio sul quaderno cercando di invertire tutto non mi ha dato risultato…
+	        • Dunque bisogna provare a fare un circuito 😊 per capire
+	
+	• Come già detto, i flag possono essere anche letti (PLP) e scritti (PSP) dal / verso il bus.
+	
+	Carry Input
+	
+	
+	Il '151 opera così, cioè a seconda degli input S0, S1 ed S2 seleziono cosa portare in uscita da I0 a I7:
+	
+	
+	
+	• Oltre a essere usato dal 151 per i salti condizionali, il Carry in uscita, cioè Carry Output, è anche input dell'ALU e di H; in questo ultimo caso, a seconda dell'istruzione, utilizzando CC e CS può:
+	        • essere hard-coded 0
+	        • essere hard-coded 1
+	        • essere il valore presente nel registro C
+	
+	Ecco come settare il Carry Output fixed HI o LO oppure semplicemente lasciarlo passare (riferimento ai segnali dell'NQSAP).
+	        • Set LO, Clear LO: Flag-In passa normale
+	        • SET HI, Clear LO: Flag-Out HI
+	        • SET LO, Clear HI: Flag-Out LO
+	        
+	Nota:
+	        • Clear è LC (ALU Clear)
+	        • Set è LS (ALU Set)
+	        • 05/10/2022 nei vecchi schemi li chiamava LC e LS, ma questi sono diventati CC e CS perché avevo chiesto spiegazioni in quanto non mi trovavo e Tom mi ha risposto
+	
+	L'output del Carry a ALU e H è controllato da LC ed LS CC e CS (01/10/2022 l'autore ha aggiornato i nomi sul blog, ma non sullo schema). Questi due segnali possono semplicemente passare il Carry attuale presente in C, oppure passare HI o LO.
+	Per il motivo già descritto sopra, nel caso di uso del Carry da parte dell'ALU (che lavora in logica "negativa", ma ancora da chiarire il senso, 27/11/2022) usiamo il valore invertito.
+	
+	
+	
+	Signal
+	Description
+	FC
+	write Carry flag
+	FZ
+	write Zero flag
+	FV
+	write oVerflow flag
+	FN
+	write Negative flag
+	FB
+	load flags from the bus
+	JC
+	jump conditional
+	C0
+	carry source select 0
+	C1
+	carry source select 1
+	LC -> CC
+	ALU carry input clear
+	LS -> CS
+	ALU carry input set
+	
+	Normale:
+	
+	De Morgan (l'ho capito 😁):
+	
+	
+	
+• Flag e Microcode	Molte delle istruzioni modificano i flag.
+	
+	Per fare il microcode sto usando:
+	        • https://www.masswerk.at/6502/6502_instruction_set.html
+	        • https://www.masswerk.at/6502/ che è utile per simulare le istruzioni e capire quali Flag esse modifichino durante la loro esecuzione.
+	        • Ad esempio inizialmente ho trovato difficoltà a capire quali Flag fossero modificati da CPY, che viene indicata come:
+	                
+	        • In quali combinazioni si attivano i vari flag N, Z e C?
+	        • Ho trovato supporto su http://www.6502.org/tutorials/compare_beyond.html nel quale si spiega che fare un confronto equivale a settare il carry e fare la differenza, ma senza effettivamente scrivere il risultato nel registro di partenza:
+	                CMP NUM
+	                        is very similar to:
+	                SEC
+SBC NUM
+	                
+	        • If the Z flag is 0, then A <> NUM and BNE will branch
+	        • If the Z flag is 1, then A = NUM and BEQ will branch
+	        • If the C flag is 0, then A (unsigned) < NUM (unsigned) and BCC will branch
+	        • If the C flag is 1, then A (unsigned) >= NUM (unsigned) and BCS will branch
+	
+	Facciamo le prove:
+	Codice:
+	        LDY #$40
+	        CPY #$30
+	Viene attivato il C, coerentemente con quanto spiegato sopra… direi perché nell'equivalenza si fa il SEC prima di SBC; essendo il numero da comparare inferiore, non faccio "il prestito" (borrow) del Carry e dunque alla fine dell'istruzione me lo ritrovo attivo come in partenza.
+	
+	
+	Codice:
+	        LDY #$40
+	        CPY #$40
+	Vengono attivati sia Z sia C: Z perché 40 - 40 = 0 e dunque il risultato è Zero e il contenuto del registro e del confronto numeri sono uguali; essendo il numero da comparare inferiore, non faccio "il prestito" (borrow) del Carry.
+	
+	
+	
+	Codice:
+	        LDY #$40
+	        CPY #$50
+	No Z e C, coerentemente con quanto spiegato sopra, ma N, perché il numero risultante è negativo: in 2C il primo bit è 1 ☺️. C è diventato Zero perché l'ho "preso in prestito".
+	
+	
+	
+	
+	Su BEAM: LDY #$40; CPY #$30 e ottengo nessun Flag, mentre dovrei avere C.
+	 La ALU presenta il COUT acceso, dunque la sua uscita è a livello logico basso. DA CAPIRE!!! Cosa volevo dire?
+	
+	Teoricamente dunque dovrei attivare l’ingresso di uno del 151 di Carry Input settando opportunamente i segnali C0 e C1.
+	
+	In conseguenza di questo, verifico sul BEAM il comportamento del Carry Out dell'ALU nei 3 casi descritti e poi modifico il microcode di conseguenza. In effetti, il comportamento non era quello desiderato da teoria e ho fatto le modifiche necessarie:
+	
+	        • Aggiunti i segnali C0 e C1, che non avevo ancora cablato, che permettono al 151 di scelta del Carry Input di selezionare cosa prendere in ingresso. L'ALU emette un Carry invertito (0 = Attivo), dunque, per poter settare a 1 il Flag del Carry Input, lo devo prendere in ingresso dall'ALU attraverso una NOT su uno dei 4 ingressi attivi del 151, che seleziono appunto con i segnali C0 e C1 attivando il solo C0.
+	        • Ho poi incluso nel microcode anche LF, in quanto ho definito l'utilizzo di LF su tutte le istruzioni di comparazione, tranne CPX abs.
+	        • Considerare anche che tipo di Carry devo iniettare nella ALU… In realtà, poiché per fare il confronto utilizzo l’istruzione SBC, devo utilizzare il normale LHHL con Carry, cioè CIN = LO, che nel microcode corrisponde ad attivare il segnale CS.
+	
+	Ho posizionato in uscita sul Carry dell'ALU un LED (ricordare che l'uscita è negata, dunque anodo a Vcc e catodo verso il pin del chip). Anche l’ingresso Carry è negato e dunque attivo a zero, pertanto anche qui ho un LED con anodo a Vcc e catodo sul Pin.
+	
+	Dopo queste modifiche, le istruzioni di comparazione sembrano funzionare correttamente.
+	
+	TO DO: finire http://www.6502.org/tutorials/compare_beyond.html da "In fact, many 6502 assemblers will allow BLT (Branch on Less Than) "
+	
+	        • Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
+	
+Altre referenze Tom Nisbet per Flags	• Question for all 74ls181 alu people on reddit led to the design of the oVerflow flag.
+	• How to add a decremental and incremental circuit to the ALU ? on reddit inspired the idea to drive the PC load line from the flags instead of running the flags through the microcode.
+	• Opcodes and Flag decoding circuit on reddit has a different approach to conditional jumps using hardware. Instead of driving the LOAD line of the PC, the circuit sits between the Instruction Register and the ROM and conditionally jams a NOP or JMP instruction to the microcode depending on the state of the flags. One interesting part of the design is that the opcodes of the jump instructions are arranged so that the flag of interest can be determined by bits from the IR. NQSAP already did something similar with the ALU select lines, so the concept was used again for the conditional jump select lines.
