@@ -68,7 +68,7 @@ Gli Shift Register '194 sono utilizzati anche per le operazioni di scorrimento e
 [![Scorrimento a sinistra nel registro H del BEAM](../../assets/alu/50-alu-beam-h.png "Scorrimento a sinistra nel registro H del BEAM"){:width="100%"}](../../assets/alu/50-alu-beam-h.png)
 
 *Scorrimento a sinistra nel registro H del BEAM.*
-![Alt text](image.png)
+
 Lo schema mostra l'esecuzione di un'operazione di scorrimento. Il segnale HL attivo prepara i '194 per lo scorrimento da destra a sinistra. Al rising Edge del clock i '194 caricano su Q0 gli ingressi Shift Right (Dsr) e gli output Q0-Q3 vengono traslati verso sinistra:
 
 - il segnale H-Cin presente all'ingresso del '194 di destra diventa il bit meno significativo (LSB) del byte traslato
