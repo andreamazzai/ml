@@ -58,18 +58,20 @@ Nell'esempio dell'istruzione INX del 6502, dopo la [fase Fetch](../control/#fasi
 
 Gli Shift Register '194 sono utilizzati anche per le operazioni di scorrimento e rotazione. I due pin di ingresso S0 ed S1 definiscono il comportamento del chip al Rising Edge del clock:
 
-| S1 | S0 | Operazione     |
-|  - | -  |  -             |
-| LO | LO | Mantiene lo stato precedente              |
-| LO | HI | Scorre a sinistra i bit di output (Q<sub>D</sub> ← Q<sub>C</sub> \| Q<sub>C</sub> ← Q<sub>B</sub> \| Q<sub>B</sub> ← Q<sub>A</sub>) e carica l'input Serial Right in Q<sub>A</sub>             |
-| HI | LO | Scorre a destra i bit di output (Q<sub>D</sub> → Q<sub>C</sub> \| Q<sub>C</sub> → Q<sub>B</sub> \| Q<sub>B</sub> → Q<sub>A</sub>) e carica l'input Serial Left in Q<sub>D</sub>             |
-| HI | HI | Carica gli input A, B, C e D in Q<sub>A</sub>, Q<sub>B</sub>, Q<sub>C</sub> e Q<sub>D</sub>              |
+| S1 | S0 | Operazione                                                                                            |
+|  - | -  |  -                                                                                                    |
+| LO | LO | Mantiene lo stato precedente                                                                          |
+| LO | HI | Scorre a sinistra i bit di output (Q3 ← Q2 \| Q2 ← Q1 \| Q1 ← Q0) e carica l'input Serial Right in Q0 |
+| HI | LO | Scorre a destra i bit di output (Q3 → Q2 \| Q2 → Q1 \| Q1 → Q0) e carica l'input Serial Left in Q3    |
+| HI | HI | Carica gli input P0-P3 in Q0, Q1, Q2 e Q3                                                             |
+
+Lo schema mostra l'esecuzione di un'operazione di scorrimento. L'attivazione del segnale di controllo HL prepara i '194 per lo scorrimento da destra a sinistra.
 
 [![Scorrimento a sinistra nel registro H del BEAM](../../assets/alu/50-alu-beam-h.png "Scorrimento a sinistra nel registro H del BEAM"){:width="100%"}](../../assets/alu/50-alu-beam-h.png)
 
 *Scorrimento a sinistra nel registro H del BEAM.*
 
-Lo schema mostra l'esecuzione di un'operazione di scorrimento. Il segnale HL attivo prepara i '194 per lo scorrimento da destra a sinistra. Al rising Edge del clock i '194 caricano su Q0 gli ingressi Shift Right (Dsr) e gli output Q0-Q3 vengono traslati verso sinistra:
+Al rising Edge del clock i '194 caricano su Q0 gli ingressi Shift Right (Dsr) e gli output Q0-Q3 vengono traslati verso sinistra:
 
 - il segnale H-Cin presente all'ingresso del '194 di destra diventa il bit meno significativo (LSB) del byte traslato
 - H3 dello stesso '194 diventa il 5° bit del byte traslato
@@ -77,8 +79,7 @@ Lo schema mostra l'esecuzione di un'operazione di scorrimento. Il segnale HL att
 
 ad esempio, mostrare microcode e immagine ASL
 
-
- Nota che nello schema il '194 è rappresentato con gli output Q0, Q1, Q2 e Q3 rispettivamente equivalenti a Q<sub>A</sub>, Q<sub>B</sub>, Q<sub>C</sub> e Q<sub>D</sub>.
+ Nota che nello schema il '194 è rappresentato con gli output Q0, Q1, Q2 e Q3 rispettivamente equivalenti a Q<sub>A</sub>, Q<sub>B</sub>, Q<sub>C</sub> e Q<sub>D</sub> indicati nel datasheet del '194.
 
 Vista la flessibilità e l'utilità del Registro H, questo è stato implementato anche nel BEAM, con una differenza: l'NQSAP implementa scorrimento e rotazione a sinistra sfruttando l'operazione A Plus A dei '181, mentre il BEAM sfrutta i '194 sia verso sinistra sia verso destra.
 
