@@ -23,7 +23,7 @@ Il registro A non è direttamente connesso alla ALU, ma, analizzando a livello l
 
 Peraltro, il registro A dell'NQSAP e del BEAM sono molto simili dal punto di vista funzionale, pertanto lo schema seguente, pur facendo riferimento al BEAM, è riutilizzabile nelle spiegazioni che seguono e che sono principalmente votate alla descrizione del modulo ALU del computer NQSAP, evidenziando via via eventuali variazioni applicate nel BEAM.
 
-[![Schema del Registro A del BEAM computer](../../assets/alu/45-a-beam-schema.png "Schema del Registro A del BEAM computer"){:width="100%"}](../../assets/alu/45-a-beam-schema.png)
+[![Schema del Registro A del BEAM computer](../../assets/alu/50-a-beam-schema.png "Schema del Registro A del BEAM computer"){:width="100%"}](../../assets/alu/45-a-beam-schema.png)
 
 ## L'ALU dell'NQSAP
 
@@ -65,7 +65,20 @@ Gli Shift Register '194 sono utilizzati anche per le operazioni di scorrimento e
 | HI | LO | Scorre a destra i bit di output (Q<sub>D</sub> → Q<sub>C</sub> \| Q<sub>C</sub> → Q<sub>B</sub> \| Q<sub>B</sub> → Q<sub>A</sub>) e carica l'input Serial Left in Q<sub>D</sub>             |
 | HI | HI | Carica gli input A, B, C e D in Q<sub>A</sub>, Q<sub>B</sub>, Q<sub>C</sub> e Q<sub>D</sub>              |
 
-L'NQSAP implementa scorrimento e rotazione a sinistra sfruttando l'operazione A Plus A dei '181, mentre il BEAM sfrutta i '194 sia verso sinistra sia verso destra.
+![Alt text](image.png)
+
+Lo schema mostra l'esecuzione di un'operazione di scorrimento. Il segnale HL attivo prepara i '194 per lo scorrimento da destra a sinistra. Al rising Edge del clock i '194 caricano su Q0 gli ingressi Shift Right (Dsr) e gli output Q0-Q3 vengono traslati verso sinistra:
+
+- il segnale H-Cin presente all'ingresso del '194 di destra diventa il bit meno significativo (LSB) del byte traslato
+- H3 dello stesso '194 diventa il 5° bit del byte traslato
+- H7 viene perso, ma nelle operazioni di scorrimento, il bit "uscito" viene sempre salvato sul carry. Questa operazione è effettuata dal microcode, che prima di fare la rotazione salva H7 su C, effettivamente memorizzando nel Carry il valore più significativo del byte
+
+ad esempio, mostrare microcode e immagine ASL
+
+
+ Nota che nello schema il '194 è rappresentato con gli output Q0, Q1, Q2 e Q3 rispettivamente equivalenti a Q<sub>A</sub>, Q<sub>B</sub>, Q<sub>C</sub> e Q<sub>D</sub>.
+
+Vista la flessibilità e l'utilità del Registro H, questo è stato implementato anche nel BEAM, con una differenza: l'NQSAP implementa scorrimento e rotazione a sinistra sfruttando l'operazione A Plus A dei '181, mentre il BEAM sfrutta i '194 sia verso sinistra sia verso destra.
 
 ### Funzioni logiche e operazioni aritmetiche
 
