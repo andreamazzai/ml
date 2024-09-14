@@ -27,7 +27,7 @@ Peraltro, il registro A dell'NQSAP e del BEAM sono molto simili dal punto di vis
 
 ## L'ALU dell'NQSAP
 
-Tra le caratteristiche che spiccavano nello schema dell'ALU dell'NQSAP, notavo soprattutto un numero elevato di chip - tra i quali gli Shift Register 74LS194 - e un modo particolare di indirizzare i '181, che erano "strettamente legati" all'istruzione presente nell'Instruction Register della [Control Logic](../control). Anche il legame con la Control Logic è stato tra i più complessi da analizzare e comprendere, ma quello con il modulo dei Flag non è meno importante e la sua comprensione è stata altrettanto difficile: ad ogni operazione dell'ALU (e non solo) corrisponde infatti un'azione sul registro dei Flag.
+Tra le caratteristiche che spiccavano nello schema dell'ALU dell'NQSAP, notavo soprattutto un numero elevato di chip - tra i quali gli Shift Register <a href="https://www.ti.com/lit/ds/symlink/sn74ls194a.pdf" target="_blank">74LS194</a> - e un modo particolare di indirizzare i '181, che erano "strettamente legati" all'istruzione presente nell'Instruction Register della [Control Logic](../control). Anche il legame con la Control Logic è stato tra i più complessi da analizzare e comprendere, ma quello con il modulo dei Flag non è meno importante e la sua comprensione è stata altrettanto difficile: ad ogni operazione dell'ALU (e non solo) corrisponde infatti un'azione sul registro dei Flag.
 
 [![Schema dell'ALU di Tom Nisbet](../../assets/alu/50-alu-nqsap.png "Schema dell'ALU di Tom Nisbet"){:width="100%"}](../../assets/alu/50-alu-nqsap.png)
 
@@ -56,7 +56,16 @@ Nell'esempio dell'istruzione INX del 6502, dopo la [fase Fetch](../control/#fasi
 - i '181 eseguono l'operazione **A Plus 1**, il cui risultato viene letto dall'output (RL) e copiato in X (WX);
 - si legge il contenuto non modificato di A (RA) e si riallinea H (WH).
 
-**Nella sezione dedicata alle istruzioni e al microcode si analizzeranno in dettaglio le microistruzioni di tutte le istruzioni del computer.**
+Gli Shift Register '194 sono utilizzati anche per le operazioni di scorrimento e rotazione. I due pin di ingresso S0 ed S1 definiscono il comportamento del chip al Rising Edge del clock:
+
+| S1 | S0 | Operazione     |
+|  - | -  |  -             |
+| LO | LO | Mantiene lo stato precedente              |
+| LO | HI | Scorre a sinistra i bit di output (Q<sub>D</sub> ← Q<sub>C</sub> \| Q<sub>C</sub> ← Q<sub>B</sub> \| Q<sub>B</sub> ← Q<sub>A</sub>) e carica l'input Serial Right in Q<sub>A</sub>             |
+| HI | LO | Scorre a destra i bit di output (Q<sub>D</sub> → Q<sub>C</sub> \| Q<sub>C</sub> → Q<sub>B</sub> \| Q<sub>B</sub> → Q<sub>A</sub>) e carica l'input Serial Left in Q<sub>D</sub>             |
+| HI | HI | Carica gli input A, B, C e D in Q<sub>A</sub>, Q<sub>B</sub>, Q<sub>C</sub> e Q<sub>D</sub>              |
+
+L'NQSAP implementa scorrimento e rotazione a sinistra sfruttando l'operazione A Plus A dei '181, mentre il BEAM sfrutta i '194 sia verso sinistra sia verso destra.
 
 ### Funzioni logiche e operazioni aritmetiche
 
@@ -148,9 +157,9 @@ Si stava sostanzialmente dicendo che per eseguire una somma ("**A Plus B**", ved
 
 cioè:
 
-| Cn | M  | S3 | S2 | S1 | S0 | Operazione | S3/S0 Hex |
-|  - | -  |  - |  - |  - |  - |          - |   -       |
-| 1  | **0**  | **1**  | **0**  | **0**  | **1**  | A Plus B   |  0x09       |
+| Cn | M     | S3      S2    | S1    | S0    | Operazione | S3/S0 Hex |
+|  - | -     |  -       -    |  -    |  -    |          - |   -       |
+| 1  | **0** | **1**   **0** | **0** | **1** | A Plus B   |  0x09     |
 
 In pratica, poiché gli ingressi M ed S3-S0 dei '181 sono direttamente connessi all'[Instruction Register](../control), l'istruzione di somma dovrà forzatamente essere codificata nel microcode presentando **01001** sui 5 bit comuni tra Instruction Register e ALU.
 
@@ -176,21 +185,21 @@ Vale anche la pena di notare che in un computer con soli 256 byte di RAM i 3 ind
 
 Riprendendo le operazioni ADC / A Plus B e SBC / A Minus B ed integrandole con i 3 bit utilizzati per gestire le modalità di indirizzamento si costruisce - ad esempio - questa tabella degli opcode:
 
-| Cn | I3    | I2     | I1     | M      | S3     | S2     | S1     | S0     | Operazione | Indirizzamento          | Hex   |
-|  - | -     | -      | -      | -      | -      | -      | -      | -      | -          | -                       | -     |
-| 1  | **0** |  **0** |  **1** | **0**  | **1**  | **0**  | **0**  | **1**  | A Plus B   | Immediato               | 0x29  |
-| 1  | **0** |  **1** |  **0** | **0**  | **1**  | **0**  | **0**  | **1**  | A Plus B   | Assoluto                | 0x49  |
-| 1  | **0** |  **1** |  **1** | **0**  | **1**  | **0**  | **0**  | **1**  | A Plus B   | Assoluto, X             | 0x69  |
-| 1  | **1** |  **0** |  **0** | **0**  | **1**  | **0**  | **0**  | **1**  | A Plus B   | Assoluto, Y             | 0x89  |
-| 1  | **1** |  **0** |  **1** | **0**  | **1**  | **0**  | **0**  | **1**  | A Plus B   | Indiretto Indicizzato X | 0xA9  |
-| 1  | **1** |  **1** |  **0** | **0**  | **1**  | **0**  | **0**  | **1**  | A Plus B   | Indicizzato Y Indiretto | 0xC9  |
-|  - | -     | -      | -      | -      | -      | -      | -      | -      | -          | -                       | -     |
-| 0  | **0** |  **0** |  **1** | **0**  | **0**  | **1**  | **1**  | **0**  | A Minus B  | Immediato               | 0x26  |
-| 0  | **0** |  **1** |  **0** | **0**  | **0**  | **1**  | **1**  | **0**  | A Minus B  | Assoluto                | 0x46  |
-| 0  | **0** |  **1** |  **1** | **0**  | **0**  | **1**  | **1**  | **0**  | A Minus B  | Assoluto, X             | 0x66  |
-| 0  | **1** |  **0** |  **0** | **0**  | **0**  | **1**  | **1**  | **0**  | A Minus B  | Assoluto, Y             | 0x86  |
-| 0  | **1** |  **0** |  **1** | **0**  | **0**  | **1**  | **1**  | **0**  | A Minus B  | Indiretto Indicizzato X | 0xA6  |
-| 0  | **1** |  **1** |  **0** | **0**  | **0**  | **1**  | **1**  | **0**  | A Minus B  | Indicizzato Y Indiretto | 0xC6  |
+| Cn | I3    | I2    | I1    | M     | S3    | S2    | S1    | S0    | Operazione | Indirizzamento          | Hex   |
+|  - | -     | -     | -     | -     | -     | -     | -     | -     | -          | -                       | -     |
+| 1  | **0** | **0** | **1** | **0** | **1** | **0** | **0** | **1** | A Plus B   | Immediato               | 0x29  |
+| 1  | **0** | **1** | **0** | **0** | **1** | **0** | **0** | **1** | A Plus B   | Assoluto                | 0x49  |
+| 1  | **0** | **1** | **1** | **0** | **1** | **0** | **0** | **1** | A Plus B   | Assoluto, X             | 0x69  |
+| 1  | **1** | **0** | **0** | **0** | **1** | **0** | **0** | **1** | A Plus B   | Assoluto, Y             | 0x89  |
+| 1  | **1** | **0** | **1** | **0** | **1** | **0** | **0** | **1** | A Plus B   | Indiretto Indicizzato X | 0xA9  |
+| 1  | **1** | **1** | **0** | **0** | **1** | **0** | **0** | **1** | A Plus B   | Indicizzato Y Indiretto | 0xC9  |
+|  - | -     |-      | -     | -     | -     | -     | -     | -     | -          | -                       | -     |
+| 0  | **0** | **0** | **1** | **0** | **0** | **1** | **1** | **0** | A Minus B  | Immediato               | 0x26  |
+| 0  | **0** | **1** | **0** | **0** | **0** | **1** | **1** | **0** | A Minus B  | Assoluto                | 0x46  |
+| 0  | **0** | **1** | **1** | **0** | **0** | **1** | **1** | **0** | A Minus B  | Assoluto, X             | 0x66  |
+| 0  | **1** | **0** | **0** | **0** | **0** | **1** | **1** | **0** | A Minus B  | Assoluto, Y             | 0x86  |
+| 0  | **1** | **0** | **1** | **0** | **0** | **1** | **1** | **0** | A Minus B  | Indiretto Indicizzato X | 0xA6  |
+| 0  | **1** | **1** | **0** | **0** | **0** | **1** | **1** | **0** | A Minus B  | Indicizzato Y Indiretto | 0xC6  |
 
 *Esempio della relazione tra IR ed ALU per tutte le modalità di indirizzamento delle istruzioni ADC e SBC del 6502.*
 
@@ -305,13 +314,15 @@ Per quale motivo la verifica suddetta non è valida in caso di istruzioni di inc
 
 Tutto questo è spiegato molto bene da Tom nella stessa pagina citata poche righe più sopra; come detto poc'anzi, l'argomento dell'Overflow è anche diffusamente ripreso [in una sezione dedicata](../math/#approfondimento-overflow).
 
-## Differenze tra Moduli ALU dell'NQSAP e del BEAM
-
-Come si può vedere dallo schema del modulo ALU del computer BEAM, questo è quasi una copia 1:1 del modulo ALU del computer NQSAP: non avevo certamente la capacità di sviluppare autonomamente un modulo ALU così complesso e legato a doppio filo con altri moduli del computer, ma la comprensione completa del funzionamento dell'ALU sviluppata da Tom ha rappresentato comunque un traguardo molto importante.
+## Schema
 
 [![Schema logico dell'ALU del computer BEAM](../../assets/alu/50-alu-beam-schematics.png "Schema logico dell'ALU del computer BEAM"){:width="100%"}](../../assets/alu/50-alu-beam-schematics.png)
 
 *Schema logico dell'ALU del computer BEAM.*
+
+## Differenze tra Moduli ALU dell'NQSAP e del BEAM
+
+Come si può vedere dallo schema del modulo ALU del computer BEAM, questo è quasi una copia 1:1 del modulo ALU del computer NQSAP: non avevo certamente la capacità di sviluppare autonomamente un modulo ALU così complesso e legato a doppio filo con altri moduli del computer, ma la comprensione completa del funzionamento dell'ALU sviluppata da Tom ha rappresentato comunque un traguardo molto importante.
 
 Ecco una lista delle differenze:
 
@@ -323,6 +334,8 @@ Ecco una lista delle differenze:
 
 - Il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Come descritto in maggior dettaglio nella sezione riservata al microcode, con soli 8 step non sarebbe stato possibile emulare le istruzioni del 6502 di salto condizionale, di scorrimento / rotazione e di salto a subroutine. Questa è in realtà una differenza architetturale più legata alla Control Logic, però il maggior numero di step disponibili ha un importante impatto su questo modulo e ha dunque sicuramente senso citarla anche in questa sezione.
 
+- Tom ha utilizzato l'operazione A Plus A dei '181 per implementare lo scorrimento a sinistra delle istruzioni ASL e ROL del 6502 e il registro H per lo scorrimento a destra delle istruzioni LSR e ROR, mentre il BEAM utilizza H in [entrambe le situazioni](#il-registro-h).
+
 ## Link utili
 
 - <a href="https://www.righto.com/2017/03/inside-vintage-74181-alu-chip-how-it.html" target="_blank">Inside the vintage 74181 ALU chip: how it works and why it's so strange</a> di Ken Shirriff. Fondamentale per capire il perché dell'implementazione apparentemente così strana del chip.
@@ -332,11 +345,14 @@ Ecco una lista delle differenze:
 ## TO DO
 
 - /WE ↘↗
+- "Il computer NQSAP prevedeva 8 step per le microistruzioni" anche a causa dei sati condizionali... controllare se corrisponde a vero.
 - Descrivere comportamento HW **shift register** per le rotazioni
 - Parlare del bench di test sulla base di quanto appreso da David Courtney.
 - *Schema di uno degli 8 Flip-Flop del 74LS377.* -- **Da fare**: Valutare se anche questo ha un riflesso positivo sul discorso del glitch
 - https://bread80.com/2019/09/02/adding-adc-sbc-inc-dec-operations-to-ben-eaters-alu/#easy-footnote-4-43 da leggere per capire se buono
 - subito dopo il capitolo "Il registro H" capire "(da fare: in questo caso, ma anche nel caso delle istruzioni di shift / rotazione e forse anche CPX e CPY, verificare se non potessi usare D invece di H)"
 - in Questa zona <<< Nel datasheet venivano menzionati anche il Carry Look-Ahead e il Ripple-Carry, approfonditi nella sezione dedicata all'[Aritmetica Binaria](../math/#). >>> sistemare il link alla sezione che devo ancora scrivere - 15 08 2024
-- **Nella sezione dedicata alle istruzioni e al microcode si analizzeranno in dettaglio le microistruzioni di tutte le istruzioni del computer.**... ricordare
+
+- controllare "Lo spreadsheet Excel citato nel paragrafo precedente è scaricabile qui; le tabelle appena menzionate sono presenti nel foglio “6502 Inst. Set”.
+
 - **sistemare** Il registro a non è elettronicamente collegato alla ALU , ma , analizzando quanto accade a livello logico nel computer , ha senso includerlo in questa pagina. Il registro a è un semplice registro senza fronzoli è molto simile ai registri AEB già disponibili già visibili nel computer sap di ben eat , però qui ho utilizzato il solito chip 377 anzichéaltri registri . **e paragrafo seguente**

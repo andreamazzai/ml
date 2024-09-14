@@ -53,7 +53,7 @@ I miglioramenti derivanti da questa architettura sono:
 
 - possibilità di settare i flag anche singolarmente;
 - risparmio di linee di indirizzamento delle EEPROM;
-- l'aggiornamento dei flag non modifica gli indirizzi delle EEPROM nel bel mezzo dell'esecuzione di un'istruzione, che è causa di [glitching](../control/#il-clock-il-glitching-delle-eeprom-e-linstruction-register-parte-2).
+- l'aggiornamento dei flag non modifica gli indirizzi delle EEPROM nel bel mezzo dell'esecuzione di un'istruzione ed elimina questa possibile causa di [glitching](../control/#il-clock-il-glitching-delle-eeprom-e-linstruction-register-parte-2).
 
 ## Componenti e funzionamento
 

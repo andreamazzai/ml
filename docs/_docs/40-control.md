@@ -347,7 +347,7 @@ CC attivo al momento 9 invia un segnale HI al pin ALU-Cin e l'[opcode 03](..alu/
 Concludendo la sezione, è importante ricordare che tutti i segnali di una microistruzione sono attivati contemporaneamente, ma che le operazioni di lettura e scrittura impostate dalla Control Word vengono eseguite secondo tempistiche diverse. Al Falling Edge del clock:
 
 - I segnali di lettura impostati dalla Control Word attivano immediatamente l'eventuale modulo interessato da una Read, il quale presenta subito il suo output sul bus; ad esempio, l'attivazione di un bus transceiver <a href="https://www.mouser.com/datasheet/2/308/74LS245-1190460.pdf" target="_blank">74LS245</a> è immediata.
-- Viceversa, i segnali di caricamento preparano i moduli interessati, ma le operazioni di Write vengono eseguite solo al successivo Rising Edge del clock, assicurando così che i registri da aggiornare ricevano segnali già stabilizzati. Un esempio è il registro tipo D 74LS377 citato poc'anzi.
+- Viceversa, i segnali di caricamento preparano i moduli interessati, ma le operazioni di Write vengono eseguite solo al successivo Rising Edge del clock, assicurando così che i registri da aggiornare ricevano segnali già stabilizzati. Un esempio è il registro tipo D 74LS377 citato in precedenza.
 
 ### Lunghezza delle istruzioni
 
@@ -610,7 +610,7 @@ Dopo queste modifiche, le istruzioni di comparazione sembrano funzionare corrett
 
 La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato da Tom Nisbet nell'NQSAP.
 
-- Una differenza sostanziale sta nell'Instruction Register, che è sviluppato in modalità bufferizzata come nell'NQSAP-PCB di Tom per rimediare ai problemi di glitching.
+- Una differenza sostanziale sta nell'Instruction Register, che è sviluppato in modalità bufferizzata come nell'NQSAP-PCB di Tom per rimediare ai problemi di glitching riscontrati nell'NQ-SAP.
 - Il BEAM prevede 16 step per le microistruzioni anziché solo 8. Le istruzioni di Branch Relative richiedono più degli 8 step disponibili nel'NQSAP, perciò Tom ha aggiunto delle istruzioni di Jump Relative in alternativa alle istruzioni di salto condizionale, mentre nel BEAM sono pienamente funzionali similarmente all'implementazione nativa del 6502.
 
 ## Note
@@ -634,6 +634,8 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
   - Disattivazione delle EEPROM della Control Logic
   - Iniezione del clock del Loader nel computer
   - (Re-)Start del clock di sistema dopo il carica.....
+
+- controllare "Il BEAM prevede 16 step per le microistruzioni anziché solo 8." a causa dei salti condizionali... è vero o in 8 ste4p ci si sta lo stesso?
 
 ## Riflessione sul microcode
 
