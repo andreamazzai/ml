@@ -25,6 +25,8 @@ Il segnale **LDR-Active** allo stato HI permette al Loader di  prendere il contr
 
 Il segnale **CLK-Start** viene utilizzato dal Loader alla fine della programmazione per riattivare il modulo di clock e far partire il programma appena caricato.
 
+## Schema
+
 [![Schema del modulo Clock](../../assets/clock/15-clock-schema.png "Schema del modulo Clock")](../../assets/clock/15-clock-schema.png)
 
 *Schema del modulo Clock.*

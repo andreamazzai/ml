@@ -67,6 +67,12 @@ Questa tecnica funziona correttamente grazie alla natura ciclica dell'indirizzo 
 
 *Schema dei registri indice dell'NQSAP.*
 
+## Schema
+
+[![Schema dei Registri indice del BEAM computer](../../assets/dxy/60-beam-dxy-schema.png "Schema dei Registri indice del BEAM computer"){:width="100%"}](../../assets/dxy/60-beam-dxy-schema.png)
+
+*Schema dei registri indice del BEAM computer.*
+
 ## Differenze tra Registri indice dell'NQSAP e del BEAM
 
 Dal punto di vista funzionale, gli schemi dei Registri indice dell'NQSAP e del BEAM sono identici.
@@ -74,10 +80,6 @@ Dal punto di vista funzionale, gli schemi dei Registri indice dell'NQSAP e del B
 Negli appunti annotavo che "... come per gli altri registri del BEAM, anche qui uso dei registri tipo D <a href="https://www.ti.com/lit/ds/symlink/sn54ls377.pdf" target="_blank">74LS377</a> anziché gli Octal D-Type Flip-Flop with 3-State Outputs <a href="https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf" target="_blank">74LS574</a> usati da Tom nell'NQSAP"; si veda la sezione [L'ALU dell'NQSAP](../alu/#lalu-dellnqsap) per un chiarimento in tal senso.
 
 Per completezza, devo segnalare di aver conosciuto il 74LS377 studiando l'<a href="https://tomnisbet.github.io/nqsap-pcb/" target="_blank">NQSAP-PCB</a>, evoluzione dell’NQSAP che Tom aveva successivamente ingegnerizzato su PCB anziché su breadboard.
-
-[![Schema dei Registri indice del BEAM computer](../../assets/dxy/60-beam-dxy-schema.png "Schema dei Registri indice del BEAM computer"){:width="100%"}](../../assets/dxy/60-beam-dxy-schema.png)
-
-*Schema dei registri indice del BEAM computer.*
 
 ## TO DO
 

@@ -321,6 +321,8 @@ Avevo dunque infine riscritto la "truth table" del modulo RAM:
 
 I due asterischi in tabella \*\* mi servivano a ricordare che dovevo stare particolarmente attento alla preparazione del microcode e che non dovevo mai avere /WR e /RR attivi contemporaneamente, perché non avevo previsto un controllo hardware per prevenire un eventuale conflitto (per evitare conflitti avrei dovuto mettere su /WR una NAND a 3 ingressi che si attiva solo per CLK, RR e /WR, cioè /WE = CLK \* RR \* /WR, in altre parole: posso scrivere sulla RAM *solo* se non la sto leggendo).
 
+## Schema
+
 [![Terza versione del Modulo di memoria (RAM) del BEAM computer](../../assets/ram/20-ram-3rd.png "Terza versione del Modulo di memoria (RAM) del BEAM computer"){:width="100%"}](../../assets/ram/20-ram-3rd.png)
 
 *Terza versione del Modulo di memoria (RAM) del BEAM computer.*
