@@ -21,7 +21,7 @@ Inoltre, poiché nel modulo si utilizzano due '181 per poter comporre una word d
 
 Il registro A non è direttamente connesso alla ALU, ma, analizzando a livello logico quanto accade nel computer, ha senso includerne la descrizione questa pagina. Il registro A è un registro molto semplice, simile ai registri A e B già visti nel SAP di Ben Eater; il BEAM lo implementa utilizzando un registro tipo D <a href="https://www.ti.com/lit/ds/symlink/sn54ls377.pdf" target="_blank">74LS377</a>.
 
-Peraltro, il registro A dell'NQSAP e del BEAM sono molto simili dal punto di vista funzionale, pertanto lo schema seguente, pur facendo riferimento al BEAM, è riutilizzabile nelle spiegazioni che seguono e che sono principalmente votate alla descrizione del modulo ALU del computer NQSAP, evidenziando via via eventuali variazioni applicate nel BEAM.
+Il registro A dell'NQSAP e del BEAM sono diversi per costruzione, ma identici dal punto di vista funzionale. Lo schema seguente, pur facendo riferimento al BEAM, è riutilizzabile in tutte le spiegazioni che seguono, anche quando principalmente rivolte alla descrizione del modulo ALU dell'NQSAP.
 
 [![Schema del Registro A del BEAM computer](../../assets/alu/50-a-beam-schema.png "Schema del Registro A del BEAM computer"){:width="100%"}](../../assets/alu/50-a-beam-schema.png)
 
@@ -76,13 +76,13 @@ Al rising Edge del clock i '194 traslano verso sinistra gli output Q0-Q3 e caric
 - il '194 di sinistra carica in Q0/H4 il valore di H3 presente al suo ingresso Dsr;
 - gli ouput Q0-Q3 di entrambi i '194 scorrono verso sinistra.
 
-Le istruzioni di scorrimento / rotazione a sinistra del 6502 memorizzano il bit più significativo nel Carry. L'immagine mostra le istruzioni di scorrimento e rotazione del 6502: il bit in uscita viene sempre salvato sul Carry.
+Le istruzioni di scorrimento / rotazione a sinistra del 6502 memorizzano nel Carry il bit più significativo del byte da traslare. L'immagine mostra le diverse istruzioni di scorrimento e rotazione del 6502 ed evidenzia lo scorrimento a sinistra.
 
 ![Istruzioni di scorrimento e rotazione del 6502](../../assets/alu/50-alu-shift-rotate-6502.png "Istruzioni di scorrimento e rotazione del 6502"){:width="50%"}
 
 *Istruzioni di scorrimento e rotazione del 6502.*
 
-L'output H-Q7 evidenziato in giallo è connesso al modulo dei Flag e viene salvato dal microcode dell'operazione:
+L'output H-Q7 evidenziato in giallo nello schema è connesso al modulo dei Flag e viene salvato dal microcode dell'operazione prima di eseguire lo scorrimento:
 
 ~~~text
 | ---- | -------------------------- |
@@ -105,22 +105,19 @@ L'output H-Q7 evidenziato in giallo è connesso al modulo dei Flag e viene salva
     - FS, Flag Select - origine del Flag, in questo caso [da un altro modulo](../flags/#componenti-e-funzionamento)
     - FC, Flag C - aggiorna il Flag C
 4. Il quarto step trasla il contenuto del registro H verso sinistra e carica uno zero nell'LSB
-    - HL, H Left - esegue le tre operazioni descritte poco sopra
+    - HL, H Left - esegue lo scorrimento
     - CC, Carry Clear - presenta un [valore 0](../flags/#il-carry-e-i-registri-h-e-alu) all'input di H
-5. Il quinto ed ultimo step scrive i Flag N e Z, copia H in A
+5. Il quinto ed ultimo step scrive i Flag N e Z ed aggiorna A
     - RH, Read H - espone il contenuto del Registro H sul bus
     - FNZ, Flag N & Z - aggiorna i Flag N e Z
     - WA, Write A - scrive il contenuto del bus in A
     - NI, Next Instruction - resetta il Ring Counter
 
-che verso un altro modulo del BEAM a nelle operazioni di scorrimento, il bit "uscito" viene sempre salvato sul carry. Questa operazione è effettuata dal microcode, che prima di fare la rotazione salva H7 su C, effettivamente memorizzando nel Carry il valore più significativo del byte
-
-
-\* I primi due step di tutte le istruzioni sono sempre uguali, come spiegato in [Ring Counter e Microistruzioni](../control/#ring-counter-e-microistruzioni).
+\* I primi due step di tutte le istruzioni sono sempre uguali, come annotato in [Ring Counter e Microistruzioni](../control/#ring-counter-e-microistruzioni).
 
  Nota che nello schema il '194 è rappresentato con gli output Q0, Q1, Q2 e Q3 rispettivamente equivalenti a Q<sub>A</sub>, Q<sub>B</sub>, Q<sub>C</sub> e Q<sub>D</sub> indicati nel <a href="https://www.ti.com/lit/ds/symlink/sn74ls194a.pdf" target="_blank">datasheet</a> del '194.
 
-Vista la flessibilità e l'utilità del Registro H, questo è stato implementato anche nel BEAM, con una differenza: l'NQSAP implementa scorrimento e rotazione a sinistra sfruttando l'operazione A Plus A dei '181, mentre il BEAM sfrutta i '194 sia verso sinistra sia verso destra.
+Vista la flessibilità e l'utilità del Registro H, questo è stato implementato anche nel BEAM, con una differenza nella scrittura el microcode: l'NQSAP implementa scorrimento e rotazione a sinistra sfruttando l'operazione A Plus A dei '181, mentre il BEAM sfrutta i '194 sia verso sinistra sia verso destra.
 
 ### Funzioni logiche e operazioni aritmetiche
 
@@ -409,7 +406,4 @@ Ecco una lista delle differenze:
 
 - controllare "Lo spreadsheet Excel citato nel paragrafo precedente è scaricabile qui; le tabelle appena menzionate sono presenti nel foglio “6502 Inst. Set”.
 
-- **sistemare** Il registro a non è elettronicamente collegato alla ALU , ma , analizzando quanto accade a livello logico nel computer , ha senso includerlo in questa pagina. Il registro a è un semplice registro senza fronzoli è molto simile ai registri AEB già disponibili già visibili nel computer sap di ben eat , però qui ho utilizzato il solito chip 377 anzichéaltri registri . **e paragrafo seguente**
-
 - rivedere "L'ALU dell'NQSAP per dare senso al fatto che ho studiato NQSAP ma parlo della realizzazione del BEAM
-
