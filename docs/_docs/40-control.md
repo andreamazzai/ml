@@ -141,7 +141,7 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio mnemonico del 65
 | ---- | -------------------------- |
 ~~~
 
-*Scomposizione dell'istruzione LDA nelle sue quattro microistruzioni elementari*.
+*Scomposizione dell'istruzione LDA Immediato nelle sue quattro microistruzioni elementari*.
 
 1. Il primo step carica l'indirizzo del Program Counter nel Memory Address Register:
     - RPC, Read Program Counter - espone sul bus l'indirizzo del Program Counter
@@ -155,16 +155,16 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio mnemonico del 65
     - WM, Write Memory Address Register - scrive il contenuto del bus nel MAR
 4. Il quarto ed ultimo step carica l'operando nell'accumulatore*, incrementa il PC per farlo puntare alla istruzione successiva e resetta il Ring Counter
     - RR, Read RAM - espone sul bus il contenuto della locazione di memoria puntata dal MAR
-    - FNZ, Flag N & Z - abilita la scrittura dei Flag N e Z
-    - WAH, Write A & H - scrive il contenuto del bus su A e H*
+    - FNZ, Flag N & Z - aggiorna i Flag N e Z
+    - WAH, Write A & H - scrive il contenuto del bus in A e H**
     - PCI, Program Counter Increment - incrementa il Program Counter
-    - NI, Next Instruction - resetta il Ring Counter**
+    - NI, Next Instruction - resetta il Ring Counter***
 
-\* Perché anche H? Si veda la sezione dedicata alla spiegazione del [registro H](../alu/#il-registro-h) nella pagina dell'ALU.
+\* Non bisogna trascurare il fatto che i primi due step di *tutte* le istruzioni sono *sempre* identici. Alla fine del secondo step, l'Instruction Register contiene l'opcode dell'istruzione, che, insieme alle microistruzioni, definisce le operazioni che gli step successivi devono eseguire. Questo vale per qualsiasi istruzione, compresa la prima che una CPU esegue all'accensione. Prima di costruire il SAP di Ben Eater, non riuscivo a immaginare quale meccanismo permettesse ad una CPU di sapere cosa dovesse fare una volta accesa; l'averlo compreso è stato piuttosto appagante.
 
-\*\* Approfondimenti in merito nella sezione [Lunghezza delle istruzioni](#lunghezza-delle-istruzioni) in questa stessa pagina.
+\*\* Perché anche H? Si veda la sezione dedicata alla spiegazione del [registro H](../alu/#il-registro-h) nella pagina dell'ALU.
 
-Non bisogna trascurare il fatto che i primi due step di *tutte* le istruzioni sono *sempre* identici. Alla fine del secondo step, l'Instruction Register contiene l'opcode dell'istruzione, che, insieme alle microistruzioni, definisce le operazioni che gli step successivi devono eseguire. Questo vale per qualsiasi istruzione, compresa la prima che una CPU esegue all'accensione. Prima di costruire il SAP di Ben Eater, non riuscivo a immaginare quale meccanismo permettesse ad una CPU di sapere cosa dovesse fare una volta accesa; l'averlo compreso è stato piuttosto appagante.
+\*\*\* Approfondimenti in merito nella sezione [Lunghezza delle istruzioni](#lunghezza-delle-istruzioni) in questa stessa pagina.
 
 Uno schema che mostra chiaramente gli step di alcune istruzioni del SAP è visibile in questa immagine tratta dal video <a href="https://www.youtube.com/watch?v=dHWFpkGsxOs" target="_blank">8-bit CPU control logic: Part 3</a> di Ben Eater; gli step 000 e 001 sono comuni per tutte le istruzioni e compongono quella che viene chiamata **Fase Fetch**, evidenziata in giallo.
 

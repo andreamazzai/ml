@@ -15,7 +15,7 @@ Il '181 è un'ALU a 4 bit sviluppata negli anni '70 che può eseguire 16 operazi
 
 **Utilizzo dei termini '181 e ALU come equivalenti**: in questa pagina, troveremo i termini ALU e '181 che vengono spesso utilizzati come equivalenti. Notare che ALU potrebbe indicare sia il modulo Unità Aritmetica e Logica nella sua interezza, sia il solo chip '181. Il contesto aiuterà a comprendere se per ALU si intenda il modulo, oppure il solo chip.
 
-Inoltre, poiché nel modulo si utilizzano due '181 per poter comporre una word di 8 bit, in determinate situazioni si definiscono primo e secondo '181 oppure '181 inferiore e superiore rispettivamente quello che contiene i 4 bit meno significativi (LSB) e quello che contiene i 4 bit più significativi (MSB).
+Inoltre, poiché nel modulo si utilizzano due '181 per poter comporre una word di 8 bit, in determinate situazioni si definiscono primo e secondo '181 oppure '181 inferiore e superiore rispettivamente quello che contiene i 4 bit meno significativi (Least Significant Bit, LSB) e quello che contiene i 4 bit più significativi (Most Significant Bit, MSB).
 
 ## Il registro A
 
@@ -27,7 +27,7 @@ Peraltro, il registro A dell'NQSAP e del BEAM sono molto simili dal punto di vis
 
 ## L'ALU dell'NQSAP
 
-Tra le caratteristiche che spiccavano nello schema dell'ALU dell'NQSAP, notavo soprattutto un numero elevato di chip - tra i quali gli Shift Register <a href="https://www.ti.com/lit/ds/symlink/sn74ls194a.pdf" target="_blank">74LS194</a> - e un modo particolare di indirizzare i '181, che erano "strettamente legati" all'istruzione presente nell'Instruction Register della [Control Logic](../control). Anche il legame con la Control Logic è stato tra i più complessi da analizzare e comprendere, ma quello con il modulo dei Flag non è meno importante e la sua comprensione è stata altrettanto difficile: ad ogni operazione dell'ALU (e non solo) corrisponde infatti un'azione sul registro dei Flag.
+Tra le caratteristiche che spiccavano nello schema dell'ALU dell'NQSAP, notavo soprattutto un numero elevato di chip - tra i quali i 4-bit Bidirectional Universal Shift Register <a href="https://www.ti.com/lit/ds/symlink/sn74ls194a.pdf" target="_blank">74LS194</a> - e un modo particolare di indirizzare i '181, che erano "strettamente legati" all'istruzione presente nell'Instruction Register della [Control Logic](../control). Anche il legame con la Control Logic è stato tra i più complessi da analizzare e comprendere, ma quello con il modulo dei Flag non è meno importante e la sua comprensione è stata altrettanto difficile: ad ogni operazione dell'ALU (e non solo) corrisponde infatti un'azione sul registro dei Flag.
 
 [![Schema dell'ALU di Tom Nisbet](../../assets/alu/50-alu-nqsap.png "Schema dell'ALU di Tom Nisbet"){:width="100%"}](../../assets/alu/50-alu-nqsap.png)
 
@@ -63,23 +63,60 @@ Gli Shift Register '194 sono utilizzati anche per le operazioni di scorrimento e
 | LO | LO | Mantiene lo stato precedente                                                                          |
 | LO | HI | Scorre a sinistra i bit di output (Q3 ← Q2 \| Q2 ← Q1 \| Q1 ← Q0) e carica l'input Serial Right in Q0 |
 | HI | LO | Scorre a destra i bit di output (Q3 → Q2 \| Q2 → Q1 \| Q1 → Q0) e carica l'input Serial Left in Q3    |
-| HI | HI | Carica gli input P0-P3 in Q0, Q1, Q2 e Q3                                                             |
+| HI | HI | Carica gli input P0-P3 in Q0-Q3                                                                       |
 
-Lo schema mostra l'esecuzione di un'operazione di scorrimento. L'attivazione del segnale di controllo HL prepara i '194 per lo scorrimento da destra a sinistra.
+Lo schema mostra l'esecuzione di un'operazione di scorrimento da destra a sinistra, che richiede l'attivazione del segnale di controllo HL:
 
 [![Scorrimento a sinistra nel registro H del BEAM](../../assets/alu/50-alu-beam-h.png "Scorrimento a sinistra nel registro H del BEAM"){:width="100%"}](../../assets/alu/50-alu-beam-h.png)
 
 *Scorrimento a sinistra nel registro H del BEAM.*
 
-Al rising Edge del clock i '194 caricano su Q0 gli ingressi Shift Right (Dsr) e gli output Q0-Q3 vengono traslati verso sinistra:
+Al rising Edge del clock i '194 traslano verso sinistra gli output Q0-Q3 e caricano in Q0 i valori presenti agli ingressi Serial Right (Dsr), eseguendo tutte le seguenti operazioni nello stesso momento:
 
-- il segnale H-Cin presente all'ingresso del '194 di destra diventa il bit meno significativo (LSB) del byte traslato
-- H3 dello stesso '194 diventa il 5° bit del byte traslato
-- H7 viene perso, ma nelle operazioni di scorrimento, il bit "uscito" viene sempre salvato sul carry. Questa operazione è effettuata dal microcode, che prima di fare la rotazione salva H7 su C, effettivamente memorizzando nel Carry il valore più significativo del byte
+- il '194 di destra carica in Q0/H0 il segnale H-Cin presente al suo ingresso Dsr, che diventa il nuovo LSB del byte traslato;
+- il '194 di sinistra carica in Q0/H4 il valore di H3 presente al suo ingresso Dsr;
+- gli ouput Q0-Q3 di entrambi i '194 scorrono verso sinistra.
 
-ad esempio, mostrare microcode e immagine ASL
+Le istruzioni di scorrimento / rotazione a sinistra del 6502 memorizzano il bit più significativo nel Carry. L'output H-Q7 evidenziato in giallo è connesso al modulo dei Flag e viene salvato dal microcode dell'operazione:
 
- Nota che nello schema il '194 è rappresentato con gli output Q0, Q1, Q2 e Q3 rispettivamente equivalenti a Q<sub>A</sub>, Q<sub>B</sub>, Q<sub>C</sub> e Q<sub>D</sub> indicati nel datasheet del '194.
+~~~text
+| ---- | -------------------------- |
+| Step | Microistruzione            |
+| ---- | -------------------------- |
+| 1*   | RPC | WM                   |
+| 2*   | RR  | WIR | PCI            |
+| 3    | C1  | FS  | FC             |
+| 4    | HL  | CC                   |
+| 5    | FNZ | RH  | WA  | NI       |
+| ---- | -------------------------- |
+~~~
+
+*Scomposizione dell'istruzione ASL Accumulatore nelle sue cinque microistruzioni elementari*.
+
+3. Il terzo step memorizza il valore di H7 nel Carry:
+    - C1 - seleziona la [provenienza del Carry](../flags/#carry) dall’MSB (H-Q7) del registro H
+    - FS, Flag Select - origine del Flag, in questo caso [da un altro modulo](../flags/#componenti-e-funzionamento)
+    - FC, Flag C - aggiorna il Flag C
+4. Trasla il contenuto del registro H verso sinistra e carica uno zero nell'LSB
+    - HL, H Left - esegue le tre operazioni descritte poco sopra
+    - CC, Carry Clear - presenta un [valore 0](../flags/#il-carry-e-i-registri-h-e-alu) all'input di H
+5. Scrive i Flag N e Z, copia H in A
+    - RH, Read H - espone il contenuto del Registro H sul bus
+    - FNZ, Flag N & Z - aggiorna i Flag N e Z
+    - WA, Write A - scrive il contenuto del bus in A
+    - NI, Next Instruction - resetta il Ring Counter
+
+che verso un altro modulo del BEAM a nelle operazioni di scorrimento, il bit "uscito" viene sempre salvato sul carry. Questa operazione è effettuata dal microcode, che prima di fare la rotazione salva H7 su C, effettivamente memorizzando nel Carry il valore più significativo del byte
+
+L'immagine mostra le istruzioni di scorrimento e rotazione del 6502: il bit in uscita viene sempre salvato sul Carry.
+
+![Istruzioni di scorrimento e rotazione del 6502](../../assets/alu/50-alu-shift-rotate-6502.png "Istruzioni di scorrimento e rotazione del 6502"){:width="66%"}
+
+*Istruzioni di scorrimento e rotazione del 6502.*
+
+\* I primi due step di tutte le istruzioni sono sempre uguali, come spiegato in [Ring Counter e Microistruzioni](../control/#ring-counter-e-microistruzioni).
+
+ Nota che nello schema il '194 è rappresentato con gli output Q0, Q1, Q2 e Q3 rispettivamente equivalenti a Q<sub>A</sub>, Q<sub>B</sub>, Q<sub>C</sub> e Q<sub>D</sub> indicati nel <a href="https://www.ti.com/lit/ds/symlink/sn74ls194a.pdf" target="_blank">datasheet</a> del '194.
 
 Vista la flessibilità e l'utilità del Registro H, questo è stato implementato anche nel BEAM, con una differenza: l'NQSAP implementa scorrimento e rotazione a sinistra sfruttando l'operazione A Plus A dei '181, mentre il BEAM sfrutta i '194 sia verso sinistra sia verso destra.
 
