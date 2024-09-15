@@ -19,7 +19,7 @@ Inoltre, poiché nel modulo si utilizzano due '181 per poter comporre una word d
 
 ## Il registro A
 
-Il registro A non è direttamente connesso alla ALU, ma, analizzando a livello logico quanto accade nel computer, ha senso includerne la descrizione questa pagina. Il registro A è un registro molto semplice, simile ai registri A e B già visti nel SAP di Ben Eater; nel BEAM ho però utilizzato un registro tipo D <a href="https://www.ti.com/lit/ds/symlink/sn54ls377.pdf" target="_blank">74LS377</a>.
+Il registro A non è direttamente connesso alla ALU, ma, analizzando a livello logico quanto accade nel computer, ha senso includerne la descrizione questa pagina. Il registro A è un registro molto semplice, simile ai registri A e B già visti nel SAP di Ben Eater; il BEAM lo implementa utilizzando un registro tipo D <a href="https://www.ti.com/lit/ds/symlink/sn54ls377.pdf" target="_blank">74LS377</a>.
 
 Peraltro, il registro A dell'NQSAP e del BEAM sono molto simili dal punto di vista funzionale, pertanto lo schema seguente, pur facendo riferimento al BEAM, è riutilizzabile nelle spiegazioni che seguono e che sono principalmente votate alla descrizione del modulo ALU del computer NQSAP, evidenziando via via eventuali variazioni applicate nel BEAM.
 
@@ -41,7 +41,7 @@ Il modulo ALU è sommariamente composto da due registri di input H e B e da una 
 
 ### Il registro H
 
-Sul computer SAP di Ben Eater i registri di input all'ALU erano A e B, mentre nell'NQSAP sono H e B. Come indicato nella sezione precedente, il registro H si può anche comportare come un comune registro a 8 bit in tutti quei casi nei quali sia necessario avere due registri standard di input per tutte le operazioni che l'ALU deve eseguire. E' dunque necessario che A ed H siano sempre allineati, così che i '181 ritrovino trasparentemente in H il contenuto di A (ad esempio una somma ADC sarà effettivamente realizzata dando in input ai '181 i registri H e B: essendo H una copia di A, il risultato della somma sarà A + B).
+Nel computer SAP di Ben Eater i registri di input all'ALU erano A e B, mentre nell'NQSAP sono H e B. Come indicato nella sezione precedente, il registro H si può comportare come un comune registro a 8 bit in tutti quei casi nei quali sia necessario avere due registri standard di input per tutte le operazioni che l'ALU deve eseguire. Poiché le istruzioni del 6502 fanno riferimento al registro A, è necessario che A ed H siano sempre allineati, così che i '181 ritrovino trasparentemente in H il contenuto di A (ad esempio una somma ADC sarà effettivamente realizzata dando in input ai '181 i registri H e B: essendo H una copia di A, il risultato della somma sarà A + B).
 
 Il registro H sarà anche fondamentale come registro temporaneo di appoggio da utilizzare per la realizzazione del microcode di molte altre istruzioni: anche in tutti questi casi, una delle operazioni eseguite dal microcode sarà la copia di A su H:
 
@@ -51,8 +51,7 @@ Il registro H sarà anche fondamentale come registro temporaneo di appoggio da u
 
 Nell'esempio dell'istruzione INX del 6502, dopo la [fase Fetch](../control/#fasi) comune a tutte le istruzioni (fase non evidenziata qui):
 
-- X viene letto (RX) e copiato in H (WH);
-- H presenta il suo contenuto agli ingressi "A" dei '181;
+- X viene letto (RX) e copiato in H (WH), che presenta il suo contenuto agli ingressi "A" dei '181;
 - i '181 eseguono l'operazione **A Plus 1**, il cui risultato viene letto dall'output (RL) e copiato in X (WX);
 - si legge il contenuto non modificato di A (RA) e si riallinea H (WH).
 
@@ -65,13 +64,13 @@ Gli Shift Register '194 sono utilizzati anche per le operazioni di scorrimento e
 | HI | LO | Scorre a destra i bit di output (Q3 → Q2 \| Q2 → Q1 \| Q1 → Q0) e carica l'input Serial Left in Q3    |
 | HI | HI | Carica gli input P0-P3 in Q0-Q3                                                                       |
 
-Lo schema mostra l'esecuzione di un'operazione di scorrimento da destra a sinistra, che richiede l'attivazione del segnale di controllo HL:
+Lo schema mostra l'esecuzione di un'operazione di scorrimento da destra a sinistra, che richiede l'attivazione del segnale di controllo HL/S0:
 
 [![Scorrimento a sinistra nel registro H del BEAM](../../assets/alu/50-alu-beam-h.png "Scorrimento a sinistra nel registro H del BEAM"){:width="100%"}](../../assets/alu/50-alu-beam-h.png)
 
 *Scorrimento a sinistra nel registro H del BEAM.*
 
-Al rising Edge del clock i '194 traslano verso sinistra gli output Q0-Q3 e caricano in Q0 i valori presenti agli ingressi Serial Right (Dsr), eseguendo tutte le seguenti operazioni nello stesso momento:
+Al rising Edge del clock i '194 traslano verso sinistra gli output Q0-Q3 e caricano in Q0 i valori presenti agli ingressi Serial Right (Dsr), eseguendo tutte le operazioni seguenti nello stesso momento:
 
 - il '194 di destra carica in Q0/H0 il segnale H-Cin presente al suo ingresso Dsr, che diventa il nuovo LSB del byte traslato;
 - il '194 di sinistra carica in Q0/H4 il valore di H3 presente al suo ingresso Dsr;
@@ -93,14 +92,16 @@ Le istruzioni di scorrimento / rotazione a sinistra del 6502 memorizzano il bit 
 
 *Scomposizione dell'istruzione ASL Accumulatore nelle sue cinque microistruzioni elementari*.
 
+1. Il primo step carica l'indirizzo del Program Counter nel Memory Address Register
+2. Il secondo step carica l'opcode dell'istruzione nell'IR e incrementa il PC per farlo puntare alla locazione di memoria successiva (che nel caso dell'istruzione ASL Accumulatore contiene l'istruzione successiva)
 3. Il terzo step memorizza il valore di H7 nel Carry:
     - C1 - seleziona la [provenienza del Carry](../flags/#carry) dall’MSB (H-Q7) del registro H
     - FS, Flag Select - origine del Flag, in questo caso [da un altro modulo](../flags/#componenti-e-funzionamento)
     - FC, Flag C - aggiorna il Flag C
-4. Trasla il contenuto del registro H verso sinistra e carica uno zero nell'LSB
+4. Il quarto step trasla il contenuto del registro H verso sinistra e carica uno zero nell'LSB
     - HL, H Left - esegue le tre operazioni descritte poco sopra
     - CC, Carry Clear - presenta un [valore 0](../flags/#il-carry-e-i-registri-h-e-alu) all'input di H
-5. Scrive i Flag N e Z, copia H in A
+5. Il quinto ed ultimo step scrive i Flag N e Z, copia H in A
     - RH, Read H - espone il contenuto del Registro H sul bus
     - FNZ, Flag N & Z - aggiorna i Flag N e Z
     - WA, Write A - scrive il contenuto del bus in A
@@ -110,7 +111,7 @@ che verso un altro modulo del BEAM a nelle operazioni di scorrimento, il bit "us
 
 L'immagine mostra le istruzioni di scorrimento e rotazione del 6502: il bit in uscita viene sempre salvato sul Carry.
 
-![Istruzioni di scorrimento e rotazione del 6502](../../assets/alu/50-alu-shift-rotate-6502.png "Istruzioni di scorrimento e rotazione del 6502"){:width="66%"}
+![Istruzioni di scorrimento e rotazione del 6502](../../assets/alu/50-alu-shift-rotate-6502.png "Istruzioni di scorrimento e rotazione del 6502"){:width="50%"}
 
 *Istruzioni di scorrimento e rotazione del 6502.*
 
@@ -399,7 +400,6 @@ Ecco una lista delle differenze:
 
 - /WE ↘↗
 - "Il computer NQSAP prevedeva 8 step per le microistruzioni" anche a causa dei sati condizionali... controllare se corrisponde a vero.
-- Descrivere comportamento HW **shift register** per le rotazioni
 - Parlare del bench di test sulla base di quanto appreso da David Courtney.
 - *Schema di uno degli 8 Flip-Flop del 74LS377.* -- **Da fare**: Valutare se anche questo ha un riflesso positivo sul discorso del glitch
 - https://bread80.com/2019/09/02/adding-adc-sbc-inc-dec-operations-to-ben-eaters-alu/#easy-footnote-4-43 da leggere per capire se buono
