@@ -43,11 +43,11 @@ Il modulo ALU è sommariamente composto da due registri di input H e B e da una 
 
 Nel computer SAP di Ben Eater i registri di input all'ALU erano A e B, mentre nell'NQSAP sono H e B. Come accennato nella sezione precedente, il registro H si può comportare come un comune registro a 8 bit e può sostituire il registro A come input dell'ALU.
 
-Poiché le istruzioni del 6502 fanno riferimento al registro A, è necessario che A ed H siano sempre allineati, così che i '181 ritrovino trasparentemente in H il contenuto di A (ad esempio una somma ADC sarà effettivamente realizzata dando in input ai '181 i registri H e B: essendo H una copia di A, il risultato della somma sarà uguale A + B).
+Poiché le istruzioni del 6502 fanno riferimento al registro A, è necessario che A ed H siano sempre allineati, così che i '181 ritrovino trasparentemente in H il contenuto di A (ad esempio una somma ADC sarà effettivamente realizzata dando in input ai '181 i registri H e B: essendo H una copia di A, il risultato della somma sarà uguale ad A + B).
 
 Qual è l'utilità di un registro "ombra" come H? Alcune operazioni che agiscono direttamente su una locazione di memoria possono essere eseguite senza interferire col contenuto del registro A, ad esempio INC Assoluto o ASL Assoluto Indicizzato X.
 
-Il registro H è fondamentale come registro temporaneo di appoggio da utilizzare per la realizzazione del microcode di molte altre istruzioni: in tutti questi casi, una delle operazioni eseguite dal microcode sarà la copia di A su H:
+Il registro H è fondamentale come registro temporaneo di appoggio da utilizzare per la realizzazione del microcode di molte altre istruzioni: in tutti questi casi, uno degli ultimi step eseguiti dal microcode sarà la copia di A su H:
 
 ![Microcode dell'istruzione INX](../../assets/alu/50-alu-RAWH.png){:width="50%"}
 
@@ -59,7 +59,7 @@ Nell'esempio dell'istruzione INX del 6502, dopo la [fase Fetch](../control/#fasi
 - i '181 eseguono l'operazione **A Plus 1**, il cui risultato viene esposto sul bus (RL) e copiato in X (WX);
 - A, non modificato, viene esposto sul bus (RA) ed H viene riallineato (WH).
 
-Gli Shift Register '194 sono utilizzati anche per le operazioni di scorrimento e rotazione. I due pin di ingresso S0 ed S1 definiscono il comportamento del chip al Rising Edge del clock:
+Gli Shift Register '194 del registro H sono utilizzati anche per le operazioni di scorrimento e rotazione. I due pin di ingresso S0 ed S1 definiscono il comportamento del chip al Rising Edge del clock:
 
 | S1 | S0 | Operazione                                                                                            |
 |  - | -  |  -                                                                                                    |
@@ -68,7 +68,7 @@ Gli Shift Register '194 sono utilizzati anche per le operazioni di scorrimento e
 | HI | LO | Scorre a destra i bit di output (Q3 → Q2 \| Q2 → Q1 \| Q1 → Q0) e carica l'input Serial Left in Q3    |
 | HI | HI | Carica gli input P0-P3 in Q0-Q3                                                                       |
 
-Lo schema mostra l'esecuzione di un'operazione di scorrimento da destra a sinistra, che richiede l'attivazione del segnale di controllo HL/S0:
+Lo schema mostra l'esecuzione di un'operazione di scorrimento a sinistra, che richiede l'attivazione del segnale di controllo HL/S0:
 
 [![Scorrimento a sinistra nel registro H del BEAM](../../assets/alu/50-alu-beam-h.png "Scorrimento a sinistra nel registro H del BEAM"){:width="100%"}](../../assets/alu/50-alu-beam-h.png)
 
@@ -86,7 +86,7 @@ Le istruzioni di scorrimento / rotazione a sinistra del 6502 memorizzano nel Car
 
 *Istruzioni di scorrimento e rotazione del 6502.*
 
-L'output H-Q7 evidenziato in giallo nello schema è connesso al modulo dei Flag e viene salvato dal microcode dell'operazione prima di eseguire lo scorrimento:
+L'MSB di H / output H-Q7 evidenziato in giallo nello schema è connesso al modulo dei Flag e viene salvato dal microcode prima di eseguire lo scorrimento:
 
 ~~~text
 | ---- | -------------------------- |
@@ -109,11 +109,11 @@ L'output H-Q7 evidenziato in giallo nello schema è connesso al modulo dei Flag 
     - FS, Flag Select - origine del Flag, in questo caso [da un altro modulo](../flags/#componenti-e-funzionamento)
     - FC, Flag C - aggiorna il Flag C
 4. Il quarto step trasla il contenuto del registro H verso sinistra e carica uno zero nell'LSB
-    - HL, H Left - esegue lo scorrimento
     - CC, Carry Clear - presenta un [valore 0](../flags/#il-carry-e-i-registri-h-e-alu) all'input di H
+    - HL, H Left - esegue lo scorrimento
 5. Il quinto ed ultimo step scrive i Flag N e Z ed aggiorna A
     - RH, Read H - espone il contenuto del Registro H sul bus
-    - FNZ, Flag N & Z - aggiorna i Flag N e Z
+    - FNZ, Flag N & Z - aggiorna i Flag N e Z computati nel modulo Flag
     - WA, Write A - scrive il contenuto del bus in A
     - NI, Next Instruction - resetta il Ring Counter
 
@@ -121,7 +121,7 @@ L'output H-Q7 evidenziato in giallo nello schema è connesso al modulo dei Flag 
 
  Nota che nello schema il '194 è rappresentato con gli output Q0, Q1, Q2 e Q3 rispettivamente equivalenti a Q<sub>A</sub>, Q<sub>B</sub>, Q<sub>C</sub> e Q<sub>D</sub> indicati nel <a href="https://www.ti.com/lit/ds/symlink/sn74ls194a.pdf" target="_blank">datasheet</a> del '194.
 
-Vista la flessibilità e l'utilità del Registro H, questo è stato implementato anche nel BEAM, con una differenza nella scrittura el microcode: l'NQSAP implementa scorrimento e rotazione a sinistra sfruttando l'operazione A Plus A dei '181, mentre il BEAM sfrutta i '194 sia verso sinistra sia verso destra.
+Vista la flessibilità e l'utilità del Registro H, questo è stato implementato anche nel BEAM, con una differenza nella scrittura del microcode: l'NQSAP implementa scorrimento e rotazione a sinistra sfruttando l'operazione A Plus A dei '181, mentre il BEAM sfrutta i '194 sia verso sinistra sia verso destra.
 
 ### Funzioni logiche e operazioni aritmetiche
 
@@ -382,7 +382,7 @@ Come si può vedere dallo schema del modulo ALU del computer BEAM, questo è qua
 
 Ecco una lista delle differenze:
 
-- Per il registro B ho utilizzato un registro tipo D <a href="https://www.ti.com/lit/ds/symlink/sn54ls377.pdf" target="_blank">74LS377</a> al posto del <a href="https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf" target="_blank">74LS574</a> utilizzati da Tom. A differenza del '574, il '377 è dotato di ingresso Enable, che solo quando attivo permette il caricamento del registro in corrispondenza del Rising Edge del clock: così facendo si elimina la necessità di un gate in ingresso sul clock per realizzare un Enable artificiale, come descritto nella sezione [L'ALU dell'NQSAP](#lalu-dellnqsap).
+- Per il registro B è stato utilizzato un registro tipo D <a href="https://www.ti.com/lit/ds/symlink/sn54ls377.pdf" target="_blank">74LS377</a> al posto del <a href="https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf" target="_blank">74LS574</a> utilizzato da Tom. A differenza del '574, il '377 è dotato di ingresso Enable, che solo quando attivo permette il caricamento del registro in corrispondenza del Rising Edge del clock: così facendo si elimina la necessità di un gate in ingresso sul clock per realizzare un Enable artificiale, come descritto nella sezione [L'ALU dell'NQSAP](#lalu-dellnqsap).
 
 ![Schema di uno degli 8 Flip-Flop del 74LS377](../../assets/alu/50-alu-377.png){:width="66%"}
 
@@ -404,7 +404,6 @@ Ecco una lista delle differenze:
 - /WE ↘↗
 - "Il computer NQSAP prevedeva 8 step per le microistruzioni" anche a causa dei sati condizionali... controllare se corrisponde a vero.
 - Parlare del bench di test sulla base di quanto appreso da David Courtney.
-- *Schema di uno degli 8 Flip-Flop del 74LS377.* -- **Da fare**: Valutare se anche questo ha un riflesso positivo sul discorso del glitch
 - https://bread80.com/2019/09/02/adding-adc-sbc-inc-dec-operations-to-ben-eaters-alu/#easy-footnote-4-43 da leggere per capire se buono
 - subito dopo il capitolo "Il registro H" capire "(da fare: in questo caso, ma anche nel caso delle istruzioni di shift / rotazione e forse anche CPX e CPY, verificare se non potessi usare D invece di H)"
 - in Questa zona <<< Nel datasheet venivano menzionati anche il Carry Look-Ahead e il Ripple-Carry, approfonditi nella sezione dedicata all'[Aritmetica Binaria](../math/#). >>> sistemare il link alla sezione che devo ancora scrivere - 15 08 2024
