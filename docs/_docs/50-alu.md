@@ -41,7 +41,7 @@ Il modulo ALU è sommariamente composto da due registri di input H e B e da una 
 
 ### Il registro H
 
-Nel computer SAP di Ben Eater i registri di input all'ALU erano A e B, mentre nell'NQSAP sono H e B. Come indicato nella sezione precedente, il registro H si può comportare come un comune registro a 8 bit in tutti quei casi nei quali sia necessario avere due registri standard di input per tutte le operazioni che l'ALU deve eseguire. Poiché le istruzioni del 6502 fanno riferimento al registro A, è necessario che A ed H siano sempre allineati, così che i '181 ritrovino trasparentemente in H il contenuto di A (ad esempio una somma ADC sarà effettivamente realizzata dando in input ai '181 i registri H e B: essendo H una copia di A, il risultato della somma sarà A + B).
+Nel computer SAP di Ben Eater i registri di input all'ALU erano A e B, mentre nell'NQSAP sono H e B. Come indicato nella sezione precedente, il registro H si può comportare come un comune registro a 8 bit in tutti quei casi nei quali sia necessario avere due registri standard di input per tutte le operazioni che l'ALU deve eseguire. Poiché le istruzioni del 6502 fanno riferimento al registro A, è necessario che A ed H siano sempre allineati, così che i '181 ritrovino trasparentemente in H il contenuto di A (ad esempio una somma ADC sarà effettivamente realizzata dando in input ai '181 i registri H e B: essendo H una copia di A, il risultato della somma sarà uguale A + B).
 
 Il registro H sarà anche fondamentale come registro temporaneo di appoggio da utilizzare per la realizzazione del microcode di molte altre istruzioni: anche in tutti questi casi, una delle operazioni eseguite dal microcode sarà la copia di A su H:
 
@@ -52,8 +52,8 @@ Il registro H sarà anche fondamentale come registro temporaneo di appoggio da u
 Nell'esempio dell'istruzione INX del 6502, dopo la [fase Fetch](../control/#fasi) comune a tutte le istruzioni (fase non evidenziata qui):
 
 - X viene letto (RX) e copiato in H (WH), che presenta il suo contenuto agli ingressi "A" dei '181;
-- i '181 eseguono l'operazione **A Plus 1**, il cui risultato viene letto dall'output (RL) e copiato in X (WX);
-- si legge il contenuto non modificato di A (RA) e si riallinea H (WH).
+- i '181 eseguono l'operazione **A Plus 1**, il cui risultato viene esposto sul bus (RL) e copiato in X (WX);
+- A, non modificato, viene esposto sul bus (RA) ed H viene riallineato (WH).
 
 Gli Shift Register '194 sono utilizzati anche per le operazioni di scorrimento e rotazione. I due pin di ingresso S0 ed S1 definiscono il comportamento del chip al Rising Edge del clock:
 
@@ -76,7 +76,13 @@ Al rising Edge del clock i '194 traslano verso sinistra gli output Q0-Q3 e caric
 - il '194 di sinistra carica in Q0/H4 il valore di H3 presente al suo ingresso Dsr;
 - gli ouput Q0-Q3 di entrambi i '194 scorrono verso sinistra.
 
-Le istruzioni di scorrimento / rotazione a sinistra del 6502 memorizzano il bit più significativo nel Carry. L'output H-Q7 evidenziato in giallo è connesso al modulo dei Flag e viene salvato dal microcode dell'operazione:
+Le istruzioni di scorrimento / rotazione a sinistra del 6502 memorizzano il bit più significativo nel Carry. L'immagine mostra le istruzioni di scorrimento e rotazione del 6502: il bit in uscita viene sempre salvato sul Carry.
+
+![Istruzioni di scorrimento e rotazione del 6502](../../assets/alu/50-alu-shift-rotate-6502.png "Istruzioni di scorrimento e rotazione del 6502"){:width="50%"}
+
+*Istruzioni di scorrimento e rotazione del 6502.*
+
+L'output H-Q7 evidenziato in giallo è connesso al modulo dei Flag e viene salvato dal microcode dell'operazione:
 
 ~~~text
 | ---- | -------------------------- |
@@ -109,11 +115,6 @@ Le istruzioni di scorrimento / rotazione a sinistra del 6502 memorizzano il bit 
 
 che verso un altro modulo del BEAM a nelle operazioni di scorrimento, il bit "uscito" viene sempre salvato sul carry. Questa operazione è effettuata dal microcode, che prima di fare la rotazione salva H7 su C, effettivamente memorizzando nel Carry il valore più significativo del byte
 
-L'immagine mostra le istruzioni di scorrimento e rotazione del 6502: il bit in uscita viene sempre salvato sul Carry.
-
-![Istruzioni di scorrimento e rotazione del 6502](../../assets/alu/50-alu-shift-rotate-6502.png "Istruzioni di scorrimento e rotazione del 6502"){:width="50%"}
-
-*Istruzioni di scorrimento e rotazione del 6502.*
 
 \* I primi due step di tutte le istruzioni sono sempre uguali, come spiegato in [Ring Counter e Microistruzioni](../control/#ring-counter-e-microistruzioni).
 
@@ -409,3 +410,6 @@ Ecco una lista delle differenze:
 - controllare "Lo spreadsheet Excel citato nel paragrafo precedente è scaricabile qui; le tabelle appena menzionate sono presenti nel foglio “6502 Inst. Set”.
 
 - **sistemare** Il registro a non è elettronicamente collegato alla ALU , ma , analizzando quanto accade a livello logico nel computer , ha senso includerlo in questa pagina. Il registro a è un semplice registro senza fronzoli è molto simile ai registri AEB già disponibili già visibili nel computer sap di ben eat , però qui ho utilizzato il solito chip 377 anzichéaltri registri . **e paragrafo seguente**
+
+- rivedere "L'ALU dell'NQSAP per dare senso al fatto che ho studiato NQSAP ma parlo della realizzazione del BEAM
+
