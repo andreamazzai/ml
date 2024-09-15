@@ -41,9 +41,13 @@ Il modulo ALU è sommariamente composto da due registri di input H e B e da una 
 
 ### Il registro H
 
-Nel computer SAP di Ben Eater i registri di input all'ALU erano A e B, mentre nell'NQSAP sono H e B. Come indicato nella sezione precedente, il registro H si può comportare come un comune registro a 8 bit in tutti quei casi nei quali sia necessario avere due registri standard di input per tutte le operazioni che l'ALU deve eseguire. Poiché le istruzioni del 6502 fanno riferimento al registro A, è necessario che A ed H siano sempre allineati, così che i '181 ritrovino trasparentemente in H il contenuto di A (ad esempio una somma ADC sarà effettivamente realizzata dando in input ai '181 i registri H e B: essendo H una copia di A, il risultato della somma sarà uguale A + B).
+Nel computer SAP di Ben Eater i registri di input all'ALU erano A e B, mentre nell'NQSAP sono H e B. Come accennato nella sezione precedente, il registro H si può comportare come un comune registro a 8 bit e può sostituire il registro A come input dell'ALU.
 
-Il registro H sarà anche fondamentale come registro temporaneo di appoggio da utilizzare per la realizzazione del microcode di molte altre istruzioni: anche in tutti questi casi, una delle operazioni eseguite dal microcode sarà la copia di A su H:
+Poiché le istruzioni del 6502 fanno riferimento al registro A, è necessario che A ed H siano sempre allineati, così che i '181 ritrovino trasparentemente in H il contenuto di A (ad esempio una somma ADC sarà effettivamente realizzata dando in input ai '181 i registri H e B: essendo H una copia di A, il risultato della somma sarà uguale A + B).
+
+Qual è l'utilità di un registro "ombra" come H? Alcune operazioni che agiscono direttamente su una locazione di memoria possono essere eseguite senza interferire col contenuto del registro A, ad esempio INC Assoluto o ASL Assoluto Indicizzato X.
+
+Il registro H è fondamentale come registro temporaneo di appoggio da utilizzare per la realizzazione del microcode di molte altre istruzioni: in tutti questi casi, una delle operazioni eseguite dal microcode sarà la copia di A su H:
 
 ![Microcode dell'istruzione INX](../../assets/alu/50-alu-RAWH.png){:width="50%"}
 
