@@ -119,7 +119,7 @@ L'MSB di H / output H-Q7 evidenziato in giallo nello schema è connesso al modul
 
 \* I primi due step di tutte le istruzioni sono sempre uguali, come annotato in [Ring Counter e Microistruzioni](../control/#ring-counter-e-microistruzioni).
 
- Nota che nello schema il '194 è rappresentato con gli output Q0, Q1, Q2 e Q3 rispettivamente equivalenti a Q<sub>A</sub>, Q<sub>B</sub>, Q<sub>C</sub> e Q<sub>D</sub> indicati nel <a href="https://www.ti.com/lit/ds/symlink/sn74ls194a.pdf" target="_blank">datasheet</a> del '194.
+ Nello schema il '194 è rappresentato con gli output Q0, Q1, Q2 e Q3, che sono rispettivamente equivalenti agli ouput Q<sub>A</sub>, Q<sub>B</sub>, Q<sub>C</sub> e Q<sub>D</sub> indicati nel <a href="https://www.ti.com/lit/ds/symlink/sn74ls194a.pdf" target="_blank">datasheet</a> del '194.
 
 Vista la flessibilità e l'utilità del Registro H, questo è stato implementato anche nel BEAM, con una differenza nella scrittura del microcode: l'NQSAP implementa scorrimento e rotazione a sinistra sfruttando l'operazione A Plus A dei '181, mentre il BEAM sfrutta i '194 sia verso sinistra sia verso destra.
 
