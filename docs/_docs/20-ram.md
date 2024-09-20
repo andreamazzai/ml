@@ -1,9 +1,9 @@
 ---
 title: "RAM e MAR"
 permalink: /docs/ram/
-excerpt: "Modulo di memoria del BEAM computer"
+excerpt: "Modulo di memoria del computer BEAM"
 ---
-[![Modulo di memoria del BEAM computer](../../assets/ram/20-ram-beam.png "Modulo di memoria del BEAM computer"){:width="100%"}](../../assets/ram/20-ram-beam.png)
+[![Modulo di memoria del computer BEAM](../../assets/ram/20-ram-beam.png "Modulo di memoria del computer BEAM"){:width="100%"}](../../assets/ram/20-ram-beam.png)
 
 Il limite principale del computer SAP di Ben Eater era sicuramente la modesta quantità di RAM indirizzabile, pari a 16 byte; era possibile caricare un semplice contatore da 0 a 255 e viceversa, oppure un piccolo algoritmo di Fibonacci, ma nulla di più. Questo è stato lo stimolo primario per la realizzazione di un computer più potente.
 
@@ -323,9 +323,9 @@ I due asterischi in tabella \*\* mi servivano a ricordare che dovevo stare parti
 
 ## Schema
 
-[![Terza versione del Modulo di memoria (RAM) del BEAM computer](../../assets/ram/20-ram-3rd.png "Terza versione del Modulo di memoria (RAM) del BEAM computer"){:width="100%"}](../../assets/ram/20-ram-3rd.png)
+[![Terza versione del Modulo di memoria (RAM) del computer BEAM](../../assets/ram/20-ram-3rd.png "Terza versione del Modulo di memoria (RAM) del computer BEAM"){:width="100%"}](../../assets/ram/20-ram-3rd.png)
 
-*Terza versione del Modulo di memoria (RAM) del BEAM computer.*
+*Terza versione del Modulo di memoria (RAM) del computer BEAM.*
 
 Riprendendo il datasheet del 62256, a pagina 6 troviamo entrambe le modalità di scrittura: quella indicata come "WRITE CYCLE 2 (CE# Controlled)" era stata utilizzata per le prime due revisioni del modulo RAM; l'altra, "WRITE CYCLE 1 (WE# Controlled)", è quella utilizzata per il disegno definitivo del modulo, perché mantenere /OE e /CE LO fissi sia per le letture sia per le scritture rappresentava una semplificazione importante.
 

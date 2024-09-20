@@ -1,9 +1,9 @@
 ---
 title: "Registri D, X e Y"
 permalink: /docs/dxy/
-excerpt: "Registri indice del BEAM computer"
+excerpt: "Registri indice del computer BEAM"
 ---
-[![Registri indice del BEAM computer](../../assets/dxy/60-beam-dxy.png "Registri indice del BEAM computer"){:width="100%"}](../../assets/dxy/60-beam-dxy.png)
+[![Registri indice del computer BEAM](../../assets/dxy/60-beam-dxy.png "Registri indice del computer BEAM"){:width="100%"}](../../assets/dxy/60-beam-dxy.png)
 
 Nel microprocessore 6502 sono presenti due registri indice, X e Y, che possono facilmente essere riprodotti in un computer TTL; sono registri indipendenti che possono essere scritti e letti alla bisogna.
 
@@ -69,9 +69,9 @@ Questa tecnica funziona correttamente grazie alla natura ciclica dell'indirizzo 
 
 ## Schema
 
-[![Schema dei Registri indice del BEAM computer](../../assets/dxy/60-beam-dxy-schema.png "Schema dei Registri indice del BEAM computer"){:width="100%"}](../../assets/dxy/60-beam-dxy-schema.png)
+[![Schema dei Registri indice del computer BEAM](../../assets/dxy/60-beam-dxy-schema.png "Schema dei Registri indice del computer BEAM"){:width="100%"}](../../assets/dxy/60-beam-dxy-schema.png)
 
-*Schema dei registri indice del BEAM computer.*
+*Schema dei registri indice del computer BEAM.*
 
 ## Differenze tra Registri indice dell'NQSAP e del BEAM
 

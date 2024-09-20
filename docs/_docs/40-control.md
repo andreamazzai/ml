@@ -1,9 +1,9 @@
 ---
 title: "Control Logic"
 permalink: /docs/control/
-excerpt: "Control Logic del BEAM computer"
+excerpt: "Control Logic del computer BEAM"
 ---
-[![Control Logic del BEAM computer](../../assets/control/40-beam-control.png "Control Logic del BEAM computer"){:width="100%"}](../../assets/control/40-beam-control.png)
+[![Control Logic del computer BEAM](../../assets/control/40-beam-control.png "Control Logic del computer BEAM"){:width="100%"}](../../assets/control/40-beam-control.png)
 
 In generale, la gestione delle istruzioni è affidata alla Control Logic, che consta di tre capisaldi: Instruction Register, Ring Counter e Microcode. L'Instruction Register contiene l'istruzione in esecuzione, il Ring Counter tiene traccia delle microistruzioni che compongono l'istruzione e il Microcode definisce i segnali di controllo necessari per eseguire le microistruzioni.
 
@@ -602,9 +602,9 @@ Dopo queste modifiche, le istruzioni di comparazione sembrano funzionare corrett
 
 ## Schema
 
-[![Schema della Control Logic del BEAM](../../assets/control/40-control-logic-schema-beam.png "Schema della Control Logic del BEAM"){:width="100%"}](../../assets/control/40-control-logic-schema-beam.png)
+[![Schema della Control Logic del computer BEAM](../../assets/control/40-control-logic-schema-beam.png "Schema della Control Logic del computer BEAM"){:width="100%"}](../../assets/control/40-control-logic-schema-beam.png)
 
-*Schema della Control Logic del BEAM.*
+*Schema della Control Logic del computer BEAM.*
 
 ## Differenze tra Control Logic dell'NQSAP e del BEAM
 

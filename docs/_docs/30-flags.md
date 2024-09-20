@@ -1,10 +1,10 @@
 ---
 title: "Flags Register"
 permalink: /docs/flags/
-excerpt: "Flags Register del BEAM computer"
+excerpt: "Flags Register del computer BEAM"
 ---
 
-[![Registro dei flag del BEAM computer](../../assets/flags/30-flag-beam.png "Registro dei flag del BEAM computer"){:width="100%"}](../../assets/flags/30-flag-beam.png)
+[![Registro dei flag del computer BEAM](../../assets/flags/30-flag-beam.png "Registro dei flag del computer BEAM"){:width="100%"}](../../assets/flags/30-flag-beam.png)
 
 Più volte, analizzando l'NQSAP e leggendo la documentazione di Tom Nisbet, avevo trovato delle idee molto ingegnose; alcune di queste si trovano nel modulo dei Flag.
 
@@ -263,7 +263,7 @@ Si noti che la Truth Table della tabella richiederebbe i componenti evidenziati 
 
 ## Schema
 
-[![Schema logico del modulo Flag del computer BEAM](../../assets/flags/30-flag-beam-schematics.png "Schema logico del modulo Flag del computer BEAM"){:width="100%"}](../../assets/flags/30-flag-beam-schematics.png)
+[![Schema del modulo Flag del computer BEAM](../../assets/flags/30-flag-beam-schematics.png "Schema del modulo Flag del computer BEAM"){:width="100%"}](../../assets/flags/30-flag-beam-schematics.png)
 
 *Schema del modulo Flag del computer BEAM.*
 
@@ -271,7 +271,7 @@ Si noti che la Truth Table della tabella richiederebbe i componenti evidenziati 
 
 Il modulo Flag del computer BEAM è sostanzialmente una copia del modulo Flag del computer NQSAP; con le mie conoscenze non avrei saputo svilupparne una versione migliore, ma il fatto di averne compreso perfettamente tanto il funzionamento quanto l'integrazione con gli altri moduli del computer è stata una ottima lezione.
 
-Da notare che il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Come descritto in maggior dettaglio nella sezione riservate al microcode, con soli 8 step non sarebbe stato possibile emulare le istruzioni del 6502 di salto condizionale, di scorrimento / rotazione e di salto a subroutine. Questa è in realtà una differenza architetturale più legata alla Control Logic, però il maggior numero di step disponibili ha un importante impatto su questo modulo e ha dunque sicuramente senso citare la differenza in questa sezione.
+Da notare che il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Come descritto in maggior dettaglio nella sezione riservate al microcode, con soli 8 step non sarebbe stato possibile emulare alcune istruzioni del 6502 di scorrimento / rotazione e di salto a subroutine. Questa è in realtà una differenza architetturale più legata alla Control Logic, però il maggior numero di step disponibili ha un importante impatto su questo modulo e ha dunque sicuramente senso citare la differenza in questa sezione.
 
 ## Link utili
 
@@ -286,3 +286,5 @@ Da notare che il computer NQSAP prevedeva 8 step per le microistruzioni, mentre 
 ## TO DO
 
 - Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
+
+- "non sarebbe stato possibile alcune istruzioni del 6502 di scorrimento / rotazione e di salto a subroutine" corretto?

@@ -1,9 +1,9 @@
 ---
 title: "Output Register"
 permalink: /docs/output/
-excerpt: "Output Register del BEAM computer"
+excerpt: "Output Register del computer BEAM"
 ---
-[![Registro di output del BEAM computer](../../assets/output/65-beam-output.png "Registro di output del BEAM computer"){:width="100%"}](../../assets/output/65-beam-output.png)
+[![Registro di output del computer BEAM](../../assets/output/65-beam-output.png "Registro di output del computer BEAM"){:width="100%"}](../../assets/output/65-beam-output.png)
 
 **PLACEHOLDER**
 

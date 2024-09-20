@@ -1,9 +1,9 @@
 ---
 title: "Arduino Loader"
 permalink: /docs/loader/
-excerpt: "Loader del BEAM computer"
+excerpt: "Loader del computer BEAM"
 ---
-[![Loader del BEAM computer](../../assets/loader/80-beam-loader.png "Loader del BEAM computer"){:width="100%"}](../../assets/loader/80-beam-loader.png)
+[![Loader del computer BEAM](../../assets/loader/80-beam-loader.png "Loader del computer BEAM"){:width="100%"}](../../assets/loader/80-beam-loader.png)
 
 ## PLACEHOLDER - PLACEHOLDER - PLACEHOLDER - pagina non iniziata
 
@@ -23,6 +23,6 @@ Dal [primo articolo letto](https://www.reddit.com/r/beneater/comments/crl270/,8_
 
 *Terza versione del Modulo di memoria (RAM) del BEAM.*
 
-[![Schema del Loader del BEAM computer](../../assets/loader/80-loader-schema.png "Schema del Loader del BEAM computer")](../../assets/loader/80-loader-schema.png)
+[![Schema del Loader del computer BEAM](../../assets/loader/80-loader-schema.png "Schema del Loader del computer BEAM")](../../assets/loader/80-loader-schema.png)
 
-*Schema del Loader del BEAM computer.*
+*Schema del Loader del computer BEAM.*

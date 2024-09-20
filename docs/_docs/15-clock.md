@@ -1,9 +1,9 @@
 ---
 title: "Clock"
 permalink: /docs/clock/
-excerpt: "Circuito di clock del BEAM computer"
+excerpt: "Circuito di clock del computer BEAM"
 ---
-[![Circuito di Clock del BEAM computer](../../assets/clock/15-beam-clock.png "Circuito di Clock del BEAM computer"){:width="100%"}](../../assets/clock/15-beam-clock.png)
+[![Circuito di Clock del computer BEAM](../../assets/clock/15-beam-clock.png "Circuito di Clock del computer BEAM"){:width="100%"}](../../assets/clock/15-beam-clock.png)
 
 Il circuito di clock del computer BEAM riprende il modulo di clock progettato da Ben Eater per il computer SAP, utilizzando però solo comodi pulsanti tattili anziché interruttori a scorrimento e aggiungendo qualche interazione con segnali di controllo esterni provenienti dal [Loader](../loader).
 
