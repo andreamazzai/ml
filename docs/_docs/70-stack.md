@@ -179,7 +179,7 @@ Exec 5	6	SI	BO	WP	RB WP N	$30	$F1	$F0	DC	JSR	$30
 
 ## Link utili
 
-- [Stack definition and basics](https://wilsonminesco.com/stacks/basics.html) di Garth Wilson. Garth offre una serie di compendi incredibilmente utili su tutto ciò che riguarda il 6502 ed affini.
+- <a href="https://wilsonminesco.com/stacks/basics.html" target="_blank">Stack definition and basics</a> di Garth Wilson, contributore di <a href="http://www.6502.org" target="_blank">6502.org</a> e owner di <a href="https://wilsonminesco.com/" target="_blank">Wilson Mines Co.</a>, primaria fonte di articoli sul 6502, nozioni, tutorial ed altro. Garth offre una serie di compendi incredibilmente utili su tutto ciò che riguarda il 6502 ed affini.
 - ??????????????????????
 - ??????????????????????
 
@@ -187,3 +187,4 @@ Exec 5	6	SI	BO	WP	RB WP N	$30	$F1	$F0	DC	JSR	$30
 
 - /WE ↘↗
 - controllare se il mio SP funziona correttamente; vedo che Tom ha usato dei cablaggi diversi per i pin 7 e 10   20-08-2024
+
