@@ -105,7 +105,6 @@ Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ## TO DO
 
 - mettere i link ai miei post su Reddit
-- qualche idea è stata presa anche da NQSAP-pCB, ad esempio i 74LS377
 - quel professore dell'università del Montana
 - Libro di Malvino
 - Includere appunti su acquisto dei materiali, cavi utilizzati
@@ -118,6 +117,7 @@ Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 - Spiegare che avevo preso il meglio da nqsap e da sua versione PCB, cioè dopo aver letto il primo avevo letto anche la documentazione del secondo nella quale Tom aveva effettuato diversi miglioramenti migliorie e ho cercato di prendere il meglio di tutte e due lemacchine 
 - Aritmetica binaria e tutti gli altri... se è il nome di qualcosa, va in maiuscolo, altrimenti no... ad esempio alla sezione **numeri signed** della pagina dedicata all'aritmetica binaria ==> In questo caso forse sarebbe meglio averlo in minuscolo
 - Registri indice maiscuolo, minuscolo etc... ???
+- come devo chiamare i registri? ad esempio Stack per il registro e stack per genericamente "lo stack"?
 - Se pensate che con questo bla bla bla io abbia violato il vostro copyright, vi chiedo gentilmente di segnalarmelo e provvederò immediatamente alla rimozione del materiale
 - Ringraziare ancora Tom che , anche in fase di redazione della documentazione, non ha esitatoa darmi qualche chiarimento
 - Fare una bella review della parola segnali per distinguere bene i segnali di controllo dai segnali dati

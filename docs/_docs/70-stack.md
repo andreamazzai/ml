@@ -5,7 +5,7 @@ excerpt: "Stack Pointer del computer BEAM"
 ---
 [![Stack Pointer del computer BEAM](../../assets/sp/70-beam-sp.png "Stack Pointer del computer BEAM"){:width="100%"}](../../assets/sp/70-beam-sp.png)
 
-## PLACEHOLDER - WORK TO BE STARTED SOON
+## - WORK IN PROGRESS
 
 Lo Stack Pointer permette di salvare informazioni in un'area di memoria e ripristinarle nell'ordine inverso rispetto a quello al quale sono state inserite. Due casi d'uso comune sono il salvataggio dello stato attuale dei Flag prima di eseguire una routine che li modifica, oppure la memorizzazione dell'indirizzo di ritorno dell'istruzione di salto a sub-routine (JSR), magari anche annidata.
 
@@ -47,23 +47,25 @@ leggere il valore attuale dell'SP (se serve)
 - saltare all'indirizzo del JSR
 - Step necessari:
 
-RPC|WM CO MI metto il PC nel MAR e indirizzo la RAM per leggere l'operando (valore JSR)
-RR|WB|PCI    metto il valore del JSR in registro temporaneo B e incremento il PC così punterà alla nuova istruzione, CIOè incrementare il PC (così il PC sarà già quello giusto per l'RTS, che deve tornare a Istruzione + Operando + 1)
-RS|WM          Leggere il valore attuale dell'SP e metterlo nel MAR così da indirizzare la RAM; 
-RPC|WR        Copiare il PC nella cella indicata dall'SP (ad esempio 240); in questo momento il valore del PC è già quello corretto "Istruzione + Operando + 1"
-SE
-RB|WPC|NI
+- RPC|WM CO MI metto il PC nel MAR e indirizzo la RAM per leggere l'operando (valore JSR)
+- RR|WB|PCI    metto il valore del JSR in registro temporaneo B e incremento il PC così punterà alla nuova istruzione, CIOè incrementare il PC (così il PC sarà già - quello giusto per l'RTS, che deve tornare a Istruzione + Operando + 1)
+- RS|WM          Leggere il valore attuale dell'SP e metterlo nel MAR così da indirizzare la RAM; 
+- RPC|WR        Copiare il PC nella cella indicata dall'SP (ad esempio 240); in questo momento il valore del PC è già quello corretto "Istruzione + Operando + 1"
+- SE
+- RB|WPC|NI
 
+Il BEAM implementa l'istruzione JSR così:
 
-  - CO MI metto il PC nel MAR e indirizzo la RAM per leggere l'istruzione
-  - RO II CE leggo l'istruzione e la metto nell'IR e incremento il PC
+RPC|WM,       RR|WB|PCI,    RS|WM,        RPC|WR,       SE,           RB|WPC|NI,
 
+- CO MI metto il PC nel MAR e indirizzo la RAM per leggere l'istruzione
+- RO II CE leggo l'istruzione e la metto nell'IR e incremento il PC
 
-  - CO SPI metto il PC nello Stack Pointer… 02/07/2023 ecco l'errore: qui manca la lettura del valore dell'SP… come faccio a scrivere sullo stack se non so a quale indirizzo? dunque dovrebbe essere SPO MI
-  - Added 02/07/2023 CO RI dunque scrivo il valore del PC "istruzione + operando + 1" sulla cella di memoria dello stack, che sarà il valore al quale farò riferimento con RTS
-  - INS CE incremento SP e PC
-  - HO PC e trasferisco valore del JSR da registro temporaneo H a PC
-  - J eseguo il Jump
+- CO SPI metto il PC nello Stack Pointer… 02/07/2023 ecco l'errore: qui manca la lettura del valore dell'SP… come faccio a scrivere sullo stack se non so a quale indirizzo? dunque dovrebbe essere SPO MI
+- Added 02/07/2023 CO RI dunque scrivo il valore del PC "istruzione + operando + 1" sulla cella di memoria dello stack, che sarà il valore al quale farò riferimento con RTS
+- INS CE incremento SP e PC
+- HO PC e trasferisco valore del JSR da registro temporaneo H a PC
+- J eseguo il Jump
 
 - Rifaccio 05/01/2023
 

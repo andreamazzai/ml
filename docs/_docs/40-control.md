@@ -17,11 +17,11 @@ Per facilità di consultazione e semplificazione del confronto fra i tre compute
 | IR condiviso tra Opcode e Operando     | Sì         | No          | No             |
 | Bit IR per Opcode                      | 4          | 8           | 8              |
 | Bit IR per Operando                    | 4          | 0           | 0              |
-| Bit da IR a EEPROM                     | 4          | 8           | 8              |
-| Istruzioni implementate nel Microcode  | ~ 10       | ~ 150       | ~ 150          |
-| Numero massimo Istruzioni (IR)         | 16         | 256         | 256            |
-| Bit da RC a EEPROM                     | 3          | 3           | 4              |
+| Ampiezza bus da RC a EEPROM (bit)      | 3          | 3           | 4              |
 | Numero massimo Step (RC)               | 5          | 8           | 16             |
+| Ampiezza bus da IR a EEPROM  (bit)     | 4          | 8           | 8              |
+| Numero massimo Istruzioni (IR)         | 16         | 256         | 256            |
+| Istruzioni implementate nel Microcode  | ~ 10       | ~ 150       | ~ 150          |
 | Lunghezza Istruzioni variabile         | No         | Sì          | Sì             |
 | IR bufferizzato                        | No         | No          | Sì             |
 | Caricamento IR a Rising o Falling Edge | Rising     | Rising      | Falling        |
@@ -189,6 +189,44 @@ Le operazioni di una CPU passano per diverse fasi, che possiamo riassumere in:
 2. "Decode" (decodifica), che interpreta il contenuto dell'IR per determinare quale istruzione debba essere eseguita.
 3. "Execute" (esecuzione), che include tutte le microistruzioni che realizzano effettivamente quanto deve essere svolto dall'istruzione (ad esempio: "incrementa il registro X").
 
+La fase di prelievo è stata accennata nella [sezione precedente](#ring-counter-e-microistruzioni) ed è fondamentale che le microistruzioni di questa fase siano identiche per tutte le istruzioni implementate.
+
+Seguiamo passo dopo passo quanto accade nell'istruzione più semplice tra quelle implementate nel BEAM, la NOP - No Operation:
+
+~~~text
+| ---- | ---------------------|
+| Step | Microistruzione      |
+| ---- | ---------------------|
+| 1    | RPC | WM             |
+| 2    | RR  | WIR | PCI      |
+| 3    | NI                   |
+| ---- | ---------------------|
+~~~
+
+*Scomposizione dell'istruzione NOP nelle sue tre microistruzioni elementari*.
+
+1. Il primo step carica l'indirizzo del Program Counter nel Memory Address Register:
+    - RPC, Read Program Counter - espone sul bus l'indirizzo del Program Counter
+    - WM, Write Memory Address Register - scrive il contenuto del bus nel MAR
+2. Il secondo step carica l'opcode dell'istruzione nell'IR e incrementa il PC per farlo puntare alla locazione di memoria successiva (che nel caso dell'istruzione NOP, lunga un solo byte, sarà la prossima istruzione):
+    - RR, Read RAM - espone sul bus il contenuto della locazione di memoria puntata dal MAR
+    - WIR, Write Instruction Register - scrive il contenuto del bus nell'Instruction Register
+    - PCI, Program Counter Increment - incrementa il Program Counter
+3. Il terzo step riporta il Ring Counter a 0:
+    - NI, Next Instruction - resetta il Ring Counter
+
+Nel primo step, il MAR viene caricato con il valore del PC. Il RC viene incrementato portandoci allo step successivo.
+
+Nel secondo step l'IR viene caricato e il PC viene incrementato, puntando così alla prossima locazione di memoria. Notare che il nuovo valore del PC non influisce sull'istruzione correntemente in esecuzione, poiché il PC non indirizza le EEPROM contenenti il microcodice. Il RC viene incrementato portandoci allo step successivo.
+
+Nel terzo step, il segnale di controllo NI riporta il RC al valore iniziale 0.
+
+Inizia ora l'esecuzione della prossima istruzione, ma l'*IR contiene ancora l'opcode dell'istruzione NOP*: l'IR, infatti, non è stato modificato. Poiché i primi due step di tutte le istruzioni sono identici, non c'è alcun problema: anche se stiamo iniziando la prossima istruzione, eseguiamo i primi due step dell'istruzione NOP tuttora presente nell'IR.
+
+In altre parole, con il reset del RC stiamo avviando l'esecuzione della prossima istruzione, ma il valore dell'IR non è ancora cambiato. Di conseguenza, i primi due step dell'istruzione successiva vengono eseguiti utilizzando il valore dell'IR dell'istruzione precedente. È per questo motivo che è fondamentale che il microcode dei primi due step sia identico per tutte le istruzioni.
+
+Ora, nel primo step della "nuova" istruzione, il valore aggiornato del PC viene messo nel MAR, ed è a questo punto che il nuovo valore del PC inizia a essere rilevante. Nel secondo step, l'istruzione viene caricata nell'IR e, da questo momento in poi, il computer inizia a eseguire gli step specifici di decodifica ed esecuzione della nuova istruzione.
+
 La fase di decodifica avviene grazie al microcodice memorizzato nelle EEPROM: l'istruzione caricata nell'IR ha un proprio opcode specifico (ad esempio, 0100.0110), che viene presentato agli ingressi delle EEPROM assieme agli output del Ring Counter. Questa combinazione indirizza una locazione di memoria specifica nelle EEPROM, che emettono in uscita i bit della Control Word e che, a loro volta, attivano i segnali di controllo necessari per eseguire la microistruzione corrente.
 
 Il legame tra decodifica ed esecuzione è molto stretto, perché in ogni momento la Control Word dipende sia dall'opcode (Decode), sia dalla microistruzione (Execute).
@@ -333,6 +371,8 @@ Esaminiamo la semplice istruzione SEC, che imposta il Carry.
     - FC, Flag C - predispone il caricamento del Flag C
     - RL, Read ALU - espone sul bus il contenuto dell'ALU
     - NI, Next Instruction - resetta il Ring Counter
+
+\* I primi due step di *tutte* le istruzioni sono *sempre* identici.
 
 CC attivo al momento 9 invia un segnale HI al pin ALU-Cin e l'[opcode 03](..alu/#relazione-diretta-hardwired-tra-instruction-register-e-alu), senza Carry, configura l'ALU per emettere un output di tutti 1 sul bus.
 
