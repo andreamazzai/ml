@@ -223,9 +223,9 @@ Nel terzo step, il segnale di controllo NI riporta il RC al valore iniziale 0.
 
 Inizia ora l'esecuzione della prossima istruzione, ma l'*IR contiene ancora l'opcode dell'istruzione NOP*: l'IR, infatti, non è stato modificato. Poiché i primi due step di tutte le istruzioni sono identici, non c'è alcun problema: anche se stiamo iniziando la prossima istruzione, eseguiamo i primi due step dell'istruzione NOP tuttora presente nell'IR.
 
-In altre parole, con il reset del RC stiamo avviando l'esecuzione della prossima istruzione, ma il valore dell'IR non è ancora cambiato. Di conseguenza, i primi due step dell'istruzione successiva vengono eseguiti utilizzando il valore dell'IR dell'istruzione precedente. È per questo motivo che è fondamentale che il microcode dei primi due step sia identico per tutte le istruzioni.
+In altre parole, con il reset del RC stiamo avviando l'esecuzione della prossima istruzione, ma il valore dell'IR non è ancora cambiato. Di conseguenza, i primi due step dell'istruzione successiva sono eseguiti utilizzando il microcode dell'istruzione precedente. È per questo motivo che è fondamentale che il microcode dei primi due step sia identico per tutte le istruzioni.
 
-Ora, nel primo step della "nuova" istruzione, il valore aggiornato del PC viene messo nel MAR, ed è a questo punto che il nuovo valore del PC inizia a essere rilevante. Nel secondo step, l'istruzione viene caricata nell'IR e, da questo momento in poi, il computer inizia a eseguire gli step specifici di decodifica ed esecuzione della nuova istruzione.
+Ora, nel primo step della "prossima" istruzione, il valore aggiornato del PC viene messo nel MAR, ed è a questo punto che il nuovo valore del PC inizia a essere rilevante. Nel secondo step, l'istruzione viene caricata nell'IR e, da questo momento in poi, il computer inizia a eseguire gli step specifici di decodifica ed esecuzione della nuova istruzione.
 
 La fase di decodifica avviene grazie al microcodice memorizzato nelle EEPROM: l'istruzione caricata nell'IR ha un proprio opcode specifico (ad esempio, 0100.0110), che viene presentato agli ingressi delle EEPROM assieme agli output del Ring Counter. Questa combinazione indirizza una locazione di memoria specifica nelle EEPROM, che emettono in uscita i bit della Control Word e che, a loro volta, attivano i segnali di controllo necessari per eseguire la microistruzione corrente.
 
@@ -486,7 +486,7 @@ La colonna "Ambito o direzione segnale" indica il contesto di un bus, oppure sor
 ### Segnali di controllo
 
 | NQSAP         | BEAM           | Ambito o direzione segnale | Descrizione                                                                                                  |
-| ------        | --------       |                            | -----------                                                                                                  |
+| -----         | ----           | -------------------------- | -----------                                                                                                  |
 | N             | NI             | CL                         | Next Instruction; [spiegazione](#lunghezza-delle-istruzioni).                                                |
 | LF            | LF             | CL → ALU                   | ALU Force; [spiegazione 1](../alu/#istruzioni-di-comparazione) e [spiegazione 2](../alu/#riepilogo-sottrazioni-comparazioni-e-indirizzamenti).  |
 | HL-HR         | HL-HR          | CL → ALU                   | Definiscono l'operazione da eseguire sul registro H (caricamento parallelo, rotazione dx o sx).              |
@@ -530,7 +530,7 @@ La colonna "Ambito o direzione segnale" indica il contesto di un bus, oppure sor
 ## Bus e altri segnali
 
 | NQSAP           | BEAM                      | Ambito o direzione segnale | Descrizione                                                |
-| --------------- | --------------            | -                          | -----------                                                |
+| -----           | ----                      | -------------------------- | -----------                                                |
 | CLK             | CLK                       | Computer                   | Segnale di clock inviato a tutti i moduli del computer.    |
 | D0..7           | D0..7                     | Computer                   | Bus del computer.                                          |
 | MA0 - MA10      | A0..11                    | CL                         | Bus tra output di RC ed IR e input delle EEPROM; spiegazione in questa stessa pagina.                                                 |
