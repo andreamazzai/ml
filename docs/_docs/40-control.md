@@ -651,7 +651,7 @@ Dopo queste modifiche, le istruzioni di comparazione sembrano funzionare corrett
 La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato da Tom Nisbet nell'NQSAP.
 
 - Una differenza sostanziale sta nell'Instruction Register, che è sviluppato in modalità bufferizzata come nell'NQSAP-PCB di Tom per rimediare ai problemi di glitching riscontrati nell'NQ-SAP.
-- Il BEAM prevede 16 step per le microistruzioni anziché solo 8. L'emulazione di alcune istruzioni del 6502 richiede più degli 8 step disponibili nell'NQSAP, pertanto non è stato possibile includerle.
+- Il BEAM prevede 16 step per le microistruzioni anziché solo 8. L'emulazione di alcune istruzioni di scorrimento e rotazione richiede più degli 8 step disponibili nell'NQSAP, che pertanto non le include.
 
 ## Note
 
