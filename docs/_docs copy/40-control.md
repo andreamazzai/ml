@@ -149,7 +149,7 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio mnemonico del 65
 2. Il secondo step carica l'opcode dell'istruzione nell'IR e incrementa il PC per farlo puntare alla locazione di memoria successiva (che nel caso dell'istruzione LDA contiene l'operando):
     - RR, Read RAM - espone sul bus il contenuto della locazione di memoria puntata dal MAR
     - WIR, Write Instruction Register - scrive il contenuto del bus nell'Instruction Register
-    - PCI, Program Counter Increment - incrementa il Program Counter
+    - PCI, Program Counter Increment - incrementa il PC
 3. Il terzo step carica sul MAR l'indirizzo dell'operando:
     - RPC, Read Program Counter - espone il contenuto del Program Counter sul bus
     - WM, Write Memory Address Register - scrive il contenuto del bus nel MAR
@@ -157,7 +157,7 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio mnemonico del 65
     - RR, Read RAM - espone sul bus il contenuto della locazione di memoria puntata dal MAR
     - FNZ, Flag N & Z - abilita la scrittura dei Flag N e Z
     - WAH, Write A & H - scrive il contenuto del bus su A e H*
-    - PCI, Program Counter Increment - incrementa il Program Counter
+    - PCI, Program Counter Increment - incrementa il PC
     - NI, Next Instruction - resetta il Ring Counter**
 
 \* Perché anche H? Si veda la sezione dedicata alla spiegazione del [registro H](../alu/#il-registro-h) nella pagina dell'ALU.
@@ -327,7 +327,7 @@ Esaminiamo la semplice istruzione SEC, che imposta il Carry.
 2. Il secondo step carica l'opcode dell'istruzione nell'IR e incrementa il PC per farlo puntare alla locazione di memoria successiva (che nel caso dell'istruzione SEC, lunga un solo byte, sarà la prossima istruzione):
     - RR, Read RAM - espone sul bus il contenuto della locazione di memoria puntata dal MAR
     - WIR, Write Instruction Register - scrive il contenuto del bus nell'Instruction Register
-    - PCI, Program Counter Increment - incrementa il Program Counter
+    - PCI, Program Counter Increment - incrementa il PC
 3. Il terzo step scrive 1 sul registro C del 74LS74:
     - CC, Clear Carry - imposta l'ingresso ALU-Cin dell'ALU (ricordare che il Carry del '181 è [invertito](../alu/#funzioni-logiche-e-operazioni-aritmetiche): stato HI = inattivo)
     - FC, Flag C - predispone il caricamento del Flag C

@@ -144,20 +144,20 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio mnemonico del 65
 *Scomposizione dell'istruzione LDA Immediato nelle sue quattro microistruzioni elementari*.
 
 1. Il primo step carica l'indirizzo del Program Counter nel Memory Address Register:
-    - RPC, Read Program Counter - espone sul bus l'indirizzo del Program Counter
-    - WM, Write Memory Address Register - scrive il contenuto del bus nel MAR
+    - RPC, Read Program Counter - espone l'indirizzo del PC sul bus
+    - WM, Write Memory Address Register - carica l'indirizzo del PC nel MAR
 2. Il secondo step carica l'opcode dell'istruzione nell'IR e incrementa il PC per farlo puntare alla locazione di memoria successiva (che nel caso dell'istruzione LDA contiene l'operando):
     - RR, Read RAM - espone sul bus il contenuto della locazione di memoria puntata dal MAR
-    - WIR, Write Instruction Register - scrive il contenuto del bus nell'Instruction Register
-    - PCI, Program Counter Increment - incrementa il Program Counter
+    - WIR, Write Instruction Register - carica l'opcode dell'istruzione nell'IR
+    - PCI, Program Counter Increment - incrementa il PC
 3. Il terzo step carica sul MAR l'indirizzo dell'operando:
-    - RPC, Read Program Counter - espone il contenuto del Program Counter sul bus
-    - WM, Write Memory Address Register - scrive il contenuto del bus nel MAR
+    - RPC, Read Program Counter - espone l'indirizzo del PC sul bus
+    - WM, Write Memory Address Register - carica l'indirizzo del PC nel MAR
 4. Il quarto ed ultimo step carica l'operando nell'accumulatore*, incrementa il PC per farlo puntare alla istruzione successiva e resetta il Ring Counter
     - RR, Read RAM - espone sul bus il contenuto della locazione di memoria puntata dal MAR
     - FNZ, Flag N & Z - aggiorna i Flag N e Z
     - WAH, Write A & H - scrive il contenuto del bus in A e H**
-    - PCI, Program Counter Increment - incrementa il Program Counter
+    - PCI, Program Counter Increment - incrementa il PC
     - NI, Next Instruction - resetta il Ring Counter***
 
 \* Non bisogna trascurare il fatto che i primi due step di *tutte* le istruzioni sono *sempre* identici. Alla fine del secondo step, l'Instruction Register contiene l'opcode dell'istruzione, che, insieme alle microistruzioni, definisce le operazioni che gli step successivi devono eseguire. Questo vale per qualsiasi istruzione, compresa la prima che una CPU esegue all'accensione. Prima di costruire il SAP di Ben Eater, non riuscivo a immaginare quale meccanismo permettesse ad una CPU di sapere cosa dovesse fare una volta accesa; l'averlo compreso è stato piuttosto appagante.
@@ -206,12 +206,12 @@ Seguiamo passo dopo passo quanto accade nell'istruzione più semplice tra quelle
 *Scomposizione dell'istruzione NOP nelle sue tre microistruzioni elementari*.
 
 1. Il primo step carica l'indirizzo del Program Counter nel Memory Address Register:
-    - RPC, Read Program Counter - espone sul bus l'indirizzo del Program Counter
-    - WM, Write Memory Address Register - scrive il contenuto del bus nel MAR
+    - RPC, Read Program Counter - espone l'indirizzo del PC sul bus
+    - WM, Write Memory Address Register - carica l'indirizzo del PC nel MAR
 2. Il secondo step carica l'opcode dell'istruzione nell'IR e incrementa il PC per farlo puntare alla locazione di memoria successiva (che nel caso dell'istruzione NOP, lunga un solo byte, sarà la prossima istruzione):
     - RR, Read RAM - espone sul bus il contenuto della locazione di memoria puntata dal MAR
-    - WIR, Write Instruction Register - scrive il contenuto del bus nell'Instruction Register
-    - PCI, Program Counter Increment - incrementa il Program Counter
+    - WIR, Write Instruction Register - carica l'opcode dell'istruzione nell'IR
+    - PCI, Program Counter Increment - incrementa il PC
 3. Il terzo step riporta il Ring Counter a 0:
     - NI, Next Instruction - resetta il Ring Counter
 
@@ -360,12 +360,12 @@ Esaminiamo la semplice istruzione SEC, che imposta il Carry.
 *Scomposizione dell'istruzione SEC nelle sue tre microistruzioni elementari*.
 
 1. Il primo step carica l'indirizzo del Program Counter nel Memory Address Register:
-    - RPC, Read Program Counter - espone sul bus l'indirizzo del Program Counter
-    - WM, Write Memory Address Register - scrive il contenuto del bus nel MAR
+    - RPC, Read Program Counter - espone l'indirizzo del PC sul bus
+    - WM, Write Memory Address Register - carica l'indirizzo del PC nel MAR
 2. Il secondo step carica l'opcode dell'istruzione nell'IR e incrementa il PC per farlo puntare alla locazione di memoria successiva (che nel caso dell'istruzione SEC, lunga un solo byte, sarà la prossima istruzione):
     - RR, Read RAM - espone sul bus il contenuto della locazione di memoria puntata dal MAR
-    - WIR, Write Instruction Register - scrive il contenuto del bus nell'Instruction Register
-    - PCI, Program Counter Increment - incrementa il Program Counter
+    - WIR, Write Instruction Register - carica l'opcode dell'istruzione nell'IR
+    - PCI, Program Counter Increment - incrementa il PC
 3. Il terzo step scrive 1 sul registro C del 74LS74:
     - CC, Clear Carry - imposta l'ingresso ALU-Cin dell'ALU (ricordare che il Carry del '181 è [invertito](../alu/#funzioni-logiche-e-operazioni-aritmetiche): stato HI = inattivo)
     - FC, Flag C - predispone il caricamento del Flag C
