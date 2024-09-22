@@ -134,10 +134,10 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio mnemonico del 65
 | ---- | -------------------------- |
 | Step | Microistruzione            |
 | ---- | -------------------------- |
-| 1*   | RPC | WM                   |
-| 2*   | RR  | WIR | PCI            |
-| 3    | RPC | WM                   |
-| 4    | RR  | FNZ | WAH | PCI | NI |
+| 0*   | RPC | WM                   |
+| 1*   | RR  | WIR | PCI            |
+| 2    | RPC | WM                   |
+| 3    | RR  | FNZ | WAH | PCI | NI |
 | ---- | -------------------------- |
 ~~~
 
@@ -197,9 +197,9 @@ Seguiamo passo dopo passo quanto accade nell'istruzione più semplice tra quelle
 | ---- | ---------------------|
 | Step | Microistruzione      |
 | ---- | ---------------------|
-| 1    | RPC | WM             |
-| 2    | RR  | WIR | PCI      |
-| 3    | NI                   |
+| 0    | RPC | WM             |
+| 1    | RR  | WIR | PCI      |
+| 2    | NI                   |
 | ---- | ---------------------|
 ~~~
 
@@ -351,9 +351,9 @@ Esaminiamo la semplice istruzione SEC, che imposta il Carry.
 | ---- | ---------------------|
 | Step | Microistruzione      |
 | ---- | ---------------------|
-| 1*   | RPC | WM             |
-| 2*   | RR  | WIR | PCI      |
-| 3    | CC  | FC  | RL  | NI |
+| 0*   | RPC | WM             |
+| 1*   | RR  | WIR | PCI      |
+| 2    | CC  | FC  | RL  | NI |
 | ---- | ---------------------|
 ~~~
 

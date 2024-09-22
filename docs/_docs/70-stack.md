@@ -7,17 +7,19 @@ excerpt: "Stack Pointer del computer BEAM"
 
 ## - WORK IN PROGRESS
 
-Lo Stack Pointer (SP) permette di salvare informazioni in un'area di memoria e ripristinarle nell'ordine inverso rispetto a quello al quale sono state inserite (LIFO, o Last-In, First-Out). Due casi d'uso comune sono il salvataggio dello stato attuale dei Flag prima di eseguire una routine che li modifica per poi ripristinarne lo stato iniziale, oppure la memorizzazione dell'indirizzo di ritorno dell'istruzione di salto a sub-routine (JSR), magari anche annidata.
+L'implementazione dello stack nel 6502 consiste in un'area di memoria adibita alla memorizzazione e al ripristino di informazioni seguendo una logica LIFO (Last-In, First-Out), in cui l'ultimo elemento inserito è il primo a essere letto. Un puntatore (Stack Pointer) tiene traccia dell'indirizzo della prossima locazione libera. Due usi comuni sono il salvataggio dello stato attuale dei Flag prima di eseguire una routine che li modifica, così da poterli ripristinare alla fine della routine, e la memorizzazione dell'indirizzo di ritorno di una subroutine chiamata tramite l'istruzione JSR, anche in caso di chiamate annidate.
 
-Lo Stack Pointer del BEAM utilizza due 4-bit Synchronous Binary Up-Down Counter <a href="https://www.ti.com/lit/ds/symlink/sn74ls157.pdf" target="_blank">74LS169</a>, in grado di indirizzare i 256 byte del computer. In definitiva, si tratta di un normale registro che include la peculiarità di poter anche contare sia verso l'alto, sia verso il basso.
+Lo Stack Pointer del 6502 è un registro, denominato S, la cui implementazione nel BEAM consta di due 4-bit Synchronous Binary Up-Down Counter <a href="https://www.ti.com/lit/ds/symlink/sn74ls157.pdf" target="_blank">74LS169</a>, in grado di indirizzare i 256 byte del computer. In definitiva, si tratta di un normale registro che, oltre a poter memorizzare un valore specifico, ha la peculiarità di poter anche contare sia verso l'alto, sia verso il basso.
 
 // Quando utilizzato come indice dello stack deve essere inizializzato, magari a 240 ($F0).
 
-Nel 6502, lo stack occupa la seconda pagina di memoria indirizzabile dalla CPU, cioè l'intervallo di indirizzi che va da 0x0100 a 0x01FF. Prima dell'uso dello stack, lo Stack Pointer viene solitamente inizializzato a 0xFF, col risultato di puntare dunque alla cella 0x1FF. Quando si scrive nello stack ("Push"), il valore viene prima scritto nella locazione indicata dal puntatore e successivamente lo SP viene decrementato per poter puntare alla prossima locazione libera. Viceversa, durante un'operazione di lettura ("Pull"), il valore viene prima letto dalla locazione indicata dal puntatore e poi quest'ultimo viene incrementato.
+Lo stack del 6502 occupa la seconda pagina di memoria indirizzabile dalla CPU, corrispondente agli indirizzi compresi tra 0x0100 e 0x01FF. Prima dell'utilizzo, lo Stack Pointer viene solitamente inizializzato a 0xFF, puntando così alla locazione 0x1FF. Quando si effettua un'operazione di scrittura nello stack ("Push"), il valore viene prima salvato nella posizione indicata dal puntatore, dopodiché lo SP viene decrementato per puntare alla successiva locazione libera. Al contrario, durante un'operazione di lettura dallo stack ("Pull"), il valore viene prima letto dalla posizione indicata dal puntatore, che viene poi incrementato per puntare alla prossima posizione disponibile.
 
-In altre parole, poiché lo stack "cresce" verso il basso, lo Stack Pointer viene decrementato dopo che ogni byte viene inserito nello stack, e incrementato prima che ogni byte venga prelevato dallo stack.
+In altre parole, poiché lo stack "cresce" verso il basso, lo Stack Pointer viene decrementato dopo ogni inserimento di un byte nello stack e incrementato prima di ogni prelievo di un byte.
 
-I '169 utilizzati nel BEAM non presentano un ingresso Reset, pertanto, all'accensione potrebbero trovarsi in uno stato ignoto. Anche in questo caso, pertanto lo stack dovrà essere inizializzato dal programma caricato in memoria dall'utente.
+I 74LS169 utilizzati nel BEAM non dispongono di un ingresso Reset, il che significa che, all'accensione, potrebbero trovarsi in uno stato indefinito. Per questo motivo, lo stack dovrà essere inizializzato dal programma caricato in memoria dall'utente.
+
+### Controllare
 
 Le istruzioni del 6502 che utilizzano lo stack:
 
@@ -30,22 +32,22 @@ Lo Stack Pointer (SP) punta sempre alla successiva locazione disponibile nello s
 - un'operazione di scrittura sullo stack decrementa prima lo SP (pre-decrement) e poi scrive il valore nella nuova locazione di memoria indicata dal puntatore (ad esempio, l'indirizzo di ritorno dell'istruzione JSR);
 - un'operazione di lettura dallo stack restituisce prima il contenuto della locazione di memoria indicata dal puntatore e poi incrementa lo SP (post-increment).
 
-Funzionamento dell'SP:
+## Implmentazione del microcode dello Stack Pointer
 
-Sulla base di questo, analizziamo ad esempio una istruzione JSR ipotizzando di aver inizializzato lo SP del BEAM a 0xFF e Ricordando che il BEAM ha solamente 256 byte di memoria e che dunque lo stack pointer inisterizzato in questo modo punta all'ultima locazione di memoria del computer .
+Analizziamo, ad esempio, un'istruzione JSR ipotizzando di aver inizializzato lo Stack Pointer (SP) del BEAM a 0xFF. Il BEAM dispone di soli 256 byte di memoria, quindi lo SP punta ora all'ultima locazione di memoria del computer.
 
 ~~~text
 | ---- | ---------------------|
 | Step | Microistruzione      |
 | ---- | ---------------------|
-| 1    | RPC | WM             |
-| 2    | RR  | WIR | PCI      |
-| 3    | RPC | WM             |
-| 4    | RR  | WB   | PCI     | 
-| 5    | RS  | WM             |
-| 6    | RPC | WR             |
-| 7    | SE                   |  
-| 8    | RB  | WPC  | NI      | 
+| 0    | RPC | WM             |
+| 1    | RR  | WIR | PCI      |
+| 2    | RPC | WM             |
+| 3    | RR  | WB   | PCI     |
+| 4    | RS  | WM             |
+| 5    | RPC | WR             |
+| 6    | SE                   | *** devo mettere SUD??? anche nel microcode?
+| 7    | RB  | WPC  | NI      |
 | ---- | ---------------------|
 ~~~
 
@@ -106,70 +108,69 @@ Poiché Tom non aveva puvvblicato lo schema dello Stack Pointer dell'NQSAP, lo s
     - forse perché aveva pochi segnali disponibili ora che ha ridotto le ROM da 4 a 3… e infatti nella Control Logic a 3 ROM ci sono solo C0 e C1, che vanno sugli stessi pin del bus 26 e 27 di DY e DZ dei registri X e Y… 😁
 dunque nemmeno istruzioni SP e X/Y possono avvenire nella stessa microistruzione (se consolido C0 e C1 con DY e DZ).
 
-- Esempio istruzione JSR, descritto in NQSAP-PCB:
-	Address	Contents
-	…	previous instruction / operand
-	20	JSR opcode
-	21	JSR address
-	22	next instruction
-	…	
-
     - After the instruction fetch CO MI CE / RO II, the PC will have the value 21 and JSR microcode performs the following steps:
-			§ CO MI CE move the PC value to the MAR and increment the PC. MAR contains 21 and PC contains 22.
-			§ RO BI read the subroutine address from RAM[21] and place it in B for temp storage
-			§ SPO MI SPI move the SP value into the MAR and increment the SP.
-			§ CO RI store the PC value (which points to the next instruction) in memory, i.e. push the JSR return address on the stack.
+§ CO MI CE move the PC value to the MAR and increment the PC. MAR contains 21 and PC contains 22.
+§ RO BI read the subroutine address from RAM[21] and place it in B for temp storage
+§ SPO MI SPI move the SP value into the MAR and increment the SP.
+§ CO RI store the PC value (which points to the next instruction) in memory, i.e. push the JSR return address on the stack.
 BO PI move the B register value into the PC, effectively jumping to the subroutine
 
-	Add	Val		Alla fine del JSR:
-	$20	JSR		1) Devo avere $22 nella RAM $F0
-	$21	$30		2) L'SP deve essere $F1
-	$22	INX		3) PC deve passare a $30
+Add Val  Alla fine del JSR:
+20 JSR  1) Devo avere $22 nella RAM $F0
+21 $30  2) L'SP deve essere $F1
+22 INX  3) PC deve passare a $30
 
-	In giallo quello che cambia rispetto allo step precedente
+Supponiamo di avere il seguente codice:
 
+~~~text
+| Indirizzo | Valore | Microistruzione                   |
+| --------- | ------ | --------------------------------- |
+| ...       | ?      | Istruzione precedente o operando  |
+| 0x1F      | 0x0F   | Opcode istruzione NOP del BEAM    |
+| 0x20      | 0x41   | Opcode istruzione JSR del BEAM    |
+| 0x21      | 0x30   | Indirizzo di salto istruzione JSR |
+| 0x22      | 0xA0   | Opcode istruzione NOP del BEAM    |
+| ...       | ?      | Prossima istruzione               |
+| --------- | ------ | --------------------------------- |
+~~~
 
+\* 0x41 è l'opcode utilizzato nel BEAM per definire l'istruzione JSR
 
-Esercizio Andrea					
-Alla fine degli step…					
-PC	SP	MAR	RAM	IR	B
-Step				Codice Tom	$20	$F0	$1F	?	?	?
-Fetch	0	CO	MI			$20	$F0	$20	JSR	?	?
-Fetch	1	RO	II	CE		$21	$F0	$20	JSR	JSR	?
-Exec 1	2	CO	MI		RP WM PI	$21	$F0	$21	$30	JSR	?
-Exec 2	3	RO	WB		RR WB	$21	$F0	$21	$30	JSR	$30
-Exec 3	4	RS	MI	CE	RS WM	$22	$F0	$F0	DC	JSR	$30
-Exec 4	5	CO	WM		RP WR SI	$22	$F0	$F0	$22	JSR	$30
-Exec 5	6	SI	BO	WP	RB WP N	$30	$F1	$F0	DC	JSR	$30
+![Alt text](image.png)
 
-	Step	NB queste sono le mie considerazioni
-	Fetch	Adesso so che sto facendo una JSR
-	Exec 1	Metto nel MAR l'indirizzo della cella che contiene l'indirizzo a cui devo saltare
-	Exec 2	Leggo l'indirizzo a cui devo saltare dalla cella puntata dal MAR e lo scrivo temporaneamente in B
-	Exec 3	Leggo lo stack (che punta alla prima cella di memoria disponibile) e lo metto nel MAR; incremento il PC per ottenere il valore di "ritorno" dell'RTS
-	Exec 4	Scrivo il valore di ritorno dell'RTS nella cella di memoria indicata dallo stack
-	Exec 5	Incremento lo stack e scrivo B nel PC, così al prossimo clock eseguo il codice presente nell'indirizzo a cui dovevo saltare
+***Mettere in giallo quello che cambia rispetto allo step precedente... possibile?***
 
-							Tom Nisbet					
-							Alla fine degli step…					
-							PC	SP	MAR	RAM	IR	B
-		Step				Codice Tom	$20	$F0	$1F	?	?	?
-	Fetch	0	CO	MI			$20	$F0	$20	JSR	?	?
-	Fetch	1	RO	II	CE		$21	$F0	$20	JSR	JSR	?
-	Exec 1	2	CO	MI	CE	RP WM PI	$22	$F0	$21	$30	JSR	?
-	Exec 2	3	RO	WB		RR WB	$22	$F0	$21	$30	JSR	$30
-	Exec 3	4	RS	MI	SI	RS WM ***	$22	$F1	$F0	DC	JSR	$30
-	Exec 4	5	CO	WM		RP WR SI	$22	$F1	$F0	$22	JSR	$30
-	Exec 5	6	BO	WP		RB WP N	$30	$F1	$F0	DC	JSR	$30
+Forse qui dovrei mettere anche lo step precedente allo zero e comunque controllare quel discorso di Tom , cioè che il PC in realtà per i primi due step dell'operazione ha ancora il valore precedente
 
-	Fetch	Adesso so che sto facendo una JSR
-	Exec 1	Metto nel MAR l'indirizzo della cella che contiene l'indirizzo a cui devo saltare e incremento il PC per ottenere il valore di "ritorno" dell'RTS
-	Exec 2	Leggo l'indirizzo a cui devo saltare e lo registro temporaneamente in B
-	Exec 3	Leggo lo stack (che punta alla prima cella di memoria disponibile), lo metto nel MAR e lo incremento *** 05/01/2023 Nota che poi il codice di Tom non incrementa l'SP in questo step, ma in quello successivo, forse perché se faccio RS e SI contemporaneamente potrei avere un errore in lettura?
-	Exec 4	Scrivo il valore di ritorno dell'RTS nella cella di memoria indicata dallo stack
-	Exec 5	Scrivo B nel PC, così al prossimo clock eseguo il codice presente nell'indirizzo a cui dovevo saltare
+~~~text
+|------|-----|------|-----|------|------|------|------|------|------|
+| Step |     |      |     | PC   | SP   | MAR  | RAM  | IR   | B    |
+|------|-----|------|-----|------|------|------|------|------|------|
+| 2*   | NI  |      |     |      |      |      |      |      |      |
+| 0    | RPC | WM   |     | 0x20 | 0xFF | 0x20 | 0x41 | ?    | ?    |
+| 1    | RR  | WIR  | PCI | 0x21 | 0xFF | 0x20 | 0x41 | 0x41 | ?    |
+| 2    | RPC | WM   |     | 0x21 | 0xFF | 0x21 | 0x30 | 0x41 | ?    |
+| 3    | RR  | WB   | PCI | 0x22 | 0xFF | 0x21 | 0x30 | 0x41 | 0x30 |
+| 4    | RS  | WM   |     | 0x22 | 0xFF | 0xFF | ?    | 0x41 | 0x30 |
+| 5    | RPC | WR   |     | 0x22 | 0xFF | 0xFF | 0x22 | 0x41 | 0x30 |
+| 6    | SE  | SU/D |     | 0x22 | 0xFE | 0xFF | 0x22 | 0x41 | 0x30 |
+| 7    | RB  | WPC  | NI  | 0x30 | 0xFE | 0xFF | 0x22 | 0x41 | 0x30 |
+| 0**  | RB  | WPC  | NI  | 0x30 | 0xFE | 0xFF | 0x22 | 0x41 | 0x30 |
+|------|-----|------|-----|------|------|------|------|------|------|
+~~~
 
-## PLACEHOLDER - PLACEHOLDER
+*Raffigurazione dello Stato dei registri al termine di ogni step.*
+
+\* Ultimo step dell'istruzione NOP precedente
+\** Primo step dell'istruzione INX successiva
+
+Step NB queste sono le mie considerazioni
+Fetch Adesso so che sto facendo una JSR
+Exec 1 Metto nel MAR l'indirizzo della cella che contiene l'indirizzo a cui devo saltare
+Exec 2 Leggo l'indirizzo a cui devo saltare dalla cella puntata dal MAR e lo scrivo temporaneamente in B
+Exec 3 Leggo lo stack (che punta alla prima cella di memoria disponibile) e lo metto nel MAR; incremento il PC per ottenere il alore di "ritorno" dell'RTS
+Exec 4 Scrivo il valore di ritorno dell'RTS nella cella di memoria indicata dallo stack
+Exec 5 Incremento lo stack e scrivo B nel PC, così al prossimo clock eseguo il codice presente nell'indirizzo a cui dovevo altare
 
 ## Schema
 
@@ -187,4 +188,3 @@ Exec 5	6	SI	BO	WP	RB WP N	$30	$F1	$F0	DC	JSR	$30
 
 - /WE ↘↗
 - controllare se il mio SP funziona correttamente; vedo che Tom ha usato dei cablaggi diversi per i pin 7 e 10   20-08-2024
-

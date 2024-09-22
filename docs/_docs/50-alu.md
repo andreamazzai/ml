@@ -92,11 +92,11 @@ L'MSB di H / output H-Q7 evidenziato in giallo nello schema è connesso al modul
 | ---- | -------------------------- |
 | Step | Microistruzione            |
 | ---- | -------------------------- |
-| 1*   | RPC | WM                   |
-| 2*   | RR  | WIR | PCI            |
-| 3    | C1  | FS  | FC             |
-| 4    | HL  | CC                   |
-| 5    | FNZ | RH  | WA  | NI       |
+| 0*   | RPC | WM                   |
+| 1*   | RR  | WIR | PCI            |
+| 2    | C1  | FS  | FC             |
+| 3    | HL  | CC                   |
+| 4    | FNZ | RH  | WA  | NI       |
 | ---- | -------------------------- |
 ~~~
 
