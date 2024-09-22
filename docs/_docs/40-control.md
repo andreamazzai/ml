@@ -545,15 +545,15 @@ La colonna "Ambito o direzione segnale" indica il contesto di un bus, oppure sor
 | PC-Load         | PCJ                       | Flag → PC                  | Controlla il caricamento del PC per i salti condizionali e incondizionati; [spiegazione](../flags/#i-salti-condizionali-e-incondizionati).               |
 | ?               | MA0-MA7                   | MAR → RAM                  | Bus tra output del MAR e input della RAM; [spiegazione](../ram/#design-dei-moduli-mar-e-ram).                                         |
 | PROG            | PROG                      | MAR → RAM                  | Selezione tra modalità di programmazione della RAM o di esecuzione del programma; [spiegazione](../ram/#mux-program-mode-e-run-mode). |
-| RST             | RST                       | Computer                   | 2DO Reset asincrono del computer; [spiegazione](../flags/#il-carry).                                                   |
-| LDR-ACTIVE      | LDR-Active                | Loader → Clock e → CL      | 2DO Disattivazione clock e EEPROM Control Logic; [spiegazione](../flags/#il-carry).                                    |
-| LDR-CLK         | LDR-CLK                   | Loader → Clock             | 2DO Iniezione del clock del Loader nel computer; [spiegazione](../flags/#il-carry).                                    |
-| CLK-Start       | CLK-Start                 | Loader → Clock             | 2DO (Re-)Start del clock di sistema dopo il caricamento del programma in RAM; [spiegazione](../flags/#il-carry).       |
-| ALU-Cin         | ALU-Cin                   | Flag → ALU                 | Selezione del Carry da inviare in input ai '181; [spiegazione](../flags/#il-carry-e-i-registri-h-e-alu).  |
-| H-Cin           | H-Cin                     | Flag → ALU                 | Selezione del Carry da inviare in input al registro H; [spiegazione Flag C](../flags/#il-carry-e-i-registri-h-e-alu).                      |
-| ALU-Cout        | ALU-Cout                  | ALU → Flag                 | Carry output dell'ALU da inviare al registro dei Flag; [spiegazione Flag C](../flags/#carry).                      |
-| ALU-Q7          | ALU-Q7                    | ALU → Flag                 | MSB dell'ALU da inviare al registro dei Flag; [spiegazione Flag V](../flags/#overflow).                            |
-| B-Q7            | B-Q7                      | ALU → Flag                 | MSB di B da inviare al registro dei Flag; [spiegazione Flag V](../flags/#overflow).                    |
+| RST             | RST                       | Computer                   | 2DO Reset asincrono del computer; [spiegazione](../flags/#il-carry).                                                                  |
+| LDR-ACTIVE      | LDR-Active                | Loader → Clock e → CL      | 2DO Disattivazione clock e EEPROM Control Logic; [spiegazione](../flags/#il-carry).                                                   |
+| LDR-CLK         | LDR-CLK                   | Loader → Clock             | 2DO Iniezione del clock del Loader nel computer; [spiegazione](../flags/#il-carry).                                                   |
+| CLK-Start       | CLK-Start                 | Loader → Clock             | 2DO (Re-)Start del clock di sistema dopo il caricamento del programma in RAM; [spiegazione](../flags/#il-carry).                      |
+| ALU-Cin         | ALU-Cin                   | Flag → ALU                 | Selezione del Carry da inviare in input ai '181; [spiegazione](../flags/#il-carry-e-i-registri-h-e-alu).                              |
+| H-Cin           | H-Cin                     | Flag → ALU                 | Selezione del Carry da inviare in input ad H; [spiegazione 1](../flags/#il-carry-e-i-registri-h-e-alu) e [spiegazione 2](../alu/#il-registro-h/).        |
+| ALU-Cout        | ALU-Cout                  | ALU → Flag                 | Carry output dell'ALU da inviare al registro dei Flag; [spiegazione Flag C](../flags/#carry).                    |
+| ALU-Q7          | ALU-Q7                    | ALU → Flag                 | MSB dell'ALU da inviare al registro dei Flag; [spiegazione Flag V](../flags/#overflow).                          |
+| B-Q7            | B-Q7                      | ALU → Flag                 | MSB di B da inviare al registro dei Flag; [spiegazione Flag V](../flags/#overflow).                              |
 | H-Q0\*          | H-Q0                      | ALU → Flag                 | LSB di H da inviare al registro dei Flag; [spiegazione Flag C](../flags/#carry).                                 |
 | H-Q7            | H-Q7                      | ALU → Flag                 | MSB di H da inviare al registro dei Flag; [spiegazione Flag V](../flags/#overflow) e [Flag C](../flags/#carry).  |
 
@@ -664,6 +664,8 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 
 ## TO DO
 
+- "Infatti il codice di Tom mostra che è possibile automatizzare la generazione del micro code per molte operazioni grazie al fatto che le app opportunamente posizionate all’interno della tabella , cosa che ionon sono riuscito a fare in quanto all’inizio del task non mi era chiaro quale sarebbe stato il beneficio . inoltre la mia conoscenza del linguaggio c è limitata e non sono riuscito a comprendere chiaramente cosa facesse il codice di Tom."
+
 - Selezione del Carry da mettere in input al registro H; [spiegazione](../flags/#carry).  |>>>>>>>>>> Da fare dopo aver aggiunto una breve spiegazione del registro h nella pagina ALU
 - Una volta fatta una sezione nella pagina ALU per descrivere il comportamento del registro H, fare un link da questa pagina nella sezione che parla della mutua esclusività dei segnali di controllo.
 
@@ -675,6 +677,11 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
   - Disattivazione delle EEPROM della Control Logic
   - Iniezione del clock del Loader nel computer
   - (Re-)Start del clock di sistema dopo il carica.....
+
+- 2DO Reset asincrono del
+- 2DO Disattivazione clock
+- 2DO Iniezione del clock
+- 2DO (Re-)Start del clock
 
 - Controller Nelle pagine dove ci sono le descrizioni delle microistruzioni controllare se non sia meglio invertire la forma della frase , cioè invece di dire "espone nel bus e carica nel Mar", dire "carica nel Mar il contenuto del bus"
 
