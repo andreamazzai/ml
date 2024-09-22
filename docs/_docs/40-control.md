@@ -427,7 +427,7 @@ In realtà, fa notare Tom, sarebbe comunque possibile utilizzare il Reset asincr
 
 \* e \*\*: ricordando quanto esposto alla fine della sezione precedente in relazione all'impostazione della Control Word e ai momenti di caricamento dei registri, troviamo qui un primo esempio concreto: il segnale /Load viene settato dalla Control Word durante il Falling Edge del clock, mentre l'effettivo caricamento del registro avviene in concomitanza con il Rising Edge.
 
-Come indicato anche nella sezione [Differenze](.../alu/#differenze-tra-moduli-alu-dellnqsap-e-del-beam) della pagina dell'ALU, bisogna notare che il computer NQSAP prevede solo 8 step per le microistruzioni. Per emulare le istruzioni del 6502 di salto condizionale, di scorrimento / rotazione e di salto a subroutine servono più step, pertanto, sul computer BEAM ne sono stati previsti 16.
+Come indicato anche nella sezione [Differenze](.../alu/#differenze-tra-moduli-alu-dellnqsap-e-del-beam) della pagina dell'ALU, bisogna notare che il computer NQSAP prevede solo 8 step per le microistruzioni. Per emulare alcune istruzioni del 6502 di scorrimento e rotazione servono più step, pertanto, sul computer BEAM ne sono stati previsti 16.
 
 ### I 74LS138 per la gestione dei segnali
 
@@ -651,7 +651,7 @@ Dopo queste modifiche, le istruzioni di comparazione sembrano funzionare corrett
 La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato da Tom Nisbet nell'NQSAP.
 
 - Una differenza sostanziale sta nell'Instruction Register, che è sviluppato in modalità bufferizzata come nell'NQSAP-PCB di Tom per rimediare ai problemi di glitching riscontrati nell'NQ-SAP.
-- Il BEAM prevede 16 step per le microistruzioni anziché solo 8. Le istruzioni di Branch Relative richiedono più degli 8 step disponibili nel'NQSAP, perciò Tom ha aggiunto delle istruzioni di Jump Relative in alternativa alle istruzioni di salto condizionale, mentre nel BEAM sono pienamente funzionali similarmente all'implementazione nativa del 6502.
+- Il BEAM prevede 16 step per le microistruzioni anziché solo 8. L'emulazione di alcune istruzioni del 6502 richiede più degli 8 step disponibili nell'NQSAP, pertanto non è stato possibile includerle.
 
 ## Note
 

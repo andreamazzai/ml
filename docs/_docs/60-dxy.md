@@ -21,7 +21,7 @@ Il registro D dell'NQSAP e del BEAM viene utilizzato a supporto delle istruzioni
 - la notazione $ fa riferimento a un indirizzo
 - la notazione #$ fa riferimento a un valore
 
-Va ricordato alcune modalità di indirizzamento del 6502 risultano ridondanti in un computer con soli 256 byte di RAM: per un chiarimento si veda la sezione [Indirizzamenti](../alu/#indirizzamenti) nella pagina dell'ALU.
+Va ricordato che alcune modalità di indirizzamento del 6502 risultano ridondanti in un computer con soli 256 byte di RAM: per un chiarimento si veda la sezione [Indirizzamenti](../alu/#indirizzamenti) nella pagina dell'ALU.
 
 ### Utilizzo con le modalità di indirizzamento indicizzate
 

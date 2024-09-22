@@ -237,7 +237,7 @@ Dalla tabella HTML delle istruzioni avevo ricavato una tabella Excel a partire d
 
 Lo spreadsheet Excel citato nel paragrafo precedente è [scaricabile qui](../../assets/BEAM_computer.xlsx); le tabelle appena menzionate sono presenti nel foglio "6502 Inst. Set".
 
-Vale anche la pena di notare che in un computer con soli 256 byte di RAM i 3 indirizzamenti Zero Page e i 3 indirizzamenti Assoluti sono ridondanti, in quanto entrambi indirizzano gli stessi 256 byte di memoria: ne consegue che le 3 modalità di indirizzamento Pagina Zero (ZP, "Zero Page" in inglese) non verranno dunque implementate in quanto speculari alle Assolute.
+Vale anche la pena notare che, in un computer con soli 256 byte di RAM, gli indirizzamenti Zero Page e Assoluti risultano ridondanti, poiché entrambi possono accedere agli stessi 256 byte di memoria. Di conseguenza, le modalità di indirizzamento Zero Page (ZP, "Zero Page" in inglese) non verranno implementate, essendo equivalenti a quelle Assolute.
 
 Riprendendo le operazioni ADC / A Plus B e SBC / A Minus B ed integrandole con i 3 bit utilizzati per gestire le modalità di indirizzamento si costruisce - ad esempio - questa tabella degli opcode:
 
@@ -388,7 +388,7 @@ Ecco una lista delle differenze:
 
 *Schema di uno degli 8 Flip-Flop del 74LS377.*
 
-- Il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Come descritto in maggior dettaglio nella sezione riservata al microcode, con soli 8 step non sarebbe stato possibile emulare le istruzioni del 6502 di salto condizionale, di scorrimento / rotazione e di salto a subroutine. Questa è in realtà una differenza architetturale più legata alla Control Logic, però il maggior numero di step disponibili ha un importante impatto su questo modulo e ha dunque sicuramente senso citarla anche in questa sezione.
+- Il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Con soli 8 step non sarebbe stato possibile emulare alcune istruzioni di scorrimenti e rotazione del 6502. Questa è in realtà una differenza architetturale più legata alla Control Logic, però il maggior numero di step disponibili ha un importante impatto su questo modulo e ha dunque sicuramente senso citarla anche in questa sezione.
 
 - Tom ha utilizzato l'operazione A Plus A dei '181 per implementare lo scorrimento a sinistra delle istruzioni ASL e ROL del 6502 e il registro H per lo scorrimento a destra delle istruzioni LSR e ROR, mentre il BEAM utilizza H in [entrambe le situazioni](#il-registro-h).
 
@@ -402,12 +402,10 @@ Ecco una lista delle differenze:
 ## TO DO
 
 - /WE ↘↗
-- "Il computer NQSAP prevedeva 8 step per le microistruzioni" anche a causa dei sati condizionali... controllare se corrisponde a vero.
-- Parlare del bench di test sulla base di quanto appreso da David Courtney.
 - https://bread80.com/2019/09/02/adding-adc-sbc-inc-dec-operations-to-ben-eaters-alu/#easy-footnote-4-43 da leggere per capire se buono
 - subito dopo il capitolo "Il registro H" capire "(da fare: in questo caso, ma anche nel caso delle istruzioni di shift / rotazione e forse anche CPX e CPY, verificare se non potessi usare D invece di H)"
 - in Questa zona <<< Nel datasheet venivano menzionati anche il Carry Look-Ahead e il Ripple-Carry, approfonditi nella sezione dedicata all'[Aritmetica Binaria](../math/#). >>> sistemare il link alla sezione che devo ancora scrivere - 15 08 2024
-
 - controllare "Lo spreadsheet Excel citato nel paragrafo precedente è scaricabile qui; le tabelle appena menzionate sono presenti nel foglio “6502 Inst. Set”.
-
 - rivedere "L'ALU dell'NQSAP per dare senso al fatto che ho studiato NQSAP ma parlo della realizzazione del BEAM
+- Parlare del bench di test sulla base di quanto appreso da David Courtney.
+- link al mio video dell'ALU

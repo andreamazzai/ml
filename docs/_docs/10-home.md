@@ -76,18 +76,20 @@ In queste pagine si trovano analisi dei moduli dell'NQSAP, quanto ho imparato ed
 
 [![BEAM Breadboard Computer](assets/beam.png "BEAM breadboard computer"){:width="66%"}](assets/beam.png)
 
-Benefici:
+Tra le cose apprese:
 
-1. aver compreso bene i flag del 6502 e il loro ruolo e le interazioni all'interno di un computer
-2. aver compreso bene il ruolo di una ALU e la numerazione in complemento di 2
+1. i flag (del 6502), il loro ruolo e le interazioni all'interno di un computer
+2. il ruolo di una ALU e la numerazione in complemento di 2
 3. realizzazione di un programmatore di EEPROM molto veloce
-4. iniziato a studiare il linguaggio C
-
-Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+4. basi del linguaggio C
+5. basi di Arduino
+6. utilizzo di VScode
+7. il linguaggio markdown
+8. utilizzo di GitHub
 
 ### Note
 
-- Gli schemi KiCad non includono la gran parte dei LED: sono indicati solamente i LED del modulo Clock e i LED che segnalano le modalità Program Mode / Run Mode nel modulo RAM / MAR. Sono invece rappresentate quasi tutte tutte le LED Bar.
+- Gli schemi KiCad non includono la gran parte dei LED singoli: sono indicati solamente i LED del modulo Clock e i LED che segnalano le modalità Program Mode / Run Mode nel modulo RAM / MAR. Sono invece rappresentate quasi tutte tutte le LED Bar.
 
 ## Crediti e ringraziamenti
 
@@ -112,9 +114,7 @@ Ringraziamenti speciali: Tom Nisbet, che anche in fase di redazione della docume
 
 - mettere i link ai miei post su Reddit
 - quel professore dell'università del Montana
-- Includere appunti su acquisto dei materiali, cavi utilizzati
 - problemi di alimentazione
-- lkink al video dell'ALU
 - Controllare dove ho scritto computer BEAM oppure BEAM computer e SAP e NQSAP su tutte le pagine e sugli schemi elettrici
 - non ho utilizzato HC perché... bla bla bla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla bla
 - sistemare il paragrafo BENEFICI

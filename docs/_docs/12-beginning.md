@@ -15,6 +15,7 @@ excerpt: "Per iniziare"
 - Le LED BAR Sono incluse negli schemi, mentre i singoli LED no. Nota: per motivi di spazio una LED BAR nello schema della CL non è stata inserita.
 - fare LED BAR da 8 led per Control Logic
 
+- Includere appunti su acquisto dei materiali, cavi utilizzati
 
 ### Primi studi
 
