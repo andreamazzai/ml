@@ -121,9 +121,11 @@ Poiché Tom non aveva pubblicato lo schema dello Stack Pointer dell'NQSAP, lo so
 
 *Schema dello Stack Register del computer NQSAP-PCB.*
 
-Come si può vedere, nella realizzazione dell'NQSAP-PCB Tom ritorna sui suoi passi ed utilizza proprio i '193, che contano verso l'alto o verso il basso in corrispondenza del Rising Edge dei segnali dedicati Up e Down. 
+![Alt text](image-1.png)
 
-Il registro viene governato dai segnali C0 e C1 che determinano la direzione del conteggio e da SE (Stack Enable). C0 e C1 sostituiscono una parte dei segnali dell'NQSAP: il consolidamento in C0 e C1 di alcuni segnali di controllo del registro dei Flag, dei segnali di controllo del registro DXY e dei segnali di direzione del conteggio dello SP permette di ridurre da 4 a 3 il numero di EEPROM utilizzate. Un effetto collaterale è l'impossibilità di eseguire operazioni parallele sullo stack, sui registri DXY e sui Flag.
+Come si può vedere, nell'NQSAP-PCB Tom ritorna sui suoi passi ed utilizza proprio i '193, che contano verso l'alto o verso il basso in corrispondenza del Rising Edge dei segnali dedicati Up e Down.
+
+Il registro viene governato dai segnali SE (Stack Enable) e C0/C1, che determinano la direzione del conteggio. C0 e C1 sostituiscono una parte dei segnali dell'NQSAP: è stato possibile ridurre il numero di EEPROM da 4 a 3 grazie al consolidamento su C0 e C1 di alcuni segnali di controllo del registro dei Flag, dei segnali di controllo del registro DXY e dei segnali di direzione del conteggio dello SP. Un effetto collaterale è l'impossibilità di eseguire operazioni parallele su stack, registri DXY e registro Flag.
 
 ## Schema
 
