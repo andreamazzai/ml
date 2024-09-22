@@ -147,14 +147,14 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio mnemonico del 65
     - RPC, Read Program Counter - espone l'indirizzo del PC sul bus
     - WM, Write Memory Address Register - carica l'indirizzo del PC nel MAR
 2. Il secondo step carica l'opcode dell'istruzione nell'IR e incrementa il PC per farlo puntare alla locazione di memoria successiva (che nel caso dell'istruzione LDA contiene l'operando):
-    - RR, Read RAM - espone sul bus il contenuto della locazione di memoria puntata dal MAR
+    - RR, Read RAM - espone sul bus il contenuto della locazione di memoria indirizzata dal MAR
     - WIR, Write Instruction Register - carica l'opcode dell'istruzione nell'IR
     - PCI, Program Counter Increment - incrementa il PC
 3. Il terzo step carica sul MAR l'indirizzo dell'operando:
     - RPC, Read Program Counter - espone l'indirizzo del PC sul bus
     - WM, Write Memory Address Register - carica l'indirizzo del PC nel MAR
 4. Il quarto ed ultimo step carica l'operando nell'accumulatore*, incrementa il PC per farlo puntare alla istruzione successiva e resetta il Ring Counter
-    - RR, Read RAM - espone sul bus il contenuto della locazione di memoria puntata dal MAR
+    - RR, Read RAM - espone sul bus il contenuto della locazione di memoria indirizzata dal MAR
     - FNZ, Flag N & Z - aggiorna i Flag N e Z
     - WAH, Write A & H - scrive il contenuto del bus in A e H**
     - PCI, Program Counter Increment - incrementa il PC
@@ -209,7 +209,7 @@ Seguiamo passo dopo passo quanto accade nell'istruzione più semplice tra quelle
     - RPC, Read Program Counter - espone l'indirizzo del PC sul bus
     - WM, Write Memory Address Register - carica l'indirizzo del PC nel MAR
 2. Il secondo step carica l'opcode dell'istruzione nell'IR e incrementa il PC per farlo puntare alla locazione di memoria successiva (che nel caso dell'istruzione NOP, lunga un solo byte, sarà la prossima istruzione):
-    - RR, Read RAM - espone sul bus il contenuto della locazione di memoria puntata dal MAR
+    - RR, Read RAM - espone sul bus il contenuto della locazione di memoria indirizzata dal MAR
     - WIR, Write Instruction Register - carica l'opcode dell'istruzione nell'IR
     - PCI, Program Counter Increment - incrementa il PC
 3. Il terzo step riporta il Ring Counter a 0:
@@ -363,7 +363,7 @@ Esaminiamo la semplice istruzione SEC, che imposta il Carry.
     - RPC, Read Program Counter - espone l'indirizzo del PC sul bus
     - WM, Write Memory Address Register - carica l'indirizzo del PC nel MAR
 2. Il secondo step carica l'opcode dell'istruzione nell'IR e incrementa il PC per farlo puntare alla locazione di memoria successiva (che nel caso dell'istruzione SEC, lunga un solo byte, sarà la prossima istruzione):
-    - RR, Read RAM - espone sul bus il contenuto della locazione di memoria puntata dal MAR
+    - RR, Read RAM - espone sul bus il contenuto della locazione di memoria indirizzata dal MAR
     - WIR, Write Instruction Register - carica l'opcode dell'istruzione nell'IR
     - PCI, Program Counter Increment - incrementa il PC
 3. Il terzo step scrive 1 sul registro C del 74LS74:

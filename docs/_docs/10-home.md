@@ -99,9 +99,11 @@ Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 ## Altri link
 
-- <a href="https://archive.org/details/Programming_the_6502_OCR)" target="_blank">Programming the 6502</a> di Rodnay Zaks.
 - Masswerk: 
-- http://retro.hansotten.nl/uploads/books/Programming_the_6502.pdf da archive?
+
+## Letteratura
+
+- <a href="https://archive.org/details/Programming_the_6502_OCR" target="_blank">Programming the 6502</a> di Rodnay Zaks.
 
 ## TO DO
 

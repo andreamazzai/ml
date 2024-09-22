@@ -70,35 +70,35 @@ La tabella che segue **evidenzia visivamente** le modifiche apportate dall'istru
  | JSR        | 5    | RPC \| WR         | 0x22    | 0xFF    | 0xFF    | <b>0x22 | 0x41    | 0x30    |
  | JSR        | 6    | SE                | 0x22    | <b>0xFE | 0xFF    | 0x22    | 0x41    | 0x30    |
  | JSR        | 7    | RB  \| WPC \| NI  | <b>0x30 | 0xFE    | 0xFF    | 0x22    | 0x41    | 0x30    |
- | INX        | 0\*\*| RPC \| WM         | 0x30    | 0xFE    | <b>0x30 | 0xA0    | 0x41    | 0x30    |
+ | INX        | 0\*\*| RPC \| WM         | 0x30    | 0xFE    | <b>0x30 | <b>0xA0 | 0x41    | 0x30    |
 
-*Scomposizione dell'istruzione JSR nelle sue otto microistruzioni elementari e raffigurazione dello stato dei registri al termine di ogni step.*
+*Scomposizione dell'istruzione JSR nelle sue otto microistruzioni elementari e raffigurazione dello stato dei registri e della RAM al termine di ogni step.*
 
 \* Istruzione NOP precedente\
-\*\* Primo step dell'istruzione INX successiva\
+\*\* Primo step dell'istruzione INX successiva
 
-1. Il primo step carica l'indirizzo del (PC) nel Memory Address Register:
+1. Il primo step carica l'indirizzo dell'istruzione corrente nel Memory Address Register:
     - RPC, Read Program Counter - espone l'indirizzo del PC sul bus
-    - WM, Write Memory Address Register - carica l'indirizzo del PC nel MAR
+    - WM, Write Memory Address Register - carica l'indirizzo dell'istruzione nel MAR
 2. Il secondo step carica l'opcode dell'istruzione nell'IR e incrementa il PC per farlo puntare alla locazione di memoria successiva (che contiene l'operando dell'istruzione JSR, cioè l'indirizzo di destinazione del salto):
-    - RR, Read RAM - espone sul bus il contenuto della locazione di memoria puntata dal MAR
+    - RR, Read RAM - espone sul bus il contenuto della locazione di memoria indirizzata dal MAR
     - WIR, Write Instruction Register - carica l'opcode dell'istruzione nell'IR\*
     - PCI, Program Counter Increment - incrementa il PC
-3. Il terzo step carica nel Memory Address Register l'indirizzo del Program Counter, che ora punta all'Operando:
+3. Il terzo step carica nel Memory Address Register l'indirizzo del Program Counter, che ora punta all'operando:
     - RPC, Read Program Counter - espone l'indirizzo del PC sul bus
-    - WM, Write Memory Address Register - carica l'indirizzo del PC nel MAR
-4. Il quarto step legge l'operando, che punta alla destinazione del salto dell'istruzione JSR, lo salva in B e incrementa il PC che va ora a puntare alla prossima istruzione, coincidente con l'indirizzo di ritorno dalla subroutine:
-    - RR, Read RAM - espone sul bus il contenuto della locazione di memoria puntata dal MAR
-    - WB, Write B - memorizza temporaneamente in B l'indirizzo di destinazione del salto
+    - WM, Write Memory Address Register - carica l'indirizzo dell'operando nel MAR
+4. Il quarto step carica l'indirizzo della subroutine in B e incrementa il PC, che va ora a puntare alla prossima istruzione, coincidente con l'indirizzo di ritorno dalla subroutine:
+    - RR, Read RAM - espone sul bus il contenuto della locazione di memoria indirizzata dal MAR
+    - WB, Write B - memorizza in B l'indirizzo di destinazione del salto
     - PCI, Program Counter Increment - incrementa il PC
 5. Il quinto step carica nel Memory Address Register l'indirizzo dello Stack Pointer, che corrisponde alla prima locazione libera dello stack:
-    - RS, Read Stack - espone sul bus l'indirizzo il valore dello Stack Pointer
+    - RS, Read Stack - espone sul bus l'indirizzo il valore dello SP
     - WM, Write Memory Address Register - carica l'indirizzo dello SP nel MAR
 6. Il sesto step carica nello stack l'indirizzo del PC, al quale il computer ritornerà alla fine della subroutine invocata dall'istruzione JSR:
     - RPC, Read Program Counter - espone l'indirizzo del PC sul bus
     - WR, Write RAM - carica nello stack l'indirizzo di ritorno dalla subroutine
 7. Il settimo step decrementa (post-decrement) lo Stack Pointer:
-    - SE, Stack Enable - i contatori '169 decrementano l'output di un'unità, andando a puntare alla prossima locazione libera
+    - SE, Stack Enable - i contatori '169 decrementano l'output di un'unità, andando a puntare alla prossima locazione libera dello stack
 8. L'ottavo step carica nel PC l'indirizzo della subroutine invocata dall'istruzione JSR:
     - RB, Read B - espone sul bus il registro B, nel quale era stato precedentemente memorizzato l'indirizzo della subroutine
     - WPC, Write Program Counter - carica nel PC l'indirizzo della subroutine
@@ -106,23 +106,15 @@ La tabella che segue **evidenzia visivamente** le modifiche apportate dall'istru
 
 \*Notare come l'Instruction Register venga aggiornato solo alla fine del secondo step dell'istruzione, come già visto nella spiegazione delle [Fasi](../control/#fasi) della CPU.
 
-Al contrario RTS farà:
+Alla fine della subroutine, l'istruzione RTS esegue i seguenti passaggi:
 
-- leggere il valore dell'SP
-- scrivere in PC il valore contenuto nella cella indicata dall'SP
-- incrementare l'SP
+- incrementa l'SP (pre-increment);
+- carica il nuovo valore dell'SP nel MAR;
+- legge dallo stack l'indirizzo di ritorno e lo carica nel PC.
 
-Step NB queste sono le mie considerazioni
-Fetch Adesso so che sto facendo una JSR
-Exec 1 Metto nel MAR l'indirizzo della cella che contiene l'indirizzo a cui devo saltare
-Exec 2 Leggo l'indirizzo a cui devo saltare dalla cella puntata dal MAR e lo scrivo temporaneamente in B (operando)
-Exec 3 Leggo lo stack (che punta alla prima cella di memoria disponibile) e lo metto nel MAR; incremento il PC per ottenere il alore di "ritorno" dell'RTS
-Exec 4 Scrivo il valore di ritorno dell'RTS nella cella di memoria indicata dallo stack
-Exec 5 Incremento lo stack e scrivo B nel PC, così al prossimo clock eseguo il codice presente nell'indirizzo a cui dovevo altare
+## Lo Stack Pointer dell'NQSAP / NQSAP-PCB
 
-## Lo Stack Pointer dell'NQSAP
-
-Nella documentazione dell'NQSAP Tom segnala che si potrebbe usare anche un '193, ma con attenzione perché non ha il Count Enable e dunque bisogna usare una porta esterna per far arrivare un clock al contatore solo quando il segnale di Enable è attivato dalla ROM e dunque usa dei 169; attenzione ai glitch della ROM, dice… 05/01/2023 descritti in seguito
+Nella documentazione dell'NQSAP Tom segnala di aver inizialmente previsto l'utilizzo di Synchronous 4-Bit Up/Down Binary Counters <a href="https://www.ti.com/lit/ds/symlink/sn74ls193.pdf" target="_blank">74LS193</a>, incorrendo nelle [problematiche di glitching](../control/#il-clock-il-glitching-delle-eeprom-e-linstruction-register-parte-2) delle EEPROM, descritte in una apposita sezione della documentazione della Control Logic del BEAM.
 
 Poiché Tom non aveva pubblicato lo schema dello Stack Pointer dell'NQSAP, lo sostituiamo con quello dell'NQSAP-PCB.
 
@@ -130,21 +122,9 @@ Poiché Tom non aveva pubblicato lo schema dello Stack Pointer dell'NQSAP, lo so
 
 *Schema dello Stack Register del computer NQSAP-PCB.*
 
-- Successivamente, nell'NQSAP-PCB, ritorna sui suoi passi ed utilizza proprio un '193, che conta inviando un segnale a UP o DOWN del 193 abilitando SE Stack Enable insieme a C0 o C1 per definire la direzione del conteggio, dei quali viene fatto l'AND con il CLK.
+Come si può vedere, nella realizzazione dell'NQSAP-PCB Tom ritorna sui suoi passi ed utilizza proprio i '193, che contano verso l'alto o verso il basso in corrispondenza del Rising Edge dei segnali dedicati Up e Down. 
 
-- WS, sempre ANDed con CLK, permette di caricare un valore specifico nello stack.
-- Si usano C0 e C1 per risparmiare segnali in uscita dalle EPROM… che clever questo tipo
-  - C0 e C1 sono infatti condivisi con il Flag Register per la selezione del Carry in ingresso da ALU o H, dunque non bisogna modificare il CF nella stessa microistruzione di conteggio dell'SP.
-  - In NQSAP-PCB dice che C0 e C1 sono anche condivisi con DY e DZ…
-    - forse perché aveva pochi segnali disponibili ora che ha ridotto le ROM da 4 a 3… e infatti nella Control Logic a 3 ROM ci sono solo C0 e C1, che vanno sugli stessi pin del bus 26 e 27 di DY e DZ dei registri X e Y… 😁
-dunque nemmeno istruzioni SP e X/Y possono avvenire nella stessa microistruzione (se consolido C0 e C1 con DY e DZ).
-
-    - After the instruction fetch CO MI CE / RO II, the PC will have the value 21 and JSR microcode performs the following steps:
-§ CO MI CE move the PC value to the MAR and increment the PC. MAR contains 21 and PC contains 22.
-§ RO BI read the subroutine address from RAM[21] and place it in B for temp storage
-§ SPO MI SPI move the SP value into the MAR and increment the SP.
-§ CO RI store the PC value (which points to the next instruction) in memory, i.e. push the JSR return address on the stack.
-BO PI move the B register value into the PC, effectively jumping to the subroutine
+Il registro viene governato dai segnali C0 e C1 che determinano la direzione del conteggio e da SE (Stack Enable). C0 e C1 sostituiscono una parte dei segnali dell'NQSAP: il consolidamento in C0 e C1 di alcuni segnali di controllo del registro dei Flag, dei segnali di controllo del registro DXY e dei segnali di direzione del conteggio dello SP permette di ridurre da 4 a 3 il numero di EEPROM utilizzate. Un effetto collaterale è l'impossibilità di eseguire operazioni parallele sullo stack, sui registri DXY e sui Flag.
 
 ## Schema
 
@@ -155,8 +135,8 @@ BO PI move the B register value into the PC, effectively jumping to the subrouti
 ## Link utili
 
 - <a href="https://wilsonminesco.com/stacks/basics.html" target="_blank">Stack definition and basics</a> di Garth Wilson, contributore di <a href="http://www.6502.org" target="_blank">6502.org</a> e curatore di <a href="https://wilsonminesco.com/" target="_blank">Wilson Mines Co.</a>, vera miniera di articoli sul 6502, nozioni, tutorial ed altro. Garth offre una serie di compendi incredibilmente utili su tutto ciò che riguarda il 6502 ed affini.
-- ??????????????????????
-- ??????????????????????
+- Lo <a href="https://tomnisbet.github.io/nqsap/docs/stack-pointer/" target="_blank">Stack Pointer dell'NQSAP</a> di Tom Nisbet
+- Lo <a href="https://tomnisbet.github.io/nqsap-pcb/docs/program-counter-stack-pointer/" target="_blank">Stack Pointer dell'NQSAP-PCB</a> di Tom Nisbet
 
 ## TO DO
 
