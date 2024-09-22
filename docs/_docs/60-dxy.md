@@ -9,17 +9,19 @@ Nel microprocessore 6502 sono presenti due registri indice, X e Y, che possono f
 
 Il registro D dell'NQSAP e del BEAM viene utilizzato a supporto delle istruzioni di salto condizionale e di quelle che eseguono operazioni in una locazione di memoria che è il risultato di un computo tra l'indirizzo base specificato nell'operando e quattro diversi modi di interpretazione dei valori assunti dai registri indice X e Y:
 
-| Modalità indirizzamento | Agisce sull'indirizzo definito                                                         | Opcode       | Risultato                                                          | Esempio*                                                        |
-| -                  | -                                                                                      | -            | -                                                                  | -                                                             |  
-| Absolute, X        | dalla somma tra operando e valore contenuto in X                               | LDA ($20, X) | A = valore contenuto nella locazione ($20 + X)                     | X = #$03; A = valore presente nella locazione $23             |
-| Absolute, Y        | dalla somma tra operando e valore contenuto in Y                               | LDA ($20, Y) | A = valore contenuto nella locazione ($20 + Y)                     | Y = #$03; A = valore presente nella locazione $23             |
+| Modalità indirizzamento | Agisce sull'indirizzo definito                                            | Mnemonico    | Risultato                                                          | Esempio*                                                |
+| -                  | -                                                                              | -            | -                                                                  | -                                                       |  
+| Absolute, X        | dalla somma tra operando e valore contenuto in X                               | LDA ($20, X) | A = valore contenuto nella locazione ($20 + X)                     | X = #$03; A = valore presente nella locazione $23       |
+| Absolute, Y        | dalla somma tra operando e valore contenuto in Y                               | LDA ($20, Y) | A = valore contenuto nella locazione ($20 + Y)                     | Y = #$03; A = valore presente nella locazione $23       |
 | Indexed Indirect X | nella locazione puntata dalla somma tra operando e valore contenuto in X | LDA ($20, X) | A = valore contenuto nella locazione puntata dal pointer ($20 + X) | X = #$03; $23 = #$50; A = valore presente nella locazione $50 |
-| Indirect Indexed Y | dalla somma tra locazione puntata dall’operando e valore contenuto in Y | LDA ($20), Y | A = valore contenuto nella locazione puntata dal pointer ($20) + Y | Y = #$03; $20 = #$60; A = valore presente nella locazione $63 |
+| Indirect Indexed Y | dalla somma tra locazione puntata dall’operando e valore contenuto in Y | LDA ($20), Y  | A = valore contenuto nella locazione puntata dal pointer ($20) + Y | Y = #$03; $20 = #$60; A = valore presente nella locazione $63 |
 
 \* $23 = #$50 significa che l'indirizzo esadecimale $23 contiene il valore esadecimale #$50:
 
 - la notazione $ fa riferimento a un indirizzo
 - la notazione #$ fa riferimento a un valore
+
+Va ricordato alcune modalità di indirizzamento del 6502 risultano ridondanti in un computer con soli 256 byte di RAM: per un chiarimento si veda la sezione [Indirizzamenti](../alu/#indirizzamenti) nella pagina dell'ALU.
 
 ### Utilizzo con le modalità di indirizzamento indicizzate
 
@@ -80,7 +82,3 @@ Dal punto di vista funzionale, gli schemi dei Registri indice dell'NQSAP e del B
 Negli appunti annotavo che "... come per gli altri registri del BEAM, anche qui uso dei registri tipo D <a href="https://www.ti.com/lit/ds/symlink/sn54ls377.pdf" target="_blank">74LS377</a> anziché gli Octal D-Type Flip-Flop with 3-State Outputs <a href="https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf" target="_blank">74LS574</a> usati da Tom nell'NQSAP"; si veda la sezione [L'ALU dell'NQSAP](../alu/#lalu-dellnqsap) per un chiarimento in tal senso.
 
 Per completezza, devo segnalare di aver conosciuto il 74LS377 studiando l'<a href="https://tomnisbet.github.io/nqsap-pcb/" target="_blank">NQSAP-PCB</a>, evoluzione dell’NQSAP che Tom aveva successivamente ingegnerizzato su PCB anziché su breadboard.
-
-## TO DO
-
-- Parlando di registri indice virgola che vengono molto spesso utilizzati per gestire le modalità di indirizzamento ,È necessario ricordare che alcune modalità di indirizzamento sono ridondanti Perché il computer ha solamente 256 byte, come cè scritto altrove , come ad esempio zero page , x e Absolute Index , x , pertanto sono trattate come se fossero un'unica modalità di indirizzamento Così come già descritto nella pagina xYZ

@@ -87,7 +87,7 @@ Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 ### Note
 
-- Gli schemi KiCad non includono la gran parte dei LED: sono indicati solamente i LED del modulo Clock e i LED che segnalano le modalità Program Mode / Run Mode nel modulo RAM / MAR. Sono invece rappresentate tutte le LED Bar.
+- Gli schemi KiCad non includono la gran parte dei LED: sono indicati solamente i LED del modulo Clock e i LED che segnalano le modalità Program Mode / Run Mode nel modulo RAM / MAR. Sono invece rappresentate quasi tutte tutte le LED Bar.
 
 ## Crediti e ringraziamenti
 
@@ -97,6 +97,8 @@ Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 - Ken Shirrif per alcuni [interessantissimi articoli](https://www.righto.com/) su Overflow, 6502 e 74181 (e molto altro!);
 - il sito [6502.org](http://6502.org) e il suo forum: documentazione dettagliata senza fronzoli e utenti davvero esperti.
 
+Ringraziamenti speciali: Tom Nisbet, che anche in fase di redazione della documentazione non ha esitatoa darmi qualche chiarimento.
+
 ## Altri link
 
 - Masswerk: 
@@ -104,12 +106,12 @@ Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ## Letteratura
 
 - <a href="https://archive.org/details/Programming_the_6502_OCR" target="_blank">Programming the 6502</a> di Rodnay Zaks.
+- <a href="https://archive.org/details/367026792DigitalComputerElectronicsAlbertPaulMalvinoAndJeraldABrownPdf1/" target="_blank">Digital Computer Electronics</a> di Albert Paul Malvino e Jerald A. Brown.
 
 ## TO DO
 
 - mettere i link ai miei post su Reddit
 - quel professore dell'università del Montana
-- Libro di Malvino
 - Includere appunti su acquisto dei materiali, cavi utilizzati
 - problemi di alimentazione
 - lkink al video dell'ALU
@@ -122,7 +124,6 @@ Poco dopo xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 - Registri indice maiscuolo, minuscolo etc... ???
 - come devo chiamare i registri? ad esempio Stack per il registro e stack per genericamente "lo stack"?
 - Se pensate che con questo bla bla bla io abbia violato il vostro copyright, vi chiedo gentilmente di segnalarmelo e provvederò immediatamente alla rimozione del materiale
-- Ringraziare ancora Tom che , anche in fase di redazione della documentazione, non ha esitatoa darmi qualche chiarimento
 - Fare una bella review della parola segnali per distinguere bene i segnali di controllo dai segnali dati
 - E decidere se i segnali devono essere in grassetto o no... dare una coerenza
 - Sistemare l'ordinamento delle pagine, capire il pulsante "Successiva" non sembra funzionare correttamente
