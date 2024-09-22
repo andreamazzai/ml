@@ -53,7 +53,7 @@ Supponiamo di avere il seguente codice:
 
 Una istruzione NOP è seguito da un salto a una subroutine che incrementa il registro X. Al ritorno dalla subroutine, segue un'altra istruzione NOP.
 
-La tabella che segue **evidenzia visivamente** le modifiche apportate dall'istruzione JSR ai registri Program Counter (PC), Stack Pointer, Memory Address Register (MAR), Instruction Register (IR), B e al valore della locazione di memoria indirizzata dal MAR. La tabella include anche la precedente NOP e il primo step della  successiva INX richiamata dalla JSR.
+La tabella che segue **evidenzia visivamente** le modifiche apportate dalle microistruzioni ai registri Program Counter (PC), Stack Pointer, Memory Address Register (MAR), Instruction Register (IR), B e al valore della locazione di memoria indirizzata dal MAR. La tabella include anche la precedente NOP e il primo step della  successiva INX richiamata dalla JSR. I valori in **grassetto** indicano una variazione rispetto allo step precedente.
 
  | Istruzione | Step | Microistruzioni   | PC      | SP      | MAR     | RAM     | IR      | B       |
  |------------|------|-------------------|---------|---------|---------|---------|---------|---------|
@@ -80,8 +80,8 @@ La tabella che segue **evidenzia visivamente** le modifiche apportate dall'istru
     - RPC, Read Program Counter - espone l'indirizzo del PC sul bus
     - WM, Write Memory Address Register - carica l'indirizzo dell'istruzione nel MAR
 2. Il secondo step carica l'opcode dell'istruzione nell'IR e incrementa il PC per farlo puntare alla locazione di memoria successiva (che contiene l'operando dell'istruzione JSR, cioè l'indirizzo di destinazione del salto):
-    - RR, Read RAM - espone sul bus il contenuto della locazione di memoria indirizzata dal MAR
-    - WIR, Write Instruction Register - carica l'opcode dell'istruzione nell'IR\*
+    - RR, Read RAM - espone sul bus l'opcode dell'istruzione
+    - WIR, Write Instruction Register - carica l'opcode nell'IR\*
     - PCI, Program Counter Increment - incrementa il PC
 3. Il terzo step carica nel Memory Address Register l'indirizzo del Program Counter, che ora punta all'operando:
     - RPC, Read Program Counter - espone l'indirizzo del PC sul bus
@@ -121,11 +121,9 @@ Poiché Tom non aveva pubblicato lo schema dello Stack Pointer dell'NQSAP, lo so
 
 *Schema dello Stack Register del computer NQSAP-PCB.*
 
-![Alt text](image-1.png)
+Come si può vedere, Tom ritorna sui suoi passi ed utilizza proprio i '193, che contano verso l'alto o verso il basso in corrispondenza del Rising Edge dei segnali dedicati Up e Down. Tuttavia, l'NQSAP-PCB non annovera il problema del glitching in quanto l'Istruction Register è stato bufferizzato.
 
-Come si può vedere, nell'NQSAP-PCB Tom ritorna sui suoi passi ed utilizza proprio i '193, che contano verso l'alto o verso il basso in corrispondenza del Rising Edge dei segnali dedicati Up e Down.
-
-Il registro viene governato dai segnali SE (Stack Enable) e C0/C1, che determinano la direzione del conteggio. C0 e C1 sostituiscono una parte dei segnali dell'NQSAP: è stato possibile ridurre il numero di EEPROM da 4 a 3 grazie al consolidamento su C0 e C1 di alcuni segnali di controllo del registro dei Flag, dei segnali di controllo del registro DXY e dei segnali di direzione del conteggio dello SP. Un effetto collaterale è l'impossibilità di eseguire operazioni parallele su stack, registri DXY e registro Flag.
+L'SP dell'NQSAP è governato dai segnali SE (Stack Enable) e C0/C1, che determinano la direzione del conteggio. C0 e C1 sostituiscono una parte dei segnali dell'NQSAP: è stato possibile ridurre il numero di EEPROM da 4 a 3 grazie al consolidamento su C0 e C1 di alcuni segnali di controllo del registro dei Flag, dei segnali di controllo del registro DXY e dei segnali di direzione del conteggio dello SP. Un effetto collaterale è l'impossibilità di eseguire in contemporanea alcuni operazioni su stack, registri DXY e registro Flag.
 
 ## Schema
 
@@ -135,12 +133,10 @@ Il registro viene governato dai segnali SE (Stack Enable) e C0/C1, che determina
 
 ## Link utili
 
-- <a href="https://wilsonminesco.com/stacks/basics.html" target="_blank">Stack definition and basics</a> di Garth Wilson, contributore di <a href="http://www.6502.org" target="_blank">6502.org</a> e curatore di <a href="https://wilsonminesco.com/" target="_blank">Wilson Mines Co.</a>, vera miniera di articoli sul 6502, nozioni, tutorial ed altro. Garth offre una serie di compendi incredibilmente utili su tutto ciò che riguarda il 6502 ed affini.
+- <a href="https://wilsonminesco.com/stacks/basics.html" target="_blank">Stack definition and basics</a> di Garth Wilson, contributore di <a href="http://www.6502.org" target="_blank">6502.org</a> e curatore di <a href="https://wilsonminesco.com/" target="_blank">Wilson Mines Co.</a>, vera miniera di articoli, nozioni, tutorial ed altro sul 6502.
 - Lo <a href="https://tomnisbet.github.io/nqsap/docs/stack-pointer/" target="_blank">Stack Pointer dell'NQSAP</a> di Tom Nisbet
 - Lo <a href="https://tomnisbet.github.io/nqsap-pcb/docs/program-counter-stack-pointer/" target="_blank">Stack Pointer dell'NQSAP-PCB</a> di Tom Nisbet
 
 ## TO DO
 
-- /WE ↘↗
 - controllare se il mio SP funziona correttamente; vedo che Tom ha usato dei cablaggi diversi per i pin 7 e 10   20-08-2024
-- Controller Nelle pagine dove ci sono le descrizioni delle microistruzioni controllare se non sia meglio invertire la forma della frase , cioè invece di dire "espone nel bus e carica nel Mar", dire "carica nel Mar il contenuto del bus"
