@@ -29,10 +29,10 @@ Nei primi mesi del 2022, dopo aver completato i primi moduli base del computer 6
 
 Ho completato il SAP computer a settembre, ma già in precedenza avevo cominciato a studiare i miglioramenti e le espansioni fatte da altri follower di Ben, soprattutto in merito alla possibilità di automatizzare l'inserimento del programma da eseguire con un bootloader, nonché alla necessità di incrementare la RAM oltre i 16 byte; durante l'estate di quell'anno ho scoperto il fantastico progetto <a href="https://tomnisbet.github.io/nqsap/" target="_blank">NQSAP</a> di **Tom Nisbet**: un computer a 8-bit basato su quello di Ben Eater, ma ingegnerizzato per emulare le istruzioni del 6502. Ho realizzato velocemente che sarebbe stato il mio successivo progetto, perché metteva insieme molti aspetti che trovavo di grande interesse:
 
-1. evoluzione del computer di Ben Eater, col quale avevo iniziato a riacquistare confidenza con l'elettronica digitale
-2. emulazione del processore del mio primo computer, completa di registri indice, modalità di indirizzamento e Stack Pointer
-3. espansione del progetto originale: il computer di Ben Eater aveva solo 16 byte di RAM - pur sufficienti per programmare una sequenza di Fibonacci minimale, ma assolutamente insufficienti per scrivere programmi minimamente più complessi
-4. possibilità / necessità di imparare almeno le basi del C, utilizzato per la programmazione delle EEPROM e per la creazione del bootloader
+1. Evoluzione del computer di Ben Eater, col quale avevo iniziato a riacquistare confidenza con l'elettronica digitale.
+2. Emulazione del processore del mio primo computer, completa di registri indice, modalità di indirizzamento e Stack Pointer.
+3. Nel progetto originale di Ben Eater, il computer disponeva di soli 16 byte di RAM. Questa quantità era sufficiente per programmare una sequenza di Fibonacci minimale, ma assolutamente inadeguata per realizzare programmi più complessi, che richiedono più memoria per funzionare correttamente. Un'espansione della RAM, quindi, diventava essenziale.
+4. Possibilità / necessità di imparare almeno le basi del C, utilizzato per la creazione del [programmatore di EEPROM](../eeprom) e del [Loader](../loader) basato su Arduino.
 
 ### BEAM?
 
@@ -99,7 +99,7 @@ Tra le cose apprese:
 - Tom Nisbet che ha realizzato l'[NQSAP](https://https://tomnisbet.github.io/nqsap/) espandendo e migliorando in maniera sostanziale il progetto di Ben Eater;
 - il subreddit [r/beneater](https://www.reddit.com/r/beneater/) - in particolar modo [The8BitEnthusiast](https://www.reddit.com/user/The8BitEnthusiast/) e [Tom Nisbet](https://www.reddit.com/user/nib85/) - grazie!
 - Ken Shirrif per alcuni [interessantissimi articoli](https://www.righto.com/) su Overflow, 6502 e 74181 (e molto altro!);
-- il Dr. Brock LaMeres dell'università del Montana per l'eccellente playlist <a href="https://www.youtube.com/playlist?list=PL643xA3Ie_Et2uM4xu1yFk-A5ZQQ8gQ5e" target="_blank">Intro to Logic Circuits</a> su YouTube.
+- l'esplosivo Dr. Brock LaMeres dell'università del Montana per l'eccellente playlist <a href="https://www.youtube.com/playlist?list=PL643xA3Ie_Et2uM4xu1yFk-A5ZQQ8gQ5e" target="_blank">Intro to Logic Circuits</a> su YouTube;
 - il sito [6502.org](http://6502.org) e il suo forum: documentazione dettagliata senza fronzoli e utenti davvero esperti.
 
 Ringraziamenti speciali: Tom Nisbet, che anche in fase di redazione della documentazione non ha esitato a darmi qualche chiarimento.
