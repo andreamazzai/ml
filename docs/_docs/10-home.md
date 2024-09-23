@@ -7,8 +7,6 @@ header:
   overlay_image: /assets/beam.png
   overlay_filter: 0.5
 ---
-## WORK IN PROGRESS - WORK IN PROGRESS - WORK IN PROGRESS
-
 ## BEAM 8-bit computer
 
 <!-- TLDR: vai subito alla [documentazione del BEAM 8-bit computer](https://andreamazzai.github.io/beam/) su GitHub Pages -->
@@ -103,12 +101,9 @@ Tra le cose apprese:
 - Ken Shirrif per alcuni <a href="https://www.righto.com/" target="_blank">interessantissimi articoli</a> su Overflow, 6502 e 74181 (e molto altro!);
 - l'esplosivo Dr. Brock LaMeres dell'università del Montana per l'eccellente playlist <a href="https://www.youtube.com/playlist?list=PL643xA3Ie_Et2uM4xu1yFk-A5ZQQ8gQ5e" target="_blank">Intro to Logic Circuits</a> su YouTube;
 - il sito [6502.org](http://6502.org) e il suo forum: documentazione dettagliata senza fronzoli e utenti davvero esperti.
+- Norbert Landsteiner per il <a href="https://www.masswerk.at/6502/6502_instruction_set.html" target="_blank">6502 Instruction Set</a>, il <a href="https://www.masswerk.at/6502/assembler.html" target="_blank">6502 Assembler</a> e il <a href="https://www.masswerk.at/6502" target="_blank">Virtual 6502</a>, eccezionali strumenti per la creazione e il debug del microcode.
 
 Ringraziamenti speciali: Tom Nisbet, che anche in fase di redazione della documentazione non ha esitato a darmi qualche chiarimento.
-
-## Altri link
-
-- Masswerk: 
 
 ## Letteratura
 
@@ -117,15 +112,14 @@ Ringraziamenti speciali: Tom Nisbet, che anche in fase di redazione della docume
 
 ## TO DO
 
-- mettere i link ai miei post su Reddit
-- problemi di alimentazione
-- Controllare dove ho scritto computer BEAM oppure BEAM computer e SAP e NQSAP su tutte le pagine e sugli schemi elettrici
-- non ho utilizzato HC perché... bla bla bla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla bla
+- Mettere i link ai miei post su Reddit
+- Descrivere i problemi di alimentazione
+- Controllare la coerenza della forma: "BEAM" oppure "BEAM computer" o "computer BEAM" + SAP + NQSAP su tutte le pagine e sugli schemi
 - cosa non è stato emulato? IRQ, BCD
-- Aritmetica binaria e tutti gli altri... se è il nome di qualcosa, va in maiuscolo, altrimenti no... ad esempio alla sezione **numeri signed** della pagina dedicata all'aritmetica binaria ==> In questo caso forse sarebbe meglio averlo in minuscolo
+- Aritmetica binaria e tutti gli altri argomenti... se è il nome di qualcosa, va in maiuscolo, altrimenti no - ad esempio alla sezione **numeri signed** della pagina dedicata all'aritmetica binaria ==> In questo caso forse sarebbe meglio averlo in minuscolo
 - Registri indice maiscuolo, minuscolo etc... ???
-- come devo chiamare i registri? ad esempio Stack per il registro e stack per genericamente "lo stack"?
-- Se pensate che con questo bla bla bla io abbia violato il vostro copyright, vi chiedo gentilmente di segnalarmelo e provvederò immediatamente alla rimozione del materiale
-- Fare una bella review della parola segnali per distinguere bene i segnali di controllo dai segnali dati
-- E decidere se i segnali devono essere in grassetto o no... dare una coerenza
-- Sistemare l'ordinamento delle pagine, capire il pulsante "Successiva" non sembra funzionare correttamente
+- Forma e coerenza su come chiamare i registri - ad esempio Stack per il registro e stack per genericamente "lo stack"
+- Fare nota su copyright - se pensate che io abbia violato il vostro copyright, vi chiedo gentilmente di segnalarmelo e provvederò immediatamente alla rimozione del materiale
+- Review della parola "segnali" per distinguere bene i segnali di controllo dai segnali dati
+- E decidere se le abbreviazioni dei segnali debbano essere evidenziate o no; coerenza
+- Sistemare l'ordinamento delle pagine; verificare la sequenza premendo il pulsante "Successiva"
