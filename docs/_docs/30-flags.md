@@ -204,7 +204,7 @@ Nella pagina dedicata all'Aritmetica Binaria è presente anche una approfondita 
 Il registro dei Flag include un registro dedicato al **C**arry. L'NQSAP include diverse  operazioni che possono generare un Carry:
 
 - per i calcoli aritmetici il Carry corrisponde al Carry Output dell'ALU '181
-- per le operazioni di shift/rotazione, il Carry è tratto dal Least Significant Bit (LSB) (pin H-Q0) o dal MSB (pin H-Q7) del registro H.
+- per le operazioni di scorrimento e rotazione, il Carry è tratto dal Least Significant Bit (LSB) (pin H-Q0) o dal MSB (pin H-Q7) del registro H.
 
 L'utilizzo di un altro '151 rappresenta il sistema più efficiente per selezionare la sorgente del Carry. A seconda dell'istruzione in esecuzione, il microcode di quella istruzione provvederà infatti ad attivare opportunamente i segnali C0 e C1:
 
@@ -225,7 +225,7 @@ L'utilizzo di un altro '151 rappresenta il sistema più efficiente per seleziona
 
 ## Il Carry e i registri H e ALU
 
-Oltre ad essere utilizzato per eseguire salti condizionali, il Carry trova chiaramente uso nel [modulo ALU](../alu/#lalu-dellnqsap) per eseguire operazioni aritmetiche ('181) e di shift/rotazione ('194).
+Oltre ad essere utilizzato per eseguire salti condizionali, il Carry trova chiaramente uso nel [modulo ALU](../alu/#lalu-dellnqsap) per eseguire operazioni aritmetiche ('181) e di scorrimento e rotazione ('194).
 
 ![Selezione del Carry da passare al Carry Input di H e dei '181 del modulo ALU](../../assets/flags/30-flag-c-h-alu.png){:width="50%"}
 
@@ -271,8 +271,6 @@ Si noti che la Truth Table della tabella richiederebbe i componenti evidenziati 
 
 Il modulo Flag del computer BEAM è sostanzialmente una copia del modulo Flag del computer NQSAP; con le mie conoscenze non avrei saputo svilupparne una versione migliore, ma il fatto di averne compreso perfettamente tanto il funzionamento quanto l'integrazione con gli altri moduli del computer è stata una ottima lezione.
 
-Da notare che il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Come descritto in maggior dettaglio nella sezione riservate al microcode, con soli 8 step non sarebbe stato possibile emulare alcune istruzioni del 6502 di scorrimento / rotazione e di salto a subroutine. Questa è in realtà una differenza architetturale più legata alla Control Logic, però il maggior numero di step disponibili ha un importante impatto su questo modulo e ha dunque sicuramente senso citare la differenza in questa sezione.
-
 ## Link utili
 
 - I video di Ben Eater <a href="https://www.youtube.com/watch?v=ObnosznZvHY" target="_blank">CPU flags register</a> e <a href="https://www.youtube.com/watch?v=Zg1NdPKoosU" target="_blank">Conditional jump instructions</a>, che spiegano la costruzione del modulo dei Flag e le modifiche necessarie al microcode per la gestione delle istruzioni di salto condizionale. Si noterà la differenza con l'approccio dell'NQSAP, che non richiede microcode ad-hoc per ogni flag e non abbisogna di linee di indirizzamento EEPROM dedicate.
@@ -286,5 +284,4 @@ Da notare che il computer NQSAP prevedeva 8 step per le microistruzioni, mentre 
 ## TO DO
 
 - Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
-
-- "non sarebbe stato possibile alcune istruzioni del 6502 di scorrimento / rotazione e di salto a subroutine" corretto?
+- stampare label JE e metterla sul BEAM

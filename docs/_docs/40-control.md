@@ -489,7 +489,7 @@ La colonna "Ambito o direzione segnale" indica il contesto di un bus, oppure sor
 | -----         | ----           | -------------------------- | -----------                                                                                                  |
 | N             | NI             | CL                         | Next Instruction; [spiegazione](#lunghezza-delle-istruzioni).                                                |
 | LF            | LF             | CL → ALU                   | ALU Force; [spiegazione 1](../alu/#istruzioni-di-comparazione) e [spiegazione 2](../alu/#riepilogo-sottrazioni-comparazioni-e-indirizzamenti).  |
-| HL-HR         | HL-HR          | CL → ALU                   | Definiscono l'operazione da eseguire sul registro H (caricamento parallelo, rotazione dx o sx).              |
+| HL-HR         | HL-HR          | CL → ALU                   | Definiscono l'operazione da eseguire sul registro H (caricamento parallelo, scorrimento / rotazione dx o sx).|
 | IR-Q0 / IR-Q4 | IR-S0..3, IR-M | CL → ALU                   | Determinano l'operazione che l'ALU deve eseguire; [spiegazione](../alu/#funzioni-logiche-e-operazioni-aritmetiche).                     |
 | HLT           | HLT            | CL → Clock                 | Interrompe il programma in esecuzione; [spiegazione](../clock/#note-sul-microcode).                          |
 | DY-DZ         | DX/Y-DZ        | CL → DXY                   | DX/Y HI espone X agli adder, LO espone Y; DZ espone zero; [spiegazione](../dxy/#utilizzo-con-le-modalità-di-indirizzamento-indicizzate).     |

@@ -5,7 +5,7 @@ excerpt: "Unità Aritmetica e Logica del computer BEAM"
 ---
 [![Unità Aritmetica e Logica del computer BEAM](../../assets/alu/50-alu-beam.png "Unità Aritmetica e Logica del computer BEAM"){:width="100%"}](../../assets/alu/50-alu-beam.png)
 
-L'Unità Aritmetica e Logica (ALU) del SAP computer di Ben Eater era limitata a addizioni e sottrazioni. L'NQSAP di Tom Nisbet aggiungeva operazioni logiche e di rotazione (shift) e avevo iniziato a studiarla in dettaglio.
+L'Unità Aritmetica e Logica (ALU) del SAP computer di Ben Eater era limitata a addizioni e sottrazioni. L'NQSAP di Tom Nisbet aggiungeva operazioni logiche e di scorrimento (shift) e avevo iniziato a studiarla in dettaglio.
 
 ### Il 74LS181
 
@@ -388,7 +388,7 @@ Ecco una lista delle differenze:
 
 *Schema di uno degli 8 Flip-Flop del 74LS377.*
 
-- Il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Con soli 8 step non sarebbe stato possibile emulare alcune istruzioni di scorrimenti e rotazione del 6502. Questa è in realtà una differenza architetturale più legata alla Control Logic, però il maggior numero di step disponibili ha un importante impatto su questo modulo e ha dunque sicuramente senso citarla anche in questa sezione.
+- Il computer NQSAP prevedeva 8 step per le microistruzioni, mentre il BEAM ne prevede 16. Con soli 8 step non sarebbe stato possibile emulare alcune istruzioni di scorrimento e rotazione del 6502. Questa è in realtà una differenza architetturale più legata alla Control Logic, però il maggior numero di step disponibili ha un importante impatto su questo modulo e ha dunque sicuramente senso citarla anche in questa sezione.
 
 - Tom ha utilizzato l'operazione A Plus A dei '181 per implementare lo scorrimento a sinistra delle istruzioni ASL e ROL del 6502 e il registro H per lo scorrimento a destra delle istruzioni LSR e ROR, mentre il BEAM utilizza H in [entrambe le situazioni](#il-registro-h).
 

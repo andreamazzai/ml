@@ -10,7 +10,7 @@ Alcuni aspetti interessanti del progetto:
 * Registri A, X, Y come nel 6502
 * Stack Pointer
 * ALU basata su 74LS181 per tutte le operazioni aritmetiche e logiche
-* Istruzioni di rotazione e shift implementate con shift-register
+* Istruzioni di rotazione e scorrimento implementate con shift-register
 * Flag NVZC
 * Sviluppo di bootloader e programmatore di EEPROM
 
