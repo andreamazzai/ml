@@ -46,7 +46,7 @@ La documentazione dell'NQSAP non era completa e avevo scovato anche alcuni error
 
 Tra gli aspetti da citare e sui quali ho speso molto, **molto**, ***davvero molto*** tempo:
 
-- comprensione del funzionamento dell'ALU 74181, per la quale ho realizzato un bench di test sulla base di quanto appreso da [David Courtney](../alu/#link-utili);
+- comprensione del funzionamento dell'ALU 74181, per la quale ho realizzato un bench di test sulla base di quanto appreso da [David Courtney](docs/alu/#link-utili);
 - comprensione dell'aritmetica binaria in complemento di 2;
 - comprensione dell'overflow, strettamente legato al punto precedente;
 - integrazione dell'ALU 74181 e dell'Instruction Register (IR) in modalità "hardware wired" per poter generare "automaticamente" i segnali di ingresso dell'ALU a seconda dell'istruzione presente nell'IR;
@@ -75,7 +75,7 @@ A luglio 2023 ho cercato di ricomporre tutto ciò che avevo appreso e ho provato
 
 La fase costruttiva è iniziata a ottobre 2023 e si è conclusa nei primi giorni di maggio 2024. Il risultato è quello visibile in foto.
 
-In queste pagine si trovano analisi dei moduli dell'NQSAP, quanto ho imparato ed applicato nella realizzazione del BEAM, alcune differenze tra i due sistemi, qualche confronto con il SAP, note, appunti e approfondimenti.
+In queste pagine si trovano note, appunti e insegnamenti appresi ed applicati nella realizzazione del BEAM, analisi dei moduli dell'NQSAP e dell'NQSAP-PCB, differenze tra i sistemi, qualche confronto con il SAP ed altro ancora.
 
 [![BEAM Breadboard Computer](assets/beam.png "BEAM breadboard computer"){:width="66%"}](assets/beam.png)
 
@@ -93,7 +93,7 @@ Tra le cose apprese:
 
 ### Note
 
-- Gli schemi KiCad non includono la gran parte dei LED singoli: sono indicati solamente i LED del modulo Clock e i LED che segnalano le modalità Program Mode / Run Mode nel modulo RAM / MAR. Sono invece rappresentate quasi tutte tutte le LED Bar.
+- Gli schemi KiCad non includono la gran parte dei LED singoli: sono indicati solamente i LED del modulo Clock e i LED che segnalano le modalità Program Mode / Run Mode nel modulo RAM / MAR. Sono invece rappresentate quasi tutte le LED Bar.
 
 ## Crediti e ringraziamenti
 
@@ -121,7 +121,6 @@ Ringraziamenti speciali: Tom Nisbet, che anche in fase di redazione della docume
 - problemi di alimentazione
 - Controllare dove ho scritto computer BEAM oppure BEAM computer e SAP e NQSAP su tutte le pagine e sugli schemi elettrici
 - non ho utilizzato HC perché... bla bla bla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla bla
-- sistemare il paragrafo BENEFICI
 - cosa non è stato emulato? IRQ, BCD
 - Aritmetica binaria e tutti gli altri... se è il nome di qualcosa, va in maiuscolo, altrimenti no... ad esempio alla sezione **numeri signed** della pagina dedicata all'aritmetica binaria ==> In questo caso forse sarebbe meglio averlo in minuscolo
 - Registri indice maiscuolo, minuscolo etc... ???
