@@ -550,7 +550,7 @@ La colonna "Ambito o direzione segnale" indica il contesto di un bus, oppure sor
 | LDR-CLK         | LDR-CLK                   | Loader → Clock             | 2DO Iniezione del clock del Loader nel computer; [spiegazione](../flags/#il-carry).                                                   |
 | CLK-Start       | CLK-Start                 | Loader → Clock             | 2DO (Re-)Start del clock di sistema dopo il caricamento del programma in RAM; [spiegazione](../flags/#il-carry).                      |
 | ALU-Cin         | ALU-Cin                   | Flag → ALU                 | Selezione del Carry da inviare in input ai '181; [spiegazione](../flags/#il-carry-e-i-registri-h-e-alu).                              |
-| H-Cin           | H-Cin                     | Flag → ALU                 | Selezione del Carry da inviare in input ad H; [spiegazione 1](../flags/#il-carry-e-i-registri-h-e-alu) e [spiegazione 2](../alu/#il-registro-h/).        |
+| H-Cin           | H-Cin                     | Flag → ALU                 | Selezione del Carry da inviare in input ad H; [spiegazione 1](../flags/#il-carry-e-i-registri-h-e-alu) e [spiegazione 2](../alu/#il-registro-h).        |
 | ALU-Cout        | ALU-Cout                  | ALU → Flag                 | Carry output dell'ALU da inviare al registro dei Flag; [spiegazione Flag C](../flags/#carry).                    |
 | ALU-Q7          | ALU-Q7                    | ALU → Flag                 | MSB dell'ALU da inviare al registro dei Flag; [spiegazione Flag V](../flags/#overflow).                          |
 | B-Q7            | B-Q7                      | ALU → Flag                 | MSB di B da inviare al registro dei Flag; [spiegazione Flag V](../flags/#overflow).                              |
@@ -666,7 +666,6 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 
 - "Infatti il codice di Tom mostra che è possibile automatizzare la generazione del micro code per molte operazioni grazie al fatto che le app opportunamente posizionate all’interno della tabella , cosa che ionon sono riuscito a fare in quanto all’inizio del task non mi era chiaro quale sarebbe stato il beneficio . inoltre la mia conoscenza del linguaggio c è limitata e non sono riuscito a comprendere chiaramente cosa facesse il codice di Tom."
 
-- Selezione del Carry da mettere in input al registro H; [spiegazione](../flags/#carry).  |>>>>>>>>>> Da fare dopo aver aggiunto una breve spiegazione del registro h nella pagina ALU
 - Una volta fatta una sezione nella pagina ALU per descrivere il comportamento del registro H, fare un link da questa pagina nella sezione che parla della mutua esclusività dei segnali di controllo.
 
 - Effetto non desiderato: "le istruzioni di salto condizionato non eseguite sprecano cicli di clock"… non si potrebbe semplicemente usare N per terminare anticipatamente l'istruzione? 

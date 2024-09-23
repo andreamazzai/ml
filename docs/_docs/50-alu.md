@@ -45,15 +45,25 @@ Nel computer SAP di Ben Eater i registri di input all'ALU erano A e B, mentre ne
 
 Poiché le istruzioni del 6502 fanno riferimento al registro A, è necessario che A ed H siano sempre allineati, così che i '181 ritrovino trasparentemente in H il contenuto di A (ad esempio una somma ADC sarà effettivamente realizzata dando in input ai '181 i registri H e B: essendo H una copia di A, il risultato della somma sarà uguale ad A + B).
 
-Qual è l'utilità di un registro "ombra" come H? Alcune operazioni che agiscono direttamente su una locazione di memoria possono essere eseguite senza interferire col contenuto del registro A, ad esempio INC Assoluto o ASL Assoluto Indicizzato X.
+Qual è l'utilità di un registro "ombra" come H? Alcune delle istruzioni che agiscono direttamente su una locazione di memoria possono essere eseguite senza interferire col contenuto del registro A, ad esempio INC Assoluto o ASL Assoluto Indicizzato X.
 
 Il registro H è fondamentale come registro temporaneo di appoggio da utilizzare per la realizzazione del microcode di molte altre istruzioni: in tutti questi casi, uno degli ultimi step eseguiti dal microcode sarà la copia di A su H:
 
-![Microcode dell'istruzione INX](../../assets/alu/50-alu-RAWH.png){:width="50%"}
+~~~text
+| ---- | -------------------------- |
+| Step | Microistruzione            |
+| ---- | -------------------------- |
+| 0*   | RPC | WM                   |
+| 1*   | RR  | WIR | PCI            |
+| 2    | RX  | WH                   |
+| 3    | CS  | FNZ | RL | WX        |
+| 4    | RA  | WH  | NI             |
+| ---- | -------------------------- |
+~~~
 
-*Microcode per l'emulazione dell'istruzione INX del 6502.*
+*Scomposizione dell'istruzione INX nelle sue cinque microistruzioni elementari*.
 
-Nell'esempio dell'istruzione INX del 6502, dopo la [fase Fetch](../control/#fasi) comune a tutte le istruzioni (fase non evidenziata qui):
+Nell'esempio dell'istruzione INX del 6502, dopo la [fase Fetch](../control/#fasi)* comune a tutte le istruzioni:
 
 - X viene letto (RX) e copiato in H (WH), che presenta il suo contenuto agli ingressi "A" dei '181;
 - i '181 eseguono l'operazione **A Plus 1**, il cui risultato viene esposto sul bus (RL) e copiato in X (WX);

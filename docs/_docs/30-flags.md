@@ -8,9 +8,9 @@ excerpt: "Flags Register del computer BEAM"
 
 Più volte, analizzando l'NQSAP e leggendo la documentazione di Tom Nisbet, avevo trovato delle idee molto ingegnose; alcune di queste si trovano nel modulo dei Flag.
 
-[![Schema logico del modulo Flag di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità.](../../assets/flags/30-flag-nqsap-schematics.png "Schema logico del modulo Flag di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità."){:width="100%"}](../../assets/flags/30-flag-nqsap-schematics.png)
+[![Schema del modulo Flag di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità](../../assets/flags/30-flag-nqsap-schematics.png "Schema del modulo Flag di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità"){:width="100%"}](../../assets/flags/30-flag-nqsap-schematics.png)
 
-*Schema logico del modulo Flag di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità.*
+*Schema del modulo Flag di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità.*
 
 Il registro dei Flag dell'NQSAP emula i 4 flag **NVZC** del 6502:
 
@@ -275,11 +275,11 @@ Il modulo Flag del computer BEAM è sostanzialmente una copia del modulo Flag de
 
 - I video di Ben Eater <a href="https://www.youtube.com/watch?v=ObnosznZvHY" target="_blank">CPU flags register</a> e <a href="https://www.youtube.com/watch?v=Zg1NdPKoosU" target="_blank">Conditional jump instructions</a>, che spiegano la costruzione del modulo dei Flag e le modifiche necessarie al microcode per la gestione delle istruzioni di salto condizionale. Si noterà la differenza con l'approccio dell'NQSAP, che non richiede microcode ad-hoc per ogni flag e non abbisogna di linee di indirizzamento EEPROM dedicate.
 
-- Tom segnala di aver preso ispirazione da un thread su Reddit <a href="https://www.reddit.com/r/beneater/comments/jwxke0/how_to_add_a_decremental_and_incremental_circuit/" target="_blank">How to add a decremental and incremental circuit to the ALU ?</a> per l'idea di pilotare il caricamento del [Program Counter](../programcounter/) dal registro dei Flag anziché gestirli con copie multiple del microcode come avveniva come sul SAP di Ben Eater.
+- Tom segnala di aver preso ispirazione dal thread Reddit <a href="https://www.reddit.com/r/beneater/comments/jwxke0/how_to_add_a_decremental_and_incremental_circuit/" target="_blank">How to add a decremental and incremental circuit to the ALU ?</a> per l'idea di pilotare il caricamento del [Program Counter](../programcounter/) dal registro dei Flag anziché gestirli con copie multiple del microcode come avveniva come sul SAP di Ben Eater.
 
 - Inoltre, anche l'ispirazione per la realizzazione del Flag V deriva da un altro thread su Reddit, <a href="https://www.reddit.com/r/beneater/comments/kmuuex/question_for_all_74ls181_alu_people" target="_blank">Question for all 74ls181 alu people</a>.
 
-- Tom notava anche l'approccio del thread <a href="https://www.reddit.com/r/beneater/comments/m76ijz/opcodes_and_flag_decoding_circuit/" target="_blank">Opcodes and Flag decoding circuit</a> per eseguire salti condizionali in hardware. Invece di pilotare la linea LOAD del Program Counter, il circuito dell'autore del thread si trova tra l'IR e la EEPROM e forza condizionatamente un'istruzione NOP o JMP a seconda dello stato dei flag. Gli opcode delle istruzioni di salto sono disposti in modo tale che il flag di interesse possa essere determinato dai bit in uscita dall'IR. Concetto interessante, ma Tom aveva già implementato una funzionalità simile con le linee di selezione dell'ALU hardwired all'IR, utilizzata anche per la gestione dei [salti condizionali](#i-salti-condizionali-e-incondizionati).
+- Tom notava anche l'approccio del thread <a href="https://www.reddit.com/r/beneater/comments/m76ijz/opcodes_and_flag_decoding_circuit/" target="_blank">Opcodes and Flag decoding circuit</a> per eseguire salti condizionali in hardware. Invece di pilotare la linea LOAD del Program Counter, il circuito dell'autore del thread si trova tra l'IR e la EEPROM e forza condizionatamente un'istruzione NOP o JMP a seconda dello stato dei flag. Gli opcode delle istruzioni di salto sono disposti in modo tale che il flag di interesse possa essere determinato dai bit in uscita dall'IR. Concetto interessante, ma Tom aveva già implementato una funzionalità simile con le linee di selezione dell'ALU hardwired all'IR, modalità utilizzata anche nella gestione dei [salti condizionali](#i-salti-condizionali-e-incondizionati).
 
 ## TO DO
 
