@@ -31,7 +31,7 @@ Ho completato il SAP computer a settembre, ma già in precedenza avevo cominciat
 
 1. Evoluzione del computer di Ben Eater, col quale avevo iniziato a riacquistare confidenza con l'elettronica digitale.
 2. Emulazione del processore del mio primo computer, completa di registri indice, modalità di indirizzamento e Stack Pointer.
-3. Nel progetto originale di Ben Eater, il computer disponeva di soli 16 byte di RAM. Questa quantità era sufficiente per programmare una sequenza di Fibonacci minimale, ma assolutamente inadeguata per realizzare programmi più complessi, che richiedono più memoria per funzionare correttamente. Un'espansione della RAM, quindi, diventava essenziale.
+3. Nel progetto originale di Ben Eater, il computer disponeva di soli 16 byte di RAM. Questa quantità era sufficiente per programmare una sequenza di Fibonacci minimale, ma assolutamente inadeguata per realizzare programmi più complessi. Un'espansione della RAM, quindi, diventava essenziale.
 4. Possibilità / necessità di imparare almeno le basi del C, utilizzato per la creazione del [programmatore di EEPROM](../eeprom) e del [Loader](../loader) basato su Arduino.
 
 ### BEAM?
@@ -40,13 +40,13 @@ Cercando un nome per il mio progetto, ho identificato in "BEAM" quello ideale: d
 
 ### Studio e progettazione
 
-I primi 8 mesi di lavoro sul progetto BEAM sono stati interamente devoluti allo studio: volevo capire ogni dettaglio dell'NQSAP, che presentava moltissime aggiunte al SAP e diverse idee davvero "clever"!
+Nei primi otto mesi di lavoro sul progetto BEAM, mi sono dedicato interamente allo studio. L'obiettivo era comprendere ogni dettaglio dell'NQSAP, che introduceva numerose aggiunte al SAP e implementava diverse idee davvero ingegnose. Questo periodo di analisi è stato cruciale per padroneggiare i nuovi concetti e le innovazioni del progetto.
 
-La documentazione dell'NQSAP non era completa e avevo scovato anche alcuni errori, condivis con Tom, che li aveva prontamente corretti. Per aumentare la mia comprensione della realizzazione di Tom, dopo lo studio dell'NQSAP avevo analizzato anche l'evoluzione NQSAP-PCB, nella quale Tom aveva effettuato diversi miglioramenti. Nella realizzazione del BEAM, ho cercato di prendere il meglio da entrambi i progetti di Tom.
+La documentazione dell'NQSAP non era completa e avevo scovato anche alcuni errori condividendoli con Tom, che li aveva prontamente corretti. Per aumentare la mia comprensione della materia, dopo lo studio dell'NQSAP avevo analizzato anche l'evoluzione NQSAP-PCB, alla quale Tom aveva apportato diversi miglioramenti. Nella realizzazione del BEAM, ho cercato di prendere il meglio da entrambi i progetti.
 
 Tra gli aspetti da citare e sui quali ho speso molto, **molto**, ***davvero molto*** tempo:
 
-- comprensione del funzionamento dell'ALU 74181, per la quale ho realizzato un bench di test sulla base di quanto appreso da David Courtney;
+- comprensione del funzionamento dell'ALU 74181, per la quale ho realizzato un bench di test sulla base di quanto appreso da [David Courtney](../alu/#link-utili);
 - comprensione dell'aritmetica binaria in complemento di 2;
 - comprensione dell'overflow, strettamente legato al punto precedente;
 - integrazione dell'ALU 74181 e dell'Instruction Register (IR) in modalità "hardware wired" per poter generare "automaticamente" i segnali di ingresso dell'ALU a seconda dell'istruzione presente nell'IR;
@@ -61,13 +61,15 @@ Tra gli aspetti da citare e sui quali ho speso molto, **molto**, ***davvero molt
 - comprensione del problema del "glitch";
 - sviluppo del software del bootloader;
 
-[![Schema logico luglio 2023](assets/hand-drawn-logic.jpg "Schema logico luglio 2023"){:width="66%"}](assets/hand-drawn-logic.jpg)
+[![Schema logico del computer BEAM, luglio 2023](assets/hand-drawn-logic.jpg "Schema logico del computer BEAM, luglio 2023"){:width="66%"}](assets/hand-drawn-logic.jpg)
+
+*Schema logico del computer BEAM, luglio 2023.*
 
 A luglio 2023 ho cercato di ricomporre tutto ciò che avevo appreso e ho provato trascriverlo su carta: avevo compreso molto bene il funzionamento di alcuni moduli, mentre su altri avevo ancora molti dubbi. Inoltre, non mi erano ancora chiare diverse interazioni tra i moduli, soprattutto nei segnali di controllo dei flag; rileggendo il materiale che avevo studiato e gli appunti che avevo trascritto su OneNote nei mesi precedenti, ho unito i puntini e realizzato lo schema logico del computer, iniziando a intravedere non più una serie di moduli a se' stanti, bensì un costrutto logico sensato:
 
-[![Rappresentazione su carta di una possibile disposizione dei moduli](assets/beam-paper-breadboards.png "Rappresentazione su carta di una possibile disposizione dei moduli"){:width="66%"}](assets/beam-paper-breadboards.png)
+[![Rappresentazione su carta di una possibile disposizione dei moduli del computer BEAM](assets/beam-paper-breadboards.png "Rappresentazione su carta di una possibile disposizione dei moduli del computer BEAM"){:width="66%"}](assets/beam-paper-breadboards.png)
 
-*Rappresentazione su carta di una possibile disposizione dei moduli.*
+*Rappresentazione su carta di una possibile disposizione dei moduli del computer BEAM.*
 
 ## Realizzazione
 
