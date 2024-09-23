@@ -96,12 +96,12 @@ Tra le cose apprese:
 ## Crediti e ringraziamenti
 
 - Ben Eater per la sua grande capacità di creazione di <a href="https://www.youtube.com/@BenEater/playlists/" target="_blank">contenuti così interessanti</a> e in particolar modo per la playlist <a href="https://www.youtube.com/playlist?list=PLowKtXNTBypGqImE405J2565dvjafglHU" target="_blank">Building an 8-bit breadboard computer!</a>;
-- Tom Nisbet per l'<a href="https://https://tomnisbet.github.io/nqsap/" target="_blank">NQSAP</a> e l'<a href="https://https://tomnisbet.github.io/nqsap-pcb/" target="_blank">NQSAP-PCB</a> espandendo e migliorando in maniera sostanziale il progetto di Ben Eater;
+- Tom Nisbet per l'<a href="https://tomnisbet.github.io/nqsap/" target="_blank">NQSAP</a> e l'<a href="https://tomnisbet.github.io/nqsap-pcb/" target="_blank">NQSAP-PCB</a> espandendo e migliorando in maniera sostanziale il progetto di Ben Eater;
 - il subreddit <a href="https://www.reddit.com/r/beneater/" target="_blank">r/beneater</a> - in particolar modo The8BitEnthusiast - grazie!
 - Ken Shirrif per alcuni <a href="https://www.righto.com/" target="_blank">interessantissimi articoli</a> su Overflow, 6502 e 74181 (e molto altro!);
 - l'esplosivo Dr. Brock LaMeres dell'università del Montana per l'eccellente playlist <a href="https://www.youtube.com/playlist?list=PL643xA3Ie_Et2uM4xu1yFk-A5ZQQ8gQ5e" target="_blank">Intro to Logic Circuits</a> su YouTube;
-- il sito [6502.org](http://6502.org) e il suo forum: documentazione dettagliata senza fronzoli e utenti davvero esperti.
-- Norbert Landsteiner per il <a href="https://www.masswerk.at/6502/6502_instruction_set.html" target="_blank">6502 Instruction Set</a>, il <a href="https://www.masswerk.at/6502/assembler.html" target="_blank">6502 Assembler</a> e il <a href="https://www.masswerk.at/6502" target="_blank">Virtual 6502</a>, eccezionali strumenti per la creazione e il debug del microcode.
+- il sito <a href="http://6502.org" target="_blank">6502.org</a> e il suo forum: documentazione dettagliata senza fronzoli e utenti davvero esperti;
+- Norbert Landsteiner per il <a href="https://www.masswerk.at/6502/6502_instruction_set.html" target="_blank">6502 Instruction Set</a>, il <a href="https://www.masswerk.at/6502/assembler.html" target="_blank">6502 Assembler</a> e il <a href="https://www.masswerk.at/6502" target="_blank">Virtual 6502</a>, eccezionali strumenti utilizzati nella creazione e nel debug del microcode.
 
 Ringraziamenti speciali: Tom Nisbet, che anche in fase di redazione della documentazione non ha esitato a darmi qualche chiarimento.
 
