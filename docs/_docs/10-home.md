@@ -32,7 +32,7 @@ Ho completato il SAP computer a settembre, ma già in precedenza avevo cominciat
 1. Evoluzione del computer di Ben Eater, col quale avevo iniziato a riacquistare confidenza con l'elettronica digitale.
 2. Emulazione del processore del mio primo computer, completa di registri indice, modalità di indirizzamento e Stack Pointer.
 3. Nel progetto originale di Ben Eater, il computer disponeva di soli 16 byte di RAM. Questa quantità era sufficiente per programmare una sequenza di Fibonacci minimale, ma assolutamente inadeguata per realizzare programmi più complessi. Un'espansione della RAM, quindi, diventava essenziale.
-4. Possibilità / necessità di imparare almeno le basi del C, utilizzato per la creazione del [programmatore di EEPROM](../eeprom) e del [Loader](../loader) basato su Arduino.
+4. Possibilità / necessità di imparare almeno le basi del C, utilizzato per la creazione del [programmatore di EEPROM](docs/eeprom) e del [Loader](docs/loader) basato su Arduino.
 
 ### BEAM?
 
@@ -49,11 +49,11 @@ Tra gli aspetti da citare e sui quali ho speso molto, **molto**, ***davvero molt
 - comprensione del funzionamento dell'ALU 74181, per la quale ho realizzato un bench di test sulla base di quanto appreso da [David Courtney](docs/alu/#link-utili);
 - comprensione dell'aritmetica binaria in complemento di 2;
 - comprensione dell'overflow, strettamente legato al punto precedente;
-- integrazione dell'ALU 74181 e dell'Instruction Register (IR) in modalità "hardware wired" per poter generare "automaticamente" i segnali di ingresso dell'ALU a seconda dell'istruzione presente nell'IR;
+- integrazione dell'ALU 74181 e dell'Instruction Register (IR) in modalità "[hardwired](docs/alu/#relazione-diretta-hardwired-tra-instruction-register-e-alu)" per poter generare "automaticamente" i segnali di ingresso dell'ALU a seconda dell'istruzione presente nell'IR;
 - nuovo modulo di memoria basato su SRAM con pin IO comuni, a differenza dei 74189 utilizzati nel SAP con porte di Input e di Output dedicate;
 - il registro dei flag - sicuramente il più complesso del computer:
-  - utilizzo del 74151 per decodificare lo stato di overflow e la gestione del flag stesso - argomento strettamente legato alla perfetta comprensione dell'aritmetica binaria:
-  - utilizzo del 74151 per poter gestire le istruzioni di relative branch in modalità "hardware wired", similarmente a quanto fatto per la ALU:
+  - utilizzo del 74151 per decodificare lo stato di overflow e la gestione del flag stesso - argomento strettamente legato alla perfetta comprensione dell'aritmetica binaria;
+  - utilizzo del 74151 per poter gestire le istruzioni di [salto condizionale in modalità hardwired](docs/flags/#i-salti-condizionali-e-incondizionati), similarmente a quanto fatto per la ALU;
 - comprensione dello Stack Pointer e scrittura del microcode per le istruzioni che ne fanno uso;
 - sviluppo del software del programmatore di EEPROM / microcode basato su Arduino: ho studiato a fondo il codice di Tom, che ho compreso in buona parte:
   - schematizzazione delle istruzioni del 6502 e suddivisione in categorie;
@@ -81,15 +81,15 @@ In queste pagine si trovano note, appunti e insegnamenti appresi ed applicati ne
 
 Tra le cose apprese:
 
-1. i flag (del 6502), il loro ruolo e le interazioni all'interno di un computer;
-2. il ruolo di una ALU e la numerazione in complemento di 2;
-3. realizzazione di un programmatore di EEPROM molto veloce;
-4. basi del linguaggio C;
-5. basi di Arduino;
-6. utilizzo di VScode;
-7. il linguaggio Markdown;
-8. utilizzo di GitHub e GitHub Pages;
-9. disegno degli schemi con KiCad.
+1. i flag (del 6502), il loro ruolo e le interazioni all'interno di un computer
+2. il ruolo di una ALU e la numerazione in complemento di 2
+3. realizzazione di un programmatore di EEPROM molto veloce
+4. basi del linguaggio C
+5. basi di Arduino
+6. utilizzo di Visual Studio Code
+7. il linguaggio Markdown
+8. utilizzo di GitHub e GitHub Pages
+9. disegno degli schemi con KiCad
 
 ### Note
 
@@ -97,10 +97,10 @@ Tra le cose apprese:
 
 ## Crediti e ringraziamenti
 
-- Ben Eater per la sua grande capacità di creazione di [contenuti così interessanti](https://www.youtube.com/@BenEater/playlists/) e in particolar modo per la playlist [Building an 8-bit breadboard computer!](https://www.youtube.com/playlist?list=PLowKtXNTBypGqImE405J2565dvjafglHU);
-- Tom Nisbet che ha realizzato l'[NQSAP](https://https://tomnisbet.github.io/nqsap/) espandendo e migliorando in maniera sostanziale il progetto di Ben Eater;
-- il subreddit [r/beneater](https://www.reddit.com/r/beneater/) - in particolar modo [The8BitEnthusiast](https://www.reddit.com/user/The8BitEnthusiast/) e [Tom Nisbet](https://www.reddit.com/user/nib85/) - grazie!
-- Ken Shirrif per alcuni [interessantissimi articoli](https://www.righto.com/) su Overflow, 6502 e 74181 (e molto altro!);
+- Ben Eater per la sua grande capacità di creazione di <a href="https://www.youtube.com/@BenEater/playlists/" target="_blank">contenuti così interessanti</a> e in particolar modo per la playlist <a href="https://www.youtube.com/playlist?list=PLowKtXNTBypGqImE405J2565dvjafglHU" target="_blank">Building an 8-bit breadboard computer!</a>;
+- Tom Nisbet per l'<a href="https://https://tomnisbet.github.io/nqsap/" target="_blank">NQSAP</a> e l'<a href="https://https://tomnisbet.github.io/nqsap-pcb/" target="_blank">NQSAP-PCB</a> espandendo e migliorando in maniera sostanziale il progetto di Ben Eater;
+- il subreddit <a href="https://www.reddit.com/r/beneater/" target="_blank">r/beneater</a> - in particolar modo The8BitEnthusiast - grazie!
+- Ken Shirrif per alcuni <a href="https://www.righto.com/" target="_blank">interessantissimi articoli</a> su Overflow, 6502 e 74181 (e molto altro!);
 - l'esplosivo Dr. Brock LaMeres dell'università del Montana per l'eccellente playlist <a href="https://www.youtube.com/playlist?list=PL643xA3Ie_Et2uM4xu1yFk-A5ZQQ8gQ5e" target="_blank">Intro to Logic Circuits</a> su YouTube;
 - il sito [6502.org](http://6502.org) e il suo forum: documentazione dettagliata senza fronzoli e utenti davvero esperti.
 
