@@ -122,4 +122,3 @@ Ringraziamenti speciali: Tom Nisbet, che anche in fase di redazione della docume
 - Fare nota su copyright - se pensate che io abbia violato il vostro copyright, vi chiedo gentilmente di segnalarmelo e provvederò immediatamente alla rimozione del materiale
 - Review della parola "segnali" per distinguere bene i segnali di controllo dai segnali dati
 - E decidere se le abbreviazioni dei segnali debbano essere evidenziate o no; coerenza
-- Sistemare l'ordinamento delle pagine; verificare la sequenza premendo il pulsante "Successiva"
