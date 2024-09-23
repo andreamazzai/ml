@@ -45,9 +45,9 @@ Nel computer SAP di Ben Eater i registri di input all'ALU erano A e B, mentre ne
 
 Poiché le istruzioni del 6502 fanno riferimento al registro A, è necessario che A ed H siano sempre allineati, così che i '181 ritrovino trasparentemente in H il contenuto di A (ad esempio una somma ADC sarà effettivamente realizzata dando in input ai '181 i registri H e B: essendo H una copia di A, il risultato della somma sarà uguale ad A + B).
 
-Qual è l'utilità di un registro "ombra" come H? Alcune delle istruzioni che agiscono direttamente su una locazione di memoria possono essere eseguite senza interferire col contenuto del registro A, ad esempio INC Assoluto o ASL Assoluto Indicizzato X.
+Qual è l'utilità di un registro "ombra" come H? Alcune delle istruzioni che agiscono direttamente su una locazione di memoria o su un registro possono essere eseguite senza interferire col contenuto del registro A, ad esempio INX implicito, ASL Assoluto Indicizzato X e molte altre.
 
-Il registro H è fondamentale come registro temporaneo di appoggio da utilizzare per la realizzazione del microcode di molte altre istruzioni: in tutti questi casi, uno degli ultimi step eseguiti dal microcode sarà la copia di A su H:
+In tutti questi casi, uno degli ultimi step eseguiti dal microcode sarà la copia di A su H:
 
 ~~~text
 | ---- | -------------------------- |
@@ -69,7 +69,7 @@ Nell'esempio dell'istruzione INX del 6502, dopo la [fase Fetch](../control/#fasi
 - i '181 eseguono l'operazione **A Plus 1**, il cui risultato viene esposto sul bus (RL) e copiato in X (WX);
 - A, non modificato, viene esposto sul bus (RA) ed H viene riallineato (WH).
 
-Gli Shift Register '194 del registro H sono utilizzati anche per le operazioni di scorrimento e rotazione. I due pin di ingresso S0 ed S1 definiscono il comportamento del chip al Rising Edge del clock:
+Altra caratteristica rilevante del registro H realizzato con Shift Register '194 è la capacità di effettuare operazioni di scorrimento e rotazione. I due pin di ingresso S0 ed S1 definiscono il comportamento dello Shift Register al Rising Edge del clock:
 
 | S1 | S0 | Operazione                                                                                            |
 |  - | -  |  -                                                                                                    |
@@ -92,7 +92,7 @@ Al rising Edge del clock i '194 traslano verso sinistra gli output Q0-Q3 e caric
 
 Le istruzioni di scorrimento / rotazione a sinistra del 6502 memorizzano nel Carry il bit più significativo del byte da traslare. L'immagine mostra le diverse istruzioni di scorrimento e rotazione del 6502 ed evidenzia lo scorrimento a sinistra.
 
-![Istruzioni di scorrimento e rotazione del 6502](../../assets/alu/50-alu-shift-rotate-6502.png "Istruzioni di scorrimento e rotazione del 6502"){:width="50%"}
+![Istruzioni di scorrimento e rotazione del 6502](../../assets/alu/50-alu-shift-rotate-6502.png "Istruzioni di scorrimento e rotazione del 6502"){:width="40%"}
 
 *Istruzioni di scorrimento e rotazione del 6502.*
 
