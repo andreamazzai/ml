@@ -1,16 +1,16 @@
 ---
-title: "Flags Register"
+title: "Flag"
 permalink: /docs/flags/
-excerpt: "Flags Register del computer BEAM"
+excerpt: "Modulo dei Flag del computer BEAM"
 ---
 
-[![Registro dei flag del computer BEAM](../../assets/flags/30-flag-beam.png "Registro dei flag del computer BEAM"){:width="100%"}](../../assets/flags/30-flag-beam.png)
+[![Modulo dei Flag del computer BEAM](../../assets/flags/30-flag-beam.png "Modulo dei Flag del computer BEAM"){:width="100%"}](../../assets/flags/30-flag-beam.png)
 
 Più volte, analizzando l'NQSAP e leggendo la documentazione di Tom Nisbet, avevo trovato delle idee molto ingegnose; alcune di queste si trovano nel modulo dei Flag.
 
-[![Schema del modulo Flag di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità](../../assets/flags/30-flag-nqsap-schematics.png "Schema del modulo Flag di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità"){:width="100%"}](../../assets/flags/30-flag-nqsap-schematics.png)
+[![Schema del modulo dei Flag di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità](../../assets/flags/30-flag-nqsap-schematics.png "Schema del modulo dei Flag di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità"){:width="100%"}](../../assets/flags/30-flag-nqsap-schematics.png)
 
-*Schema del modulo Flag di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità.*
+*Schema del modulo dei Flag di Tom Nisbet, leggermente modificato al solo scopo di migliorarne la leggibilità.*
 
 Il registro dei Flag dell'NQSAP emula i 4 flag **NVZC** del 6502:
 
@@ -263,9 +263,9 @@ Si noti che la Truth Table della tabella richiederebbe i componenti evidenziati 
 
 ## Schema
 
-[![Schema del modulo Flag del computer BEAM](../../assets/flags/30-flag-beam-schematics.png "Schema del modulo Flag del computer BEAM"){:width="100%"}](../../assets/flags/30-flag-beam-schematics.png)
+[![Schema del modulo dei Flag del computer BEAM](../../assets/flags/30-flag-beam-schematics.png "Schema del modulo dei Flag del computer BEAM"){:width="100%"}](../../assets/flags/30-flag-beam-schematics.png)
 
-*Schema del modulo Flag del computer BEAM.*
+*Schema del modulo dei Flag del computer BEAM.*
 
 ## Differenze tra Moduli Flag dell'NQSAP e del BEAM
 

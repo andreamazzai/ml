@@ -17,7 +17,8 @@ Lorem ipsum dolor sit amet, consectetur adipisci elit, sed do eiusmod tempor inc
 
 ## Link utili
 
-- I video di Ben Eater che descrivono la realizzazione del <a href="https://eater.net/8bit/output" target="_blank">modulo di Output</a>.
+- Il <a href="https://tomnisbet.github.io/nqsap/docs/loader/" target="_blank">Loader dell'NQSAP</a> di Tom Nisbet.
+- Il <a href="https://tomnisbet.github.io/nqsap-pcb/docs/loader/" target="_blank">Loader dell'NQSAP-PCB</a> di Tom Nisbet.
 
 ## TO DO
 

@@ -42,23 +42,24 @@ Cercando un nome per il mio progetto, ho identificato in "BEAM" quello ideale: d
 
 I primi 8 mesi di lavoro sul progetto BEAM sono stati interamente devoluti allo studio: volevo capire ogni dettaglio dell'NQSAP, che presentava moltissime aggiunte al SAP e diverse idee davvero "clever"!
 
+La documentazione dell'NQSAP non era completa e avevo scovato anche alcuni errori, condivis con Tom, che li aveva prontamente corretti. Per aumentare la mia comprensione della realizzazione di Tom, dopo lo studio dell'NQSAP avevo analizzato anche l'evoluzione NQSAP-PCB, nella quale Tom aveva effettuato diversi miglioramenti. Nella realizzazione del BEAM, ho cercato di prendere il meglio da entrambi i progetti di Tom.
+
 Tra gli aspetti da citare e sui quali ho speso molto, **molto**, ***davvero molto*** tempo:
 
-- comprensione del funzionamento dell'ALU 74181, per la quale ho realizzato un bench di test sulla base di quanto appreso da David Courtney
-- comprensione dell'aritmetica binaria in complemento di 2
-- comprensione dell'overflow, strettamente legato al punto precedente
-- integrazione dell'ALU 74181 e dell'Instruction Register (IR) in modalità "hardware wired" per poter generare "automaticamente" i segnali di ingresso dell'ALU a seconda dell'istruzione presente nell'IR
-- nuovo modulo di memoria basato su SRAM con pin IO comuni, a differenza dei 74189 utilizzati nel SAP con porte di Input e di Output dedicate
+- comprensione del funzionamento dell'ALU 74181, per la quale ho realizzato un bench di test sulla base di quanto appreso da David Courtney;
+- comprensione dell'aritmetica binaria in complemento di 2;
+- comprensione dell'overflow, strettamente legato al punto precedente;
+- integrazione dell'ALU 74181 e dell'Instruction Register (IR) in modalità "hardware wired" per poter generare "automaticamente" i segnali di ingresso dell'ALU a seconda dell'istruzione presente nell'IR;
+- nuovo modulo di memoria basato su SRAM con pin IO comuni, a differenza dei 74189 utilizzati nel SAP con porte di Input e di Output dedicate;
 - il registro dei flag - sicuramente il più complesso del computer:
-  - utilizzo del 74151 per decodificare lo stato di overflow e la gestione del flag stesso - argomento strettamente legato alla perfetta comprensione dell'aritmetica binaria
-  - utilizzo del 74151 per poter gestire le istruzioni di relative branch in modalità "hardware wired", similarmente a quanto fatto per la ALU
-- comprensione dello stack pointer e scrittura del microcode per le istruzioni che ne fanno uso
+  - utilizzo del 74151 per decodificare lo stato di overflow e la gestione del flag stesso - argomento strettamente legato alla perfetta comprensione dell'aritmetica binaria:
+  - utilizzo del 74151 per poter gestire le istruzioni di relative branch in modalità "hardware wired", similarmente a quanto fatto per la ALU:
+- comprensione dello Stack Pointer e scrittura del microcode per le istruzioni che ne fanno uso;
 - sviluppo del software del programmatore di EEPROM / microcode basato su Arduino: ho studiato a fondo il codice di Tom, che ho compreso in buona parte:
-  - schematizzazione delle istruzioni del 6502 e suddivisione in categorie
-  - comprensione del metodo molto smart sviluppato da Tom per poter indirizzare più di 16 istruzioni aritmetiche avendo a disposizione solo 5 segnali da dedicare ai segnali di selezione dell'operazione dell'ALU
-- comprensione del problema del "glitch"
-- sviluppo del software del bootloader
-- disegno degli schemi con Kicad
+  - schematizzazione delle istruzioni del 6502 e suddivisione in categorie;
+  - comprensione del metodo molto smart sviluppato da Tom per poter indirizzare più di 16 istruzioni aritmetiche avendo a disposizione solo 5 segnali da dedicare ai segnali di selezione dell'operazione dell'ALU;
+- comprensione del problema del "glitch";
+- sviluppo del software del bootloader;
 
 [![Schema logico luglio 2023](assets/hand-drawn-logic.jpg "Schema logico luglio 2023"){:width="66%"}](assets/hand-drawn-logic.jpg)
 
@@ -72,20 +73,21 @@ A luglio 2023 ho cercato di ricomporre tutto ciò che avevo appreso e ho provato
 
 La fase costruttiva è iniziata a ottobre 2023 e si è conclusa nei primi giorni di maggio 2024. Il risultato è quello visibile in foto.
 
-In queste pagine si trovano analisi dei moduli dell'NQSAP, quanto ho imparato ed applicato nella realizzazione del BEAM, alcune differenze tra i due sistemi, qualche confronto anche con il SAP, note, appunti e approfondimenti.
+In queste pagine si trovano analisi dei moduli dell'NQSAP, quanto ho imparato ed applicato nella realizzazione del BEAM, alcune differenze tra i due sistemi, qualche confronto con il SAP, note, appunti e approfondimenti.
 
 [![BEAM Breadboard Computer](assets/beam.png "BEAM breadboard computer"){:width="66%"}](assets/beam.png)
 
 Tra le cose apprese:
 
-1. i flag (del 6502), il loro ruolo e le interazioni all'interno di un computer
-2. il ruolo di una ALU e la numerazione in complemento di 2
-3. realizzazione di un programmatore di EEPROM molto veloce
-4. basi del linguaggio C
-5. basi di Arduino
-6. utilizzo di VScode
-7. il linguaggio markdown
-8. utilizzo di GitHub
+1. i flag (del 6502), il loro ruolo e le interazioni all'interno di un computer;
+2. il ruolo di una ALU e la numerazione in complemento di 2;
+3. realizzazione di un programmatore di EEPROM molto veloce;
+4. basi del linguaggio C;
+5. basi di Arduino;
+6. utilizzo di VScode;
+7. il linguaggio Markdown;
+8. utilizzo di GitHub e GitHub Pages;
+9. disegno degli schemi con KiCad.
 
 ### Note
 
@@ -97,9 +99,10 @@ Tra le cose apprese:
 - Tom Nisbet che ha realizzato l'[NQSAP](https://https://tomnisbet.github.io/nqsap/) espandendo e migliorando in maniera sostanziale il progetto di Ben Eater;
 - il subreddit [r/beneater](https://www.reddit.com/r/beneater/) - in particolar modo [The8BitEnthusiast](https://www.reddit.com/user/The8BitEnthusiast/) e [Tom Nisbet](https://www.reddit.com/user/nib85/) - grazie!
 - Ken Shirrif per alcuni [interessantissimi articoli](https://www.righto.com/) su Overflow, 6502 e 74181 (e molto altro!);
+- il Dr. Brock LaMeres dell'università del Montana per l'eccellente playlist <a href="https://www.youtube.com/playlist?list=PL643xA3Ie_Et2uM4xu1yFk-A5ZQQ8gQ5e" target="_blank">Intro to Logic Circuits</a> su YouTube.
 - il sito [6502.org](http://6502.org) e il suo forum: documentazione dettagliata senza fronzoli e utenti davvero esperti.
 
-Ringraziamenti speciali: Tom Nisbet, che anche in fase di redazione della documentazione non ha esitatoa darmi qualche chiarimento.
+Ringraziamenti speciali: Tom Nisbet, che anche in fase di redazione della documentazione non ha esitato a darmi qualche chiarimento.
 
 ## Altri link
 
@@ -113,13 +116,11 @@ Ringraziamenti speciali: Tom Nisbet, che anche in fase di redazione della docume
 ## TO DO
 
 - mettere i link ai miei post su Reddit
-- quel professore dell'università del Montana
 - problemi di alimentazione
 - Controllare dove ho scritto computer BEAM oppure BEAM computer e SAP e NQSAP su tutte le pagine e sugli schemi elettrici
 - non ho utilizzato HC perché... bla bla bla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla blabla bla
 - sistemare il paragrafo BENEFICI
 - cosa non è stato emulato? IRQ, BCD
-- Spiegare che avevo preso il meglio da nqsap e da sua versione PCB, cioè dopo aver letto il primo avevo letto anche la documentazione del secondo nella quale Tom aveva effettuato diversi miglioramenti migliorie e ho cercato di prendere il meglio di tutte e due lemacchine 
 - Aritmetica binaria e tutti gli altri... se è il nome di qualcosa, va in maiuscolo, altrimenti no... ad esempio alla sezione **numeri signed** della pagina dedicata all'aritmetica binaria ==> In questo caso forse sarebbe meglio averlo in minuscolo
 - Registri indice maiscuolo, minuscolo etc... ???
 - come devo chiamare i registri? ad esempio Stack per il registro e stack per genericamente "lo stack"?

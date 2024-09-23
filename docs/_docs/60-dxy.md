@@ -1,5 +1,5 @@
 ---
-title: "Registri D, X e Y"
+title: "D, X e Y"
 permalink: /docs/dxy/
 excerpt: "Registri indice del computer BEAM"
 ---

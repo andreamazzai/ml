@@ -1,5 +1,5 @@
 ---
-title: "Output Register"
+title: "Output"
 permalink: /docs/output/
 excerpt: "Output Register del computer BEAM"
 ---
