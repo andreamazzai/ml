@@ -44,10 +44,6 @@
         url: /docs/loader/
       - title: "> EEPROM Programmer"
         url: /docs/eeprom-programmer/
-  #     - title: "Ring Counter"
-  #       url: /docs/ring-counter/
-  #     - title: "Control"
-  #       url: /docs/microcode/
   # - title: "Wrap-up"
   #   children:
   #     - title: "Tips"
