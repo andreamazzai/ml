@@ -110,15 +110,20 @@ Ringraziamenti speciali: Tom Nisbet, che anche in fase di redazione della docume
 - <a href="https://archive.org/details/Programming_the_6502_OCR" target="_blank">Programming the 6502</a> di Rodnay Zaks.
 - <a href="https://archive.org/details/367026792DigitalComputerElectronicsAlbertPaulMalvinoAndJeraldABrownPdf1/" target="_blank">Digital Computer Electronics</a> di Albert Paul Malvino e Jerald A. Brown.
 
+### Avviso sui Diritti di Proprietà Intellettuale
+
+Questo progetto potrebbe includere link, documenti, o immagini di proprietà di terzi. Mi impegno a rispettare pienamente i diritti di proprietà intellettuale di tutti i proprietari e non intendo violare alcun diritto d'autore.
+
+Se si ritiene che uno o più dei materiali presenti in questa documentazione violi i propri diritti di copyright, prego di segnalarmelo. Provvederò prontamente alla verifica e, in caso di violazione, alla rimozione immediata del materiale in questione.
+
+D'altro canto, tutto il materiale originale prodotto in questo progetto è rilasciato sotto la licenza MIT. Questo significa che è liberamente utilizzabile, modificabile e distribuibile da altri, a condizione che venga mantenuta l'indicazione di copyright originale e questa stessa licenza sia inclusa in eventuali copie o versioni modificate del progetto.
+
 ## TO DO
 
 - Mettere i link ai miei post su Reddit
-- Descrivere i problemi di alimentazione
-- Controllare la coerenza della forma: "BEAM" oppure "BEAM computer" o "computer BEAM" + SAP + NQSAP su tutte le pagine e sugli schemi
 - cosa non è stato emulato? IRQ, BCD
+- Controllare la coerenza della forma: "BEAM" oppure "BEAM computer" o "computer BEAM" + SAP + NQSAP su tutte le pagine e sugli schemi
 - Aritmetica binaria e tutti gli altri argomenti... se è il nome di qualcosa, va in maiuscolo, altrimenti no - ad esempio alla sezione **numeri signed** della pagina dedicata all'aritmetica binaria ==> In questo caso forse sarebbe meglio averlo in minuscolo
 - Registri indice maiscuolo, minuscolo etc... ???
 - Forma e coerenza su come chiamare i registri - ad esempio Stack per il registro e stack per genericamente "lo stack"
-- Fare nota su copyright - se pensate che io abbia violato il vostro copyright, vi chiedo gentilmente di segnalarmelo e provvederò immediatamente alla rimozione del materiale
-- Review della parola "segnali" per distinguere bene i segnali di controllo dai segnali dati
-- E decidere se le abbreviazioni dei segnali debbano essere evidenziate o no; coerenza
+- Review della parola "segnali" per distinguere bene i segnali di controllo dai segnali dati - e decidere se le abbreviazioni dei segnali debbano essere evidenziate o no per coerenza

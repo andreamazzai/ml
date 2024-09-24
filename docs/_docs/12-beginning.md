@@ -5,17 +5,49 @@ excerpt: "Per iniziare"
 ---
 [![Per iniziare](../../assets/ram/20-ram-beam.png "Per iniziare"){:width="100%"}](../../assets/ram/20-ram-beam.png)
 
-**NOTA: PLACEHOLDER - PLACEHOLDER - PLACEHOLDER**
+**WORK IN PROGRESS - WORK IN PROGRESS**
 
 ## Cosa devo includere in questa pagina?
 
-- Per esempio Il circuito che permette di leggere o scrivere su un bus a 8 bit
-- evidenziare che non ho utilizzato i condensatori collegati all'alimentazione di ogni chip
+
+## TTL o CMOS?
+
+- Descrivere la scelta di non usare HC
+
+## Alimentazione - WIP
+
+Leggendo le esperienze degli altri utenti su reddito , sembra che quello dell'alimentazione sia un problema abbastanza diffuso .le FAQ altri documenti scritti da altri utenti danno dei suggerimenti e aiutano indirizzare le questioni di distribuzione dell'elettricità . per quanto mi riguarda , dopo essere partito con la distribuzione laterale come avevo fatto nel SAP , ho aggiunto una ulteriore discesa dell'alimentazione al centro del computer aggiungendo una ulteriore fila di sezioni laterali ritagliate dalle breadboard.
+
+Come si potrà notare nelle foto non ho utilizzato condensatoriCosì come non li avevo utilizzati nemmeno nella realizzazione del sapi, confidando un po nella fortuna e nella bassa frequenza di utilizzo del computer.
+
+Devo infine dire che nelle mie due realizzazioni ho notato che i chip TTL sembrano essere un po più malleabili , flessibili , meno rigidi rispetto ai requisiti indicati nel data sht, tanto che in alcuni casi , prima di migliorare la distribuzione dell'elettricità  alcuni chip funzionavano bene anche a 4,3 volt.
+
+## Circuito di test
+
+Anziché utilizzare jumper per fare i test sul bus e sui moduli in costruzione, ho costruito un semplice circuito di test, risultato particolarmente comodo per accelerare il test e l'eventuale troubleshootin
+
+
+[![Schema del modulo di test](../../assets/varie/12-test-schema.png "Schema del modulo di test"){:width="100%"}](../../assets/varie/12-test-schema.png)
+
+*Schema del modulo di test.*
+
+## Link utili
+
+- I <a href="https://eater.net/8bit/clock" target="_blank">video</a> di Ben Eater che descrivono il funzionamento dei timer 555 e la costruzione del modulo di clock.
+- <a href="https://todbot.com/blog/2010/01/02/momentary-button-as-onoff-toggle-using-555/" target="_blank">Un blog</a> che spiega come creare un circuito bistabile, qui utilizzato per creare la funzione "Start/Stop" con pulsante anziché con interruttore.
+
+## LED
+
 - i LED utilizzati includono la resistenza - giallo verde rosso; altri no.
 - Le LED BAR Sono incluse negli schemi, mentre i singoli LED no. Nota: per motivi di spazio una LED BAR nello schema della CL non è stata inserita.
 - fare LED BAR da 8 led per Control Logic
-- Includere appunti su acquisto dei materiali, cavi utilizzati
-- Descrivere la scelta di non usare HC
+
+## Approvvigionamento dei materiali
+
+Le breadboard utilizzate sono le BB 830 già utilizzate da altri utenti e valutate come le migliori sul mercato.
+Includere appunti su acquisto dei materiali, cavi utilizzati
+
+
 
 ### Primi studi
 
