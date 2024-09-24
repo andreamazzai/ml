@@ -3,6 +3,8 @@ title: "Arduino Loader"
 permalink: /docs/loader/
 excerpt: "Loader del computer BEAM"
 ---
+## PLACEHOLDER
+
 [![Loader del computer BEAM](../../assets/loader/80-beam-loader.png "Loader del computer BEAM"){:width="100%"}](../../assets/loader/80-beam-loader.png)
 
 **PLACEHOLDER**

@@ -19,17 +19,11 @@ I due Synchronous 4-Bit Binary Counters <a href="https://www.ti.com/lit/ds/symli
 
 Il Carry Out di un contatore binario a 4 bit, attivo al raggiungimento del conteggio 2^4, permette al contatore successivo di incrementare di un'unità il suo conteggio. Due contatori in cascata permettono di contare fino a 2^4 \* 2^4 = 16 \* 16 = 256.
 
-## Note sul microcode
+## Note sui segnali
 
-- Verificare se ci sono note da inserire in questa sezione in relazione al contenuto della pagina. Forse qualcosa relativo al fatto che le prime due microistruzioni sono sempre le stesse
-- E un rimando al modulo dei Flag nel quale si spiega meglio come venga eseguito il salto a una nuova istruzione;
-- inoltre Forse anche un rimando alla pagina DXYche viene utilizzata per calcolare il nuovo valore del PC del salto condizionale
-- Verificare se nel datasheet si parla ripple carry out e anche l'atro tipo di carry e linkare eventualmente La sezione apposita nella pagina dell'aritmetica binaria
+- L'incremento del PC viene effettuato attivando il segnale PCI nel microcode (Program Counter Increment).
+- Il caricamento del PC a un valore specifico a seguito di una istruzione di salto o di ritorno da subroutine viene eseguito attivando il segnale PCJ (Program Counter Jump). La pagina dei Flag include una [sezione dedicata](../flags/#i-salti-condizionali-e-incondizionati) all'approfondimento delle operazioni di salto.
 
 ## Link utili
 
 - I <a href="https://eater.net/8bit/pc" target="_blank">video</a> di Ben Eater che descrivono il funzionamento dei Flip-Flop e la costruzione del PC.
-
-## TO DO
-
-- Verificare se la sezione **Note sul microcode** sia necessaria o no

@@ -7,12 +7,33 @@ excerpt: "Per iniziare"
 
 **WORK IN PROGRESS - WORK IN PROGRESS**
 
-## Cosa devo includere in questa pagina?
+**Cosa devo includere in questa pagina?**
 
+- a
+- b
+- c
 
-## TTL o CMOS?
+## Componenti
+
+### TTL o CMOS?
 
 - Descrivere la scelta di non usare HC
+
+### LED
+
+- i LED utilizzati includono la resistenza - giallo verde rosso; altri no.
+- Le LED BAR Sono incluse negli schemi, mentre i singoli LED no. Nota: per motivi di spazio una LED BAR nello schema della CL non è stata inserita.
+- fare LED BAR da 8 led per Control Logic
+
+### Varie
+
+- I comodissimi [Rocker Switch](../ram/#note) utilizzati nei moduli MAR e RAM.
+
+## Approvvigionamento dei materiali
+
+Le breadboard utilizzate sono le BB830 incluse anche nei kit di Ben Eater. La qualità dei contatti è decisamente superiore a quella delle breadboard economiche che si trovano online per pochi Euro e il costo ripaga ampiamente il non doversi preoccupare di falsi contatti e problematiche che avvengono casualmente.
+
+Includere appunti su acquisto dei materiali, cavi utilizzati
 
 ## Alimentazione - WIP
 
@@ -26,30 +47,18 @@ Devo infine dire che nelle mie due realizzazioni ho notato che i chip TTL sembra
 
 Anziché utilizzare jumper per fare i test sul bus e sui moduli in costruzione, ho costruito un semplice circuito di test, risultato particolarmente comodo per accelerare il test e l'eventuale troubleshootin
 
-
 [![Schema del modulo di test](../../assets/varie/12-test-schema.png "Schema del modulo di test"){:width="100%"}](../../assets/varie/12-test-schema.png)
 
 *Schema del modulo di test.*
+
+### Altro argomento
+
+Lorem ipsum dolor sit amet, consectetur adipisci elit, sed do eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullamco laboriosam, nisi ut aliquid ex ea commodi consequatur. Duis aute irure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 ## Link utili
 
 - I <a href="https://eater.net/8bit/clock" target="_blank">video</a> di Ben Eater che descrivono il funzionamento dei timer 555 e la costruzione del modulo di clock.
 - <a href="https://todbot.com/blog/2010/01/02/momentary-button-as-onoff-toggle-using-555/" target="_blank">Un blog</a> che spiega come creare un circuito bistabile, qui utilizzato per creare la funzione "Start/Stop" con pulsante anziché con interruttore.
-
-## LED
-
-- i LED utilizzati includono la resistenza - giallo verde rosso; altri no.
-- Le LED BAR Sono incluse negli schemi, mentre i singoli LED no. Nota: per motivi di spazio una LED BAR nello schema della CL non è stata inserita.
-- fare LED BAR da 8 led per Control Logic
-
-## Approvvigionamento dei materiali
-
-Le breadboard utilizzate sono le BB 830 già utilizzate da altri utenti e valutate come le migliori sul mercato.
-Includere appunti su acquisto dei materiali, cavi utilizzati
-
-
-
-### Primi studi
 
 ## Note
 

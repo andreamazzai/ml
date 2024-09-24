@@ -23,7 +23,7 @@ Il registro A non è direttamente connesso alla ALU, ma, analizzando a livello l
 
 Il registro A dell'NQSAP e del BEAM sono diversi per costruzione, ma identici dal punto di vista funzionale. Lo schema seguente, pur facendo riferimento al BEAM, è riutilizzabile in tutte le spiegazioni che seguono, anche quando principalmente rivolte alla descrizione del modulo ALU dell'NQSAP.
 
-[![Schema del Registro A del BEAM computer](../../assets/alu/50-a-beam-schema.png "Schema del Registro A del BEAM computer"){:width="100%"}](../../assets/alu/50-a-beam-schema.png)
+[![Schema del Registro A del computer BEAM](../../assets/alu/50-a-beam-schema.png "Schema del Registro A del computer BEAM"){:width="100%"}](../../assets/alu/50-a-beam-schema.png)
 
 ## L'ALU dell'NQSAP
 
@@ -408,14 +408,3 @@ Ecco una lista delle differenze:
 - La pagina delle <a href="https://tomnisbet.github.io/nqsap/docs/74181-alu-notes" target="_blank">note sul 74181</a> di Tom Nisbet.
 - <a href="https://www.youtube.com/watch?v=Fq0MIJjlGsw" target="_blank">Demo of 74LS181 (74HCT181) ALU</a> e <a href="https://www.youtube.com/watch?v=jmROTNtoUGI" target="_blank">Comparator Functions of 74LS181 (74HCT181) ALU</a>: due ottimi video di David Courtney.
 - Il <a href="https://www.atarimania.com/documents/6502%20(65xx)%20Microprocessor%20Instant%20Reference%20Card.pdf" target="_blank">compendio della Micro Logic</a>, dal quale è tratta l'immagine sulle modalità di [scorrimento e rotazione](#il-registro-h) del 6502.
-
-## TO DO
-
-- /WE ↘↗
-- https://bread80.com/2019/09/02/adding-adc-sbc-inc-dec-operations-to-ben-eaters-alu/#easy-footnote-4-43 da leggere per capire se buono
-- subito dopo il capitolo "Il registro H" capire "(da fare: in questo caso, ma anche nel caso delle istruzioni di shift / rotazione e forse anche CPX e CPY, verificare se non potessi usare D invece di H)"
-- in Questa zona <<< Nel datasheet venivano menzionati anche il Carry Look-Ahead e il Ripple-Carry, approfonditi nella sezione dedicata all'[Aritmetica Binaria](../math/#). >>> sistemare il link alla sezione che devo ancora scrivere - 15 08 2024
-- controllare "Lo spreadsheet Excel citato nel paragrafo precedente è scaricabile qui; le tabelle appena menzionate sono presenti nel foglio “6502 Inst. Set”.
-- rivedere "L'ALU dell'NQSAP per dare senso al fatto che ho studiato NQSAP ma parlo della realizzazione del BEAM
-- Parlare del bench di test sulla base di quanto appreso da David Courtney.
-- link al mio video dell'ALU

@@ -11,25 +11,25 @@ Questa pagina descrive le Control Logic dell'NQSAP e del BEAM, evidenzia alcune 
 
 Per facilità di consultazione e semplificazione del confronto fra i tre computer SAP, NQSAP e BEAM, è opportuno riepilogare in tabella alcuni degli aspetti ricorrenti nel testo.
 
-| ↓ ↓ Caratteristica / Sistema → →       | SAP        | NQSAP       | BEAM           |
-| -                                      | -          | -           | -              |
-| Autore                                 | Ben Eater  | Tom Nisbet  | Andrea Mazzai  |
-| IR condiviso tra Opcode e Operando     | Sì         | No          | No             |
-| Bit IR per Opcode                      | 4          | 8           | 8              |
-| Bit IR per Operando                    | 4          | 0           | 0              |
-| Ampiezza bus da RC a EEPROM (bit)      | 3          | 3           | 4              |
-| Numero massimo Step (RC)               | 5          | 8           | 16             |
-| Ampiezza bus da IR a EEPROM  (bit)     | 4          | 8           | 8              |
-| Numero massimo Istruzioni (IR)         | 16         | 256         | 256            |
-| Istruzioni implementate nel Microcode  | ~ 10       | ~ 150       | ~ 150          |
-| Lunghezza Istruzioni variabile         | No         | Sì          | Sì             |
-| IR bufferizzato                        | No         | No          | Sì             |
-| Caricamento IR a Rising o Falling Edge | Rising     | Rising      | Falling        |
-| Caricamento RC a Rising o Falling Edge | Falling    | Falling     | Falling        |
-| EEPROM                                 | 2x 28C16   | 4x 28C256   | 4x 28C256      |
-| EEPROM (Kb)                            | 2x 16      | 4x 256      | 4x 256         |
-| Dimensione Control Word (bit)          | 16         | 32          | 32             |
-| RAM (byte)                             | 16         | 256         | 256            |
+| ↓ ↓ Caratteristica / Sistema → →       | SAP       | NQSAP      | BEAM          |
+| -                                      | -         | -          | -             |
+| Autore                                 | Ben Eater | Tom Nisbet | Andrea Mazzai |
+| IR condiviso tra Opcode e Operando     | Sì        | No         | No            |
+| Bit IR per Opcode                      | 4         | 8          | 8             |
+| Bit IR per Operando                    | 4         | 0          | 0             |
+| Ampiezza bus da RC a EEPROM (bit)      | 3         | 3          | 4             |
+| Numero massimo Step (RC)               | 5         | 8          | 16            |
+| Ampiezza bus da IR a EEPROM  (bit)     | 4         | 8          | 8             |
+| Numero massimo Istruzioni (IR)         | 16        | 256        | 256           |
+| Istruzioni implementate nel Microcode  | ~ 10      | 120        | > 110         |
+| Lunghezza Istruzioni variabile         | No        | Sì         | Sì            |
+| IR bufferizzato                        | No        | No         | Sì            |
+| Caricamento IR a Rising o Falling Edge | Rising    | Rising     | Falling       |
+| Caricamento RC a Rising o Falling Edge | Falling   | Falling    | Falling       |
+| EEPROM                                 | 2x 28C16  | 4x 28C256  | 4x 28C256     |
+| EEPROM (Kb)                            | 2x 16     | 4x 256     | 4x 256        |
+| Dimensione Control Word (bit)          | 16        | 32         | 32            |
+| RAM (byte)                             | 16        | 256        | 256           |
 
 Legenda: IR = Instruction Register; RC = Ring Counter
 
@@ -153,12 +153,12 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio mnemonico del 65
 3. Il terzo step carica nel Memory Address Register l'indirizzo del Program Counter, che ora punta all'operando:
     - RPC, Read Program Counter - espone l'indirizzo del PC sul bus
     - WM, Write Memory Address Register - carica l'indirizzo dell'operando nel MAR
-4. Il quarto ed ultimo step carica l'operando nell'accumulatore*, incrementa il PC per farlo puntare alla istruzione successiva e resetta il Ring Counter
-    - RR, Read RAM - espone sul bus il contenuto della locazione di memoria indirizzata dal MAR
+4. Il quarto ed ultimo step carica l'operando nell'accumulatore, incrementa il PC per farlo puntare alla istruzione successiva e resetta il Ring Counter
+    - RR, Read RAM - espone l'operando sul bus
     - FNZ, Flag N & Z - aggiorna i Flag N e Z
-    - WAH, Write A & H - carica l'operando in A e H**
+    - WAH, Write A & H - carica l'operando in A e H\*\*
     - PCI, Program Counter Increment - incrementa il PC
-    - NI, Next Instruction - resetta il Ring Counter***
+    - NI, Next Instruction - resetta il Ring Counter\*\*\*
 
 \* Non bisogna trascurare il fatto che i primi due step di *tutte* le istruzioni sono *sempre* identici. Alla fine del secondo step, l'Instruction Register contiene l'opcode dell'istruzione, che, insieme alle microistruzioni, definisce le operazioni che gli step successivi devono eseguire. Questo vale per qualsiasi istruzione, compresa la prima che una CPU esegue all'accensione. Prima di costruire il SAP di Ben Eater, non riuscivo a immaginare quale meccanismo permettesse ad una CPU di sapere cosa dovesse fare una volta accesa; l'averlo compreso è stato piuttosto appagante.
 
@@ -559,21 +559,17 @@ La colonna "Ambito o direzione segnale" indica il contesto di un bus, oppure sor
 
 \* Manca nel modulo ALU; dimenticanza nello schema di Tom.
 
-## WORK IN PROGRESS  
-
 ## Microcode
 
 La fase di scrittura del microcode non è stata *troppo* complessa. L'esperienza fatta col SAP, lo studio approfondito dell'NQSAP e molta pazienza mi avevano portato a comprendere piuttosto bene come sviluppare gli step delle microistruzioni, anche quelle più complesse, e i meccanismi per simulare le modalità di indirizzamento del 6502.
 
-E' stata invece particolarmente difficile la *definizione* dell'instruction set, sul quale, col senno di poi, avrei investito più tempo. Purtroppo ho notato di non essere riuscito a costruirlo in maniera organica solo alla fine della definizione dello stesso, quando avevo già iniziato a lavorare sulla realizzazione hardware e non volevo più tornare indietro.
+E' stata invece particolarmente difficile la *definizione* dell'instruction set, sul quale, col senno di poi, avrei dovuto investire più tempo. Purtroppo ho notato di non essere riuscito a costruirlo in maniera organica solo alla fine della definizione dello stesso, quando avevo già iniziato a lavorare sulla realizzazione hardware e non volevo più tornare indietro.
 
-In effetti, la realizzazione del BEAM non ha avuto un percorso molto lungo di *trial and error*, perché il lungo studio per la realizzazione dei moduli aveva fatto in modo che funzionassero al primo tentativo, o comunque con poche variazioni finali.
+In effetti, la realizzazione del BEAM non ha avuto un percorso molto lungo di *trial and error*, perché la lunga analisi aveva fatto in modo che i moduli funzionassero sin dai primi tentativi, o comunque con poche variazioni finali.
 
-Infatti il codice di Tom mostra che è possibile automatizzare la generazione del micro code per molte operazioni grazie al fatto che le app opportunamente posizionate all'interno della tabella , cosa che ionon sono riuscito a fare in quanto all'inizio del task non mi era chiaro quale sarebbe stato il beneficio . inoltre la mia conoscenza del linguaggio c è limitata e non sono riuscito a comprendere chiaramente cosa facesse il codice di Tom.
+Tom ha dimostrato che è possibile automatizzare una parte della generazione del microcodice grazie a un raggruppamento più logico delle istruzioni. Tuttavia, non sono riuscito a fare lo stesso perché la mia conoscenza del linguaggio C, allora come al momento della scrittura della documentazione del BEAM, è modesta e non mi ha permesso di capire chiaramente come strutturare l'Instruction Set per sfruttare questi vantaggi.
 
-Il mio codice è commentato e dovrebbe essere abbastanza esplicativo.
-
-Nota che a livello generale ha definito due fasi di Fetch F1 ed F2 che sono comuni a tutte le istruzioni e sono sempre ripetute.
+Il codice è parzialmente commentato e dovrebbe essere abbastanza esplicativo.
 
 Alcuni link:
 
@@ -661,28 +657,6 @@ La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato d
 
 - I video di Ben Eater che descrivono la <a href="https://eater.net/8bit/control" target="_blank">Control Logic e il Microcode</a>.
 - La <a href="https://tomnisbet.github.io/nqsap/docs/control/" target="_blank">Control Logic dell'NQSAP</a> di Tom Nisbet
-
-## TO DO
-
-- "Infatti il codice di Tom mostra che è possibile automatizzare la generazione del micro code per molte operazioni grazie al fatto che le app opportunamente posizionate all’interno della tabella , cosa che ionon sono riuscito a fare in quanto all’inizio del task non mi era chiaro quale sarebbe stato il beneficio . inoltre la mia conoscenza del linguaggio c è limitata e non sono riuscito a comprendere chiaramente cosa facesse il codice di Tom."
-
-- Una volta fatta una sezione nella pagina ALU per descrivere il comportamento del registro H, fare un link da questa pagina nella sezione che parla della mutua esclusività dei segnali di controllo.
-
-- Effetto non desiderato: "le istruzioni di salto condizionato non eseguite sprecano cicli di clock"… non si potrebbe semplicemente usare N per terminare anticipatamente l'istruzione? 
-- 29/01/2023  dovrebbe essere possibile fare in modo che la logica elettronica dell'istruzione Jump vada ad attivare N se il salto non deve esserci… da verificare
-
-- da sistemare dopo aver completao pagina Loader:
-  - Reset asincrono del computer; 
-  - Disattivazione delle EEPROM della Control Logic
-  - Iniezione del clock del Loader nel computer
-  - (Re-)Start del clock di sistema dopo il carica.....
-
-- 2DO Reset asincrono del
-- 2DO Disattivazione clock
-- 2DO Iniezione del clock
-- 2DO (Re-)Start del clock
-
-- Controller Nelle pagine dove ci sono le descrizioni delle microistruzioni controllare se non sia meglio invertire la forma della frase , cioè invece di dire "espone nel bus e carica nel Mar", dire "carica nel Mar il contenuto del bus"
 
 ## Riflessione sul microcode
 

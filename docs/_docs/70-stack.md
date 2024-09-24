@@ -87,7 +87,7 @@ La tabella che segue **evidenzia visivamente** le modifiche apportate dalle micr
     - RPC, Read Program Counter - espone l'indirizzo del PC sul bus
     - WM, Write Memory Address Register - carica l'indirizzo dell'operando nel MAR
 4. Il quarto step carica l'indirizzo della subroutine in B e incrementa il PC, che va ora a puntare alla prossima istruzione, coincidente con l'indirizzo di ritorno dalla subroutine:
-    - RR, Read RAM - espone sul bus il contenuto della locazione di memoria indirizzata dal MAR
+    - RR, Read RAM - espone l'operando sul bus
     - WB, Write B - memorizza in B l'indirizzo di destinazione del salto
     - PCI, Program Counter Increment - incrementa il PC
 5. Il quinto step carica nel Memory Address Register l'indirizzo dello Stack Pointer, che corrisponde alla prima locazione libera dello stack:
@@ -137,7 +137,3 @@ L'SP dell'NQSAP è governato dai segnali SE (Stack Enable) e C0/C1, che determin
 - <a href="https://wilsonminesco.com/stacks/basics.html" target="_blank">Stack definition and basics</a> di Garth Wilson, contributore di <a href="http://www.6502.org" target="_blank">6502.org</a> e curatore di <a href="https://wilsonminesco.com/" target="_blank">Wilson Mines Co.</a>, vera miniera di articoli, nozioni, tutorial ed altro sul 6502.
 - Lo <a href="https://tomnisbet.github.io/nqsap/docs/stack-pointer/" target="_blank">Stack Pointer dell'NQSAP</a> di Tom Nisbet
 - Lo <a href="https://tomnisbet.github.io/nqsap-pcb/docs/program-counter-stack-pointer/" target="_blank">Stack Pointer dell'NQSAP-PCB</a> di Tom Nisbet
-
-## TO DO
-
-- controllare se il mio SP funziona correttamente; vedo che Tom ha usato dei cablaggi diversi per i pin 7 e 10   20-08-2024

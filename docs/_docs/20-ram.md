@@ -137,7 +137,7 @@ Tra i post più utili relativi alla comprensione dei segnali di gestione di RAM 
 
 *Modulo RAM dell'utente e moderatore Reddit The8BitEnthusiast.*
 
-Se da un certo punto di vista lo schema era particolarmente semplificato rispetto a quelli che avevo visto in precedenza, dall'altra, con l'utilizzo di un solo MUX '157 con segnali che ne uscivano per rientrarne in altre porte, mi risultava di difficile comprensione. Avevo pertanto provato a costruirmi i grafici temporali degli schemi dei segnali per questi tre possibili casi:
+Da un lato, lo schema appariva semplificato rispetto a quelli che avevo visto in precedenza; dall'altro, l'uso di un solo MUX '157, con segnali che uscivano per rientrare in altre porte, lo rendeva difficile da comprendere analizzare. Avevo pertanto provato a costruirmi i grafici temporali degli schemi dei segnali per questi tre possibili casi:
 
 - Scrittura sulla RAM in Run Mode
 
@@ -364,8 +364,3 @@ Invece dei più comuni dip-switch, ho utilizzato dei comodissimi Rocker Switch (
 ## Link utili
 
 - La documentazione "Building the SAP-3 rev 3.3.pdf" scritta da rolf-electronics e disponibile su <a href="https://github.com/rolf-electronics/The-8-bit-SAP-3" target="_blank">GitHub</a>.
-
-## TO DO
-
-- mettere dei link
-- dove parlo di "Ripple Mode Carry” e “Carry Look Ahead" mettere il link alla sezione (ancora da scrivere) in Aritmetica Binaria

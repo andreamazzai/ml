@@ -61,16 +61,18 @@ Un multiplexer (MUX) <a href="https://www.ti.com/lit/ds/symlink/sn74ls157.pdf" t
 
 1. **dal bus**; quando il '157 legge dal bus, è possibile caricare i registri dei flag leggendo valori arbitrari dalla memoria del computer (o, più precisamente, dalla zona di memoria adibita allo Stack) similarmente a quanto svolto dall'istruzione Pull Processor Status **PLP** del 6502;
 
-2. **da un computo o da un altro modulo**:
+2. **da un computo**:
     - **V** attraverso un Data Selector/Multiplexer '151 che ricrea la funzione logica dell'Overflow verificando un eventuale cambio di segno nel risultato delle operazioni di somma o sottrazione dei numeri con segno (Signed);
     - **Z** come risultato del comparatore <a href="https://www.ti.com/lit/ds/symlink/sn74ls688.pdf" target="_blank">74LS688</a>;
     - **C** attraverso un altro '151 che seleziona la sorgente del Carry;
 
-V, Z e C escono dal MUX '157 e sono presentati a 3 dei 4 Flip-Flop disponibili in una coppia di <a href="https://www.ti.com/lit/ds/symlink/sn54ls74a.pdf" target="_blank">74LS74</a>.
+Il segnale di controllo **FS** a livello LO permette il caricamento dei Flag dal bus; viceversa, il caricamento dei Flag computati richiede che FS sia attivo.
+
+V, Z e C in output dal MUX '157 sono presentati a 3 dei 4 Flip-Flop disponibili in una coppia di <a href="https://www.ti.com/lit/ds/symlink/sn54ls74a.pdf" target="_blank">74LS74</a>.
 
 Il flag **N**egative viene invece sempre letto direttamente dalla linea D7 del bus e caricato sul 4° Flip-Flop.
 
-Quattro porte AND permettono il caricamento dei FF in presenza del segnale di clock e della contemporanea attivazione degli opportuni segnali **FN**, **FV**, **FZ** ed **FC** provenienti dalla Control Logic (CL); è opportuno ricordare che il caricamento dei registri viene sempre effettuato in corrispondenza del Rising Edge del Clock. Il segnale **FS** seleziona se gli input del '157 devono leggere i valori riportati dal bus, oppure quelli computati nel modulo Flag o provenienti da altri moduli.
+Quattro porte AND permettono il caricamento dei FF in presenza del segnale di clock e della contemporanea attivazione degli opportuni segnali **FN**, **FV**, **FZ** ed **FC** provenienti dalla Control Logic (CL); è opportuno ricordare che il caricamento dei registri viene sempre effettuato in corrispondenza del Rising Edge del Clock.
 
 Ogni istruzione del computer, grazie alla personalizzazione del microcode, può settare anche più di un flag alla volta (come accade ad esempio per le operazioni ADC e SBC, che sul 6502 influiscono contemporaneamente su tutti i 4 flag **NVZC**).
 
@@ -280,8 +282,3 @@ Il modulo Flag del computer BEAM è sostanzialmente una copia del modulo Flag de
 - Inoltre, anche l'ispirazione per la realizzazione del Flag V deriva da un altro thread su Reddit, <a href="https://www.reddit.com/r/beneater/comments/kmuuex/question_for_all_74ls181_alu_people" target="_blank">Question for all 74ls181 alu people</a>.
 
 - Tom notava anche l'approccio del thread <a href="https://www.reddit.com/r/beneater/comments/m76ijz/opcodes_and_flag_decoding_circuit/" target="_blank">Opcodes and Flag decoding circuit</a> per eseguire salti condizionali in hardware. Invece di pilotare la linea LOAD del Program Counter, il circuito dell'autore del thread si trova tra l'IR e la EEPROM e forza condizionatamente un'istruzione NOP o JMP a seconda dello stato dei flag. Gli opcode delle istruzioni di salto sono disposti in modo tale che il flag di interesse possa essere determinato dai bit in uscita dall'IR. Concetto interessante, ma Tom aveva già implementato una funzionalità simile con le linee di selezione dell'ALU hardwired all'IR, modalità utilizzata anche nella gestione dei [salti condizionali](#i-salti-condizionali-e-incondizionati).
-
-## TO DO
-
-- Vedere bene quali istruzioni CP* hanno bisogno di LF, anche sul file XLS
-- stampare label JE e metterla sul BEAM

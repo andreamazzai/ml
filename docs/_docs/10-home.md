@@ -1,5 +1,5 @@
 ---
-title: "BEAM computer"
+title: "BEAM"
 permalink: /
 excerpt: "Il mio breadboard computer TTL a 8 bit basato sulla realizzazione di Ben Eater e sui miglioramenti di Tom Nisbet"
 header:
@@ -30,13 +30,13 @@ Ho completato il SAP computer a settembre, ma già in precedenza avevo cominciat
 1. Evoluzione del computer di Ben Eater, col quale avevo iniziato a riacquistare confidenza con l'elettronica digitale.
 2. Emulazione del processore del mio primo computer, completa di registri indice, modalità di indirizzamento e Stack Pointer.
 3. Nel progetto originale di Ben Eater, il computer disponeva di soli 16 byte di RAM. Questa quantità era sufficiente per programmare una sequenza di Fibonacci minimale, ma assolutamente inadeguata per realizzare programmi più complessi. Un'espansione della RAM, quindi, diventava essenziale.
-4. Possibilità / necessità di imparare almeno le basi del C, utilizzato per la creazione del [programmatore di EEPROM](docs/eeprom) e del [Loader](docs/loader) basato su Arduino.
+4. Possibilità / necessità di imparare almeno le basi del C, utilizzato per la creazione del [programmatore di EEPROM](docs/eeprom-programmer) e del [Loader](docs/loader) basato su Arduino.
 
 ### BEAM?
 
 Cercando un nome per il mio progetto, ho identificato in "BEAM" quello ideale: desideravo dare merito a Ben Eater per avermi fatto riavvicinare a questo meraviglioso mondo e aggiungere qualcosa di mio, perciò è nato il **B**en **E**ater **A**ndrea **M**azzai ==> **BEAM**.
 
-### Studio e progettazione
+## Studio e progettazione
 
 Nei primi otto mesi di lavoro sul progetto BEAM, mi sono dedicato interamente allo studio. L'obiettivo era comprendere ogni dettaglio dell'NQSAP, che introduceva numerose aggiunte al SAP e implementava diverse idee davvero ingegnose. Questo periodo di analisi è stato cruciale per padroneggiare i nuovi concetti e le innovazioni del progetto.
 
@@ -110,20 +110,10 @@ Ringraziamenti speciali: Tom Nisbet, che anche in fase di redazione della docume
 - <a href="https://archive.org/details/Programming_the_6502_OCR" target="_blank">Programming the 6502</a> di Rodnay Zaks.
 - <a href="https://archive.org/details/367026792DigitalComputerElectronicsAlbertPaulMalvinoAndJeraldABrownPdf1/" target="_blank">Digital Computer Electronics</a> di Albert Paul Malvino e Jerald A. Brown.
 
-### Avviso sui Diritti di Proprietà Intellettuale
+## Avviso sui Diritti di Proprietà Intellettuale
 
 Questo progetto potrebbe includere link, documenti, o immagini di proprietà di terzi. Mi impegno a rispettare pienamente i diritti di proprietà intellettuale di tutti i proprietari e non intendo violare alcun diritto d'autore.
 
 Se si ritiene che uno o più dei materiali presenti in questa documentazione violi i propri diritti di copyright, prego di segnalarmelo. Provvederò prontamente alla verifica e, in caso di violazione, alla rimozione immediata del materiale in questione.
 
 D'altro canto, tutto il materiale originale prodotto in questo progetto è rilasciato sotto la licenza MIT. Questo significa che è liberamente utilizzabile, modificabile e distribuibile da altri, a condizione che venga mantenuta l'indicazione di copyright originale e questa stessa licenza sia inclusa in eventuali copie o versioni modificate del progetto.
-
-## TO DO
-
-- Mettere i link ai miei post su Reddit
-- cosa non è stato emulato? IRQ, BCD
-- Controllare la coerenza della forma: "BEAM" oppure "BEAM computer" o "computer BEAM" + SAP + NQSAP su tutte le pagine e sugli schemi
-- Aritmetica binaria e tutti gli altri argomenti... se è il nome di qualcosa, va in maiuscolo, altrimenti no - ad esempio alla sezione **numeri signed** della pagina dedicata all'aritmetica binaria ==> In questo caso forse sarebbe meglio averlo in minuscolo
-- Registri indice maiscuolo, minuscolo etc... ???
-- Forma e coerenza su come chiamare i registri - ad esempio Stack per il registro e stack per genericamente "lo stack"
-- Review della parola "segnali" per distinguere bene i segnali di controllo dai segnali dati - e decidere se le abbreviazioni dei segnali debbano essere evidenziate o no per coerenza
