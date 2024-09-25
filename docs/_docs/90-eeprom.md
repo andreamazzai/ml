@@ -20,6 +20,7 @@ Lorem ipsum dolor sit amet, consectetur adipisci elit, sed do eiusmod tempor inc
 ## Link utili
 
 - Il video <a href="https://www.youtube.com/watch?v=K88pgWhEb1M" target="_blank">Build an Arduino EEPROM programmer</a> di Ben Eater.
+- Il programmatore di EEPROM <a href="https://www.youtube.com/watch?v=K88pgWhEb1M" target="_blank">TommyProm</a> di Tom Nisbet.
 
 ## TO DO
 
