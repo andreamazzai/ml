@@ -301,7 +301,7 @@ Prima di continuare, è interessante esaminare gli step di questa istruzione e r
 
 Dopo questa breve digressione, ritorniamo al discorso principale.
 
-Tutti questi segnali spuri generalmente non sono un problema per il SAP, perché le microistruzioni scrivono su registri tipo D <a href="https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf" target="_blank">74LS173</a> attivati al Rising Edge del clock, cioè quando i segnali di controllo sono stabili. Ad esempio, il glitching di MI al momento 7 non è fonte di problemi, perché il '173 del MAR memorizza nuovi valori solo col segnale di Enable attivo ***e*** il Rising Edge del clock: in quel momento, i segnali di controllo si trovano in uno stato stabile e non c'è rischio di caricare dati non corretti.
+Tutti questi segnali spuri generalmente non sono un problema per il SAP, perché le microistruzioni scrivono su registri tipo D <a href="https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf" target="_blank">74LS173</a> attivati al Rising Edge del clock, cioè quando i segnali di controllo sono stabili. Ad esempio, il glitching di MI al momento 7 non è fonte di problemi, perché il '173 del MAR memorizza nuovi valori solo col segnale di Enable attivo ***e*** il Rising Edge del clock: in quel momento, il segnali MI si trova in uno stato stabile e non c'è rischio di caricare dati non corretti.
 
 Vi è un'eccezione durante il caricamento dei Flag: poiché questi sono mappati direttamente sugli ingressi delle EEPROM, ogni variazione di C o F provoca glitching a ogni Rising Edge che li modifica. Per semplicità, il grafico precedente non include la rappresentazione di questo momento di instabilità.
 
@@ -563,21 +563,21 @@ La colonna "Ambito o direzione segnale" indica il contesto di un bus, oppure sor
 
 La fase di scrittura del microcode non è stata *troppo* complessa. L'esperienza fatta col SAP, lo studio approfondito dell'NQSAP e molta pazienza mi avevano portato a comprendere piuttosto bene come sviluppare gli step delle microistruzioni, anche quelle più complesse, e i meccanismi per simulare le modalità di indirizzamento del 6502.
 
-E' stata invece particolarmente difficile la *definizione* dell'instruction set, sul quale, col senno di poi, avrei dovuto investire più tempo. Purtroppo ho notato di non essere riuscito a costruirlo in maniera organica solo alla fine della definizione dello stesso, quando avevo già iniziato a lavorare sulla realizzazione hardware e non volevo più tornare indietro.
+E' stata invece particolarmente difficile la *definizione* dell'Instruction Set, sul quale, col senno di poi, avrei dovuto investire più tempo. Purtroppo ho notato di non essere riuscito a costruirlo in maniera organica solo alla fine della definizione dello stesso, quando avevo già iniziato a lavorare sulla realizzazione hardware e non volevo più tornare indietro.
 
 In effetti, la realizzazione del BEAM non ha avuto un percorso molto lungo di *trial and error*, perché la lunga analisi aveva fatto in modo che i moduli funzionassero sin dai primi tentativi, o comunque con poche variazioni finali.
 
-Tom ha dimostrato che è possibile automatizzare una parte della generazione del microcodice grazie a un raggruppamento più logico delle istruzioni. Tuttavia, non sono riuscito a fare lo stesso perché la mia conoscenza del linguaggio C, allora come al momento della scrittura della documentazione del BEAM, è modesta e non mi ha permesso di capire chiaramente come strutturare l'Instruction Set per sfruttare questi vantaggi.
+Tom ha dimostrato che è possibile automatizzare una parte della generazione del microcodice grazie a un raggruppamento più logico delle istruzioni. Tuttavia, non sono riuscito a fare lo stesso perché la mia conoscenza del linguaggio C, tanto allora quanto come al momento della scrittura di questa documentazione, è modesta e non mi ha permesso di capire chiaramente come strutturare l'Instruction Set per sfruttare questi vantaggi.
 
 Il codice è parzialmente commentato e dovrebbe essere abbastanza esplicativo.
 
 Alcuni link:
 
 - Un <a href="https://www.atarimania.com/documents/6502%20(65xx)%20Microprocessor%20Instant%20Reference%20Card.pdf" target="_blank">compendio della Micro Logic</a> incredibilmente utile, che in sole due pagine include opcode, modalità di indirizzamento, flag e istruzioni che li modificano, funzionamento delle istruzioni di scorrimento e molto altro. Insostituibile.
-- Un validissimo riferimento per l'analisi della relazione tra Control Logic (CL) ed IR è stata la pagina <a href="https://www.masswerk.at/6502/6502_instruction_set.html" target="_blank">6502 Instruction Set</a> di Norbert Landsteiner. Offre una comoda vista tabellare dell'instruction set dalla quale ho ricavato la vista Excel che ho in seguito utilizzato per definire gli opcode delle istruzioni del BEAM.
+- Un validissimo riferimento per l'analisi della relazione tra Control Logic (CL) ed IR è stata la pagina <a href="https://www.masswerk.at/6502/6502_instruction_set.html" target="_blank">6502 Instruction Set</a> di Norbert Landsteiner. Inquadra l'Instruction Set in una comoda vista tabellare, dalla quale ho ricavato la vista Excel che ho in seguito utilizzato per definire gli opcode delle istruzioni del BEAM.
 - Sempre di Norbert, invito a consultare anche il <a href="https://www.masswerk.at/6502/assembler.html" target="_blank">6502 Assembler</a> e il <a href="https://www.masswerk.at/6502/" target="_blank">Virtual 6502</a> che ho utilizzato in fase di debug del microcode: utilissimi per simulare l'esecuzione passo dopo passo delle istruzioni, visualizzando gli aggiornamenti dei flag ed aggiustando di conseguenza il microcode del BEAM.
 
-Inizialmente avevo incontrato qualche difficoltà nel comprendere la logica della variazione dei Flag nelle istruzioni di comparazione. Un supporto eccellente si trova nel <a href="http://www.6502.org/tutorials/compare_beyond.html" target="_blank">tutorial</a> su 6502.org, che descrive come un'operazione di confronto equivalga ad impostare il Carry ed [eseguire la differenza](../alu/#relazione-diretta-hardwired-tra-instruction-register-e-alu), mantenendo solamente i Flag modificati e scartando il valore della sottrazione. Illuminante.
+Inizialmente avevo incontrato qualche difficoltà nel comprendere la logica della variazione dei Flag nelle istruzioni di comparazione. Un supporto eccellente si trova nel <a href="http://www.6502.org/tutorials/compare_beyond.html" target="_blank">tutorial</a> su 6502.org, che descrive come un'operazione di confronto equivalga ad impostare il Carry e ad [eseguire la differenza](../alu/#relazione-diretta-hardwired-tra-instruction-register-e-alu), mantenendo solamente i Flag modificati e scartando il valore della sottrazione. Illuminante.
 
 Se dopo l'operazione di comparazione CMP NUM, che equivale a SEC seguito da SBC NUM:
 
@@ -586,55 +586,43 @@ Se dopo l'operazione di comparazione CMP NUM, che equivale a SEC seguito da SBC 
 - il Flag C è 0, allora A (senza segno) < NUM (senza segno) e il salto condizionale BCC viene eseguito
 - il Flag C è 1, allora A (senza segno) >= NUM (senza segno) e il salto condizionale BCS viene eseguito
 
-Mi sono dilettato dunque in alcune prove. Il codice:
+Dopo aver metabolizzato l'argomento, mi sono dilettato in alcune prove.
+
+Il codice seguente compara l'operando di CPY con Y e, se Y >= operando, il salto condizionale Y viene eseguito:
 
 ~~~text
 LDY #$40
 CPY #$30
+BCS $60
 ~~~
 
-attiva il Flag C, coerentemente con quanto spiegato sopra. Il Carry viene settato (SEC) prima di eseguire la sottrazione (SBC); il numero da comparare è inferiore, dunque la sottrazione simulata non ricorre al "prestito" (borrow) del Carry, che alla fine dell'operazione è attivo, come era all'inizio.
+Prima di eseguire la sottrazione simulata, il microcode dell'istruzione CPY imposta il Carry; poiché il valore dell'operando è inferiore al valore contenuto in Y, la sottrazione non ricorre al "prestito" (borrow) del Carry, che alla fine dell'operazione risulta ancora impostato, così come lo era all'inizio dell'istruzione. Trovando il Carry attivo, la successiva istruzione BCS viene eseguita.
 
-Il codice:
+Come sopra, il codice seguente compara l'operando di CPY con Y:
 
 ~~~text
 LDY #$40
 CPY #$40
+BNE $60
 ~~~
 
-attiva i Flag Z e C: Z perché $40 - $40 = 0, dunque il risultato della sottrazione è pari a zero e Z viene settato; inoltre, poiché il numero da comparare è uguale, non si ricorre al prestito e C rimane attivo.
+La comparazione attiva i Flag Z e C: #$40 - #$40 = 0, dunque il risultato della sottrazione simulata è pari a zero e Z viene settato; inoltre, poiché il numero da comparare è uguale, non si ricorre al prestito e C rimane attivo. Trovando Z attivo, la successiva istruzione BNE non viene eseguita.
 
 Il codice:
 
 ~~~text
 LDY #$40
 CPY #$50
+BMI $60
 ~~~
 
-non attiva né Z né C, coerentemente con quanto spiegato sopra; attiva invece N, perché la sottrazione simulata genera un risultato negativo: un numero negativo presenta il primo bit a 1, che è anche il bit utilizzato per caricare il Flag N. Il Flag C, settato all'inizio della comparazione, diventa Zero perché viene "preso in prestito".
+non attiva né Z, né C, coerentemente con quanto esposto in precedenza; attiva invece N, perché la sottrazione simulata genera un risultato negativo: l'MSB assume valore 1, associando il Flag N. Il Flag C, settato all'inizio della comparazione, assume il valore 0 perché viene "preso in prestito". Trovando N attivo, la successiva istruzione BMI viene eseguita.
 
-Su BEAM:
+### Differenze rispetto alle istruzioni del 6502
 
-~~~text
-LDY #$40
-CPY #$30
-~~~
+Non sono stati implementati gli Interrupt e la modalità Decimale, pertanto le istruzioni SEI, CLI, RTI e SED, CLD non fanno parte dell'Instruction Set del computer BEAM. Anche l'istruzione BRK non è stata implementata, ma si trova un comportamento simile nella nuova HLT.
 
-e ottengo nessun Flag, mentre dovrei avere C.
-
-La ALU presenta il COUT acceso, dunque la sua uscita è a livello logico basso. DA CAPIRE!!! Cosa volevo dire?
-
-- Ho poi incluso nel microcode anche LF, in quanto ho definito l'utilizzo di LF su tutte le istruzioni di comparazione, tranne CPX abs.
-
-- Considerare anche che tipo di Carry devo iniettare nella ALU… In realtà, poiché per fare il confronto utilizzo l’istruzione SBC, devo utilizzare il normale LHHL con Carry, cioè CIN = LO, che nel microcode corrisponde ad attivare il segnale CS.
-
-Ho posizionato in uscita sul Carry dell'ALU un LED (ricordare che l'uscita è negata, dunque anodo a Vcc e catodo verso il pin del chip). Anche l’ingresso Carry è negato e dunque attivo a zero, pertanto anche qui ho un LED con anodo a Vcc e catodo sul Pin.
-
-Dopo queste modifiche, le istruzioni di comparazione sembrano funzionare correttamente.
-
-## WORK IN PROGRESS - Istruzioni non presenti e istruzioni nuove
-
-- notare le istruzioni non implementate e quelle aggiuntive: INA DEA RTI BCD BRK
+Sono state aggiunte le seguenti istruzioni: INA, DEA 
 
 ## Schema
 

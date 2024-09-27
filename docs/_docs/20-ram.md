@@ -20,11 +20,11 @@ Dal <a href="https://www.reddit.com/r/beneater/comments/crl270/,8_bit_computer_m
 
 Questo utente desiderava fare una espansione radicale del computer, passando da 16 byte a 64K; il mio desiderio era quello di crescere fino a 256 byte (e non complicarmi troppo la vita con un bus a 16 bit), ma alcune informazioni erano state comunque molto utili per una comprensione generale della questione.
 
-Per indirizzare 64K di memoria era necessario un registro MAR (Memory Address Register) a 16 bit (2^16 = 64K). Invece di utilizzare quattro registri tipo D <a href="https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf" target="_blank">74LS173</a> da 4 bit, come nel SAP originale, sembrava più pratico adottare due registri tipo D <a href="https://www.ti.com/lit/ds/symlink/sn74ls273.pdf" target="_blank">74LS273</a> a 8 bit. Tuttavia, questi ultimi presentavano uno svantaggio rispetto alla versione a 4 bit: mancavano di un ingresso di Enable. Il computer, invece, richiedeva questo segnale, poiché il MAR doveva caricare un indirizzo di memoria solo quando specificamente richiesto, e non ad ogni ciclo di clock. Il segnale MI (Memory Address Register In) del SAP serviva proprio a questo: permetteva al MAR di memorizzare l'indirizzo presente sul bus solo quando necessario, in corrispondenza del fronte di salita del clock. In assenza di un ingresso di Enable, però, il flip-flop ‘273 avrebbe registrato il dato ad ogni ciclo di clock.
+Per indirizzare 64K di memoria era necessario un registro MAR (Memory Address Register) a 16 bit (2^16 = 64K). Invece di utilizzare quattro registri tipo D <a href="https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf" target="_blank">74LS173</a> da 4 bit, come nel SAP originale, sembrava più pratico adottare due registri tipo D <a href="https://www.ti.com/lit/ds/symlink/sn74ls273.pdf" target="_blank">74LS273</a> a 8 bit. Tuttavia, questi ultimi presentavano uno svantaggio rispetto alla versione a 4 bit: mancavano di un ingresso di Enable. Il computer, invece, richiedeva questo segnale, poiché il MAR doveva caricare un indirizzo di memoria solo quando specificamente richiesto, e non ad ogni ciclo di clock. Il segnale MI (Memory Address Register In) del SAP serviva proprio a questo: permetteva al MAR di memorizzare l'indirizzo presente sul bus solo quando necessario, in corrispondenza del fronte di salita del clock. Viceversa, in assenza di un ingresso di Enable, il flip-flop ‘273 avrebbe registrato il dato ad ogni ciclo di clock.
 
 Nel mio progetto a 256 byte bastava un MAR a 8 bit (2^8 = 256), dunque si potevano semplicemente utilizzare due '173 a 4 bit continuando a sfruttare i segnali di Enable nativi. Per completezza, va detto che sarebbe stato possibile utilizzare anche il '273 e una porta AND per *costruire* un segnale di Enable artificiale: collegando i segnali CLK e MI agli ingressi della AND, l'output avrebbe pilotato l'ingresso CLK del FF, che così si sarebbe attivato solo quando entrambi i segnali, CLK e MI, fossero contemporaneamente presenti.
 
-Il '273, al pari del '173, presenta un ingresso Clear / Reset (CLR), che nel MAR è necessario per resettare il registro - o almeno *credevo* fosse necessario. Sembrava anche interessante l'ipotesi alternativa di usare un registro a 8 bit <a href="https://www.ti.com/lit/ds/symlink/sn74ls377.pdf" target="_blank">74LS377</a>, che include 8 FF con Enable; inizialmente credevo che **non** fosse possibile procedere in tal senso, perché nel MAR serviva anche il CLR, non presente in questo chip. In seguito avevo realizzato che il MAR poteva funzionare perfettamente anche senza un segnale di Clear / Reset e il '377 sarebbe diventato uno dei chip più utilizzati nel BEAM.
+Il '273, al pari del '173, presenta un ingresso Clear / Reset (CLR), che nel MAR è necessario per resettare il registro - o almeno *credevo* fosse necessario. Sembrava anche interessante l'ipotesi alternativa di usare un registro a 8 bit <a href="https://www.ti.com/lit/ds/symlink/sn74ls377.pdf" target="_blank">74LS377</a>, che include 8 FF con Enable; inizialmente credevo che **non** fosse possibile procedere in tal senso, perché nel MAR serviva anche il CLR, non presente in questo chip. In seguito avevo realizzato che il MAR poteva funzionare perfettamente anche senza un segnale di Clear / Reset; il '377 sarebbe diventato uno dei chip più utilizzati nel BEAM.
 >> Program counter - would have to be expanded to a 16 bit counter (should be trivial to do that) I currently have tons of 8 bit counters combined with a register (and the 4 bit 161 counters that Ben used)
 
 Come nel caso del MAR, per indirizzare 256 byte di RAM era necessario un registro Program Counter (PC) a 8 bit. Nel computer SAP era invece presente un contatore a 4 bit <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">74LS161</a> e dovevo pertanto cercare di combinarne due in cascata.
@@ -35,7 +35,7 @@ Per combinare due chip a 4 bit è stato necessario, nonché molto utile, compren
 
 >> Instruction register - now sh!t gets fun. Since i want to bomb completely, I am considering having a 3 byte Instruction register in a way mimicking the BIU block & instruction queue in a 8086. The idea here is to split the instruction register in 3 bytes. 1 byte would be for the instruction/opcode alone, the second and third are going to hold the data of the instruction (either address or an immediate value). This would allow you to address the entire memory space. Also instructions can be of different size. For example. OUT (move to out register) would be just 1 byte wide, LDI (load immediate) would be 2 bytes and LDA (load address/absolute) would be 3 bytes wide. The control logic would take care of the fetch cycle. Or in other words since you know the instruction you are execution you would know how much bytes the instruction is and thus fetch either 1, 2 or 3 bytes from the RAM.
 
-Dopo aver letto questo punto avevo iniziato a raccogliere i miei pensieri per l'espansione di memoria a 256 byte, idea che riprendo in seguito in questa pagina. Non avevo intenzione di costruire un IR a più byte, cosa che mi sembrava piuttosto complessa per le mie capacità.
+Dopo aver letto questo punto avevo iniziato a raccogliere i miei pensieri per l'espansione di memoria a 256 byte, idea che riprendo in seguito in questa pagina. Di certo, non avevo intenzione di costruire un IR a più byte, o comunque un IR in grado di ospitare sia l'opcode, sia l'operando. Immaginavo di leggere dapprima l'opcode e di caricarlo nell'Instruction Register e, successivamente, di leggere l'operando e di trattarlo adeguatamente.
 
 ### Memorie con IO separati o IO comuni?
 
@@ -141,15 +141,15 @@ Da un lato, lo schema appariva semplificato rispetto a quelli che avevo visto in
 
 - Scrittura sulla RAM in Run Mode
 
-[![Scrittura sulla RAM in Run Mode](../../assets/ram/20-ram-run-mode-write-t8be.png "Scrittura sulla RAM in Run Mode"){:width="30%"}](../../assets/ram/20-ram-run-mode-write-t8be.png)
+[![Scrittura sulla RAM in Run Mode](../../assets/ram/20-ram-run-mode-write-t8be.png "Scrittura sulla RAM in Run Mode"){:width="40%"}](../../assets/ram/20-ram-run-mode-write-t8be.png)
 
 - Lettura dalla RAM in Run Mode
 
-[![Lettura dalla RAM in Run Mode](../../assets/ram/20-ram-run-mode-read-t8be.png "Lettura dalla RAM in Run Mode"){:width="30%"}](../../assets/ram/20-ram-run-mode-read-t8be.png)
+[![Lettura dalla RAM in Run Mode](../../assets/ram/20-ram-run-mode-read-t8be.png "Lettura dalla RAM in Run Mode"){:width="40%"}](../../assets/ram/20-ram-run-mode-read-t8be.png)
 
 - Scrittura sulla RAM in Program Mode
 
-[![Scrittura sulla RAM in Program Mode](../../assets/ram/20-ram-program-mode-write-t8be.png "Scrittura sulla RAM in Program Mode"){:width="30%"}](../../assets/ram/20-ram-program-mode-write-t8be.png)
+[![Scrittura sulla RAM in Program Mode](../../assets/ram/20-ram-program-mode-write-t8be.png "Scrittura sulla RAM in Program Mode"){:width="40%"}](../../assets/ram/20-ram-program-mode-write-t8be.png)
 
 The8BitEnthusiast segnalava di *aver sfruttato il ritardo di propagazione dei '245 per gestire i requisiti di temporizzazione*, al che avevo provato a chiedergli se fosse necessario gestire le temporizzazioni in maniera così precisa perché il suo progetto lavorava in modalità "just in time" ogni volta che sopraggiungeva un impulso di clock.
 

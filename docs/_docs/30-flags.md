@@ -138,7 +138,7 @@ Prendiamo come ulteriore esempio l'istruzione BVC (Branch on OVerflow Clear) ipo
   - S1 = LO
   - S2 = HI
 
-Tenendo ora in considerazione l'esistenza del segnale Jump Enable, evidenziato in giallo, si evince che l'attivazione di /PC-LOAD e una conseguente esecuzione condizionale di un salto determinata dalla eventuale assenza di Overflow richiedono un'istruzione:
+Tenendo ora in considerazione l'esistenza del segnale Jump Enable (JE), evidenziato in giallo, si evince che l'attivazione di /PC-LOAD e una conseguente esecuzione condizionale di un salto determinata dalla eventuale assenza di Overflow richiedono un'istruzione:
 
 - la cui codifica porti ad avere S2/S1/S0 = 101 agli ingressi di selezione del '151, **e**
 - il cui microcode attivi il segnale JE.

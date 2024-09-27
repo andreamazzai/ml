@@ -3,6 +3,11 @@ title: "D, X e Y"
 permalink: /docs/todo/
 excerpt: "Registri indice del computer BEAM"
 ---
+
+### OVUNQUE
+
+- Rivedere Flag vs flag, anche in relazione al Carry vs carry
+
 ### HOME
 
 - Mettere i link ai miei post su Reddit
@@ -20,7 +25,7 @@ excerpt: "Registri indice del computer BEAM"
 ## RAM
 
 - mettere dei link
-- dove parlo di "Ripple Mode Carry” e “Carry Look Ahead" mettere il link alla sezione (ancora da scrivere) in Aritmetica Binaria
+- dove parlo di "Ripple Mode Carry” e “Carry Look Ahead" mettere il link alla sezione (ancora da scrivere) in Aritmetica Binaria (il testo è "Per combinare due chip a 4 bit è stato necessario, nonché molto utile, comprendere la differenza fra "Ripple Mode Carry" e "Carry Look Ahead": il datasheet del contatore 74LS161 riportava infatti questi due diversi esempi di collegamento di chip in cascata tra di loro. Un approfondimento sul tema si trova in una apposita sezione della pagina dedicata all'[Aritmetica Binaria](../math).")
 
 ## PC
 
