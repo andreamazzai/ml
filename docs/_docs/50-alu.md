@@ -311,6 +311,51 @@ Detto in altre parole ancora:
 
 - Una delle EEPROM ospitanti il microcode, quando troverà in ingresso xxx00111, attiverà il segnale LF sul pin 8 della NOR: la NOR invertirà l'ultimo bit 0011**1** e i '181 troveranno in realtà in ingresso 0011**0**, configurandosi dunque in Subtract Mode ed effettuando la sottrazione.
 
+## Le istruzioni di comparazione e i Flag
+
+Inizialmente avevo incontrato qualche difficoltà nel comprendere la logica della variazione dei Flag nelle istruzioni di comparazione. Un supporto eccellente si trova nel <a href="http://www.6502.org/tutorials/compare_beyond.html" target="_blank">tutorial</a> su 6502.org, che descrive come un'operazione di confronto equivalga ad impostare il Carry e ad [eseguire la differenza](../alu/#relazione-diretta-hardwired-tra-instruction-register-e-alu), mantenendo solamente i Flag modificati e scartando il valore della sottrazione. Illuminante.
+
+Se dopo l'operazione di comparazione CMP NUM, che equivale a SEC seguito da SBC NUM:
+
+- il Flag Z è 0, allora A <> NUM e il salto condizionale BNE viene eseguito
+- il Flag Z è 1, allora A = NUM e il salto condizionale BEQ viene eseguito
+- il Flag C è 0, allora A (senza segno) <  NUM (senza segno) e il salto condizionale BCC viene eseguito
+- il Flag C è 1, allora A (senza segno) >= NUM (senza segno) e il salto condizionale BCS viene eseguito
+- il Flag N è 0, allora A (senza segno) >= NUM (senza segno) e il salto condizionale BPL viene eseguito
+- il Flag N è 1, allora A (senza segno) <  NUM (senza segno) e il salto condizionale BMI viene eseguito
+
+Dopo aver metabolizzato l'argomento, mi sono dilettato in alcune prove.
+
+Il codice seguente compara l'operando di CPY con Y e, se Y >= operando, il salto condizionale viene eseguito:
+
+~~~text
+LDY #$40
+CPY #$30
+BCS $60
+~~~
+
+Prima di eseguire la sottrazione simulata, il microcode dell'istruzione CPY imposta il Carry; poiché il valore dell'operando è inferiore al valore contenuto in Y, la sottrazione non ricorre al "prestito" (borrow) del Carry, che alla fine dell'operazione risulta ancora impostato, così come lo era all'inizio dell'istruzione. Trovando il Carry attivo, la successiva istruzione BCS (Branch on Carry Set) viene eseguita.
+
+Come sopra, il codice seguente compara l'operando di CPY con Y:
+
+~~~text
+LDY #$40
+CPY #$40
+BNE $60
+~~~
+
+La comparazione attiva i Flag Z e C: #$40 - #$40 = 0, dunque il risultato della sottrazione simulata è pari a zero e Z viene settato; inoltre, poiché il numero da comparare è uguale, non si ricorre al prestito e C rimane attivo. Trovando Z attivo, la successiva istruzione BNE (Branch on Not Equal) non viene eseguita.
+
+Il codice:
+
+~~~text
+LDY #$40
+CPY #$50
+BMI $60
+~~~
+
+non attiva né Z, né C, coerentemente con quanto esposto in precedenza; attiva invece N, perché la sottrazione simulata genera un risultato negativo: l'MSB assume valore 1, attivando così il Flag N. Il Flag C, settato all'inizio della comparazione, assume il valore 0 perché viene "preso in prestito". Trovando N attivo, la successiva istruzione BMI (Branch on MInus) viene eseguita.
+
 ### Riepilogo: sottrazioni, comparazioni e indirizzamenti
 
 La documentazione dell'NQSAP segnalava che "poiché la ALU è legata all'IR, ci sono solo 8 Opcode disponibili per metterla in Subtract Mode", ma non capivo cosa volesse dire. "Per creare i 16 Opcode necessari per tutte le combinazioni di Subtract e Compare, si mette una NOR su ALU-S0 (IR 0) e su LF, così da  riutilizzare la Selection 0111 come se fosse 0110, che è la modalità Subtract".

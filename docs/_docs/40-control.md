@@ -573,7 +573,7 @@ E' risultata invece particolarmente difficile l'*organizzazione* dell'Instructio
 
 Tom ha dimostrato che è possibile automatizzare parte della generazione del microcodice attraverso un opportuno raggruppamento logico delle istruzioni. Personalmente, non sono riuscito a ottenere risultati comparabili, poiché la mia conoscenza del linguaggio C, sia all'epoca sia al momento della scrittura di questa documentazione, è modesta. Questo mi ha impedito di comprendere chiaramente come strutturare l'Instruction Set per sfruttare appieno tali vantaggi.
 
-La <a href="../../assets/BEAM computer.xlsx" target="_blank">cartella di lavoro Excel</a> che ho realizzato presenta l'Instruction Set del 6502, l'analisi delle istruzioni per determinare le modalità di indirizzamento e lo sviluppo dell'Instruction Set del 6502, considerando la necessità di utilizzare il [segnale di controllo LF](../alu/#istruzioni-di-comparazione) per mettere in Subtract Mode l'ALU ed effettuare le operazioni di comparazione.
+La <a href="../../assets/BEAM computer.xlsx" target="_blank">cartella di lavoro Excel</a> che ho realizzato presenta l'Instruction Set del 6502, l'analisi delle istruzioni per determinare le modalità di indirizzamento e lo sviluppo dell'Instruction Set del BEAM, considerando la necessità di utilizzare il [segnale di controllo LF](../alu/#istruzioni-di-comparazione) per mettere in Subtract Mode l'ALU ed effettuare le operazioni di comparazione.
 
 [![Definizione dell'Instruction Set del BEAM](../../assets/control/40-control-inst-set.png "Definizione dell'Instruction Set del BEAM"){:width="100%"}](../../assets/control/40-control-inst-set.png)
 
@@ -590,49 +590,6 @@ Alcuni link:
 - Un <a href="https://www.atarimania.com/documents/6502%20(65xx)%20Microprocessor%20Instant%20Reference%20Card.pdf" target="_blank">compendio della Micro Logic</a> incredibilmente utile, che in sole due pagine include opcode, modalità di indirizzamento, flag e istruzioni che li modificano, funzionamento delle istruzioni di scorrimento e molto altro. Insostituibile.
 - Un validissimo riferimento per l'analisi della relazione tra Control Logic (CL) ed IR è stata la pagina <a href="https://www.masswerk.at/6502/6502_instruction_set.html" target="_blank">6502 Instruction Set</a> di Norbert Landsteiner. Inquadra l'Instruction Set in una comoda vista tabellare, dalla quale ho ricavato la <a href="../../assets/BEAM computer.xlsx" target="_blank">vista Excel</a> utilizzata per definire gli opcode delle istruzioni del BEAM.
 - Sempre di Norbert, invito a consultare anche il <a href="https://www.masswerk.at/6502/assembler.html" target="_blank">6502 Assembler</a> e il <a href="https://www.masswerk.at/6502/" target="_blank">Virtual 6502</a> che ho utilizzato in fase di debug del microcode: utilissimi per simulare l'esecuzione passo dopo passo delle istruzioni, visualizzando gli aggiornamenti dei flag ed aggiustando di conseguenza il microcode del BEAM.
-
-Inizialmente avevo incontrato qualche difficoltà nel comprendere la logica della variazione dei Flag nelle istruzioni di comparazione. Un supporto eccellente si trova nel <a href="http://www.6502.org/tutorials/compare_beyond.html" target="_blank">tutorial</a> su 6502.org, che descrive come un'operazione di confronto equivalga ad impostare il Carry e ad [eseguire la differenza](../alu/#relazione-diretta-hardwired-tra-instruction-register-e-alu), mantenendo solamente i Flag modificati e scartando il valore della sottrazione. Illuminante.
-
-Se dopo l'operazione di comparazione CMP NUM, che equivale a SEC seguito da SBC NUM:
-
-- il Flag Z è 0, allora A <> NUM e il salto condizionale BNE viene eseguito
-- il Flag Z è 1, allora A = NUM e il salto condizionale BEQ viene eseguito
-- il Flag C è 0, allora A (senza segno) <  NUM (senza segno) e il salto condizionale BCC viene eseguito
-- il Flag C è 1, allora A (senza segno) >= NUM (senza segno) e il salto condizionale BCS viene eseguito
-- il Flag N è 0, allora A (senza segno) >= NUM (senza segno) e il salto condizionale BPL viene eseguito
-- il Flag N è 1, allora A (senza segno) <  NUM (senza segno) e il salto condizionale BMI viene eseguito
-
-Dopo aver metabolizzato l'argomento, mi sono dilettato in alcune prove.
-
-Il codice seguente compara l'operando di CPY con Y e, se Y >= operando, il salto condizionale viene eseguito:
-
-~~~text
-LDY #$40
-CPY #$30
-BCS $60
-~~~
-
-Prima di eseguire la sottrazione simulata, il microcode dell'istruzione CPY imposta il Carry; poiché il valore dell'operando è inferiore al valore contenuto in Y, la sottrazione non ricorre al "prestito" (borrow) del Carry, che alla fine dell'operazione risulta ancora impostato, così come lo era all'inizio dell'istruzione. Trovando il Carry attivo, la successiva istruzione BCS (Branch on Carry Set) viene eseguita.
-
-Come sopra, il codice seguente compara l'operando di CPY con Y:
-
-~~~text
-LDY #$40
-CPY #$40
-BNE $60
-~~~
-
-La comparazione attiva i Flag Z e C: #$40 - #$40 = 0, dunque il risultato della sottrazione simulata è pari a zero e Z viene settato; inoltre, poiché il numero da comparare è uguale, non si ricorre al prestito e C rimane attivo. Trovando Z attivo, la successiva istruzione BNE (Branch on Not Equal) non viene eseguita.
-
-Il codice:
-
-~~~text
-LDY #$40
-CPY #$50
-BMI $60
-~~~
-
-non attiva né Z, né C, coerentemente con quanto esposto in precedenza; attiva invece N, perché la sottrazione simulata genera un risultato negativo: l'MSB assume valore 1, attivando così il Flag N. Il Flag C, settato all'inizio della comparazione, assume il valore 0 perché viene "preso in prestito". Trovando N attivo, la successiva istruzione BMI (Branch on MInus) viene eseguita.
 
 ### Differenze rispetto alle istruzioni del 6502
 
