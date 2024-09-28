@@ -3,8 +3,8 @@ title: "BEAM"
 permalink: /
 excerpt: "Il mio breadboard computer TTL a 8 bit basato sulla realizzazione di Ben Eater e sui miglioramenti di Tom Nisbet"
 header:
-#   image: /assets/beam.png
-  overlay_image: /assets/beam.png
+#   image: /assets/home/beam.png
+  overlay_image: /assets/home/beam.png
   overlay_filter: 0.5
 ---
 ## BEAM 8-bit computer
@@ -59,13 +59,13 @@ Tra gli aspetti da citare e sui quali ho speso molto, **molto**, ***davvero molt
 - comprensione del problema del "glitch";
 - sviluppo del software del bootloader;
 
-[![Schema logico del computer BEAM, luglio 2023](assets/hand-drawn-logic.jpg "Schema logico del computer BEAM, luglio 2023"){:width="66%"}](assets/hand-drawn-logic.jpg)
+[![Schema logico del computer BEAM, luglio 2023](assets/home/hand-drawn-logic.jpg "Schema logico del computer BEAM, luglio 2023"){:width="66%"}](assets/home/hand-drawn-logic.jpg)
 
 *Schema logico del computer BEAM, luglio 2023.*
 
 A luglio 2023 ho cercato di ricomporre tutto ciò che avevo appreso e ho provato trascriverlo su carta: avevo compreso molto bene il funzionamento di alcuni moduli, mentre su altri avevo ancora molti dubbi. Inoltre, non mi erano ancora chiare diverse interazioni tra i moduli, soprattutto nei segnali di controllo dei flag; rileggendo il materiale che avevo studiato e gli appunti che avevo trascritto su OneNote nei mesi precedenti, ho unito i puntini e realizzato lo schema logico del computer, iniziando a intravedere non più una serie di moduli a se' stanti, bensì un costrutto logico sensato:
 
-[![Rappresentazione su carta di una possibile disposizione dei moduli del computer BEAM](assets/beam-paper-breadboards.png "Rappresentazione su carta di una possibile disposizione dei moduli del computer BEAM"){:width="66%"}](assets/beam-paper-breadboards.png)
+[![Rappresentazione su carta di una possibile disposizione dei moduli del computer BEAM](assets/home/beam-paper-breadboards.png "Rappresentazione su carta di una possibile disposizione dei moduli del computer BEAM"){:width="66%"}](assets/home/beam-paper-breadboards.png)
 
 *Rappresentazione su carta di una possibile disposizione dei moduli del computer BEAM.*
 
@@ -75,7 +75,7 @@ La fase costruttiva è iniziata a ottobre 2023 e si è conclusa nei primi giorni
 
 In queste pagine si trovano note, appunti e insegnamenti appresi ed applicati nella realizzazione del BEAM, analisi dei moduli dell'NQSAP e dell'NQSAP-PCB, differenze tra i sistemi, qualche confronto con il SAP ed altro ancora.
 
-[![BEAM Breadboard Computer](assets/beam.png "BEAM breadboard computer"){:width="66%"}](assets/beam.png)
+[![BEAM Breadboard Computer](assets/home/beam.png "BEAM breadboard computer"){:width="66%"}](assets/home/beam.png)
 
 Tra le cose apprese:
 
