@@ -575,6 +575,10 @@ Tom ha dimostrato che è possibile automatizzare parte della generazione del mic
 
 La <a href="../../assets/BEAM computer.xlsx" target="_blank">cartella di lavoro Excel</a> che ho realizzato presenta l'Instruction Set del 6502, l'analisi delle istruzioni per determinare le modalità di indirizzamento e lo sviluppo dell'Instruction Set del 6502, considerando la necessità di utilizzare il [segnale di controllo LF](../alu/#istruzioni-di-comparazione) per mettere in Subtract Mode l'ALU ed effettuare le operazioni di comparazione.
 
+[![Definizione dell'Instruction Set del BEAM](../../assets/control/40-control-inst-set.png "Definizione dell'Instruction Set del BEAM"){:width="100%"}](../../assets/control/40-control-inst-set.png)
+
+*Definizione dell'Instruction Set del BEAM.*
+
 Ho speso molto tempo anche nella scrittura dello sketch Arduino utilizzato per programmare le EEPROM. Il programmatore di Ben Eater poteva impiegare *alcuni* interminabili minuti per ogni EEPROM, mentre la programmazione a blocchi implementata per il BEAM - frutto dello studio del codice e del circuito di Tom - ha permesso di ridurre il tempo di scrittura di una AT28C256 a soli 14 secondi. Per ulteriori note, si rimanda alla [pagina dedicata](../eeprom-programmer).
 
 Concludendo, la realizzazione fisica del BEAM e la scrittura del microcode non hanno avuto un percorso molto lungo di *trial and error*, perché le lunghe analisi avevano sortito l'effetto di far funzionare i moduli sin dai primi tentativi, o comunque con poche variazioni finali.
