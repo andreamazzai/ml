@@ -527,7 +527,7 @@ La colonna "Ambito o direzione segnale" indica il contesto di un bus, oppure sor
 | WS            | WS             | CL → SP                    | Scrive il contenuto del bus nello Stack Pointer.                                                             |
 | WP            | WPC            | CL → PC                    | Scrive il contenuto del bus nel Program Counter.                                                             |
 
-## Bus e altri segnali
+### Bus e altri segnali
 
 | NQSAP           | BEAM                      | Ambito o direzione segnale | Descrizione                                                |
 | -----           | ----                      | -------------------------- | -----------                                                |
@@ -561,11 +561,15 @@ La colonna "Ambito o direzione segnale" indica il contesto di un bus, oppure sor
 
 ## Microcode
 
-La fase di scrittura del microcode non è stata *troppo* complessa. L'esperienza fatta col SAP, lo studio approfondito dell'NQSAP e molta pazienza mi avevano portato a comprendere piuttosto bene come sviluppare gli step delle microistruzioni, anche quelle più complesse, e i meccanismi per simulare le modalità di indirizzamento del 6502.
+La fase di scrittura del microcode non è stata *troppo* complessa. L'esperienza fatta col SAP, lo studio approfondito dell'NQSAP e molta pazienza mi avevano portato a comprendere piuttosto bene come sviluppare gli step delle istruzioni tenendo in considerazione le diverse modalità di indirizzamento del 6502.
 
-E' stata invece particolarmente difficile la *definizione* dell'Instruction Set, sul quale, col senno di poi, avrei dovuto investire più tempo. Purtroppo ho notato di non essere riuscito a costruirlo in maniera organica solo alla fine della definizione dello stesso, quando avevo già iniziato a lavorare sulla realizzazione hardware e non volevo più tornare indietro.
+Solo poche istruzioni hanno richiesto più tempo per essere assimilate, in particolare quelle di comparazione, salto a subroutine e salto condizionale. Le istruzioni di comparazione hanno implicato una comprensione approfondita del risultato per impostarne correttamente i flag, mentre per le altre è stato necessario apprendere come utilizzare un registro temporaneo per memorizzare un'informazione da ripristinare in uno step successivo.
 
-In effetti, la realizzazione del BEAM non ha avuto un percorso molto lungo di *trial and error*, perché la lunga analisi aveva fatto in modo che i moduli funzionassero sin dai primi tentativi, o comunque con poche variazioni finali.
+E' stata invece particolarmente difficile l*organizzazione* dell'Instruction Set, sulla quale, col senno di poi, avrei dovuto investire più tempo. Purtroppo, solo durante la scrittura del microcode ho realizzato di non essere riuscito ad organizzare in maniera stutturata il posizionamento degli opcode, ma quando avevo già iniziato a lavorare sulla realizzazione hardware - con i legami hardwired tra IR, ALU e Flag - e non volevo più tornare indietro.
+
+In effetti, la realizzazione fisica del BEAM e la scrittura del microcode non hanno avuto un percorso molto lungo di *trial and error*, perché le lunghe analisi avevano sortito l'effetto di far funzionare i moduli sin dai primi tentativi, o comunque con poche variazioni finali.
+
+Ho speso molto tempo anche nella scrittura dello sketch Arduino che include il microcode e nell'ottimizzazione del codice del programmatore di EEPROM. Il programmatore di Ben Eater poteva impiegare *alcuni* interminabili minuti per ogni EEPROM, mentre la programmazione a blocchi ha permesso di portare il tempo per scrivere una AT28C256 in soli 14 secondi.
 
 Tom ha dimostrato che è possibile automatizzare una parte della generazione del microcodice grazie a un raggruppamento più logico delle istruzioni. Tuttavia, non sono riuscito a fare lo stesso perché la mia conoscenza del linguaggio C, tanto allora quanto come al momento della scrittura di questa documentazione, è modesta e non mi ha permesso di capire chiaramente come strutturare l'Instruction Set per sfruttare questi vantaggi.
 
@@ -583,8 +587,10 @@ Se dopo l'operazione di comparazione CMP NUM, che equivale a SEC seguito da SBC 
 
 - il Flag Z è 0, allora A <> NUM e il salto condizionale BNE viene eseguito
 - il Flag Z è 1, allora A = NUM e il salto condizionale BEQ viene eseguito
-- il Flag C è 0, allora A (senza segno) < NUM (senza segno) e il salto condizionale BCC viene eseguito
+- il Flag C è 0, allora A (senza segno) <  NUM (senza segno) e il salto condizionale BCC viene eseguito
 - il Flag C è 1, allora A (senza segno) >= NUM (senza segno) e il salto condizionale BCS viene eseguito
+- il Flag N è 0, allora A (senza segno) >= NUM (senza segno) e il salto condizionale BPL viene eseguito
+- il Flag N è 1, allora A (senza segno) <  NUM (senza segno) e il salto condizionale BMI viene eseguito
 
 Dopo aver metabolizzato l'argomento, mi sono dilettato in alcune prove.
 
@@ -596,7 +602,7 @@ CPY #$30
 BCS $60
 ~~~
 
-Prima di eseguire la sottrazione simulata, il microcode dell'istruzione CPY imposta il Carry; poiché il valore dell'operando è inferiore al valore contenuto in Y, la sottrazione non ricorre al "prestito" (borrow) del Carry, che alla fine dell'operazione risulta ancora impostato, così come lo era all'inizio dell'istruzione. Trovando il Carry attivo, la successiva istruzione BCS viene eseguita.
+Prima di eseguire la sottrazione simulata, il microcode dell'istruzione CPY imposta il Carry; poiché il valore dell'operando è inferiore al valore contenuto in Y, la sottrazione non ricorre al "prestito" (borrow) del Carry, che alla fine dell'operazione risulta ancora impostato, così come lo era all'inizio dell'istruzione. Trovando il Carry attivo, la successiva istruzione BCS (Branch on Carry Set) viene eseguita.
 
 Come sopra, il codice seguente compara l'operando di CPY con Y:
 
@@ -606,7 +612,7 @@ CPY #$40
 BNE $60
 ~~~
 
-La comparazione attiva i Flag Z e C: #$40 - #$40 = 0, dunque il risultato della sottrazione simulata è pari a zero e Z viene settato; inoltre, poiché il numero da comparare è uguale, non si ricorre al prestito e C rimane attivo. Trovando Z attivo, la successiva istruzione BNE non viene eseguita.
+La comparazione attiva i Flag Z e C: #$40 - #$40 = 0, dunque il risultato della sottrazione simulata è pari a zero e Z viene settato; inoltre, poiché il numero da comparare è uguale, non si ricorre al prestito e C rimane attivo. Trovando Z attivo, la successiva istruzione BNE (Branch on Not Equal) non viene eseguita.
 
 Il codice:
 
@@ -616,13 +622,15 @@ CPY #$50
 BMI $60
 ~~~
 
-non attiva né Z, né C, coerentemente con quanto esposto in precedenza; attiva invece N, perché la sottrazione simulata genera un risultato negativo: l'MSB assume valore 1, associando il Flag N. Il Flag C, settato all'inizio della comparazione, assume il valore 0 perché viene "preso in prestito". Trovando N attivo, la successiva istruzione BMI viene eseguita.
+non attiva né Z, né C, coerentemente con quanto esposto in precedenza; attiva invece N, perché la sottrazione simulata genera un risultato negativo: l'MSB assume valore 1, attivando così il Flag N. Il Flag C, settato all'inizio della comparazione, assume il valore 0 perché viene "preso in prestito". Trovando N attivo, la successiva istruzione BMI (Branch on MInus) viene eseguita.
 
 ### Differenze rispetto alle istruzioni del 6502
 
-Non sono stati implementati gli Interrupt e la modalità Decimale, pertanto le istruzioni SEI, CLI, RTI e SED, CLD non fanno parte dell'Instruction Set del computer BEAM. Anche l'istruzione BRK non è stata implementata, ma si trova un comportamento simile nella nuova HLT.
+Il computer BEAM non implementa gli Interrupt e la modalità Decimale del 6502, pertanto le istruzioni SEI, CLI, RTI e SED, CLD non fanno parte dell'Instruction Set.
 
-Sono state aggiunte le seguenti istruzioni: INA, DEA 
+Sono state aggiunte le seguenti istruzioni: INA, DEA, OUT.
+
+Anche l'istruzione BRK non è stata implementata, ma si trova un comportamento simile nella nuova HLT.
 
 ## Schema
 
@@ -634,7 +642,7 @@ Sono state aggiunte le seguenti istruzioni: INA, DEA
 
 La Control Logic del computer BEAM riprende tutto ciò che è stato sviluppato da Tom Nisbet nell'NQSAP.
 
-- Una differenza sostanziale sta nell'Instruction Register, che è sviluppato in modalità bufferizzata come nell'NQSAP-PCB di Tom per rimediare ai problemi di glitching riscontrati nell'NQ-SAP.
+- Una differenza sostanziale sta nell'Instruction Register, sviluppato in modalità bufferizzata come nell'NQSAP-PCB di Tom per rimediare ai problemi di glitching riscontrati nell'NQ-SAP.
 - Il BEAM prevede 16 step per le microistruzioni anziché solo 8. L'emulazione di alcune istruzioni di scorrimento e rotazione richiede più degli 8 step disponibili nell'NQSAP, che pertanto non le include.
 
 ## Note
