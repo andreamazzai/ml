@@ -565,11 +565,15 @@ La fase di scrittura del microcode non è stata *troppo* complessa. L'esperienza
 
 Solo poche istruzioni hanno richiesto più tempo per essere assimilate, in particolare quelle di comparazione, salto a subroutine e salto condizionale. Le istruzioni di comparazione hanno implicato una comprensione approfondita del risultato per impostarne correttamente i flag, mentre per le altre è stato necessario apprendere come utilizzare un registro temporaneo per memorizzare un'informazione da ripristinare in uno step successivo.
 
-E' stata invece particolarmente difficile l*organizzazione* dell'Instruction Set, sulla quale, col senno di poi, avrei dovuto investire più tempo. Purtroppo, ho realizzato di non essere riuscito ad organizzare in maniera stutturata il posizionamento degli opcode solo durante la scrittura del microcode, ma avevo già iniziato a lavorare sulla realizzazione hardware - con i forti legami hardwired tra IR, ALU e Flag - e non volevo più tornare indietro.
+[![Scrittura del microcode del BEAM con VScode](../../assets/control/40-microcode-vscode.png "Scrittura del microcode del BEAM con VScode"){:width="100%"}](../../assets/control/40-microcode-vscode.png)
+
+*Scrittura del microcode del BEAM con VScode.*
+
+E' risultata invece particolarmente difficile l'*organizzazione* dell'Instruction Set, sulla quale, col senno di poi, avrei dovuto investire più tempo. Purtroppo, ho realizzato di non essere riuscito ad organizzare in maniera stutturata il posizionamento degli opcode solo durante la scrittura del microcode, ma avevo già iniziato a lavorare sulla realizzazione hardware - con i forti legami hardwired tra IR, ALU e Flag - e non volevo più tornare indietro.
 
 Tom ha dimostrato che è possibile automatizzare parte della generazione del microcodice attraverso un opportuno raggruppamento logico delle istruzioni. Personalmente, non sono riuscito a ottenere risultati comparabili, poiché la mia conoscenza del linguaggio C, sia all'epoca sia al momento della scrittura di questa documentazione, è modesta. Questo mi ha impedito di comprendere chiaramente come strutturare l'Instruction Set per sfruttare appieno tali vantaggi.
 
-La <a href="../../assets/BEAM computer.xlsx" target="_blank">cartella di lavoro Excel</a> scaricabile presenta l'Instruction Set del 6502, l'analisi delle istruzioni per determinare le modalità di indirizzamento e lo sviluppo dell'Instruction Set del 6502, considerando la necessità di utilizzare il [segnale di controllo LF](../alu/#istruzioni-di-comparazione) per mettere in Subtract Mode l'ALU ed effettuare le operazioni di comparazione.
+La <a href="../../assets/BEAM computer.xlsx" target="_blank">cartella di lavoro Excel</a> che ho realizzato presenta l'Instruction Set del 6502, l'analisi delle istruzioni per determinare le modalità di indirizzamento e lo sviluppo dell'Instruction Set del 6502, considerando la necessità di utilizzare il [segnale di controllo LF](../alu/#istruzioni-di-comparazione) per mettere in Subtract Mode l'ALU ed effettuare le operazioni di comparazione.
 
 Ho speso molto tempo anche nella scrittura dello sketch Arduino utilizzato per programmare le EEPROM. Il programmatore di Ben Eater poteva impiegare *alcuni* interminabili minuti per ogni EEPROM, mentre la programmazione a blocchi implementata per il BEAM - frutto dello studio del codice e del circuito di Tom - ha permesso di ridurre il tempo di scrittura di una AT28C256 a soli 14 secondi. Per ulteriori note, si rimanda alla [pagina dedicata](../eeprom-programmer).
 
@@ -580,7 +584,7 @@ Il codice è parzialmente commentato e dovrebbe essere abbastanza esplicativo.
 Alcuni link:
 
 - Un <a href="https://www.atarimania.com/documents/6502%20(65xx)%20Microprocessor%20Instant%20Reference%20Card.pdf" target="_blank">compendio della Micro Logic</a> incredibilmente utile, che in sole due pagine include opcode, modalità di indirizzamento, flag e istruzioni che li modificano, funzionamento delle istruzioni di scorrimento e molto altro. Insostituibile.
-- Un validissimo riferimento per l'analisi della relazione tra Control Logic (CL) ed IR è stata la pagina <a href="https://www.masswerk.at/6502/6502_instruction_set.html" target="_blank">6502 Instruction Set</a> di Norbert Landsteiner. Inquadra l'Instruction Set in una comoda vista tabellare, dalla quale ho ricavato la vista Excel che ho in seguito utilizzato per definire gli opcode delle istruzioni del BEAM.
+- Un validissimo riferimento per l'analisi della relazione tra Control Logic (CL) ed IR è stata la pagina <a href="https://www.masswerk.at/6502/6502_instruction_set.html" target="_blank">6502 Instruction Set</a> di Norbert Landsteiner. Inquadra l'Instruction Set in una comoda vista tabellare, dalla quale ho ricavato la <a href="../../assets/BEAM computer.xlsx" target="_blank">vista Excel</a> utilizzata per definire gli opcode delle istruzioni del BEAM.
 - Sempre di Norbert, invito a consultare anche il <a href="https://www.masswerk.at/6502/assembler.html" target="_blank">6502 Assembler</a> e il <a href="https://www.masswerk.at/6502/" target="_blank">Virtual 6502</a> che ho utilizzato in fase di debug del microcode: utilissimi per simulare l'esecuzione passo dopo passo delle istruzioni, visualizzando gli aggiornamenti dei flag ed aggiustando di conseguenza il microcode del BEAM.
 
 Inizialmente avevo incontrato qualche difficoltà nel comprendere la logica della variazione dei Flag nelle istruzioni di comparazione. Un supporto eccellente si trova nel <a href="http://www.6502.org/tutorials/compare_beyond.html" target="_blank">tutorial</a> su 6502.org, che descrive come un'operazione di confronto equivalga ad impostare il Carry e ad [eseguire la differenza](../alu/#relazione-diretta-hardwired-tra-instruction-register-e-alu), mantenendo solamente i Flag modificati e scartando il valore della sottrazione. Illuminante.
@@ -596,7 +600,7 @@ Se dopo l'operazione di comparazione CMP NUM, che equivale a SEC seguito da SBC 
 
 Dopo aver metabolizzato l'argomento, mi sono dilettato in alcune prove.
 
-Il codice seguente compara l'operando di CPY con Y e, se Y >= operando, il salto condizionale Y viene eseguito:
+Il codice seguente compara l'operando di CPY con Y e, se Y >= operando, il salto condizionale viene eseguito:
 
 ~~~text
 LDY #$40
@@ -632,7 +636,7 @@ Il computer BEAM non implementa gli Interrupt e la modalità Decimale del 6502, 
 
 Sono state aggiunte le seguenti istruzioni: INA, DEA, OUT.
 
-Anche l'istruzione BRK non è stata implementata, ma si trova un comportamento simile nella nuova HLT.
+Anche l'istruzione BRK non è stata implementata, ma si trova un comportamento simile nella [nuova HLT](../clock/#note-sul-microcode).
 
 ## Schema
 
