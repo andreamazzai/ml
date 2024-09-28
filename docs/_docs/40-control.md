@@ -283,10 +283,10 @@ Il grafico seguente mostra i fronti di salita e di discesa dei soli segnali di c
 
 Il glitching dovuto alle variazioni degli indirizzi di ingresso delle EEPROM del SAP (ma è così anche nell'NQSAP) avviene:
 
-- ad ogni Falling Edge del clock come conseguenza del cambiamento delle uscite del Ring Counter (momenti 1, 5, 9, 13, 17)
+- ad ogni Falling Edge del Clock come conseguenza del cambiamento delle uscite del Ring Counter (momenti 1, 5, 9, 13, 17)
 - al Rising Edge del Clock come conseguenza del caricamento dell'istruzione nell'Instruction Register (momento 7 nello step 1).
 
-Il fenomeno del glitching si manifesta su tutti i segnali di controllo, sia quelli variati di proposito, sia quelli che non vengono modificati nello step corrente. Come nota a latere, bisogna segnalare che *tutti* i segnali di controllo del computer sono soggetti a questo fenomeno, anche se non indicati nel grafico.
+Il fenomeno del glitching si manifesta su tutti i segnali di controllo gestiti dalle EEPROM, sia quelli variati di proposito, sia quelli che non vengono modificati nello step corrente. Come nota a latere, bisogna segnalare che *tutti* i segnali di controllo del computer sono soggetti a questo fenomeno, anche se non indicati nel grafico.
 
 [![SAP computer - istruzione LDA](../../assets/control/40-wavedrom-sap-lda.png "SAP computer - istruzione LDA"){:width="100%"}](../../assets/control/40-wavedrom-sap-lda.png)
 
@@ -319,11 +319,11 @@ La risposta alla domanda è che il caricamento dell'Instruction Register al mome
 
 *Glitching all'istruzione LDY nell'NQSAP*.
 
-Ed è da qui che prende forma il design dell'Instruction Register dell'<a href="https://tomnisbet.github.io/nqsap-pcb/" target="_blank">NQSAP-PCB</a>, evoluzione dell'NQSAP.
+E' dalla necessità di indirizzare il problema del glitching che prende forma il design dell'Instruction Register dell'<a href="https://tomnisbet.github.io/nqsap-pcb/" target="_blank">NQSAP-PCB</a>, evoluzione dell'NQSAP.
 
-Questa miglioria è stata recepita nel BEAM, che cerca di includere tutti gli aspetti positivi dei due progetti di Tom.
+Per risolvere i problemi di glitching, Tom ha ridisegnato l'IR sostituendo i 74LS173 con due registri tipo D <a href="https://www.ti.com/lit/ds/symlink/sn74ls377.pdf" target="_blank">74LS377</a> in cascata. Il primo si aggiorna come di consueto durante il normale caricamento dell'IR, che avviene al Rising Edge del clock al momento 7 dello step 1 e mantiene inalterata l'operatività del computer. L'output del primo registro viene portato come input al secondo '377, che viene aggiornato al Falling Edge in contemporanea all'incremento del Ring Counter. In questo modo, tutti gli ingressi delle EEPROM vengono aggiornati simultaneamente al Falling Edge del clock, garantendo che i segnali di controllo in uscita siano ormai stabili quando i registri del computer vengono aggiornati al successivo Rising Edge.
 
-Per risolvere i problemi di glitching, Tom ha ridisegnato l'IR sostituendo i 74LS173 con due registri tipo D <a href="https://www.ti.com/lit/ds/symlink/sn74ls377.pdf" target="_blank">74LS377</a> in cascata. Il primo si aggiorna come di consueto durante il normale caricamento dell'IR, che avviene al Rising Edge del clock al momento 7 dello step 1 e mantiene inalterata l'operatività del computer. L'output del primo registro viene portato come input al secondo '377, che viene aggiornato al Falling Edge in contemporanea all'incremento del Ring Counter. In questo modo, tutti gli ingressi delle EEPROM vengono aggiornati simultaneamente, garantendo che i segnali di controllo in uscita siano stabili quando i registri del computer vengono aggiornati al Rising Edge.
+Questa miglioria è stata recepita nel BEAM, che nel suo design cerca di includere anche gli aspetti positivi dell'NQSAP-PCB.
 
 [![Schemi dell'Instruction Register dell'NQSAP e del BEAM](../../assets/control/40-cl-ir-beam-nqsap.png "Schemi dell'Instruction Register dell'NQSAP e del BEAM"){:width="100%"}](../../assets/control/40-cl-ir-beam-nqsap.png)
 
@@ -339,7 +339,7 @@ Risulta comunque interessante visualizzare il comportamento dei segnali di contr
 
 Il primo dei due '377 si aggiorna al Rising Edge al momento 7, senza causare glitching nelle EEPROM, poiché i loro ingressi non vengono modificati. Le uscite di questo primo registro vengono quindi inviate come input al secondo '377, che si aggiorna al Falling Edge del clock al momento 9, contemporaneamente all'incremento del RC. Solo ora tutti gli ingressi delle EEPROM vengono aggiornati simultaneamente, consentendo ai segnali di controllo di stabilizzarsi in attesa del momento 11, quando i registri vengono caricati secondo le microistruzioni impostate nello step 2.
 
-Come possiamo essere certi che l'eliminazione del glitching nel BEAM derivi effettivamente dalla doppia bufferizzazione del Program Counter? Tutti i registri a 8 bit realizzati con componenti dotati di Enable e Clock separati sono immuni al fenomeno, ma alcuni altri registri sono privi di tale ingresso, come il Flip-Flop 74LS74 utilizzato per memorizzare i Flag. Una porta AND permette di realizzare un segnale di Enable artificiale, similarmente allo schema del *Registro Y dell’NQSAP*.
+Come possiamo essere certi che l'eliminazione del glitching nel BEAM derivi effettivamente dalla doppia bufferizzazione del Program Counter? Tutti i registri a 8 bit realizzati con componenti dotati di Enable e Clock separati sono immuni al fenomeno, ma alcuni altri registri sono privi di tale ingresso, come il Flip-Flop 74LS74 utilizzato per memorizzare i Flag. Una porta AND consente di realizzare un segnale di Enable artificiale, similarmente allo schema del *Registro Y dell’NQSAP*.
 
 ![Registro Flag C del BEAM](../../assets/control/40-beam-c-flag.png "Registro Flag C del BEAM"){:width="66%"}
 
@@ -563,15 +563,15 @@ La colonna "Ambito o direzione segnale" indica il contesto di un bus, oppure sor
 
 La fase di scrittura del microcode non è stata *troppo* complessa. L'esperienza fatta col SAP, lo studio approfondito dell'NQSAP e molta pazienza mi avevano portato a comprendere piuttosto bene come sviluppare gli step delle istruzioni tenendo in considerazione le diverse modalità di indirizzamento del 6502.
 
-Solo poche istruzioni hanno richiesto più tempo per essere assimilate, in particolare quelle di comparazione, salto a subroutine e salto condizionale. Le istruzioni di comparazione hanno implicato una comprensione approfondita del risultato per impostarne correttamente i flag, mentre per le altre è stato necessario apprendere come utilizzare un registro temporaneo per memorizzare un'informazione da ripristinare in uno step successivo.
+Solo poche istruzioni hanno richiesto più tempo per essere assimilate, in particolare quelle di [comparazione](../alu/#istruzioni-di-comparazione), di [salto a subroutine](../stack/#implementazione-del-microcode-dello-stack-pointer) e di salto condizionale. Le istruzioni di comparazione hanno implicato una comprensione approfondita del risultato per impostarne correttamente i flag, mentre per le altre è stato necessario apprendere come utilizzare un registro temporaneo per memorizzare un'informazione da ripristinare in uno step successivo.
 
 [![Scrittura del microcode del BEAM con VScode](../../assets/control/40-microcode-vscode.png "Scrittura del microcode del BEAM con VScode"){:width="100%"}](../../assets/control/40-microcode-vscode.png)
 
 *Scrittura del microcode del BEAM con VScode.*
 
-E' risultata invece particolarmente difficile l'*organizzazione* dell'Instruction Set, sulla quale, col senno di poi, avrei dovuto investire più tempo. Purtroppo, ho realizzato di non essere riuscito ad organizzare in maniera stutturata il posizionamento degli opcode solo durante la scrittura del microcode, ma avevo già iniziato a lavorare sulla realizzazione hardware - con i forti legami hardwired tra IR, ALU e Flag - e non volevo più tornare indietro.
+E' risultata invece particolarmente difficile l'*organizzazione* dell'Instruction Set, sulla quale, col senno di poi, avrei dovuto investire più tempo. Purtroppo, ho realizzato di non essere riuscito ad organizzare in maniera stutturata il posizionamento degli opcode solo durante la scrittura del microcode, ma in quel momento avevo già iniziato a lavorare sulla realizzazione hardware - con i forti legami hardwired tra IR, ALU e Flag - e non volevo più tornare indietro.
 
-Tom ha dimostrato che è possibile automatizzare parte della generazione del microcodice attraverso un opportuno raggruppamento logico delle istruzioni. Personalmente, non sono riuscito a ottenere risultati comparabili, poiché la mia conoscenza del linguaggio C, sia all'epoca sia al momento della scrittura di questa documentazione, è modesta. Questo mi ha impedito di comprendere chiaramente come strutturare l'Instruction Set per sfruttare appieno tali vantaggi.
+Tom aveva automatizzato parte della generazione del microcodice attraverso un opportuno raggruppamento logico delle istruzioni. Personalmente, non sono riuscito a ottenere risultati comparabili, poiché la mia conoscenza del linguaggio C, sia all'epoca sia al momento della scrittura di questa documentazione, è modesta. Questo mi ha impedito di comprendere chiaramente come strutturare l'Instruction Set per sfruttare appieno tali vantaggi.
 
 La <a href="../../assets/BEAM computer.xlsx" target="_blank">cartella di lavoro Excel</a> che ho realizzato presenta l'Instruction Set del 6502, l'analisi delle istruzioni per determinare le modalità di indirizzamento e lo sviluppo dell'Instruction Set del BEAM, considerando la necessità di utilizzare il [segnale di controllo LF](../alu/#istruzioni-di-comparazione) per mettere in Subtract Mode l'ALU ed effettuare le operazioni di comparazione.
 

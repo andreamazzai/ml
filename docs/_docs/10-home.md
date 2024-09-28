@@ -101,7 +101,7 @@ Tra le cose apprese:
 - Ken Shirrif per alcuni <a href="https://www.righto.com/" target="_blank">interessantissimi articoli</a> su Overflow, 6502 e 74181 (e molto altro!);
 - l'esplosivo Dr. Brock LaMeres dell'università del Montana per l'eccellente playlist <a href="https://www.youtube.com/playlist?list=PL643xA3Ie_Et2uM4xu1yFk-A5ZQQ8gQ5e" target="_blank">Intro to Logic Circuits</a> su YouTube;
 - il sito <a href="http://6502.org" target="_blank">6502.org</a> e il suo forum: documentazione dettagliata senza fronzoli e utenti davvero esperti;
-- Norbert Landsteiner per il <a href="https://www.masswerk.at/6502/6502_instruction_set.html" target="_blank">6502 Instruction Set</a>, il <a href="https://www.masswerk.at/6502/assembler.html" target="_blank">6502 Assembler</a> e il <a href="https://www.masswerk.at/6502" target="_blank">Virtual 6502</a>, strumenti eccezionali che ho utilizzato ampiamente per la creazione e nel debug del microcode. Norbert è stato anche estremamemte reattivo nel correggere un bug che gli avevo segnalato.
+- Norbert Landsteiner per il <a href="https://www.masswerk.at/6502/6502_instruction_set.html" target="_blank">6502 Instruction Set</a>, il <a href="https://www.masswerk.at/6502/assembler.html" target="_blank">6502 Assembler</a> e il <a href="https://www.masswerk.at/6502" target="_blank">Virtual 6502</a>, strumenti eccezionali che ho utilizzato ampiamente per la creazione e il debug del microcode. Norbert è stato anche estremamemte reattivo nel correggere un bug che gli avevo segnalato.
 
 Ringraziamenti speciali: Tom Nisbet, che anche in fase di redazione della documentazione non ha esitato a darmi qualche chiarimento.
 
