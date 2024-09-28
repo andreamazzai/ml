@@ -31,7 +31,7 @@ Il segnale **CLK-Start** viene utilizzato dal Loader alla fine della programmazi
 
 *Schema del modulo di Clock.*
 
-## Note sul microcode
+## L'istruzione HLT
 
 Il microcode dell'istruzione HLT attiva l'omonimo segnale sul modulo di clock, interrompendo il funzionamento del programma. Per riprendere il funzionamento nella modalità a clock continuo, è necessario superare la microistruzione corrente premendo il pulsante Step: a questo punto è possibile riavviare l'esecuzione del programma col pulsante Start/Stop.
 

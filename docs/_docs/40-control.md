@@ -597,7 +597,7 @@ Il computer BEAM non implementa gli Interrupt e la modalità Decimale del 6502, 
 
 Sono state aggiunte le seguenti istruzioni: INA, DEA, OUT.
 
-Anche l'istruzione BRK non è stata implementata, ma si trova un comportamento simile nella [nuova HLT](../clock/#note-sul-microcode).
+Anche l'istruzione BRK non è stata implementata, ma si trova un comportamento simile nella [nuova HLT](../clock/#l-istruzione-hlt).
 
 ## Schema
 

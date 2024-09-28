@@ -26,4 +26,4 @@ Il Carry Out di un contatore binario a 4 bit, attivo al raggiungimento del conte
 
 ## Link utili
 
-- I <a href="https://eater.net/8bit/pc" target="_blank">video</a> di Ben Eater che descrivono il funzionamento dei Flip-Flop e la costruzione del PC.
+- I <a href="https://eater.net/8bit/pc" target="_blank">video di Ben Eater</a> che descrivono il funzionamento dei Flip-Flop e la costruzione del PC.
