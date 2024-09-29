@@ -39,7 +39,7 @@ Includere appunti su acquisto dei materiali, cavi utilizzati
 
 Leggendo le esperienze degli altri utenti su reddito , sembra che quello dell'alimentazione sia un problema abbastanza diffuso .le FAQ altri documenti scritti da altri utenti danno dei suggerimenti e aiutano indirizzare le questioni di distribuzione dell'elettricità . per quanto mi riguarda , dopo essere partito con la distribuzione laterale come avevo fatto nel SAP , ho aggiunto una ulteriore discesa dell'alimentazione al centro del computer aggiungendo una ulteriore fila di sezioni laterali ritagliate dalle breadboard.
 
-Come si potrà notare nelle foto non ho utilizzato condensatoriCosì come non li avevo utilizzati nemmeno nella realizzazione del sapi, confidando un po nella fortuna e nella bassa frequenza di utilizzo del computer.
+Come si potrà notare nelle foto non ho utilizzato condensatoriCosì come non li avevo utilizzati nemmeno nella realizzazione del sapi, confidando nella bassa frequenza di utilizzo del computer.
 
 Devo infine dire che nelle mie due realizzazioni ho notato che i chip TTL sembrano essere un po più malleabili , flessibili , meno rigidi rispetto ai requisiti indicati nel data sht, tanto che in alcuni casi , prima di migliorare la distribuzione dell'elettricità  alcuni chip funzionavano bene anche a 4,3 volt.
 

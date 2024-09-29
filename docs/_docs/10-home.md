@@ -80,7 +80,7 @@ In queste pagine si trovano note, appunti e insegnamenti appresi ed applicati ne
 Tra le cose apprese:
 
 1. i flag (del 6502), il loro ruolo e le interazioni all'interno di un computer
-2. il ruolo di una ALU e la numerazione in complemento di 2
+2. il ruolo di una ALU e la rappresentazione dei numeri Signed
 3. realizzazione di un programmatore di EEPROM molto veloce
 4. basi del linguaggio C
 5. basi di Arduino
