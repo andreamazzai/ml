@@ -3,7 +3,7 @@ title: "Control Logic"
 permalink: /docs/control/
 excerpt: "Control Logic del computer BEAM"
 ---
-<small>[Instruction Register e Istruzioni](#instruction-register-e-istruzioni) - [Ring Counter e Microistruzioni](#ring-counter-e-microistruzioni) - [Il clock, il “glitching” delle EEPROM e l’Instruction Register (parte 2)](#il-clock-il-glitching-delle-eeprom-e-linstruction-register-parte-2) - [Lunghezza delle istruzioni](#lunghezza-delle-istruzioni) - [I 74LS138 per la gestione dei segnali](#i-74ls138-per-la-gestione-dei-segnali) - [Caricamento di un programma dal Loader](#caricamento-di-un-programma-dal-loader) - [Riepilogo segnali dell’NQSAP e del BEAM](#riepilogo-segnali-dellnqsap-e-del-beam) - [Microcode](#microcode) - [Microcode](#microcode) - [Note](#note) - [Link Utili](#link-utili) - [Riflessione sul microcode](#riflessione-sul-microcode)</small>
+<small>[Instruction Register e Istruzioni](#instruction-register-e-istruzioni) - [Ring Counter e Microistruzioni](#ring-counter-e-microistruzioni) - [Clock, "glitching" delle EEPROM e Instruction Register (parte 2)](#clock-glitching-delle-eeprom-e-instruction-register-parte-2) - [Lunghezza delle istruzioni](#lunghezza-delle-istruzioni) - [I 74LS138 per la gestione dei segnali](#i-74ls138-per-la-gestione-dei-segnali) - [Caricamento di un programma dal Loader](#caricamento-di-un-programma-dal-loader) - [Riepilogo segnali dell’NQSAP e del BEAM](#riepilogo-segnali-dellnqsap-e-del-beam) - [Microcode](#microcode) - [Microcode](#microcode) - [Note](#note) - [Link Utili](#link-utili) - [Riflessione sul microcode](#riflessione-sul-microcode)</small>
 
 [![Control Logic del computer BEAM](../../assets/control/40-beam-control.png "Control Logic del computer BEAM"){:width="100%"}](../../assets/control/40-beam-control.png)
 
@@ -247,7 +247,7 @@ Utilizzando una logica combinatoria, è possibile costruire il microcode da cari
 
 Nell'immagine si può osservare che le uscite del contatore controllano anche il demultiplexer, che viene utilizzato per visualizzare lo stato dell'RC. Anziché impiegare 16 LED (e due '138), un singolo LED "esteso" è pilotato dal pin più significativo del '161, che ha un valore pari ad 8: lo step correntemente in esecuzione sarà indicato dal LED acceso dal '138, al quale sommare 8 se il LED "esteso" è acceso.
 
-### Il clock, il "glitching" delle EEPROM e l'Instruction Register (parte 2)
+### Clock, "glitching" delle EEPROM e Instruction Register (parte 2)
 
 In generale, i momenti essenziali di un ciclo di clock in un computer sono due: il Rising Edge ↗ (passaggio del segnale dallo stato logico LO allo stato logico HI) e il Falling Edge ↘ (viceversa).
 
