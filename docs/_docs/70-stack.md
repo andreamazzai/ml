@@ -72,8 +72,8 @@ La tabella che segue **evidenzia visivamente** le modifiche apportate dalle micr
 
 *Scomposizione dell'istruzione JSR nelle sue otto microistruzioni elementari e raffigurazione dello stato dei registri e della RAM al termine di ogni step.*
 
-\* Istruzione NOP precedente\
-\*\* Primo step dell'istruzione INX successiva\
+\* Istruzione NOP precedente  
+\*\* Primo step dell'istruzione INX successiva  
 \*\*\* Il valore contenuto in questo istante nella locazione di memoria 0xFF non è noto; peraltro, è ininfluente, in quanto lo step successivo ne sovrascrive il contenuto con l'indirizzo di ritorno dalla subroutine
 
 1. Il primo step carica l'indirizzo dell'istruzione corrente nel Memory Address Register:

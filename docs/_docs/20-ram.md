@@ -3,7 +3,7 @@ title: "RAM e MAR"
 permalink: /docs/ram/
 excerpt: "Modulo di memoria del computer BEAM"
 ---
-[Primi studi](#primi-studi) - [Memorie con IO separati o IO comuni?](#memorie-con-io-separati-o-io-comuni) - [MUX, Program Mode e Run Mode](#mux-program-mode-e-run-mode) - [Gestione della RAM](#gestione-della-ram) - [Design dei moduli MAR e RAM](#design-dei-moduli-mar-e-ram) - [Schema](#schema) - [Note](#note) - [Link utili](#link-utili)
+<small>[Primi studi](#primi-studi) - [Memorie con IO separati o IO comuni?](#memorie-con-io-separati-o-io-comuni) - [MUX, Program Mode e Run Mode](#mux-program-mode-e-run-mode) - [Gestione della RAM](#gestione-della-ram) - [Design dei moduli MAR e RAM](#design-dei-moduli-mar-e-ram) - [Schema](#schema) - [Note](#note) - [Link utili](#link-utili)</small>
 
 [![Modulo di memoria del computer BEAM](../../assets/ram/20-ram-beam.png "Modulo di memoria del computer BEAM"){:width="100%"}](../../assets/ram/20-ram-beam.png)
 
