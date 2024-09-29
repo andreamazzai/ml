@@ -3,6 +3,8 @@ title: "Program Counter"
 permalink: /docs/programcounter/
 excerpt: "Program Counter del computer BEAM"
 ---
+<small>[Note sui segnali](#note-sui-segnali) - [Link utili](#link-utili)</small>
+
 [![Program Counter del computer BEAM](../../assets/pc/35-beam-pc.png "Program Counter del computer BEAM"){:width="100%"}](../../assets/pc/35-beam-pc.png)
 
 Il Program Counter (PC) del computer BEAM presenta poche differenze rispetto al PC del SAP di Ben Eater.

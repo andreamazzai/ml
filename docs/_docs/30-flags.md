@@ -3,6 +3,7 @@ title: "Flag"
 permalink: /docs/flags/
 excerpt: "Modulo dei Flag del computer BEAM"
 ---
+<small>[Componenti e funzionamento](#componenti-e-funzionamento) - [I salti condizionali e incondizionati](#i-salti-condizionali-e-incondizionati) - [Calcolo dei Flag N, V, Z e C](#calcolo-dei-flag-n-v-z-e-c) - [Il Carry e i registri H e ALUPermalink](#il-carry-e-i-registri-h-e-alu) - [Schema](#schema) - [Differenze tra Moduli Flag dell’NQSAP e del BEAMPermalink](#differenze-tra-moduli-flag-dellnqsap-e-del-beam) - [Link utili](#link-utili)</small>
 
 [![Modulo dei Flag del computer BEAM](../../assets/flags/30-flag-beam.png "Modulo dei Flag del computer BEAM"){:width="100%"}](../../assets/flags/30-flag-beam.png)
 
