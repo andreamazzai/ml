@@ -3,6 +3,8 @@ title: "ALU"
 permalink: /docs/alu/
 excerpt: "Unità Aritmetica e Logica del computer BEAM"
 ---
+<small>[Il 74LS181](#il-74ls181) - [Il registro A](#il-registro-a) - [L’ALU dell’NQSAP](#lalu-dellnqsap) - [Il registro H](#il-registro-h) - [Funzioni logiche e operazioni aritmetiche](#funzioni-logiche-e-operazioni-aritmetiche) - [Relazione diretta (hardwired) tra Instruction Register e ALU](#relazione-diretta-hardwired-tra-instruction-register-e-alu) - [Indirizzamenti](#indirizzamenti) - [Istruzioni di comparazione](#istruzioni-di-comparazione) - [Le istruzioni di comparazione e i Flag](#le-istruzioni-di-comparazione-e-i-flag) - [Riepilogo: sottrazioni, comparazioni e indirizzamenti](#riepilogo-sottrazioni-comparazioni-e-indirizzamenti) - [Carry, addizioni e sottrazioni](#carry-addizioni-e-sottrazioni) - [Schema](#schema) - [Differenze tra Moduli ALU dell’NQSAP e del BEAM](#differenze-tra-moduli-alu-dellnqsap-e-del-beam) - [Link Utili](#link-utili)</small>
+
 [![Unità Aritmetica e Logica del computer BEAM](../../assets/alu/50-alu-beam.png "Unità Aritmetica e Logica del computer BEAM"){:width="100%"}](../../assets/alu/50-alu-beam.png)
 
 L'Unità Aritmetica e Logica (ALU) del SAP computer di Ben Eater era limitata a addizioni e sottrazioni. L'NQSAP di Tom Nisbet aggiungeva operazioni logiche e di scorrimento (shift) e avevo iniziato a studiarla in dettaglio.
@@ -39,7 +41,7 @@ Il modulo ALU è sommariamente composto da due registri di input H e B e da una 
 - Il registro B è un Octal D-Type Flip-Flop with 3-State Outputs <a href="https://www.onsemi.com/pdf/datasheet/74vhc574-d.pdf" target="_blank">74LS574</a> a 8 bit. Il '574 non include un ingresso Enable, che Tom ha dunque realizzato in maniera artificiale mettendo una NOR su /Clock e /WB ("Write B"); in questo modo il registro si attiva solo in corrispondenza di /WB (che è attivo LO) e del Falling Edge del clock invertito, equivalente al Rising Edge del clock normale, che è il momento in cui si caricano i registri (riferimento: video di Ben Eater <a href="https://www.youtube.com/watch?v=X7rCxs1ppyY" target="_blank">8-bit CPU control logic: Part 2</a>). Si veda anche la nota sul glitching nella sezione <a href="../control/#il-clock-il-glitching-delle-eeprom-e-linstruction-register-parte-2" target="_blank">Il clock e il “glitching” delle EEPROM</a> nella pagina della Control Logic.
 - Tre transceiver '245 permettono di poter leggere i valori contenuti in H, B ed L (L è l'output dell'A**L**U).
 
-### Il registro H
+## Il registro H
 
 Nel computer SAP di Ben Eater i registri di input all'ALU erano A e B, mentre nell'NQSAP sono H e B. Come accennato nella sezione precedente, il registro H si può comportare come un comune registro a 8 bit e può sostituire il registro A come input dell'ALU.
 
@@ -133,7 +135,7 @@ L'MSB di H / output H-Q7 evidenziato in giallo nello schema è connesso al modul
 
 Vista la flessibilità e l'utilità del Registro H, questo è stato implementato anche nel BEAM, con una differenza nella scrittura del microcode: l'NQSAP implementa scorrimento e rotazione a sinistra sfruttando l'operazione A Plus A dei '181, mentre il BEAM sfrutta i '194 sia verso sinistra sia verso destra.
 
-### Funzioni logiche e operazioni aritmetiche
+## Funzioni logiche e operazioni aritmetiche
 
 Come detto nell'introduzione, il computer BEAM, al pari dell'NQSAP, include il set di istruzioni completo del 6502, comprese quelle logiche e aritmetiche. Ricordavo discretamente le principali operazioni del 6502 e sapevo *abbastanza* bene quale dovesse essere il risultato di quello che stavo facendo, ma in quel momento non avevo ancora idea di come fosse possibile ottenerlo.
 
@@ -356,7 +358,7 @@ BMI $60
 
 non attiva né Z, né C, coerentemente con quanto esposto in precedenza; attiva invece N, perché la sottrazione simulata genera un risultato negativo: l'MSB assume valore 1, attivando così il Flag N. Il Flag C, settato all'inizio della comparazione, assume il valore 0 perché viene "preso in prestito". Trovando N attivo, la successiva istruzione BMI (Branch on MInus) viene eseguita.
 
-### Riepilogo: sottrazioni, comparazioni e indirizzamenti
+## Riepilogo: sottrazioni, comparazioni e indirizzamenti
 
 La documentazione dell'NQSAP segnalava che "poiché la ALU è legata all'IR, ci sono solo 8 Opcode disponibili per metterla in Subtract Mode", ma non capivo cosa volesse dire. "Per creare i 16 Opcode necessari per tutte le combinazioni di Subtract e Compare, si mette una NOR su ALU-S0 (IR 0) e su LF, così da  riutilizzare la Selection 0111 come se fosse 0110, che è la modalità Subtract".
 
