@@ -56,3 +56,8 @@ excerpt: "Registri indice del computer BEAM"
 
 - Nei link mettere il link a Tommy PROM, spiegare  CHE IL MIO PROGRAMMATORE DI EPPROM  di è basata un po sul DIWSEGNO  originale di ben , UN PO' SUL TOMMYPROM
 - Verificare anche se è Il programmatore dietro di ben Tom che utilizza lo stesso codice di programmazione del Tommyprom; in realtà mi sembra di ricordare che sia una versione tagliata del tommyprom
+
+## BIN MATH
+
+- Ripple Mode Carry e Carry Look Ahead --- Ne parliamo perché i '161 usati nel MAR e i '181 dell'ALU ne parlano nei datasheet.
+- Link a quel professore del montana

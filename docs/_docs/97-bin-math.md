@@ -558,8 +558,3 @@ Questo corrisponde esattamente a quanto indicato nella sezione [Un esempio prati
 ![Connessioni in uscita dall'Instruction Register dell'NQSAP.](../../assets/math/IR-to-74151.png){:width="66%"}
 
 Per finire, da quanto visto fino ad ora possiamo dedurre un'altra regola: la somma di due Signed di segno opposto e la sottrazione di due Signed dello stesso segno non possono causare Overflow.
-
-## TO DO
-
-- Ripple Mode Carry e Carry Look Ahead --- Ne parliamo perché i '161 usati nel MAR e i '181 dell'ALU ne parlano nei datasheet.
-- Link a quel professore del montana
