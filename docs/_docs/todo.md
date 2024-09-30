@@ -1,7 +1,7 @@
 ---
-title: "D, X e Y"
+title: "TO DO"
 permalink: /docs/todo/
-excerpt: "Registri indice del computer BEAM"
+excerpt: "Cosa c'è da fare"
 ---
 
 ### OVUNQUE
