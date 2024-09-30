@@ -72,11 +72,12 @@ La tabella che segue **evidenzia visivamente** l'esecuzione dell'instruzione JSR
 
 *Scomposizione dell'istruzione JSR nelle sue otto microistruzioni elementari e raffigurazione dello stato dei registri e della RAM al termine di ogni step.*
 
-[^1] Istruzione NOP precedente  
-[^2] Il valore contenuto in questo istante nella locazione di memoria 0xFF non è noto; peraltro, è ininfluente, in quanto lo step successivo ne sovrascrive il contenuto con l'indirizzo di ritorno dalla subroutine  
-[^3] Primo step dell'istruzione INX successiva
-
 Here's a simple footnote,[^4] and here's a longer one.[^bignote]
+
+[^1]: Istruzione NOP precedente  
+[^2]: Il valore contenuto in questo istante nella locazione di memoria 0xFF non è noto; peraltro, è ininfluente, in quanto lo step successivo ne sovrascrive il contenuto con l'indirizzo di ritorno dalla subroutine  
+[^3]: Primo step dell'istruzione INX successiva
+
 
 1. Il primo step carica l'indirizzo dell'istruzione corrente nel Memory Address Register:
     - RPC, Read Program Counter - espone l'indirizzo del PC sul bus
