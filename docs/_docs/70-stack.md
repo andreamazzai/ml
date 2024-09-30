@@ -76,7 +76,7 @@ La tabella che segue **evidenzia visivamente** l'esecuzione dell'instruzione JSR
 [^2] Il valore contenuto in questo istante nella locazione di memoria 0xFF non è noto; peraltro, è ininfluente, in quanto lo step successivo ne sovrascrive il contenuto con l'indirizzo di ritorno dalla subroutine  
 [^3] Primo step dell'istruzione INX successiva
 
-Here's a simple footnote,[^1] and here's a longer one.[^bignote]
+Here's a simple footnote,[^4] and here's a longer one.[^bignote]
 
 1. Il primo step carica l'indirizzo dell'istruzione corrente nel Memory Address Register:
     - RPC, Read Program Counter - espone l'indirizzo del PC sul bus
@@ -107,8 +107,7 @@ Here's a simple footnote,[^1] and here's a longer one.[^bignote]
 
 \*Notare come l'Instruction Register venga aggiornato solo alla fine del secondo step dell'istruzione, come già visto nella spiegazione delle [Fasi](../control/#fasi) della CPU.
 
-[^1]: This is the first footnote.
-
+[^4]: This is the first footnote.
 [^bignote]: Here's one with multiple paragraphs and code.
 
 Alla fine della subroutine, l'istruzione RTS esegue i seguenti passaggi:
