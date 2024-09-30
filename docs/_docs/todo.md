@@ -61,3 +61,10 @@ excerpt: "Registri indice del computer BEAM"
 
 - Ripple Mode Carry e Carry Look Ahead --- Ne parliamo perché i '161 usati nel MAR e i '181 dell'ALU ne parlano nei datasheet.
 - Link a quel professore del montana
+
+---
+Here's a simple footnote,[^1] and here's a longer one.[^bignote]
+
+[^1]: This is the first footnote.
+
+[^bignote]: Here's one with multiple paragraphs and code.

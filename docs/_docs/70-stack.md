@@ -7,15 +7,15 @@ excerpt: "Stack Pointer del computer BEAM"
 
 [![Stack Pointer del computer BEAM](../../assets/sp/70-beam-sp.png "Stack Pointer del computer BEAM"){:width="100%"}](../../assets/sp/70-beam-sp.png)
 
-L'implementazione dello stack nel 6502 prevede l'utilizzo di un'area di memoria dedicata alla memorizzazione e al ripristino di informazioni secondo una logica LIFO (Last-In, First-Out, dove l'ultimo elemento inserito è il primo a essere letto), gestita da un puntatore (Stack Pointer, SP) che tiene traccia dell'indirizzo della prossima locazione disponibile.
+L'implementazione dello stack nel 6502 prevede l'utilizzo di un'area di memoria dedicata alla memorizzazione e al ripristino di informazioni secondo una logica LIFO (Last-In, First-Out, dove l'ultimo elemento inserito è il primo a essere letto), gestita da un puntatore a 8 bit (Stack Pointer, SP) che tiene traccia dell'indirizzo della prossima locazione disponibile.
 
 Due usi comuni dello stack sono il salvataggio dello stato attuale dei Flag prima di eseguire una routine che li modifica, così da poterli ripristinare al termine della routine, e la memorizzazione dell'indirizzo di ritorno di una subroutine invocata dall'istruzione JSR.
 
+Il bus degli indirizzi del 6502 ha un'ampiezza di 16 bit e può indirizzare 2^16 = 64K di memoria. Lo stack occupa la seconda pagina di memoria indirizzabile dalla CPU, che corrisponde agli indirizzi compresi tra 0x0100 e 0x01FF. Prima dell'utilizzo, lo Stack Pointer viene solitamente inizializzato a 0xFF, puntando così alla locazione 0x1FF. Quando si effettua un'operazione di scrittura nello stack ("Push"), il valore viene prima salvato nella posizione indicata dal puntatore, dopodiché lo SP viene decrementato per puntare alla successiva locazione libera. Al contrario, durante un'operazione di lettura dallo stack ("Pull"), il valore viene prima letto dalla posizione indicata dal puntatore, che viene poi incrementato per indirizzare la prossima posizione disponibile.
+
 Lo Stack Pointer del 6502 è un registro, denominato S, la cui implementazione nel BEAM consta di due 4-bit Synchronous Binary Up-Down Counter <a href="https://www.ti.com/lit/ds/symlink/sn74ls157.pdf" target="_blank">74LS169</a> in grado di indirizzare i 256 byte del computer. In definitiva, si tratta di un normale registro che, oltre a poter memorizzare un valore specifico, ha la peculiarità di poter contare sia verso l'alto, sia verso il basso.
 
-Lo stack del 6502 occupa la seconda pagina di memoria indirizzabile dalla CPU, corrispondente agli indirizzi compresi tra 0x0100 e 0x01FF. Prima dell'utilizzo, lo Stack Pointer viene solitamente inizializzato a 0xFF, puntando così alla locazione 0x1FF. Quando si effettua un'operazione di scrittura nello stack ("Push"), il valore viene prima salvato nella posizione indicata dal puntatore, dopodiché lo SP viene decrementato per puntare alla successiva locazione libera. Al contrario, durante un'operazione di lettura dallo stack ("Pull"), il valore viene prima letto dalla posizione indicata dal puntatore, che viene poi incrementato per indirizzare la prossima posizione disponibile.
-
-Poiché il BEAM dispone di soli 256 byte di memoria, l'area destinata allo stack dovrà essere necessariamente limitata dal programmatore, ad esempio usando i 16 byte compresi tra gli indirizzi 0xF0 e 0xFF. Tuttavia, è improbabile che un programma residente nella memoria rimanente richieda più di 16 byte di stack.
+Poiché il BEAM dispone di soli 256 byte di memoria e lo SP è in grado di indirizzarli tutti, l'area destinata allo stack dovrà essere necessariamente limitata dal programmatore, ad esempio usando i 16 byte compresi tra gli indirizzi 0xF0 e 0xFF.
 
 Lo Stack Pointer punta sempre alla successiva locazione disponibile nello stack, dunque:
 
@@ -35,9 +35,9 @@ Le istruzioni del 6502 che interagiscono con lo stack sono:
 
 ## Implementazione del microcode dello Stack Pointer
 
-Analizziamo un'istruzione JSR, ipotizzando di aver precedentemente inizializzato lo Stack Pointer (SP) del BEAM a 0xFF. Il BEAM dispone di soli 256 byte, quindi lo SP punta ora all'ultima locazione di memoria del computer.
+Analizziamo un'istruzione JSR, ipotizzando di aver precedentemente inizializzato lo Stack Pointer (SP) del BEAM a 0xFF. Il BEAM dispone di 256 byte, quindi lo SP punta ora all'ultima locazione di memoria del computer.
 
-Supponiamo di avere il seguente codice:
+Supponiamo di avere il seguente codice, nel quale una istruzione NOP è seguita da un salto a una subroutine che incrementa il registro X. Al ritorno dalla subroutine, il programma continua con un'altra istruzione NOP.
 
 ~~~text
 | Mnemonico | Indirizzo | Valore | Microistruzione                   |
@@ -53,30 +53,28 @@ Supponiamo di avere il seguente codice:
 | RTS       | 0x31      | 0x11   | Opcode istruzione RTS del BEAM    |
 ~~~
 
-Una istruzione NOP è seguito da un salto a una subroutine che incrementa il registro X. Al ritorno dalla subroutine, segue un'altra istruzione NOP.
+La tabella che segue **evidenzia visivamente** l'esecuzione dell'instruzione JSR con le modifiche apportate dalle microistruzioni ai registri Program Counter (PC), Stack Pointer, Memory Address Register (MAR), Instruction Register (IR), B e al valore della locazione di memoria indirizzata dal MAR. La tabella include anche l'istruzione precedente NOP e il primo step della istruzione successiva INX richiamata dalla JSR. I valori in **grassetto** indicano una variazione rispetto allo step precedente.
 
-La tabella che segue **evidenzia visivamente** le modifiche apportate dalle microistruzioni ai registri Program Counter (PC), Stack Pointer, Memory Address Register (MAR), Instruction Register (IR), B e al valore della locazione di memoria indirizzata dal MAR. La tabella include anche la precedente NOP e il primo step della  successiva INX richiamata dalla JSR. I valori in **grassetto** indicano una variazione rispetto allo step precedente.
-
- | Istruzione | Step | Microistruzioni   | PC      | SP      | MAR     | RAM     | IR      | B       |
- |------------|------|-------------------|---------|---------|---------|---------|---------|---------|
- | NOP        | 0\*  | RPC \| WM         | 0x1F    | 0xFF    | <b>0x1F | <b>0x0F | ?       | ?       |
- | NOP        | 1\*  | RR  \| WIR \| PCI | <b>0x20 | 0xFF    | 0x1F    | 0x0F    | <b>0x0F | ?       |
- | NOP        | 2\*  | NI                | 0x20    | 0xFF    | 0x1F    | 0x0F    | 0x0F    | ?       |
- | JSR        | 0    | RPC \| WM         | 0x20    | 0xFF    | <b>0x20 | <b>0x41 | 0x0F    | ?       |
- | JSR        | 1    | RR  \| WIR \| PCI | <b>0x21 | 0xFF    | 0x20    | 0x41    | <b>0x41 | ?       |
- | JSR        | 2    | RPC \| WM         | 0x21    | 0xFF    | <b>0x21 | <b>0x30 | 0x41    | ?       |
- | JSR        | 3    | RR  \| WB  \| PCI | <b>0x22 | 0xFF    | 0x21    | 0x30    | 0x41    | <b>0x30 |
- | JSR        | 4    | RS  \| WM         | 0x22    | 0xFF    | <b>0xFF | ?\*\*\* | 0x41    | 0x30    |
- | JSR        | 5    | RPC \| WR         | 0x22    | 0xFF    | 0xFF    | <b>0x22 | 0x41    | 0x30    |
- | JSR        | 6    | SE                | 0x22    | <b>0xFE | 0xFF    | 0x22    | 0x41    | 0x30    |
- | JSR        | 7    | RB  \| WPC \| NI  | <b>0x30 | 0xFE    | 0xFF    | 0x22    | 0x41    | 0x30    |
- | INX        | 0\*\*| RPC \| WM         | 0x30    | 0xFE    | <b>0x30 | <b>0xA0 | 0x41    | 0x30    |
+ | Istruzione | Step   | Microistruzioni   | PC      | SP      | MAR     | RAM     | IR      | B       |
+ |------------|--------|-------------------|---------|---------|---------|---------|---------|---------|
+ | NOP        | 0\*    | RPC \| WM         | 0x1F    | 0xFF    | <b>0x1F | <b>0x0F | ?       | ?       |
+ | NOP        | 1\*    | RR  \| WIR \| PCI | <b>0x20 | 0xFF    | 0x1F    | 0x0F    | <b>0x0F | ?       |
+ | NOP        | 2\*    | NI                | 0x20    | 0xFF    | 0x1F    | 0x0F    | 0x0F    | ?       |
+ | JSR        | 0      | RPC \| WM         | 0x20    | 0xFF    | <b>0x20 | <b>0x41 | 0x0F    | ?       |
+ | JSR        | 1      | RR  \| WIR \| PCI | <b>0x21 | 0xFF    | 0x20    | 0x41    | <b>0x41 | ?       |
+ | JSR        | 2      | RPC \| WM         | 0x21    | 0xFF    | <b>0x21 | <b>0x30 | 0x41    | ?       |
+ | JSR        | 3      | RR  \| WB  \| PCI | <b>0x22 | 0xFF    | 0x21    | 0x30    | 0x41    | <b>0x30 |
+ | JSR        | 4      | RS  \| WM         | 0x22    | 0xFF    | <b>0xFF | ?\*\*   | 0x41    | 0x30    |
+ | JSR        | 5      | RPC \| WR         | 0x22    | 0xFF    | 0xFF    | <b>0x22 | 0x41    | 0x30    |
+ | JSR        | 6      | SE                | 0x22    | <b>0xFE | 0xFF    | 0x22    | 0x41    | 0x30    |
+ | JSR        | 7      | RB  \| WPC \| NI  | <b>0x30 | 0xFE    | 0xFF    | 0x22    | 0x41    | 0x30    |
+ | INX        | 0\*\*\*| RPC \| WM         | 0x30    | 0xFE    | <b>0x30 | <b>0xA0 | 0x41    | 0x30    |
 
 *Scomposizione dell'istruzione JSR nelle sue otto microistruzioni elementari e raffigurazione dello stato dei registri e della RAM al termine di ogni step.*
 
 \* Istruzione NOP precedente  
-\*\* Primo step dell'istruzione INX successiva  
-\*\*\* Il valore contenuto in questo istante nella locazione di memoria 0xFF non è noto; peraltro, è ininfluente, in quanto lo step successivo ne sovrascrive il contenuto con l'indirizzo di ritorno dalla subroutine
+\*\* Il valore contenuto in questo istante nella locazione di memoria 0xFF non è noto; peraltro, è ininfluente, in quanto lo step successivo ne sovrascrive il contenuto con l'indirizzo di ritorno dalla subroutine  
+\*\*\* Primo step dell'istruzione INX successiva
 
 1. Il primo step carica l'indirizzo dell'istruzione corrente nel Memory Address Register:
     - RPC, Read Program Counter - espone l'indirizzo del PC sul bus
