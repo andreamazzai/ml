@@ -3,9 +3,13 @@ title: "D, X e Y"
 permalink: /docs/dxy/
 excerpt: "Registri indice del computer BEAM"
 ---
+<small>[Il registro D](#il-registro-d) - [Utilizzo con le modalità di indirizzamento indicizzate](#utilizzo-con-le-modalità-di-indirizzamento-indicizzate) - [Utilizzo per i salti condizionali](#utilizzo-per-i-salti-condizionali) - [Schema](#schema) - [Differenze tra Registri indice dell’NQSAP e del BEAM](#differenze-tra-registri-indice-dellnqsap-e-del-beam)</small>
+
 [![Registri indice del computer BEAM](../../assets/dxy/60-beam-dxy.png "Registri indice del computer BEAM"){:width="100%"}](../../assets/dxy/60-beam-dxy.png)
 
 Nel microprocessore 6502 sono presenti due registri indice, X e Y, che possono facilmente essere riprodotti in un computer TTL; sono registri indipendenti che possono essere scritti e letti alla bisogna.
+
+## Il registro D
 
 Il registro D dell'NQSAP e del BEAM viene utilizzato a supporto delle istruzioni di salto condizionale e di quelle che eseguono operazioni in una locazione di memoria che è il risultato di un computo tra l'indirizzo base specificato nell'operando e quattro diversi modi di interpretazione dei valori assunti dai registri indice X e Y:
 
