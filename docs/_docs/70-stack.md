@@ -57,24 +57,24 @@ La tabella che segue **evidenzia visivamente** l'esecuzione dell'instruzione JSR
 
  | Istruzione | Step   | Microistruzioni   | PC      | SP      | MAR     | RAM     | IR      | B       |
  |------------|--------|-------------------|---------|---------|---------|---------|---------|---------|
- | NOP        | 0[^1]  | RPC \| WM         | 0x1F    | 0xFF    | <b>0x1F | <b>0x0F | ?       | ?       |
- | NOP        | 1[^1]  | RR  \| WIR \| PCI | <b>0x20 | 0xFF    | 0x1F    | 0x0F    | <b>0x0F | ?       |
- | NOP        | 2[^1]  | NI                | 0x20    | 0xFF    | 0x1F    | 0x0F    | 0x0F    | ?       |
+ | NOP        | 0\*    | RPC \| WM         | 0x1F    | 0xFF    | <b>0x1F | <b>0x0F | ?       | ?       |
+ | NOP        | 1\*    | RR  \| WIR \| PCI | <b>0x20 | 0xFF    | 0x1F    | 0x0F    | <b>0x0F | ?       |
+ | NOP        | 2\*    | NI                | 0x20    | 0xFF    | 0x1F    | 0x0F    | 0x0F    | ?       |
  | JSR        | 0      | RPC \| WM         | 0x20    | 0xFF    | <b>0x20 | <b>0x41 | 0x0F    | ?       |
  | JSR        | 1      | RR  \| WIR \| PCI | <b>0x21 | 0xFF    | 0x20    | 0x41    | <b>0x41 | ?       |
  | JSR        | 2      | RPC \| WM         | 0x21    | 0xFF    | <b>0x21 | <b>0x30 | 0x41    | ?       |
  | JSR        | 3      | RR  \| WB  \| PCI | <b>0x22 | 0xFF    | 0x21    | 0x30    | 0x41    | <b>0x30 |
- | JSR        | 4      | RS  \| WM         | 0x22    | 0xFF    | <b>0xFF | ?[^2]   | 0x41    | 0x30    |
+ | JSR        | 4      | RS  \| WM         | 0x22    | 0xFF    | <b>0xFF | ?\*\*   | 0x41    | 0x30    |
  | JSR        | 5      | RPC \| WR         | 0x22    | 0xFF    | 0xFF    | <b>0x22 | 0x41    | 0x30    |
  | JSR        | 6      | SE                | 0x22    | <b>0xFE | 0xFF    | 0x22    | 0x41    | 0x30    |
  | JSR        | 7      | RB  \| WPC \| NI  | <b>0x30 | 0xFE    | 0xFF    | 0x22    | 0x41    | 0x30    |
- | INX        | 0[^3]  | RPC \| WM         | 0x30    | 0xFE    | <b>0x30 | <b>0xA0 | 0x41    | 0x30    |
+ | INX        | 0\*\*\*| RPC \| WM         | 0x30    | 0xFE    | <b>0x30 | <b>0xA0 | 0x41    | 0x30    |
 
 *Scomposizione dell'istruzione JSR nelle sue otto microistruzioni elementari e raffigurazione dello stato dei registri e della RAM al termine di ogni step.*
 
-[^1]: Istruzione NOP precedente  
-[^2]: Il valore contenuto in questo istante nella locazione di memoria 0xFF non è noto; peraltro, è ininfluente, in quanto lo step successivo ne sovrascrive il contenuto con l'indirizzo di ritorno dalla subroutine  
-[^3]: Primo step dell'istruzione INX successiva
+\* Istruzione NOP precedente  
+\*\* Il valore contenuto in questo istante nella locazione di memoria 0xFF non è noto; peraltro, è ininfluente, in quanto lo step successivo ne sovrascrive il contenuto con l'indirizzo di ritorno dalla subroutine  
+\*\*\* Primo step dell'istruzione INX successiva
 
 1. Il primo step carica l'indirizzo dell'istruzione corrente nel Memory Address Register:
     - RPC, Read Program Counter - espone l'indirizzo del PC sul bus
