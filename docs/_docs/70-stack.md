@@ -58,8 +58,8 @@ La tabella che segue **evidenzia visivamente** l'esecuzione dell'instruzione JSR
  | Istruzione | Step   | Microistruzioni   | PC      | SP      | MAR     | RAM     | IR      | B       |
  |------------|--------|-------------------|---------|---------|---------|---------|---------|---------|
  | NOP        | 0[^1]  | RPC \| WM         | 0x1F    | 0xFF    | <b>0x1F | <b>0x0F | ?       | ?       |
- | NOP        | 1      | RR  \| WIR \| PCI | <b>0x20 | 0xFF    | 0x1F    | 0x0F    | <b>0x0F | ?       |
- | NOP        | 2      | NI                | 0x20    | 0xFF    | 0x1F    | 0x0F    | 0x0F    | ?       |
+ | NOP        | 1[^1]  | RR  \| WIR \| PCI | <b>0x20 | 0xFF    | 0x1F    | 0x0F    | <b>0x0F | ?       |
+ | NOP        | 2[^1]  | NI                | 0x20    | 0xFF    | 0x1F    | 0x0F    | 0x0F    | ?       |
  | JSR        | 0      | RPC \| WM         | 0x20    | 0xFF    | <b>0x20 | <b>0x41 | 0x0F    | ?       |
  | JSR        | 1      | RR  \| WIR \| PCI | <b>0x21 | 0xFF    | 0x20    | 0x41    | <b>0x41 | ?       |
  | JSR        | 2      | RPC \| WM         | 0x21    | 0xFF    | <b>0x21 | <b>0x30 | 0x41    | ?       |
@@ -72,12 +72,9 @@ La tabella che segue **evidenzia visivamente** l'esecuzione dell'instruzione JSR
 
 *Scomposizione dell'istruzione JSR nelle sue otto microistruzioni elementari e raffigurazione dello stato dei registri e della RAM al termine di ogni step.*
 
-Here's a simple footnote,[^4] and here's a longer one.[^bignote]
-
 [^1]: Istruzione NOP precedente  
 [^2]: Il valore contenuto in questo istante nella locazione di memoria 0xFF non è noto; peraltro, è ininfluente, in quanto lo step successivo ne sovrascrive il contenuto con l'indirizzo di ritorno dalla subroutine  
 [^3]: Primo step dell'istruzione INX successiva
-
 
 1. Il primo step carica l'indirizzo dell'istruzione corrente nel Memory Address Register:
     - RPC, Read Program Counter - espone l'indirizzo del PC sul bus
@@ -107,9 +104,6 @@ Here's a simple footnote,[^4] and here's a longer one.[^bignote]
     - NI, Next Instruction - resetta il Ring Counter
 
 \*Notare come l'Instruction Register venga aggiornato solo alla fine del secondo step dell'istruzione, come già visto nella spiegazione delle [Fasi](../control/#fasi) della CPU.
-
-[^4]: This is the first footnote.
-[^bignote]: Here's one with multiple paragraphs and code.
 
 Alla fine della subroutine, l'istruzione RTS esegue i seguenti passaggi:
 
