@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+
+
+<url>
+  <loc>https://andreamazzai.github.io/beam/</loc>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://andreamazzai.github.io/beam/docs/beginning/</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://andreamazzai.github.io/beam/docs/clock/</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://andreamazzai.github.io/beam/docs/ram/</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://andreamazzai.github.io/beam/docs/flags/</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://andreamazzai.github.io/beam/docs/programcounter/</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://andreamazzai.github.io/beam/docs/control/</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://andreamazzai.github.io/beam/docs/alu/</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://andreamazzai.github.io/beam/docs/dxy/</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://andreamazzai.github.io/beam/docs/output/</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://andreamazzai.github.io/beam/docs/stack/</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://andreamazzai.github.io/beam/docs/loader/</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://andreamazzai.github.io/beam/docs/eeprom-programmer/</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://andreamazzai.github.io/beam/docs/math/</loc>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://andreamazzai.github.io/beam/docs/todo/</loc>
+  <priority>0.64</priority>
+</url>
+
+
+</urlset>
