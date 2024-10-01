@@ -24,7 +24,7 @@ Lo Stack Pointer punta sempre alla successiva locazione disponibile nello stack,
 
 In altre parole, poiché lo stack "cresce" verso il basso, lo Stack Pointer viene decrementato dopo ogni inserimento di un byte nello stack e incrementato prima di ogni prelievo di un byte.
 
-Poiché i '169 utilizzati nel BEAM non dispongono di un ingresso Reset, all'accensione potrebbero trovarsi in uno stato indefinito: di conseguenza, lo stack deve essere inizializzato dal programma caricato in memoria dall'utente.
+Poiché i '169 utilizzati nel BEAM non dispongono di un ingresso Reset, all'accensione potrebbero trovarsi in uno stato indefinito: di conseguenza, lo Stack Pointer deve essere inizializzato dal programma caricato in memoria dall'utente.
 
 Le istruzioni del 6502 che interagiscono con lo stack sono:
 
@@ -35,12 +35,12 @@ Le istruzioni del 6502 che interagiscono con lo stack sono:
 
 ## Implementazione del microcode dello Stack Pointer
 
-Analizziamo un'istruzione JSR, ipotizzando di aver precedentemente inizializzato lo Stack Pointer (SP) del BEAM a 0xFF. Il BEAM dispone di 256 byte, quindi lo SP punta ora all'ultima locazione di memoria del computer.
+Analizziamo un'istruzione JSR, ipotizzando di aver precedentemente inizializzato lo SP del BEAM a 0xFF. Il BEAM dispone di 256 byte, quindi lo SP punta ora all'ultima locazione di memoria del computer.
 
 Supponiamo di avere il seguente codice, nel quale una istruzione NOP è seguita da un salto a una subroutine che incrementa il registro X. Al ritorno dalla subroutine, il programma continua con un'altra istruzione NOP.
 
 ~~~text
-| Mnemonico | Indirizzo | Valore | Microistruzione                   |
+| Mnemonico | Indirizzo | Valore | Contenuto                         |
 | --------- | --------- | ------ | --------------------------------- |
 | ...       | ...       | ?      | Istruzione precedente o operando  |
 | NOP       | 0x1F      | 0x0F   | Opcode istruzione NOP del BEAM    |
@@ -76,7 +76,7 @@ La tabella che segue **evidenzia visivamente** l'esecuzione dell'instruzione JSR
 \*\* Il valore contenuto in questo istante nella locazione di memoria 0xFF non è noto; peraltro, è ininfluente, in quanto lo step successivo ne sovrascrive il contenuto con l'indirizzo di ritorno dalla subroutine  
 \*\*\* Primo step dell'istruzione INX successiva
 
-1. Il primo step carica l'indirizzo dell'istruzione corrente nel Memory Address Register:
+1. Il primo step dell'istruzione JSR carica l'indirizzo dell'istruzione corrente nel Memory Address Register:
     - RPC, Read Program Counter - espone l'indirizzo del PC sul bus
     - WM, Write Memory Address Register - carica l'indirizzo dell'istruzione nel MAR
 2. Il secondo step carica l'opcode dell'istruzione nell'IR e incrementa il PC per farlo puntare alla locazione di memoria successiva (che contiene l'operando dell'istruzione JSR, cioè l'indirizzo di destinazione del salto):
@@ -113,7 +113,7 @@ Alla fine della subroutine, l'istruzione RTS esegue i seguenti passaggi:
 
 ## Lo Stack Pointer dell'NQSAP / NQSAP-PCB
 
-Nella documentazione dell'NQSAP, Tom segnala di aver inizialmente previsto l'utilizzo di Synchronous 4-Bit Up/Down Binary Counters <a href="https://www.ti.com/lit/ds/symlink/sn74ls193.pdf" target="_blank">74LS193</a>, incorrendo nelle [problematiche di glitching](../control/#il-clock-il-glitching-delle-eeprom-e-linstruction-register-parte-2) delle EEPROM, descritte in una apposita sezione della documentazione della Control Logic del BEAM.
+Nella documentazione dell'NQSAP, Tom segnala di aver inizialmente previsto l'utilizzo di Synchronous 4-Bit Up/Down Binary Counters <a href="https://www.ti.com/lit/ds/symlink/sn74ls193.pdf" target="_blank">74LS193</a>, incorrendo nelle [problematiche di glitching](../control/#clock-glitching-delle-eeprom-e-instruction-register-parte-2) delle EEPROM, descritte in una apposita sezione della documentazione della Control Logic del BEAM.
 
 Poiché Tom non aveva pubblicato lo schema dello Stack Pointer dell'NQSAP, lo sostituiamo con quello dell'NQSAP-PCB.
 
@@ -123,7 +123,7 @@ Poiché Tom non aveva pubblicato lo schema dello Stack Pointer dell'NQSAP, lo so
 
 Come si può vedere, Tom ritorna sui suoi passi ed utilizza proprio i '193, che contano verso l'alto o verso il basso in corrispondenza del Rising Edge dei segnali dedicati Up e Down. Tuttavia, l'NQSAP-PCB non soffre del problema del glitching, in quanto l'Instruction Register è stato bufferizzato.
 
-L'SP dell'NQSAP è governato dai segnali SE (Stack Enable) e C0/C1, che determinano la direzione del conteggio. C0 e C1 sostituiscono una parte dei segnali dell'NQSAP: è stato possibile ridurre il numero di EEPROM da 4 a 3 grazie al consolidamento su C0 e C1 di alcuni segnali di controllo del registro dei Flag, dei segnali di controllo del registro DXY e dei segnali di direzione del conteggio dello SP. Un effetto collaterale è l'impossibilità di eseguire in contemporanea alcuni operazioni su stack, registri DXY e registro Flag.
+L'SP dell'NQSAP-PCB è governato dai segnali SE (Stack Enable) e C0/C1, che determinano la direzione del conteggio. C0 e C1 sostituiscono una parte dei segnali dell'NQSAP: Il consolidamento su C0 e C1 di alcuni segnali di controllo del registro dei Flag, dei segnali di controllo del registro DXY e dei segnali di direzione del conteggio dello SP ha permesso di ridurre il numero di EEPROM da 4 a 3. Un effetto collaterale è l'impossibilità di eseguire nello stesso step operazioni su stack, registri DXY e/o modulo dei Flag.
 
 ## Schema
 

@@ -7,6 +7,7 @@ excerpt: "Cosa c'è da fare"
 ### OVUNQUE
 
 - Rivedere Flag vs flag, anche in relazione al Carry vs carry
+- decidere se quando spiego il microcode delle istruzioni devo usare la numerazione degli step partendo da 0 o da 1
 
 ### HOME
 
