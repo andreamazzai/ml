@@ -24,7 +24,7 @@ Il Carry Out di un contatore binario a 4 bit, attivo al raggiungimento del conte
 ## Note sui segnali
 
 - L'incremento del PC viene effettuato attivando il segnale PCI nel microcode (Program Counter Increment).
-- Il caricamento del PC a un valore specifico a seguito di una istruzione di salto o di ritorno da subroutine viene eseguito attivando il segnale PCJ (Program Counter Jump). La pagina dei Flag include una [sezione dedicata](../flags/#i-salti-condizionali-e-incondizionati) all'approfondimento delle operazioni di salto.
+- Il caricamento del PC a un valore specifico a seguito di una istruzione di salto o di ritorno da subroutine viene eseguito attivando il segnale PCJ (Program Counter Jump). La pagina dei Flag include una sezione dedicata all'approfondimento delle [operazioni di salto](../flags/#i-salti-condizionali-e-incondizionati).
 
 ## Link utili
 

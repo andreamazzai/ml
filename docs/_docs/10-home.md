@@ -23,6 +23,10 @@ Verso la fine dell'anno ho scoperto casualmente il blog di <a href="https://eate
 
 Nei primi mesi del 2022, dopo aver completato i primi moduli base del computer 6502, ho seguito la <a href="https://www.youtube.com/playlist?list=PLowKtXNTBypGqImE405J2565dvjafglHU" target="_blank">playlist</a> del computer **SAP** (Simple As Possible) in logica TTL a 8-bit, al quale mi sono appassionato ancora di più. Durante la costruzione ho appreso moltissimo - sia per l'eccellente stile di esposizione di Ben, sia per il grande impegno che ho profuso nell'approfondimento della materia su altri siti e libri.
 
+[![La mia realizzazione del computer SAP](assets/home/sap.png "La mia realizzazione del computer SAP"){:width="66%"}](assets/home/sap.png)
+
+*La mia realizzazione del computer SAP.*
+
 ### Evoluzione del computer a 8 bit: BEAM
 
 Ho completato il SAP computer a settembre, ma già in precedenza avevo cominciato a studiare i miglioramenti e le espansioni fatte da altri follower di Ben, soprattutto in merito alla possibilità di automatizzare l'inserimento del programma da eseguire con un bootloader, nonché alla necessità di incrementare la RAM oltre i 16 byte; durante l'estate di quell'anno ho scoperto il fantastico progetto <a href="https://tomnisbet.github.io/nqsap/" target="_blank">NQSAP</a> di **Tom Nisbet**: un computer a 8-bit basato su quello di Ben Eater, ma ingegnerizzato per emulare le istruzioni del 6502. Ho realizzato velocemente che sarebbe stato il mio successivo progetto, perché metteva insieme molti aspetti che trovavo di grande interesse:
