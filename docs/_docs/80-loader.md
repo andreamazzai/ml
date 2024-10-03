@@ -3,13 +3,11 @@ title: "Arduino Loader"
 permalink: /docs/loader/
 excerpt: "Loader del computer BEAM"
 ---
-## PLACEHOLDER
-
 <small>[Schema](#schema) - [Link utili](#link-utili)</small>
 
 [![Loader del computer BEAM](../../assets/loader/80-beam-loader.png "Loader del computer BEAM"){:width="100%"}](../../assets/loader/80-beam-loader.png)
 
-**PLACEHOLDER**
+**WORK IN PROGRESS**
 
 Dopo aver completato il [computer SAP a 8-bit](../#computer-a-8-bit-in-logica-ttl-sap), cercavo un modo per automatizzare il caricamento dei programmi in memoria, poiché farlo manualmente a ogni riaccensione utilizzando i dip-switch era piuttosto noioso. Avevo anche intenzione di incorniciarlo e appenderlo come un quadro per mostrarlo ai visitatori. Prendendo confidenza con Arduino, avevo realizzato che avrei potuto collegare le sue uscite a MAR, RAM e al pulsante di Write per gestire automaticamente il caricamento, simulando esattamente le operazioni che si sarebbero dovute eseguire manualmente.
 
