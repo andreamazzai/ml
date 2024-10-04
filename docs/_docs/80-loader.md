@@ -13,7 +13,7 @@ Dopo aver completato il [computer SAP a 8-bit](../../#computer-a-8-bit-in-logica
 
 Le uscite di Arduino erano direttamente connesse ai dip-switch e al pulsante di scrittura; il Loader era anche in grado di impostare il computer in Program-Mode, resettarlo, avviare e fermare il clock.
 
-[![Loader della mia realizzazione del computer SAP](../../assets/loader/80-SAP-Loader-Neon.png "Loader della mia realizzazione del computer SAP"){:width="100%"}](../../assets/loader/80-SAP-Loader-Neon.png)
+[![Loader della mia realizzazione del computer SAP](../../assets/loader/80-SAP-Loader-Neon.png "Loader della mia realizzazione del computer SAP"){:width="33%"}](../../assets/loader/80-SAP-Loader-Neon.png)
 
 *Loader della mia realizzazione del computer SAP.*
 
