@@ -3,23 +3,17 @@ title: "Arduino Loader"
 permalink: /docs/loader/
 excerpt: "Loader del computer BEAM"
 ---
-<small>[Schema](#schema) - [Link utili](#link-utili)</small>
+<small>[Caricamento di un programma](#caricamento-di-un-programma) - [Schema](#schema) - [Link utili](#link-utili)</small>
 
 [![Loader del computer BEAM](../../assets/loader/80-beam-loader.png "Loader del computer BEAM"){:width="100%"}](../../assets/loader/80-beam-loader.png)
 
-**WORK IN PROGRESS**
+Dopo aver completato il [computer SAP a 8-bit](../../#computer-a-8-bit-in-logica-ttl-sap), cercavo un modo per automatizzare il caricamento dei programmi in memoria, poiché farlo manualmente a ogni riaccensione utilizzando i dip-switch risultava piuttosto noioso. Avevo anche intenzione di incorniciarlo e appenderlo come un quadro per mostrarlo ai visitatori. Prendendo confidenza con Arduino, avevo realizzato che avrei potuto collegare le sue uscite a MAR, RAM e al pulsante di Write per gestire automaticamente la programmazione del computer, simulando esattamente le sequenze manuali.
 
-Dopo aver completato il [computer SAP a 8-bit](../../#computer-a-8-bit-in-logica-ttl-sap), cercavo un modo per automatizzare il caricamento dei programmi in memoria, poiché farlo manualmente a ogni riaccensione utilizzando i dip-switch risultava piuttosto noioso. Avevo anche intenzione di incorniciarlo e appenderlo come un quadro per mostrarlo ai visitatori. Prendendo confidenza con Arduino, avevo realizzato che avrei potuto collegare le sue uscite a MAR, RAM e al pulsante di Write per gestire automaticamente la programmazione del computer, simulando esattamente le operazioni che si sarebbero dovute eseguire manualmente.
+Ero partito da un progetto di <a href="https://github.com/dmytrostriletskyi/8-bit-computer-memory-init" target="_blank">Dmytro Striletskyi</a> modificandolo in modo da caricare ed eseguire automaticamente due programmi, 'Fibonacci' e 'Counter', ciascuno con una durata di esecuzione specifica. Alla fine di ogni ciclo di esecuzione, Arduino ferma il clock, carica in memoria il programma successivo, riattiva il clock e resetta il computer.
 
-Sono partito da questo progetto https://github.com/dmytrostriletskyi/8-bit-computer-memory-init e l'ho migliorato un po' per caricare ed eseguire automaticamente due programmi, 'Fibonacci' e 'Counter', ciascuno con una durata di esecuzione specifica. Alla fine di ogni ciclo di esecuzione, Arduino ferma il clock, carica in memoria il programma successivo, riattiva il clock e resetta il computer.
+Il numero di segnali necessari (8 bit per la RAM, 4 per gli indirizzi, Reset, Start/Stop Clock, Write Memory e Program Mode, per un totale di 16) permetteva l'uso di un Arduino Nano senza bisogno di componenti aggiuntivi.
 
-Il numero di segnali necessari (RAM a 8 bit + 4 indirizzi + Reset + Start/Stop Clock + Write Memory + Program Mode = 16) permette di utilizzare un Arduino Nano.
-
-[![Loader della mia realizzazione del computer SAP](../../assets/loader/80-SAP-Loader-Neon.png "Loader della mia realizzazione del computer SAP"){:width="33%"}](../../assets/loader/80-SAP-Loader-Neon.png)
-
-*Loader della mia realizzazione del computer SAP.*
-
-Anche nel BEAM il caricamento di un programma può essere effettuato manualmente o automaticamente utilizzando il modulo Loader, migliorato rispetto a quello del SAP.
+Nel BEAM, il caricamento dei programmi può essere eseguito sia manualmente che automaticamente grazie al modulo Loader, migliorato rispetto a quello del SAP.
 
 Avevo studiato con attenzione le due realizzazioni di Tom, diverse tra NQSAP ed NQSAP-PCB, decidendo di sfruttare quanto appreso da quella basata su Shift Register dell'NQSAP-PCB.
 
@@ -33,12 +27,12 @@ Il Loader attiva tre segnali di controllo:
 - LDR_Active, che inibisce sia l'output dei segnali di clock generati dal BEAM (astabile e monostabile manuale), sia le due EEPROM che governano i 138 ed alcuni altri segnali di controllo. Questi ultimi al momento non sono gestiti dal Loader; una futura evoluzione dovrebbe permettere di effettuare dei test sui registri Flag e H.
 - Reset, così da inibire l'incremento del RC durante la programmazione.
 
-L'operazione di scrittura di un byte è effettuata in due fasi che vengono ripetute per tutta la lunghezza del programma da caricare:
+L'operazione di scrittura di un byte è effettuata in due fasi ripetute per tutta la lunghezza del programma da caricare:
 
-1) caricamento del MAR con l'indirizzo di memoria da scrivere (funzione setAddress(byte address))
-2) scrittura sulla RAM del byte di programma (funzione writeRAM(byte data))
+1. caricamento del MAR con l'indirizzo di memoria da scrivere (funzione setAddress(byte address))
+2. scrittura sulla RAM del byte di programma (funzione writeRAM(byte data))
 
-~~~c
+~~~c++
 void setAddress(byte address)
 {
   // attiva i '595
@@ -85,6 +79,8 @@ Alla fine del processo di scrittura, il '165 viene utilizzato per memorizzare te
 <video src="../../assets/loader/KITT.mp4" controls title="Title" width="45%"></video>
 
 Dopo il gioco di luci, il contenuto dell'ultima locazione di memoria viene ripristinato e il controllo passa al programma caricato: i '595 vengono disabilitati, le ROM riattivate, il Reset disattivato e il clock riabilitato.
+
+Il Loader include anche un tasto Reset manuale.
 
 ## Schema
 

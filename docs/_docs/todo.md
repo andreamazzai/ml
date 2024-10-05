@@ -31,14 +31,6 @@ excerpt: "Cosa c'è da fare"
 
 - Una volta completata la sezione apposita su RCO / CLA nella pagina dell'aritmetica binaria, verificare se opportuno linkarla al DS del '161.
 
-## CL
-
-- Al completamento della pagina del Loader:
-  - Reset asincrono del computer
-  - Disattivazione clock e disattivazione delle EEPROM della Control Logic
-  - Iniezione del clock del Loader nel computer
-  - (Re-)Start del clock di sistema dopo il caricamento
-
   ## ALU
 
 - /WE ↘↗
