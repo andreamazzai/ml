@@ -9,18 +9,82 @@ excerpt: "Loader del computer BEAM"
 
 **WORK IN PROGRESS**
 
-Dopo aver completato il [computer SAP a 8-bit](../../#computer-a-8-bit-in-logica-ttl-sap), cercavo un modo per automatizzare il caricamento dei programmi in memoria, poiché farlo manualmente a ogni riaccensione utilizzando i dip-switch risultava piuttosto noioso. Avevo anche intenzione di incorniciarlo e appenderlo come un quadro per mostrarlo ai visitatori. Prendendo confidenza con Arduino, avevo realizzato che avrei potuto collegare le sue uscite a MAR, RAM e al pulsante di Write per gestire automaticamente il caricamento, simulando esattamente le operazioni che si sarebbero dovute eseguire manualmente.
+Dopo aver completato il [computer SAP a 8-bit](../../#computer-a-8-bit-in-logica-ttl-sap), cercavo un modo per automatizzare il caricamento dei programmi in memoria, poiché farlo manualmente a ogni riaccensione utilizzando i dip-switch risultava piuttosto noioso. Avevo anche intenzione di incorniciarlo e appenderlo come un quadro per mostrarlo ai visitatori. Prendendo confidenza con Arduino, avevo realizzato che avrei potuto collegare le sue uscite a MAR, RAM e al pulsante di Write per gestire automaticamente la programmazione del computer, simulando esattamente le operazioni che si sarebbero dovute eseguire manualmente.
 
-Le uscite di Arduino erano direttamente connesse ai dip-switch e al pulsante di scrittura; il Loader era anche in grado di impostare il computer in Program-Mode, resettarlo, avviare e fermare il clock.
+Sono partito da questo progetto https://github.com/dmytrostriletskyi/8-bit-computer-memory-init e l'ho migliorato un po' per caricare ed eseguire automaticamente due programmi, 'Fibonacci' e 'Counter', ciascuno con una durata di esecuzione specifica. Alla fine di ogni ciclo di esecuzione, Arduino ferma il clock, carica in memoria il programma successivo, riattiva il clock e resetta il computer.
+
+Il numero di segnali necessari (RAM a 8 bit + 4 indirizzi + Reset + Start/Stop Clock + Write Memory + Program Mode = 16) permette di utilizzare un Arduino Nano.
 
 [![Loader della mia realizzazione del computer SAP](../../assets/loader/80-SAP-Loader-Neon.png "Loader della mia realizzazione del computer SAP"){:width="33%"}](../../assets/loader/80-SAP-Loader-Neon.png)
 
 *Loader della mia realizzazione del computer SAP.*
 
-Anche nel BEAM il caricamento di un programma nella memoria RAM del computer BEAM può essere effettuato manualmente o automaticamente utilizzando il modulo Loader,
+Anche nel BEAM il caricamento di un programma può essere effettuato manualmente o automaticamente utilizzando il modulo Loader, migliorato rispetto a quello del SAP.
 
+Avevo studiato con attenzione le due realizzazioni di Tom, diverse tra NQSAP ed NQSAP-PCB, decidendo di sfruttare quanto appreso da quella basata su Shift Register dell'NQSAP-PCB.
 
-impostando l'interruttore PROG nel modulo MAR Lorem ipsum dolor sit amet, consectetur adipisci elit, sed do eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullamco laboriosam, nisi ut aliquid ex ea commodi consequatur. Duis aute irure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+La mia realizzazione comprende due 8-Bit Shift Register <a href="https://www.ti.com/lit/ds/symlink/sn74hc595.pdf" target="_blank">74HC595</a> e un Parallel Load 8-Bit Shift Register <a href="https://www.ti.com/lit/ds/symlink/sn54ls165a-sp.pdf" target="_blank">74HC595</a>. I primi vengono utilizzati per scrivere sul BEAM, mentre il secondo è utilizzato per leggere dal bus.
+
+## Caricamento di un programma
+
+Il Loader attiva tre segnali di controllo:
+
+- CLK-Start, che disattiva temporaneamente l'astabile del modulo di clock e lo riattiva alla fine della programmazione, avviando automaticamente l'esecuzione del programma appena caricato.
+- LDR_Active, che inibisce sia l'output dei segnali di clock generati dal BEAM (astabile e monostabile manuale), sia le due EEPROM che governano i 138 ed alcuni altri segnali di controllo. Questi ultimi al momento non sono gestiti dal Loader; una futura evoluzione dovrebbe permettere di effettuare dei test sui registri Flag e H.
+- Reset, così da inibire l'incremento del RC durante la programmazione.
+
+L'operazione di scrittura di un byte è effettuata in due fasi che vengono ripetute per tutta la lunghezza del programma da caricare:
+
+1) caricamento del MAR con l'indirizzo di memoria da scrivere (funzione setAddress(byte address))
+2) scrittura sulla RAM del byte di programma (funzione writeRAM(byte data))
+
+~~~c
+void setAddress(byte address)
+{
+  // attiva i '595
+  digitalWrite(SHIFT_ENABLE_1, LOW);
+  digitalWrite(SHIFT_ENABLE_2, LOW);
+  // carica sui '595 indirizzo e segnale WM
+  shiftOut(SHIFT_DATA, SHIFT_CLK, MSBFIRST, address); // indirizzo
+  shiftOut(SHIFT_DATA, SHIFT_CLK, MSBFIRST, 0x70); // configura i 138 per scrittura MAR (WM)
+  // aggiorna l'output dei '595 con quanto caricato sopra
+  digitalWrite(SHIFT_LATCH, LOW);
+  digitalWrite(SHIFT_LATCH, HIGH);
+  digitalWrite(SHIFT_LATCH, LOW);
+  // impulso di clock
+  digitalWrite(LDR_CLK, LOW);
+  digitalWrite(LDR_CLK, HIGH);
+  delay(DELAY); // 1 ms
+  digitalWrite(LDR_CLK, LOW);
+  digitalWrite(SHIFT_ENABLE_1, HIGH);
+  digitalWrite(SHIFT_ENABLE_2, HIGH);
+}
+
+void writeRAM(byte data)
+{
+  // attiva i '595
+  digitalWrite(SHIFT_ENABLE_1, LOW);
+  digitalWrite(SHIFT_ENABLE_2, LOW);
+  // carica sui '595 byte e segnale WR
+  shiftOut(SHIFT_DATA, SHIFT_CLK, MSBFIRST, data); // byte da 
+  shiftOut(SHIFT_DATA, SHIFT_CLK, MSBFIRST, 0x60); // configura i 138 per scrittura RAM (WR)
+  // aggiorna l'output dei '595 con quanto caricato sopra
+  digitalWrite(SHIFT_LATCH, LOW);
+  digitalWrite(SHIFT_LATCH, HIGH);
+  digitalWrite(SHIFT_LATCH, LOW);
+  // impulso di clock
+  digitalWrite(LDR_CLK, LOW);
+  digitalWrite(LDR_CLK, HIGH);
+  delay(DELAY); // 1 ms
+  digitalWrite(LDR_CLK, LOW);
+}
+~~~
+
+Alla fine del processo di scrittura, il '165 viene utilizzato per memorizzare temporaneamente sul Loader il contenuto dell'ultima locazione di memoria del computer, permettendo l'esecuzione di un gioco di luci sui LED che visualizzano il contenuto della RAM. Il gioco consiste nello scorrimento dei LED, simulando l'effetto dell'iconico scanner dell'auto <a href="https://www.youtube.com/watch?v=bMVbaCiy_XE" target="_blank">KITT</a> dalla serie televisiva Supercar.
+
+<video src="../../assets/loader/KITT.mp4" controls title="Title"></video>
+
+Dopo il gioco di luci, il contenuto dell'ultima locazione di memoria viene ripristinato e il controllo passa al programma caricato: i '595 vengono disabilitati, le ROM riattivate, il Reset disattivato e il clock riabilitato.
 
 ## Schema
 
@@ -32,8 +96,3 @@ impostando l'interruttore PROG nel modulo MAR Lorem ipsum dolor sit amet, consec
 
 - Il <a href="https://tomnisbet.github.io/nqsap/docs/loader/" target="_blank">Loader dell'NQSAP</a> di Tom Nisbet.
 - Il <a href="https://tomnisbet.github.io/nqsap-pcb/docs/loader/" target="_blank">Loader dell'NQSAP-PCB</a> di Tom Nisbet.
-
-## TO DO
-
-- TBD
-
