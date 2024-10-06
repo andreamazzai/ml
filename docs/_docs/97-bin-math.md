@@ -389,16 +389,16 @@ Dovendo indirizzare 8 combinazioni di Q, B e A (000, 001 etc. fino a 111), una c
 
 La seguente tabella riepiloga le situazioni di Overflow in base agli stati di Q, B ed A ed al fatto che si stiano eseguendo addizioni o sottrazioni:
 
-| Q7-S2 | B7-S1 | A7-S0 | Sum/Sub    | Input  | Overflow     |
-| -     | -     | -     |  -         | -      |  -     |
-|   0   |   0   |   0   |            | I0     |  -     |
-| **0** | **0** | **1** | **A \- B** | **I1** |  **1** |
-| **0** | **1** | **0** | **B \- A** | **I2** |  **1** |
-| **0** | **1** | **1** | **A + B**  | **I3** |  **1** |
-| **1** | **0** | **0** | **A + B**  | **I4** |  **1** |
-| **1** | **0** | **1** | **B \- A** | **I5** |  **1** |
-| **1** | **1** | **0** | **A \- B** | **I6** |  **1** |
-|   1   |   1   |   1   |            | I7     |  -     |
+| Q7-S2 | B7-S1 | A7-S0 | Sum/Sub   | Input  | Overflow     |
+| -     | -     | -     |  -        | -      |  -     |
+|   0   |   0   |   0   |           | I0     |  -     |
+| **0** | **0** | **1** | **A - B** | **I1** |  **1** |
+| **0** | **1** | **0** | **B - A** | **I2** |  **1** |
+| **0** | **1** | **1** | **A + B** | **I3** |  **1** |
+| **1** | **0** | **0** | **A + B** | **I4** |  **1** |
+| **1** | **0** | **1** | **B - A** | **I5** |  **1** |
+| **1** | **1** | **0** | **A - B** | **I6** |  **1** |
+|   1   |   1   |   1   |           | I7     |  -     |
 
 Si noti però che l'operazione B - A non è necessaria per simulare le istruzioni di sottrazione del 6502, dunque in futuro non la terremo in considerazione.
 
