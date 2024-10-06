@@ -400,7 +400,7 @@ La seguente tabella riepiloga le situazioni di Overflow in base agli stati di Q,
 | **1** | **1** | **0** | **A - B** | **I6** |  **1** |
 |   1   |   1   |   1   |           | I7     |  -     |
 
-Si noti però che l'operazione B - A non è necessaria per simulare le istruzioni di sottrazione del 6502, dunque in futuro non la terremo in considerazione.
+Si noti però che l'operazione B - A non è necessaria per simulare le istruzioni di sottrazione del 6502.
 
 Riepilogando:
 
@@ -537,17 +537,17 @@ Per identificare l'esecuzione di un'operazione di addizione o di sottrazione, si
 
 | IR-Q3 | IR-Q1 | Operazione  |
 | -     | -     | -           |
-| LO    | HI    | Sottrazione |
-| HI    | LO    | Addizione   |
+| LOW   | HIGH  | Sottrazione |
+| HIGH  | LOW   | Addizione   |
 
 Detto in altri termini, gli opcode delle istruzioni di addizione e sottrazione dovranno avere i bit 1 e 3 settati come in tabella, mentre gli altri bit non avranno tali vincoli:
 
 | bit |  Addizione | Sottrazione |
 | -   |  -         | -           |
 |   0 |      X     |           X |
-|   1 | **LO**     |      **HI** |
+|   1 | **LOW**    |    **HIGH** |
 |   2 |      X     |           X |
-|   3 | **HI**     |      **LO** |
+|   3 | **HIGH**   |     **LOW** |
 |   4 |      X     |           X |
 |   5 |      X     |           X |
 |   6 |      X     |           X |
