@@ -17,7 +17,7 @@ Nel BEAM, il caricamento dei programmi può essere eseguito sia manualmente che 
 
 Avevo studiato con attenzione le due realizzazioni di Tom, diverse tra NQSAP ed NQSAP-PCB, decidendo di sfruttare quanto appreso da quella basata su Shift Register dell'NQSAP-PCB.
 
-La mia realizzazione comprende due 8-Bit Shift Register <a href="https://www.ti.com/lit/ds/symlink/sn74hc595.pdf" target="_blank">74HC595</a> e un Parallel Load 8-Bit Shift Register <a href="https://www.ti.com/lit/ds/symlink/sn54ls165a-sp.pdf" target="_blank">74HC595</a>. I primi vengono utilizzati per scrivere sul BEAM, mentre il secondo è utilizzato per leggere dal bus.
+La mia realizzazione comprende due 8-Bit Shift Register <a href="https://www.ti.com/lit/ds/symlink/sn74hc595.pdf" target="_blank">74HC595</a> e un Parallel Load 8-Bit Shift Register <a href="https://www.ti.com/lit/ds/symlink/sn54ls165a-sp.pdf" target="_blank">74LS165</a>. I primi vengono utilizzati per scrivere sul BEAM, mentre il secondo è utilizzato per leggere dal bus.
 
 ## Caricamento di un programma
 
@@ -88,6 +88,10 @@ Il Loader include anche un tasto Reset manuale.
 [![Schema del Loader del computer BEAM](../../assets/loader/80-loader-schema.png "Schema del Loader del computer BEAM")](../../assets/loader/80-loader-schema.png)
 
 *Schema del Loader del computer BEAM.*
+
+## Differenze tra Loader dell’NQSAP/NQSAP-PCB e del BEAM
+
+Nelle implementazioni del Loader per i suoi progetti, Tom utilizza Flip-Flop o Shift Registers per pilotare i segnali di controllo e i pin di Arduino per scrivere e leggere sul bus. Il Loader del BEAM utilizza invece Shift Registers sia per scrivere e leggere sul bus, sia per la gestione della maggior dei segnali. Su Arduino restano disponibili diversi pin, che potrebbero in futuro essere utilizzati per controllare altri segnali ed effettuare dei test di funzionamento dei vari registri del computer.
 
 ## Link utili
 
