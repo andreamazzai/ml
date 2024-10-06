@@ -21,13 +21,14 @@ La mia realizzazione comprende due 8-Bit Shift Register <a href="https://www.ti.
 
 ## Caricamento di un programma
 
-Il Loader attiva tre segnali di controllo:
+Il Loader attiva tre segnali di controllo e uno di clock:
 
-- CLK-Start, che disattiva temporaneamente l'astabile del modulo di clock e lo riattiva alla fine della programmazione, avviando automaticamente l'esecuzione del programma appena caricato.
-- LDR_Active, che inibisce sia l'output dei segnali di clock generati dal BEAM (astabile e monostabile manuale), sia le due EEPROM che governano i 138 ed alcuni altri segnali di controllo. Questi ultimi al momento non sono gestiti dal Loader; una futura evoluzione dovrebbe permettere di effettuare dei test sui registri Flag e H.
-- Reset, così da inibire l'incremento del RC durante la programmazione.
+- **CLK-Start**, che disattiva temporaneamente l'astabile del modulo di clock e lo riattiva alla fine della programmazione, avviando automaticamente l'esecuzione del programma appena caricato.
+- **LDR-Active**, che inibisce l'output dei segnali di clock generati dal BEAM (astabile e monostabile manuale), le due EEPROM che governano i '138 ed alcuni altri segnali di controllo. Questi ultimi - al momento - non sono gestiti dal Loader; una futura evoluzione dovrebbe permettere di effettuare dei test sui registri Flag e H.
+- **Reset**, che inibisce l'incremento del RC durante la programmazione.
+- **LDR-CLK**, che durante la programmazione si sostituisce al clock del computer.
 
-L'operazione di scrittura di un byte è effettuata in due fasi ripetute per tutta la lunghezza del programma da caricare:
+L'operazione di scrittura di un byte è effettuata in due fasi, ripetute per tutta la lunghezza del programma da caricare:
 
 1. caricamento del MAR con l'indirizzo di memoria da scrivere (funzione setAddress(byte address))
 2. scrittura sulla RAM del byte di programma (funzione writeRAM(byte data))
@@ -74,7 +75,7 @@ void writeRAM(byte data)
 }
 ~~~
 
-Alla fine del processo di scrittura, il '165 viene utilizzato per memorizzare temporaneamente sul Loader il contenuto dell'ultima locazione di memoria del computer, permettendo l'esecuzione di un gioco di luci sui LED che visualizzano il contenuto della RAM. Il gioco consiste nello scorrimento dei LED, simulando l'effetto dell'iconico scanner dell'auto <a href="https://www.youtube.com/watch?v=bMVbaCiy_XE" target="_blank">KITT</a> dalla serie televisiva Supercar.
+Alla fine del processo di scrittura, il '165 viene utilizzato per leggere il contenuto dell'ultima locazione di memoria del computer e memorizzarlo temporaneamente sul Loader, permettendo l'esecuzione di un gioco di luci sui LED che visualizzano il contenuto della RAM. Il gioco consiste nello scorrimento dei LED, che simulano l'effetto dell'iconico scanner dell'auto <a href="https://www.youtube.com/watch?v=bMVbaCiy_XE" target="_blank">KITT</a> dalla serie televisiva Supercar. Per eseguire questo effetto, si esegue il caricamento del pattern di scorrimento nella locazione citata e, per questo, è necessario ripristinarla alla fine della routine.
 
 <video src="../../assets/loader/KITT.mp4" controls title="Title" width="45%"></video>
 

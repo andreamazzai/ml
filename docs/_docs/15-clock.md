@@ -5,7 +5,7 @@ excerpt: "Modulo di clock del computer BEAM"
 ---
 [![Modulo di Clock del computer BEAM](../../assets/clock/15-beam-clock.png "Modulo di Clock del computer BEAM"){:width="100%"}](../../assets/clock/15-beam-clock.png)
 
-Il modulo di clock del computer BEAM riprende quello progettato da Ben Eater per il computer SAP, utilizzando però solo comodi pulsanti tattili anziché interruttori a scorrimento e aggiungendo qualche interazione con i segnali di controllo esterni provenienti dal [Loader](../loader).
+Il modulo di clock del computer BEAM riprende quello progettato da Ben Eater per il computer SAP, utilizzando però solo comodi pulsanti tattili anziché interruttori a scorrimento e aggiungendo qualche interazione con i segnali di controllo esterni provenienti dal Loader.
 
 - Il primo 555 è utilizzato come generatore astabile con possibilità di selezionare la frequenza di funzionamento attraverso un potenziometro; un pulsante "Turbo" permette di bypassare temporaneamente la resistenza del potenziometro portando la frequenza di lavoro al valore massimo. Se si esegue qualche programma a bassa velocità di clock allo scopo di effettuare una analisi visiva degli output, questo pulsante si comporta come un "Fast Forward".
 - Il secondo 555 in modalità monostabile permette di eseguire singole microistruzioni ("Step").
@@ -19,9 +19,9 @@ I pulsanti Start/Stop e Step sono stati duplicati anche in una zona più facilme
 
 ### Il Loader e il Clock
 
-Sul modulo di clock sono presenti tre segnali provenienti dal Loader basato su Arduino: LDR-Active, LDR-CLK e CLK-Start.
+Sul modulo di clock sono presenti tre segnali provenienti dal [Loader](../loader/) basato su Arduino: LDR-Active, LDR-CLK e CLK-Start.
 
-Il segnale **LDR-Active** allo stato HI permette al Loader di  prendere il controllo del circuito di clock, disattivandone completamente l'output e fermando l'esecuzione del programma. In questa circostanza, il Loader può iniettare nel computer il suo segnale di clock **LDR-CLK**, che viene utilizzato per programmare la RAM.
+Il segnale **LDR-Active** allo stato HI permette al Loader di  prendere il controllo del circuito di clock, disattivandone completamente l'output e fermando l'esecuzione del programma. In questa circostanza, il Loader può iniettare nel computer il suo segnale di clock **LDR-CLK**.
 
 Il segnale **CLK-Start** viene utilizzato dal Loader alla fine della programmazione per riattivare il modulo di clock e far partire il programma appena caricato.
 
