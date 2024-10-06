@@ -515,16 +515,16 @@ Riprendendo lo schema della sezione [Overflow](../flags/#overflow) dalla pagina 
 
 Alla luce di tutte le considerazioni fatte, questa tabella può assumere ora un significato più semplice rispetto a quanto non si potesse inizialmente pensare:
 
-| Q7-S2 | B7-S1 | A7-S0 | Sum/Sub | Input  | Overflow     |
-| -     | -     | -     |  -      | -      |  -     |
-|   0   |   0   |   0   |         | I0     |  -     |
-| **0** | **0** | **1** | **A-B** | **I1** |  **1** |
-|   0   |   1   |   0   |         | I2     |  -     |
-| **0** | **1** | **1** | **A+B** | **I3** |  **1** |
-| **1** | **0** | **0** | **A+B** | **I4** |  **1** |
-|   1   |   0   |   1   |         | I5     |  -     |
-| **1** | **1** | **0** | **A-B** | **I6** |  **1** |
-|   1   |   1   |   1   |         | I7     |  -     |
+| Q7-S2 | B7-S1 | A7-S0 | Sum/Sub   | Input  | Overflow     |
+| -     | -     | -     |  -        | -      |  -     |
+|   0   |   0   |   0   |           | I0     |  -     |
+| **0** | **0** | **1** | **A - B** | **I1** |  **1** |
+|   0   |   1   |   0   |           | I2     |  -     |
+| **0** | **1** | **1** | **A + B** | **I3** |  **1** |
+| **1** | **0** | **0** | **A + B** | **I4** |  **1** |
+|   1   |   0   |   1   |           | I5     |  -     |
+| **1** | **1** | **0** | **A - B** | **I6** |  **1** |
+|   1   |   1   |   1   |           | I7     |  -     |
 
 Il flag Overflow si attiva se:
 
