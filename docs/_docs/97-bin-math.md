@@ -82,7 +82,7 @@ NB: nella pagina citata, vi è un'immagina errata nella sottrazione "5 - 2". L'i
 ![Errore sottrazione](../../assets/math/math_mistake.gif
 ){:width="15%"}
 
-Quanto si desiderava in realtà rappresentare era una sottrazione utilizzando il metodo Modulo e Segno, che *dovrebbe* permettere di trasformare l'operazione da "5 - 2" in "5 + (-2)" invertendo il primo bit del numero 2, che dunque da 0010 diventa 1010:
+La pagina desiderava in realtà rappresentare era una sottrazione utilizzando il metodo Modulo e Segno, che *dovrebbe* permettere di trasformare l'operazione da "5 - 2" in "5 + (-2)" invertendo il primo bit del numero 2, che dunque da 0010 diventa 1010:
 
 ~~~text
    Dec        Bin 
