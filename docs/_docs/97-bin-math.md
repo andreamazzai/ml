@@ -344,7 +344,7 @@ A questo punto, possiamo realizzare un circuito in grado di rilevare l'overflow.
 
 ### Semplificazione con 74LS151
 
-Ora le cose si fanno interessanti: Dieter prosegue indicando che un unico chip 74LS151 è in grado di indirizzare tutte le necessità.
+Ora le cose si fanno interessanti: Dieter prosegue indicando che un unico chip 74LS151, opportunamente connesso agli ingressi A, B, Q, A + B e A - B, è in grado di identificare tutte le situazioni di Overflow.
 
 ![Schema logico del 74LS151](../../assets/math/overflow-74151.png){:width="80%"}
 
@@ -353,7 +353,7 @@ Ora le cose si fanno interessanti: Dieter prosegue indicando che un unico chip 7
 Evidenziamo i due punti da prendere in considerazione per vedere se possiamo farli combaciare con il '151:
 
 - l'equazione dell'Overflow è basata su 3 input (A, B, Q);
-- l'eventuale Overflow è anche conseguenza dell'operazione seguita; l'Instruction Register ci può indicare se si sta eseguendo una addizione o una sottrazione.
+- l'eventuale Overflow è anche conseguenza dell'operazione eseguita; l'Instruction Register ci può indicare se si sta eseguendo una addizione o una sottrazione.
 
 Un esempio concreto con input uguali, ma diverse situazioni:
 
