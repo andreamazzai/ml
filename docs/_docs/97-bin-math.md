@@ -404,7 +404,7 @@ Riepilogando:
 
 - alcuni degli ingressi I0-I7 sono opportunamente connessi in modalità "Hardwired" all'Instruction Register per determinare l'operazione correntemente in esecuzione.
 
-### Addizioni e sottrazioni con verifica dell'hardware
+### Verifica addizioni e sottrazioni con 74LS151
 
 Testiamo alcuni casi di addizione e sottrazione, ma non prima di aver fatto un esempio iniziale spiegando anche il significato delle colonne:
 
