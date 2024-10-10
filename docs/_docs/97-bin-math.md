@@ -69,7 +69,7 @@ Approfondendo i numeri Signed, ero giunto a questa [interessantissima pagina](ht
 
 Grazie alla sezione *Textbook ==> Module 3: Computer Integer Arithmetic ==> 2. Negative binary numbers* avevo perfettamente compreso la rappresentazione binaria dei numeri negativi.
 
-Il metodo **Signed Magnitude** è molto facile da comprendere: si sacrifica un bit dedicandolo alla rappresentazione del segno; il bit sacrificabile è quello più significativo (MSB), pertanto se un numero Unsigned a 8 bit può andare da 0 a 255 (2^8 = 256 combinazioni rappresentabili), un numero Unsigned avrà 7 bit disponibili per il Modulo (2^7 = 128 combinazioni) e un bit per il segno, dunque potrà andare da -128 a + 128 (sempre 256 numeri rappresentabili, ma metà negativi e metà positivi).
+Il metodo **Signed Magnitude** è molto facile da comprendere: si sacrifica un bit dedicandolo alla rappresentazione del segno; il bit sacrificabile è quello più significativo (MSB), pertanto se un numero Unsigned a 8 bit può andare da 0 a 255 (2^8 = 256 combinazioni rappresentabili), un numero Unsigned avrà 7 bit disponibili per il Modulo (2^7 = 128 combinazioni) e un bit per il segno, dunque potrà andare da -128 a +127 (sempre 256 numeri rappresentabili, ma metà negativi e metà positivi).
 
 ![Rappresentazione Modulo e Segno dei numeri a 4 bit](../../assets/math/math_signed_magnitude.gif){:width="100%"}
 
@@ -179,7 +179,14 @@ Questa tabella dovrebbe chiarire il concetto:
 
 Come già visto nell'immagine *Rappresentazione in Complemento a 2 dei numeri a 4 bit*, è importante notare anche qui il passaggio dei numeri Signed da -1 a 0 in corrispondenza del passaggio binario da 1111.1111 a 0000.0000.
 
-Il complemento a 2 è dunque un modo molto pratico per rappresentare i numeri Signed, nei quali un MSB = 0 indica un numero positivo e un MSB = 1 indica un numero negativo.
+Il complemento a 2 è, dunque, un modo molto pratico per rappresentare i numeri Signed, nei quali un MSB = 0 indica un numero positivo e un MSB = 1 indica un numero negativo.
+
+L'MSB assume il valore negativo 2^n, dove n è la posizione dell'MSB stesso (il conteggio della posizione si esegue partendo da zero e spostandosi da destra verso sinistra). Nel caso di un numero a 8 bit, l'MSB vale 2^7 = -128. La somma tra l'MSB e i valori assunti dagli altri 7 bit rappresenta il valore reale espresso. Facciamo due esempi sommando i valori dei soli bit a 1:
+
+~~~text
+- 0010.0011 =      0 + 0 + 2^5 + 0 + 0 + 0 + 2^1 + 2^0 =        32 + 2 + 1 =  35
+- 1010.0011 = -(2^7) + 0 + 2^5 + 0 + 0 + 0 + 2^1 + 2^0 = -128 + 32 + 2 + 1 = -93
+~~~
 
 ## Approfondimento Overflow
 
