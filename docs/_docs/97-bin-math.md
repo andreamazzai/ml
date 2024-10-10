@@ -181,7 +181,9 @@ Come già visto nell'immagine *Rappresentazione in Complemento a 2 dei numeri a 
 
 Il complemento a 2 è, dunque, un modo molto pratico per rappresentare i numeri Signed, nei quali un MSB = 0 indica un numero positivo e un MSB = 1 indica un numero negativo.
 
-L'MSB assume il valore negativo 2^n, dove n è la posizione dell'MSB stesso (il conteggio della posizione si esegue partendo da zero e spostandosi da destra verso sinistra). Nel caso di un numero a 8 bit, l'MSB vale 2^7 = -128. La somma tra l'MSB e i valori assunti dagli altri 7 bit rappresenta il valore reale espresso. Facciamo due esempi sommando i valori dei soli bit a 1:
+L'MSB a 1 assume il valore negativo 2^n, dove n è la posizione dell'MSB stesso (il conteggio della posizione si esegue partendo da zero e spostandosi da destra verso sinistra). Nel caso di un numero a 8 bit, l'MSB vale -(2^7) = -128.
+
+La somma tra l'MSB e i valori assunti dagli altri 7 bit corrisponde al valore del numero espresso nella notazione Signed. Facciamo due esempi sommando i valori dei bit a 1:
 
 ~~~text
 - 0010.0011 =      0 + 0 + 2^5 + 0 + 0 + 0 + 2^1 + 2^0 =        32 + 2 + 1 =  35
