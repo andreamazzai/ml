@@ -340,7 +340,7 @@ In definitiva, il terzo metodo è utilizzabile per la verifica dell'Overflow sia
 
 A questo punto, possiamo realizzare un circuito in grado di rilevare l'overflow. È necessario integrare la gestione delle istruzioni: il circuito di rilevamento dell'overflow per le addizioni deve includere un controllo che verifichi se l'operazione in esecuzione è un'addizione; lo stesso vale per la sottrazione.
 
-![Overflow somma e sottrazione](../../assets/math/overflow-detector-a+b-a-b.png){:width="100%"}
+[![Overflow somma e sottrazione](../../assets/math/overflow-detector-a+b-a-b.png){:width="100%"}](../../assets/math/overflow-detector-a+b-a-b.png)
 
 ### Semplificazione con 74LS151
 
