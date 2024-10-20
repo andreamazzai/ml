@@ -5,6 +5,8 @@ excerpt: "Aritmetica binaria"
 ---
 ## WORK IN PROGRESS - WORK IN PROGRESS - WORK IN PROGRESS
 
+<small>[Concetti importanti](#concetti-importanti) - [Fonti](#fonti) - [Numeri Unsigned e numeri Signed](#numeri-unsigned-e-numeri-signed) - [Approfondimento Overflow](#approfondimento-overflow) - [L'Overflow e l'hardware](#loverflow-e-lhardware) - [Metodi di identificazione dell'Overflow](#metodi-di-identificazione-delloverflow) - [Semplificazione con 74LS151](#semplificazione-con-74ls151) - [Verifica addizioni e sottrazioni con 74LS151](#verifica-addizioni-e-sottrazioni-con-74ls151)</small>
+
 ## Concetti importanti
 
 Studiando il funzionamento dei moduli Flag e ALU, avevo scoperto diverse mie lacune nell'aritmetica binaria:
