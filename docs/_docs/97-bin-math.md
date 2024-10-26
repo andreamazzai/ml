@@ -27,7 +27,7 @@ Per una comprensione completa dei temi trattati, raccomando di accedere più vol
 
 Ecco una serie di video su YouTube:
 
-1. **Binary Overflow** - Mr Powell's Computer Science Channel - [link](https://www.youtube.com/watch?v=Q7t9-Sq_4Ww&lc=Ugy04nCzuiaOJIqK_5J4AaABAg): concetto generico di Overflow.
+1. **Binary Overflow** - Mr Powell's Computer Science Channel - <a href="https://www.youtube.com/watch?v=Q7t9-Sq_4Ww&lc=Ugy04nCzuiaOJIqK_5J4AaABAg" target="_blank">link</a>: concetto generico di Overflow.
 
     Ipotizziamo di avere un computer a 8 bit, in grado di sommare due numeri a 8 bit: sia gli addendi sia la somma sono numeri a 8 bit che possono dunque andare da 0 a 255.
       - Sommando ad esempio 73 + 114 si ottiene 187, che è un numero rappresentabile con 8 bit;
@@ -35,39 +35,41 @@ Ecco una serie di video su YouTube:
 
     Abbiamo in pratica un riporto che dovremmo portare al 9° bit del nostro computer, che però ne ha solo 8. In questo caso il segnale di Carry in uscita dall'ALU ci segnalerebbe che il numero risultante dalla somma dei due addendi è più grande del numero calcolabile dall'ALU.
 
-2. **Somme di numeri Unsigned, il concetto di Carry ed eventuale Overflow** - Mr Dimmick's Computing Channel - [link](https://www.youtube.com/watch?v=nKxjLM6ePcI): molto ben fatto; spiega anche le regole di base applicabili a tutte le somme di numeri binari.
+2. **Somme di numeri Unsigned, il concetto di Carry ed eventuale Overflow** - Mr Dimmick's Computing Channel - <a href="https://www.youtube.com/watch?v=nKxjLM6ePcI" target="_blank">link</a>: molto ben fatto; spiega anche le regole di base applicabili a tutte le somme di numeri binari.
 
-3. **Numeri negativi in binario** dello stesso autore del video 1 - [link](https://www.youtube.com/watch?v=dHB7jFjESLY): un ottimo video che spiega come rappresentare i numeri negativi in complemento a 2 e come convertire un numero positivo in negativo e viceversa.
+3. **Numeri negativi in binario** dello stesso autore del video 1 - <a href="https://www.youtube.com/watch?v=dHB7jFjESLY" target="_blank">link</a>: un ottimo video che spiega come rappresentare i numeri negativi in complemento a 2 e come convertire un numero positivo in negativo e viceversa.
 
     - Con il complemento a 2, vi è un solo 0, a differenza di quanto accade con Modulo e Segno (si veda più avanti in questa pagina).
     - Per convertire un numero positivo in negativo è sufficiente invertire tutti i bit ed aggiungere 1.
     - Lo stesso procedimento è perfettamente valido anche al contrario (da negativo a positivo).
     - Prestare attenzione a un errore riconosciuto anche dall'autore nei commenti: nella discussione di Segno e Modulo il range non va da -64 a +64, ma da -128 a +128.
 
-4. **Twos complement: Negative numbers in binary** di Ben Eater - [link](https://www.youtube.com/watch?v=dHB7jFjESLY): ancora su numeri negativi, complementi e sottrazioni. Ottimo per capire come il complemento a 2 indirizzi le lacune del complemento a 1.
+4. **Twos complement: Negative numbers in binary** di Ben Eater - <a href="https://www.youtube.com/watch?v=dHB7jFjESLY" target="_blank">link</a>: ancora su numeri negativi, complementi e sottrazioni. Ottimo per capire come il complemento a 2 indirizzi le lacune del complemento a 1.
 
-5. **Binary Addition and Subtraction With Negative Numbers, 2's Complements & Signed Magnitude** - The Organic Chemistry Tutor - [link](https://www.youtube.com/watch?v=sJXTo3EZoxM): ottimo video con visualizzazione grafica molto efficace.
+5. **Binary Addition and Subtraction With Negative Numbers, 2's Complements & Signed Magnitude** - The Organic Chemistry Tutor - <a href="https://www.youtube.com/watch?v=sJXTo3EZoxM" target="_blank">link</a>: ottimo video con visualizzazione grafica molto efficace.
 
-    - Particolarmente interessante un [commento](https://www.youtube.com/watch?v=sJXTo3EZoxM&lc=Ugyl7WIoyqVR8wM0dAJ4AaABAg) che segnala che per invertire il segno di un numero binario rappresentato in 2C è sufficiente seguire due passaggi:
+    - Particolarmente interessante un <a href="https://www.youtube.com/watch?v=sJXTo3EZoxM&lc=Ugyl7WIoyqVR8wM0dAJ4AaABAg" target="_blank">commento</a> che segnala che per invertire il segno di un numero binario rappresentato in 2C è sufficiente seguire due passaggi:
       1) partire da destra e non modificare nulla fino al primo bit a 1 incluso;
       2) invertire tutti i bit rimanenti.
 
       Esempio: per invertire il numero 01010100 (84 decimale) si lasciano invariati i primi 3 bit partendo da destra (01010**100**) e si invertono poi tutti gli altri da **01010**100 a **10101**100, ottenendo come risultato finale 10101100 (-84).
 
+6. **Twos Complement Arithmetic** di Brock LaMeres - link
+
 E qualche pagina da visitare:
 
-1. [The Overflow (V) Flag Explained](http://www.6502.org/tutorials/vflag.html) di Bruce Clark su [6502.org](http://6502.org) - linguaggio essenziale e tante informazioni.
-2. [The 6502 overflow flag explained mathematically](https://www.righto.com/2012/12/the-6502-overflow-flag-explained.html) di Ken Shirriff - una pagina incredibilmente ben fatta che tratta Complementi, numeri Signed, Overflow.
-3. [The 6502 CPU's overflow flag explained at the silicon level](https://www.righto.com/2013/01/a-small-part-of-6502-chip-explained.html) di Ken Shirriff - interessantissima analisi dell'Overflow al livello del silicio del 6502.
-4. [Signed Binary Addition Calculator](https://madformath.com/calculators/digital-systems/signed-arithmetic/signed-binary-addition-calculator/signed-binary-addition-calculator) - calcolatore per somme di numeri Signed con evidenza dei vari passaggi di calcolo.
+1. <a href="http://www.6502.org/tutorials/vflag.html" target="_blank">The Overflow (V) Flag Explained</a> di Bruce Clark su [6502.org](http://6502.org) - linguaggio essenziale e tante informazioni.
+2. <a href="https://www.righto.com/2012/12/the-6502-overflow-flag-explained.html" target="_blank">The 6502 overflow flag explained mathematically</a> di Ken Shirriff - una pagina incredibilmente ben fatta che tratta Complementi, numeri Signed, Overflow.
+3. <a href="https://www.righto.com/2013/01/a-small-part-of-6502-chip-explained.html" target="_blank">The 6502 CPU's overflow flag explained at the silicon level</a> di Ken Shirriff - interessantissima analisi dell'Overflow al livello del silicio del 6502.
+4. <a href="https://madformath.com/calculators/digital-systems/signed-arithmetic/signed-binary-addition-calculator/signed-binary-addition-calculator" target="_blank">Signed Binary Addition Calculator</a> - calcolatore per somme di numeri Signed con evidenza dei vari passaggi di calcolo.
 
-Evidenzio in particolare [The 6502 overflow flag explained mathematically](https://www.righto.com/2012/12/the-6502-overflow-flag-explained.html) per una comprensione completa dell'Overflow, che sarà ripreso e approfondito in seguito in questa pagina.
+Evidenzio in particolare <a href="https://www.righto.com/2012/12/the-6502-overflow-flag-explained.html" target="_blank">The 6502 overflow flag explained mathematically</a> per una comprensione completa dell'Overflow, che sarà ripreso e approfondito in seguito in questa pagina.
 
 ## Numeri Unsigned e numeri Signed
 
 E' necessario comprendere a fondo logica e differenze relative ai numeri Unsigned e Signed.
 
-Approfondendo i numeri Signed, ero giunto a questa [interessantissima pagina](https://sandbox.mc.edu/~bennet/cs110/) dell'Università del Mississippi dedicata alla matematica binaria.
+Approfondendo i numeri Signed, ero giunto a questa <a href="https://sandbox.mc.edu/~bennet/cs110" target="_blank">interessantissima pagina</a> dell'Università del Mississippi dedicata alla matematica binaria.
 
 Grazie alla sezione *Textbook ==> Module 3: Computer Integer Arithmetic ==> 2. Negative binary numbers* avevo perfettamente compreso la rappresentazione binaria dei numeri negativi.
 
@@ -110,7 +112,7 @@ Due sono gli aspetti da evidenziare:
 
 - Le sottrazioni si possono eseguire senza errori sommando minuendo e complemento a 2 del sottraendo.
   - Ad esempio, invece di eseguire "15 - 7", si effettua "15 + (-7)": l'addizione è l'operazione più semplice in assoluto da eseguire e implementare; utilizzando il complemento a 2 diventa possibile applicare alle sottrazioni le stesse regole già applicate alle addizioni, semplificandone enormemente i calcoli.
-  - Per approfondire la sottrazione in 2C, si vedano i [link](#fonti) evidenziati in precedenza, in particolar modo il [video numero 4](https://www.youtube.com/watch?v=sJXTo3EZoxM).
+  - Per approfondire la sottrazione in 2C, si vedano i [link](#fonti) evidenziati in precedenza, in particolar modo il <a href="https://www.youtube.com/watch?v=sJXTo3EZoxM" target="_blank">video numero 4</a>.
 
 Riprendendo anche quanto esposto nella pagina dei [Flag](../flags/#overflow), in un byte sono possibili 256 combinazioni:
 
@@ -196,9 +198,9 @@ La somma tra l'MSB e i valori assunti dagli altri 7 bit corrisponde al valore de
 
 L'approfondimento dell'Overflow è stato un passaggio obbligato; prima di capire il funzionamento della parte di circuito dedicata al [flag V](../flags/#overflow), dovevo comprenderne bene la definizione e quali metodi si usassero per determinarne una eventuale presenza.
 
-Tom Nisbet segnalava che l'ispirazione per l'uso di un Data Selector/Multiplexer [74LS151](https://www.ti.com/lit/ds/symlink/sn54s151.pdf) per individuare situazioni di Overflow nel suo NQSAP derivava da [un thread su Reddit](https://www.reddit.com/r/beneater/comments/kmuuex/question_for_all_74ls181_alu_people/), che rimandava poi a pagine scritte da Dieter Mueller (aka ttlworks) su 6502.org.
+Tom Nisbet segnalava che l'ispirazione per l'uso di un Data Selector/Multiplexer <a href="https://www.ti.com/lit/ds/symlink/sn54s151.pdf" target="_blank">74LS151</a> per individuare situazioni di Overflow nel suo NQSAP derivava da <a href="https://www.reddit.com/r/beneater/comments/kmuuex/question_for_all_74ls181_alu_people/" target="_blank">un thread su Reddit</a>, che rimandava poi a pagine scritte da Dieter Mueller (aka ttlworks) su 6502.org.
 
-Nel [link di riferimento](http://6502.org/users/dieter/v_flag/v_0.htm), Dieter inizialmente spiegava in maniera visiva in quali situazioni di somma o sottrazione tra due numeri Signed a 8 bit si generasse un Overflow, utilizzando quella che si potrebbe forse definire una sorta di tavola pitagorica.
+Nel <a href="http://6502.org/users/dieter/v_flag/v_0.htm" target="_blank">link di riferimento</a>, Dieter inizialmente spiegava in maniera visiva in quali situazioni di somma o sottrazione tra due numeri Signed a 8 bit si generasse un Overflow, utilizzando quella che si potrebbe forse definire una sorta di tavola pitagorica.
 
 Ricordiamo che l'Overflow indica un errore nel processo di somma o sottrazione di due numeri Signed: se il numero risultante ha un segno errato rispetto al previsto, si ha un Overflow.
 
