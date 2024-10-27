@@ -5,7 +5,7 @@ excerpt: "Aritmetica binaria"
 ---
 ## WORK IN PROGRESS - WORK IN PROGRESS - WORK IN PROGRESS
 
-<small>[Concetti importanti](#concetti-importanti) - [Fonti](#fonti) - [Numeri Unsigned e numeri Signed](#numeri-unsigned-e-numeri-signed) - [Approfondimento Overflow](#approfondimento-overflow) - [L'Overflow e l'hardware](#loverflow-e-lhardware) - [Metodi di identificazione dell'Overflow](#metodi-di-identificazione-delloverflow) - [Semplificazione con 74LS151](#semplificazione-con-74ls151) - [Verifica addizioni e sottrazioni con 74LS151](#verifica-addizioni-e-sottrazioni-con-74ls151) - [Gli Adder](#gli-adder)</small> - [Link utili](#link-utili)</small>
+<small>[Concetti importanti](#concetti-importanti) - [Fonti](#fonti) - [Numeri Unsigned e numeri Signed](#numeri-unsigned-e-numeri-signed) - [Approfondimento Overflow](#approfondimento-overflow) - [L'Overflow e l'hardware](#loverflow-e-lhardware) - [Metodi di identificazione dell'Overflow](#metodi-di-identificazione-delloverflow) - [Semplificazione con 74LS151](#semplificazione-con-74ls151) - [Verifica addizioni e sottrazioni con 74LS151](#verifica-addizioni-e-sottrazioni-con-74ls151) - [Gli Adder](#gli-adder) - [Le somme con gli Adder](#le-somme-con-gli-adder) - [Le sottrazioni con gli Adder](#le-sottrazioni-con-gli-adder) - [Link utili](#link-utili)</small>
 
 ## Concetti importanti
 
@@ -574,6 +574,8 @@ Come si effettuano le addizioni? E le sottrazioni?
 
 L'Adder è quell'unità logica basilare che permette di eseguire somme e, opportunamente configurato, sottrazioni.
 
+## Le somme con gli Adder
+
 Quali sono i possibili casi di somme tra due bit A e B?
 
 ~~~text
@@ -598,9 +600,9 @@ Scrivendo la truth table, abbiamo:
 
 Il risultato Q della somma dei due bit A e B si può ottenere con una porta logica XOR, mentre il Carry C è chiaramente ottenibile con una porta AND. Ecco come si potrebbe costruire il circuito equivalente:
 
-![Adder](../../assets/math/half-adder.png){:width="33%"}
+![Adder](../../assets/math/half-adder.png){:width="50%"}
 
-Quando attivo, il Carry evidenzierebbe una situazione di overflow (non nel senso spiegato prima), cioè di risultato che "non ci sta".
+Quando attivo, il Carry evidenzia una situazione di overflow (non nel senso spiegato prima), cioè di risultato che "non ci sta".
 
 Ipotizziamo ora di dover effettuare una somma a più bit, ad esempio di due nibble (4 bit):
 
@@ -635,7 +637,7 @@ Q produce la seguente mappa (C corrisponde a C<sub>IN</sub>):
 
 Pur non potendo semplificare la truth table perché non è possibile creare gruppi di 1, si può notare il pattern risultante, che indica che il circuito logico equivalente è una porta XOR con tre ingressi (si veda il video yyyyyy, sempre di Lameres).
 
-C<sub>OUT</sub> produce (C corrisponde a C<sub>IN</sub>):
+C<sub>OUT</sub> produce invece (C corrisponde a C<sub>IN</sub>):
 
 ![Adder](../../assets/math/Kmap2.png)
 
@@ -649,9 +651,11 @@ L'adder mette a disposizione una porta XOR e una porta AND.
 
 Abbiamo detto che per realizzare la somma Q è necessaria una porta XOR a tre ingressi, ma è dimostrabile che due porte XOR a due ingressi in cascata realizzano lo stesso risultato. Ipotizzando di avere due adder, posso ottenere il risultato Q sfruttando le XOR disponibili:
 
-![Adder](../../assets/math/full-adder-1.png){:width="66%"}
+![Adder](../../assets/math/full-adder-1.png){:width="100%"}
 
 bla bla bla
+
+## Le sottrazioni con gli Adder
 
 È per questo motivo che una XOR all'ingresso B permette di negare gli input e, aggiungendo un Carry in ingresso, diventa facile effettuare una sottrazione, così come esposto in precedenza parlando del complemento a 2.
 
