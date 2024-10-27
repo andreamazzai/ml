@@ -641,7 +641,9 @@ C<sub>OUT</sub> produce invece (C corrisponde a C<sub>IN</sub>):
 
 È possibile semplificare la funzione risultante F = B\*C<sub>IN</sub> + A\*C<sub>IN</sub> + A\*B:
 
-F = C<sub>IN</sub>\*(A+B) + A*B
+F = C<sub>IN</sub>\*(A+B) + A*B, cioè
+
+C<sub>OUT</sub> = C<sub>IN</sub>\*(A+B) + A*B
 
 Avendo a disposizione l'Adder a due bit visto in precedenza, è possibile riutilizzarlo in scala per semplificare la costruzione di un Adder che permetta di realizzare somme tra word in ingresso di lunghezza ad esempio di 4 bit, 8 bit e così via?
 
@@ -653,15 +655,26 @@ Abbiamo detto che per realizzare la somma Q è necessaria una porta XOR a tre in
 
 Per realizzare C<sub>OUT</sub> abbiamo invece la funzione F = C<sub>IN</sub>\*(A+B) + A\*B. Analizzandola, troviamo la somma (OR logico) tra A AND B e C<sub>IN</sub> AND (A OR B).
 
-Il risultato di A\*B è disponibile sull'output della porta AND del primo Adder; il risultato di C<sub>IN</sub>\*(A+B) richiede una OR tra A e B e una successiva AND tra il risultato appena computato e C<sub>IN</sub>. Purtroppo, il secondo Adder ha disponibile una porta XOR e non una OR, tuttavia, è dimostrabile che la funzione necessaria, ma non disponibile con le porte a disposizione:
+Il risultato di A\*B è disponibile sull'output della porta AND del primo Adder; il risultato di C<sub>IN</sub>\*(A+B) richiede una OR tra A e B e una successiva AND tra il risultato appena computato e C<sub>IN</sub>. Purtroppo, il secondo Adder ha disponibile una porta XOR e non una OR, tuttavia, è dimostrabile che la funzione a noi necessaria, ma non realizzabile con le porte a disposizione:
 
-A AND B e C<sub>IN</sub> AND (A OR B)
+C<sub>IN</sub>\*(A+B) + A\*B
 
-è equivalente alla seguente funzione, disponibile con le porte a disposizione:
+è equivalente alla seguente funzione, che è invece realizzabile con le porte a disposizione:
 
-A AND B e C<sub>IN</sub> AND (A XOR B)
+C<sub>IN</sub>\*(A⊕B) + A\*B
 
+| A | B | C<sub>IN</sub> | A\*B | A⊕B | A+B | Q | C<sub>IN</sub>\*(A+B) | <center>C<sub>IN</sub>\*(A+B)<p> + A\*B |C<sub>IN</sub>\*(A⊕B) |<center>C<sub>IN</sub>\*(A⊕B)<p> + A\*B |
+| - | - | -              |  -  |  -   |  -  | - | -                     | -                                       | -                     | -                                       |
+| 0 | 0 | 0              |  0  |  0   |  0  | 0 | 0                     |  0                                      | 0                     | 0                                       |
+| 0 | 0 | 1              |  0  |  0   |  0  | 1 | 0                     |  0                                      | 0                     | 0                                       |
+| 0 | 1 | 0              |  0  |  1   |  1  | 1 | 0                     |  0                                      | 0                     | 0                                       |
+| 0 | 1 | 1              |  0  |  1   |  1  | 0 | 1                     |  1                                      | 1                     | 1                                       |
+| 1 | 0 | 0              |  0  |  1   |  1  | 1 | 0                     |  0                                      | 0                     | 0                                       |
+| 1 | 0 | 1              |  0  |  1   |  1  | 0 | 1                     |  1                                      | 1                     | 1                                       |
+| 1 | 1 | 0              |  1  |  0   |  1  | 0 | 0                     |  1                                      | 0                     | 1                                       |
+| 1 | 1 | 1              |  1  |  0   |  1  | 1 | 1                     |  1                                      | 0                     | 1                                       |
 
+Come si può vedere dalla truth table, l'output di C<sub>IN</sub>\*(A+B) + A\*B e l'output di C<sub>IN</sub>\*(A⊕B) + A\*B sono uguali.
 
 DEVO ANDARE A CAPIRE QUANDO LAMERES DEFINISCE UN HALF ADDER E UN FULL ADDER
 
