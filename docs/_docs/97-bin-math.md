@@ -650,6 +650,12 @@ L'Adder mette a disposizione una porta XOR e una porta AND.
 Abbiamo detto che per realizzare la somma Q è necessaria una porta XOR a tre ingressi, ma è dimostrabile che due porte XOR a due ingressi in cascata realizzano lo stesso risultato. Ipotizzando di avere due Adder, posso ottenere il risultato Q sfruttando le XOR disponibili:
 
 ![Adder](../../assets/math/full-adder-1.png){:width="100%"}
+![Alt text](image.png)
+Per realizzare C<sub>OUT</sub> abbiamo invece la funzione F = C<sub>IN</sub>\*(A+B) + A\*B. Analizzandola, troviamo la somma (OR logico) tra A AND B e Carry AND (A OR B).
+
+Il risultato di A\*B è disponibile 
+
+
 
 bla bla bla
 
