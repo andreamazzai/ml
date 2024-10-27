@@ -682,6 +682,8 @@ Come si può vedere dalla truth table, l'output della colonna **C<sub>IN</sub>\*
 
 A questo punto, possiamo realizzare la funzione necessaria aggiungendo una semplice OR per effettuare la somma logica tra **C<sub>IN</sub>\*(A⊕B)** e tra **A\*B**.
 
+![Alt text](full-adder-2.png)
+
 ![Full Adder](../../assets/math/full-adder-2.png){:width="100%"}
 
 *Full Adder.*
@@ -690,11 +692,13 @@ Il **Full Adder** appena creato è in grado di effettuare la somma di due termin
 
 ## Ripple Carry Adder
 
-Possiamo ora creare un Multiple Bit Adder per effettuare somme di nibble, byte e, più in generale, word di qualsiasi dimensione.
+Avendo a disposizione i Full Adder, a loro volta costituiti da due Half Adder e una porta OR, possiamo ora creare un Multiple Bit Adder per effettuare somme di nibble, byte e, più in generale, word di qualsiasi dimensione. Si noterà che questo paragrafo permette di rispondere positivamente al quesito che ci interrogava sulla possibilità di implementare un circuito complesso a partire da una logica di base semplice e ripetibile.
 
 ![Multiple Bit Adder, o Ripple Carry Adder](../../assets/math/multiple-bit-adder.png){:width="100%"}
 
 *Multiple Bit Adder, o Ripple Carry Adder.*
+
+Il Multiple Bit Adder creato ha un nome univoco: Ripple Carry Adder, perché il Carry "ondeggia" tra i Full Adder
 
 bla bla bla
 
@@ -704,7 +708,7 @@ bla bla bla
 
 ## Link utili
 
-- <a href="https://www.youtube.com/watch?v=Fu5LfmjhEBA" target="_blank">Ripple Carry Adders</a> di Brock La Shirriff. Fondamentale per capire il perché dell'implementazione apparentemente così strana del chip.
+- <a href="https://www.youtube.com/watch?v=Fu5LfmjhEBA" target="_blank">Ripple Carry Adders</a> e <a href="https://www.youtube.com/watch?v=TNoQ_djJW0I" target="_blank">RCA Timing</a> di Brock LaMeres. Questi video illustrano la logica degli Half Adder, dei Full Adder e dei Ripple Carry Adder, inclusa una discussione sul timing.
 - La pagina delle <a href="https://tomnisbet.github.io/nqsap/docs/74181-alu-notes" target="_blank">note sul 74181</a> di Tom Nisbet.
 - <a href="https://www.youtube.com/watch?v=Fq0MIJjlGsw" target="_blank">Demo of 74LS181 (74HCT181) ALU</a> e <a href="https://www.youtube.com/watch?v=jmROTNtoUGI" target="_blank">Comparator Functions of 74LS181 (74HCT181) ALU</a>: due ottimi video di David Courtney.
 - Il <a href="https://www.atarimania.com/documents/6502%20(65xx)%20Microprocessor%20Instant%20Reference%20Card.pdf" target="_blank">compendio della Micro Logic</a>, dal quale è tratta l'immagine sulle modalità di [scorrimento e rotazione](#il-registro-h) del 6502.
