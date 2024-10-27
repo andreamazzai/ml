@@ -682,8 +682,6 @@ Come si può vedere dalla truth table, l'output della colonna **C<sub>IN</sub>\*
 
 A questo punto, possiamo realizzare la funzione necessaria aggiungendo una semplice OR per effettuare la somma logica tra **C<sub>IN</sub>\*(A⊕B)** e tra **A\*B**.
 
-![Alt text](full-adder-2.png)
-
 ![Full Adder](../../assets/math/full-adder-2.png){:width="100%"}
 
 *Full Adder.*
@@ -697,6 +695,8 @@ Avendo a disposizione i Full Adder, a loro volta costituiti da due Half Adder e 
 ![Multiple Bit Adder, o Ripple Carry Adder](../../assets/math/multiple-bit-adder.png){:width="100%"}
 
 *Multiple Bit Adder, o Ripple Carry Adder.*
+
+![Alt text](image.png)
 
 Il Multiple Bit Adder creato ha un nome univoco: Ripple Carry Adder, perché il Carry "ondeggia" tra i Full Adder
 
