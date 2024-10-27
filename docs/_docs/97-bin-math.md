@@ -696,11 +696,13 @@ Avendo a disposizione i Full Adder, a loro volta costituiti da due Half Adder e 
 
 *Multiple Bit Adder, o Ripple Carry Adder.*
 
-![Alt text](image.png)
+Il Multiple Bit Adder creato ha un nome univoco: Ripple Carry Adder, perché il Carry "ondeggia" tra i Full Adder. Una considerazione da non tralasciare è quella relativa al timing di un Ripple Carry Adder: come per ogni circuito logico, possiamo prelevare i segnali in output solo una volta che l'output col ritardo maggiore si è stabilizzato.
 
-Il Multiple Bit Adder creato ha un nome univoco: Ripple Carry Adder, perché il Carry "ondeggia" tra i Full Adder
+L'immagine seguente, tratta dal video RCA Timing citato nei link a fondo pagina, aiuta a visualizzare come il segnale C<sub>OUT</sub> dipenda da ben 9 livelli logici.
 
-bla bla bla
+![Timing di un Ripple Carry Adder](../../assets/math/rca-timing.png){:width="100%"}
+
+In conseguenza di questo, la frequenza operativa massima del circuito non potrà essere superiore all'inverso della somma dei ritardi introdotti dai livelli logici 1-9.
 
 ## Le sottrazioni con gli Adder
 
@@ -708,7 +710,4 @@ bla bla bla
 
 ## Link utili
 
-- <a href="https://www.youtube.com/watch?v=Fu5LfmjhEBA" target="_blank">Ripple Carry Adders</a> e <a href="https://www.youtube.com/watch?v=TNoQ_djJW0I" target="_blank">RCA Timing</a> di Brock LaMeres. Questi video illustrano la logica degli Half Adder, dei Full Adder e dei Ripple Carry Adder, inclusa una discussione sul timing.
-- La pagina delle <a href="https://tomnisbet.github.io/nqsap/docs/74181-alu-notes" target="_blank">note sul 74181</a> di Tom Nisbet.
-- <a href="https://www.youtube.com/watch?v=Fq0MIJjlGsw" target="_blank">Demo of 74LS181 (74HCT181) ALU</a> e <a href="https://www.youtube.com/watch?v=jmROTNtoUGI" target="_blank">Comparator Functions of 74LS181 (74HCT181) ALU</a>: due ottimi video di David Courtney.
-- Il <a href="https://www.atarimania.com/documents/6502%20(65xx)%20Microprocessor%20Instant%20Reference%20Card.pdf" target="_blank">compendio della Micro Logic</a>, dal quale è tratta l'immagine sulle modalità di [scorrimento e rotazione](#il-registro-h) del 6502.
+- <a href="https://www.youtube.com/watch?v=Fu5LfmjhEBA" target="_blank">Ripple Carry Adders</a> e <a href="https://www.youtube.com/watch?v=TNoQ_djJW0I" target="_blank">RCA Timing</a> di Brock LaMeres. Questi video illustrano la logica degli Half Adder, dei Full Adder e dei Ripple Carry Adder, inclusa una discussione sul timing. Non si può non menzionare lo stile espositivo del professor LaMeres, la cui grande carica di energia incolla lo spettatore al video.
