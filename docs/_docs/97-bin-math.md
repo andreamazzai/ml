@@ -86,7 +86,7 @@ NB: nella pagina citata, vi è un'immagina errata nella sottrazione "5 - 2". L'i
 ![Errore sottrazione](../../assets/math/math_mistake.gif
 ){:width="15%"}
 
-La pagina desiderava in realtà rappresentare era una sottrazione utilizzando il metodo Modulo e Segno, che *dovrebbe* permettere di trasformare l'operazione da "5 - 2" in "5 + (-2)" invertendo il primo bit del numero 2, che dunque da 0010 diventa 1010:
+La pagina desiderava in realtà rappresentare era una sottrazione tra A e B utilizzando il metodo Modulo e Segno, che *dovrebbe* permettere di trasformare l'operazione da "5 - 2" in "5 + (-2)" invertendo il primo bit del numero 2, che dunque da 0010 diventa 1010:
 
 ~~~text
    Dec        Bin 
@@ -419,7 +419,7 @@ Riepilogando:
 
 ### Verifica addizioni e sottrazioni con 74LS151
 
-Testiamo alcuni casi di addizione e sottrazione, ma non prima di aver fatto un esempio iniziale spiegando anche il significato delle colonne:
+Testiamo alcuni casi di addizione e sottrazione tra A e B. Nella righe C e Q sono indicati rispettivamente il Carry, quando presente, e il risultato dell'operazione.
 
 - Nella colonna **Hex** è esposta la rappresentazione esadecimale dei numeri che vogliamo sommare o sottrarre, con il simbolo dell'operazione alla sinistra del secondo numero; desideriamo eseguire l'operazione 0x70 - 0x30.
 - La colonna **Dec** mostra il valore decimale ricavato dalla tabella *Relazione tra numeri Hex, Bin, Signed e Unsigned a 8 bit*; 0x70 corrisponde a 112 decimale, mentre 0x30 corrisponde a 48: l'operazione è quindi 112 - 48 (che avrà come risultato 64).
@@ -570,7 +570,90 @@ Per finire, da quanto visto fino ad ora possiamo dedurre un'altra regola: la som
 
 ## Gli Adder
 
-Un Adder è un'unità logica basilare che permette di eseguire somme e, opportunamente configurato, sottrazioni.
+Come si effettuano le addizioni? E le sottrazioni?
+
+L'Adder è quell'unità logica basilare che permette di eseguire somme e, opportunamente configurato, sottrazioni.
+
+Quali sono i possibili casi di somme tra due bit A e B?
+
+~~~text
+Ipotesi     1a     2a     3a     4a
+C                               1   
+A           0+     0+     1+     1+
+B           0=     1=     0=     1=
+          ----   ----   ----   ----
+Q           0      1      1     10 
+~~~
+
+Nella quarta colonna notiamo che per mostrare il risultato della somma di due bit entrambi a 1 sono necessarie due posizioni, in quanto vi è un riporto.
+
+Scrivendo la truth table, abbiamo:
+
+| A | B | **Q** | C |
+| - | - | - | - |
+| 0 | 0 | 0 | 0 |
+| 0 | 1 | 1 | 0 |
+| 1 | 0 | 1 | 0 |
+| 1 | 1 | 0 | 1 |
+
+Il risultato Q della somma dei due bit A e B si può ottenere con una porta logica XOR, mentre il Carry C è chiaramente ottenibile con una porta AND. Ecco come si potrebbe costruire il circuito equivalente:
+
+![Adder](../../assets/math/adder.png){:width="66%"}
+
+Quando attivo, il Carry evidenzierebbe una situazione di overflow (non nel senso spiegato prima), cioè di risultato che "non ci sta".
+
+Ipotizziamo ora di dover effettuare una somma a più bit, ad esempio di due nibble (4 bit):
+
+~~~text
+C         1 11
+A          1011+
+B          1001=
+          ------
+Q         10100   
+~~~
+
+Per svolgere l'operazione sono necessari 3 valori in input: A, B e il Carry eventualmente derivante dalla precedente colonna.
+
+Scrivendo la truth table per sommare tre cifre, otteniamo:
+
+| A | B | C \|| Q | C |
+| - | - | - | - | - |
+| 0 | 0 | 0 \|| 0 | 0 |
+| 0 | 0 | 1 | 1 | 0 |
+| 0 | 1 | 0 | 1 | 0 |
+| 0 | 1 | 1 | 0 | 1 |
+| 1 | 0 | 0 | 0 | 1 |
+| 1 | 0 | 1 | 0 | 1 |
+| 1 | 1 | 0 | 0 | 1 |
+| 1 | 1 | 1 | 0 | 1 |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+~~~text
+
+Ipotesi     1a     2a     3a     4a
+C                               1   
+A           0+     0+     1+     1+
+B           0=     1=     0=     1=
+          ----   ----   ----   ----
+Q           0      1      1     10 
+~~~
+
+
+
+
 
 È per questo motivo che una XOR all'ingresso B permette di negare gli input e, aggiungendo un carry in ingresso, diventa facile effettuare una sottrazione, così come esposto in precedenza parlando del complemento a 2.
 
