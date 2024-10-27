@@ -602,7 +602,7 @@ Il risultato Q della somma dei due bit A e B si può ottenere con una porta logi
 
 Quando attivo, il Carry evidenzia una situazione di overflow, cioè di risultato dell'operazione che eccede la capacità di rappresentazione dei bit disponibili.
 
-Ipotizziamo ora di dover effettuare una somma a più bit, ad esempio di due nibble (4 bit) o di due byte:
+Ipotizziamo ora di voler effettuare una somma a più bit, ad esempio di due nibble (4 bit) o di due byte:
 
 ~~~text
 C       1 11           1  1
@@ -651,32 +651,36 @@ Avendo a disposizione l'Adder a due bit visto in precedenza, è possibile riutil
 
 Ogni Adder mette a disposizione una porta XOR e una porta AND.
 
-Abbiamo detto che per realizzare la somma Q è necessaria una porta XOR a tre ingressi, ma è dimostrabile che due porte XOR a due ingressi in cascata realizzano lo stesso risultato. Ipotizzando di avere due Adder, posso ottenere il risultato Q sfruttando le XOR disponibili:
+Abbiamo detto che per realizzare la somma Q è necessaria una porta XOR a tre ingressi, ma è dimostrabile che una cascata di due porte XOR a due ingressi realizza lo stesso risultato. Ipotizzando di avere due Adder, posso ottenere il risultato Q sfruttando le XOR disponibili:
 
 ![Adder](../../assets/math/full-adder-1.png){:width="100%"}
 
-Per realizzare C<sub>OUT</sub> abbiamo invece la funzione F = C<sub>IN</sub>\*(A+B) + A\*B. Analizzandola, troviamo la somma (OR logico) tra A AND B e C<sub>IN</sub> AND (A OR B).
+Per realizzare C<sub>OUT</sub> dobbiamo invece implementare la funzione F = C<sub>IN</sub>\*(A+B) + A\*B.
 
-Il risultato di A\*B è disponibile sull'output della porta AND del primo Adder; il risultato di C<sub>IN</sub>\*(A+B) richiede una OR tra A e B e una successiva AND tra il risultato appena computato e C<sub>IN</sub>. Purtroppo, il secondo Adder ha disponibile una porta XOR e non una OR, tuttavia, è dimostrabile che la funzione a noi necessaria, ma non realizzabile con le porte a disposizione:
+Il risultato di A\*B è disponibile sull'output della porta AND del primo Adder; il risultato di C<sub>IN</sub>\*(A+B) richiede una OR tra A e B e una successiva AND tra il risultato appena computato e C<sub>IN</sub>. Purtroppo, il secondo Adder non mette a disposizione una porta OR per effettuare A+B; tuttavia, è dimostrabile che la funzione:
 
-C<sub>IN</sub>\*(A+B) + A\*B
+C<sub>OUT</sub> = C<sub>IN</sub>\*(A+B) + A\*B
 
-è equivalente alla seguente funzione, che è invece realizzabile con le porte a disposizione:
+è equivalente alla seguente funzione, che è invece realizzabile con le porte a disposizione, tra cui la XOR anziché la OR:
 
-C<sub>IN</sub>\*(A⊕B) + A\*B
+C<sub>OUT</sub> = C<sub>IN</sub>\*(A⊕B) + A\*B
 
 | A | B | C<sub>IN</sub> | A\*B | A⊕B | A+B | Q | C<sub>IN</sub>\*(A+B) | <center>C<sub>IN</sub>\*(A+B)<p> + A\*B |C<sub>IN</sub>\*(A⊕B) |<center>C<sub>IN</sub>\*(A⊕B)<p> + A\*B |
 | - | - | -              |  -  |  -   |  -  | - | -                     | -                                       | -                     | -                                       |
-| 0 | 0 | 0              |  0  |  0   |  0  | 0 | 0                     |  0                                      | 0                     | 0                                       |
-| 0 | 0 | 1              |  0  |  0   |  0  | 1 | 0                     |  0                                      | 0                     | 0                                       |
-| 0 | 1 | 0              |  0  |  1   |  1  | 1 | 0                     |  0                                      | 0                     | 0                                       |
-| 0 | 1 | 1              |  0  |  1   |  1  | 0 | 1                     |  1                                      | 1                     | 1                                       |
-| 1 | 0 | 0              |  0  |  1   |  1  | 1 | 0                     |  0                                      | 0                     | 0                                       |
-| 1 | 0 | 1              |  0  |  1   |  1  | 0 | 1                     |  1                                      | 1                     | 1                                       |
-| 1 | 1 | 0              |  1  |  0   |  1  | 0 | 0                     |  1                                      | 0                     | 1                                       |
-| 1 | 1 | 1              |  1  |  0   |  1  | 1 | 1                     |  1                                      | 0                     | 1                                       |
+| 0 | 0 | 0              |  0  |  0   |  0  | 0 | <center>0             |  <center>0                              | <center>0             | <center>0                               |
+| 0 | 0 | 1              |  0  |  0   |  0  | 1 | <center>0             |  <center>0                              | <center>0             | <center>0                               |
+| 0 | 1 | 0              |  0  |  1   |  1  | 1 | <center>0             |  <center>0                              | <center>0             | <center>0                               |
+| 0 | 1 | 1              |  0  |  1   |  1  | 0 | <center>1             |  <center>1                              | <center>1             | <center>1                               |
+| 1 | 0 | 0              |  0  |  1   |  1  | 1 | <center>0             |  <center>0                              | <center>0             | <center>0                               |
+| 1 | 0 | 1              |  0  |  1   |  1  | 0 | <center>1             |  <center>1                              | <center>1             | <center>1                               |
+| 1 | 1 | 0              |  1  |  0   |  1  | 0 | <center>0             |  <center>1                              | <center>0             | <center>1                               |
+| 1 | 1 | 1              |  1  |  0   |  1  | 1 | <center>1             |  <center>1                              | <center>0             | <center>1                               |
 
-Come si può vedere dalla truth table, l'output di C<sub>IN</sub>\*(A+B) + A\*B e l'output di C<sub>IN</sub>\*(A⊕B) + A\*B sono uguali.
+Come si può vedere dalla truth table, l'output della colonna **C<sub>IN</sub>\*(A+B) + A\*B** è uguale a quello della colonna **C<sub>IN</sub>\*(A⊕B) + A\*B**, pertanto, possiamo utilizzare l'Adder con porta XOR per completare il nostro Adder.
+
+A questo punto, possiamo realizzare la funzione necessaria aggiungendo una semplice OR per effettuare la somma logica tra **C<sub>IN</sub>\*(A⊕B)** e tra **A\*B**.
+
+![Adder](../../assets/math/full-adder-2.png){:width="100%"}
 
 DEVO ANDARE A CAPIRE QUANDO LAMERES DEFINISCE UN HALF ADDER E UN FULL ADDER
 
