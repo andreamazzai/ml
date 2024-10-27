@@ -17,7 +17,7 @@ Studiando il funzionamento dei moduli Flag e ALU, avevo scoperto diverse mie lac
    - Complemento a 1 (One’s Complement, o anche 1C)
    - Complemento a 2 (Two’s Complement, o anche 2C)
 3. Somma e sottrazione di numeri binari
-4. Overflow
+4. Overflow senza segno e Overflow con segno
 
 ## Fonti
 
@@ -31,9 +31,9 @@ Ecco una serie di video su YouTube:
 
     Ipotizziamo di avere un computer a 8 bit, in grado di sommare due numeri a 8 bit: sia gli addendi sia la somma sono numeri a 8 bit che possono dunque andare da 0 a 255.
       - Sommando ad esempio 73 + 114 si ottiene 187, che è un numero rappresentabile con 8 bit;
-      - sommando invece ad esempio 175 + 92 si ottiene 267, che non è rappresentabile con un numero a 8 bit: abbiamo un errore di Overflow, perché i bit a nostra disposizione (8) non ci consentono di rappresentare il risultato della somma.
+      - sommando invece ad esempio 175 + 92 si ottiene 267, che non è rappresentabile con un numero a 8 bit: abbiamo un errore di Overflow (o **Overflow senza segno**), perché i bit a nostra disposizione (8) non ci consentono di rappresentare il risultato della somma: il risultato dell'operazione aritmetica eccede la capacità di rappresentazione dei bit disponibili senza considerare il segno.
 
-    Abbiamo in pratica un riporto che dovremmo portare al 9° bit del nostro computer, che però ne ha solo 8. In questo caso il segnale di Carry in uscita dall'ALU ci segnalerebbe che il numero risultante dalla somma dei due addendi è più grande del numero calcolabile dall'ALU.
+    Abbiamo in pratica un riporto che dovremmo portare al 9° bit del nostro computer, che però ne ha solo 8. In questo caso il segnale di Carry in uscita dall'ALU ci segnala che il numero risultante dalla somma dei due addendi è più grande del numero calcolabile dall'ALU.
 
 2. **Somme di numeri Unsigned, il concetto di Carry ed eventuale Overflow** - Mr Dimmick's Computing Channel - <a href="https://www.youtube.com/watch?v=nKxjLM6ePcI" target="_blank">link</a>: molto ben fatto; spiega anche le regole di base applicabili a tutte le somme di numeri binari.
 
@@ -612,9 +612,9 @@ B        1001=        00101010=
 Q       10100         11011101
 ~~~
 
-Si nota che per svolgere l'intera operazione sono necessari 3 valori in input: A, B e il Carry eventualmente derivante dalla precedente colonna.
+Si noti che per svolgere l'intera operazione è necessario fornire all'Adder 3 valori in input: A, B e il Carry eventualmente derivante dalla precedente colonna.
 
-Scrivendo la truth table per sommare i tre bit di ogni colonna chiameremo C<sub>IN</sub> il carry derivante dalla precedente colonna e, similarmente, chiameremo C<sub>OUT</sub> il carry risultante dalla somma di ogni tripletta di A, B e C<sub>IN</sub>:
+Scrivendo la truth table per sommare i tre bit di ogni colonna, assegneremo il nome C<sub>IN</sub> al carry derivante dalla precedente colonna e, similarmente, chiameremo C<sub>OUT</sub> il carry risultante dalla somma di ogni tripletta di A, B e C<sub>IN</sub>:
 
 | A | B | C<sub>IN</sub> | Q | C<sub>OUT</sub> |
 | - | - | -              | - | -               |
@@ -629,17 +629,19 @@ Scrivendo la truth table per sommare i tre bit di ogni colonna chiameremo C<sub>
 
 Anziché ricorrere alla combinazione di AND e OR (Sum of Products, esposta nel video di Brock LaMeres xxxxxxxxx), proviamo a semplificare utilizzando le mappe di Karnaugh (spiegate nel video xxxxxxx ancora di LaMeres).
 
-Q produce la seguente mappa (C corrisponde a C<sub>IN</sub>):
+L'analisi di Q produce la seguente mappa (C corrisponde a C<sub>IN</sub>):
 
 ![Adder](../../assets/math/Kmap1.png)
 
-Pur non potendo semplificare la truth table perché non è possibile creare gruppi di 1, si può notare il pattern risultante, che indica che il circuito logico equivalente è una porta XOR con tre ingressi (si veda il video yyyyyy, sempre di Lameres).
+Pur non potendo semplificare la truth table perché non è possibile creare gruppi di 1, si può notare il pattern risultante "a scacchiera", che indica che il circuito logico equivalente è una porta XOR con tre ingressi (si veda il video yyyyyy, sempre di Lameres).
 
-C<sub>OUT</sub> produce invece (C corrisponde a C<sub>IN</sub>):
+L'analisi di C<sub>OUT</sub> produce invece (C corrisponde a C<sub>IN</sub>):
 
 ![Adder](../../assets/math/Kmap2.png)
 
-È possibile semplificare la funzione risultante F = B\*C<sub>IN</sub> + A\*C<sub>IN</sub> + A\*B:
+Utilizzando la proprietà distributiva dell'algebra booleana, è possibile semplificare la funzione 
+
+F = B\*C<sub>IN</sub> + A\*C<sub>IN</sub> + A\*B
 
 F = C<sub>IN</sub>\*(A+B) + A*B, cioè
 
