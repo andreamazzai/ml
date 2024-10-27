@@ -665,16 +665,16 @@ C<sub>OUT</sub> = C<sub>IN</sub>\*(A+B) + A\*B
 
 C<sub>OUT</sub> = C<sub>IN</sub>\*(A⊕B) + A\*B
 
-| A | B | C<sub>IN</sub> | A\*B | A⊕B | A+B | Q | C<sub>IN</sub>\*(A+B) | C<sub>IN</sub>\*(A+B)<br><center>+ A*B |C<sub>IN</sub>\*(A⊕B) |C<sub>IN</sub>\*(A⊕B) + A*B |
-| - | - | -              |  -  |  -   |  -  | - | -                     | -                                       | -                     | -                                       |
-| 0 | 0 | 0              |  0  |  0   |  0  | 0 | <center>0             |  <center>0                              | <center>0             | <center>0                               |
-| 0 | 0 | 1              |  0  |  0   |  0  | 1 | <center>0             |  <center>0                              | <center>0             | <center>0                               |
-| 0 | 1 | 0              |  0  |  1   |  1  | 1 | <center>0             |  <center>0                              | <center>0             | <center>0                               |
-| 0 | 1 | 1              |  0  |  1   |  1  | 0 | <center>1             |  <center>1                              | <center>1             | <center>1                               |
-| 1 | 0 | 0              |  0  |  1   |  1  | 1 | <center>0             |  <center>0                              | <center>0             | <center>0                               |
-| 1 | 0 | 1              |  0  |  1   |  1  | 0 | <center>1             |  <center>1                              | <center>1             | <center>1                               |
-| 1 | 1 | 0              |  1  |  0   |  1  | 0 | <center>0             |  <center>1                              | <center>0             | <center>1                               |
-| 1 | 1 | 1              |  1  |  0   |  1  | 1 | <center>1             |  <center>1                              | <center>0             | <center>1                               |
+| A | B | C<sub>IN</sub> | A\*B | A⊕B | A+B | Q | C<sub>IN</sub>\*(A+B) | C<sub>IN</sub>\*(A+B)<br><center>+ A*B |C<sub>IN</sub>\*(A⊕B) |C<sub>IN</sub>\*(A⊕B)<br><center>+ A*B |
+| - | - | -              |  -  |  -   |  -  | - | -                     | -                                      | -                     | -                                      |
+| 0 | 0 | 0              |  0  |  0   |  0  | 0 | <center>0             |  <center>0                             | <center>0             | <center>0                              |
+| 0 | 0 | 1              |  0  |  0   |  0  | 1 | <center>0             |  <center>0                             | <center>0             | <center>0                              |
+| 0 | 1 | 0              |  0  |  1   |  1  | 1 | <center>0             |  <center>0                             | <center>0             | <center>0                              |
+| 0 | 1 | 1              |  0  |  1   |  1  | 0 | <center>1             |  <center>1                             | <center>1             | <center>1                              |
+| 1 | 0 | 0              |  0  |  1   |  1  | 1 | <center>0             |  <center>0                             | <center>0             | <center>0                              |
+| 1 | 0 | 1              |  0  |  1   |  1  | 0 | <center>1             |  <center>1                             | <center>1             | <center>1                              |
+| 1 | 1 | 0              |  1  |  0   |  1  | 0 | <center>0             |  <center>1                             | <center>0             | <center>1                              |
+| 1 | 1 | 1              |  1  |  0   |  1  | 1 | <center>1             |  <center>1                             | <center>0             | <center>1                              |
 
 Come si può vedere dalla truth table, l'output della colonna **C<sub>IN</sub>\*(A+B) + A\*B** è uguale a quello della colonna **C<sub>IN</sub>\*(A⊕B) + A\*B**, pertanto, possiamo utilizzare l'Adder con porta XOR per completare il nostro Adder.
 
