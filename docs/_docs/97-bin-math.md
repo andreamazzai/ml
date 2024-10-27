@@ -572,7 +572,7 @@ Per finire, da quanto visto fino ad ora possiamo dedurre un'altra regola: la som
 
 Come si effettuano le addizioni? E le sottrazioni?
 
-L'Adder è quell'unità logica basilare che permette di eseguire somme e, opportunamente configurato, sottrazioni.
+Un Adder è un unità logica basilare che permette di eseguire somme e, opportunamente configurato, sottrazioni.
 
 ## Le somme con gli Adder
 
@@ -584,10 +584,10 @@ C                               1
 A           0+     0+     1+     1+
 B           0=     1=     0=     1=
           ----   ----   ----   ----
-Q           0      1      1      0 
+Q           0      1      1     10 
 ~~~
 
-Nella quarta ipotesi notiamo che il risultato della somma di due bit entrambi a 1 genera un riporto, cioè un Carry. Scrivendo la truth table, nella quale C<sub>OUT</sub> identifica il Carry generato dalla somma dei bit A e B, otteniamo:
+Nella quarta ipotesi notiamo che il risultato della somma di due bit entrambi a 1 genera un riporto, cioè un Carry. Scrivendo la truth table e considerando il Carry generato dalla somma dei bit A e B, otteniamo:
 
 | A | B | **Q** | C<sub>OUT</sub> |
 | - | - | -     | -               |
@@ -598,9 +598,11 @@ Nella quarta ipotesi notiamo che il risultato della somma di due bit entrambi a 
 
 Il risultato Q della somma dei due bit A e B si può ottenere con una porta logica XOR, mentre il Carry C<sub>OUT</sub> è chiaramente ottenibile con una porta AND. Ecco come si potrebbe costruire il circuito equivalente:
 
-![Adder](../../assets/math/half-adder.png){:width="50%"}
+![Half Adder](../../assets/math/half-adder.png){:width="50%"}
 
-Quando attivo, il Carry evidenzia una situazione di overflow, cioè di risultato dell'operazione che eccede la capacità di rappresentazione dei bit disponibili.
+*Half Adder.*
+
+Il circuito appena creato viene definito Half Adder. Quando attivo, il Carry evidenzia una situazione di overflow, cioè di risultato dell'operazione che eccede la capacità di rappresentazione dei bit disponibili.
 
 Ipotizziamo ora di voler effettuare una somma a più bit, ad esempio di due nibble (4 bit) o di due byte:
 
@@ -679,6 +681,9 @@ C<sub>OUT</sub> = C<sub>IN</sub>\*(A⊕B) + A\*B
 Come si può vedere dalla truth table, l'output della colonna **C<sub>IN</sub>\*(A+B) + A\*B** è uguale a quello della colonna **C<sub>IN</sub>\*(A⊕B) + A\*B**, pertanto, possiamo utilizzare l'Adder con porta XOR per completare il nostro Adder.
 
 A questo punto, possiamo realizzare la funzione necessaria aggiungendo una semplice OR per effettuare la somma logica tra **C<sub>IN</sub>\*(A⊕B)** e tra **A\*B**.
+
+
+![Alt text](image.png)
 
 ![Adder](../../assets/math/full-adder-2.png){:width="100%"}
 
