@@ -665,7 +665,7 @@ C<sub>OUT</sub> = C<sub>IN</sub>\*(A+B) + A\*B
 
 C<sub>OUT</sub> = C<sub>IN</sub>\*(A⊕B) + A\*B
 
-| A | B | C<sub>IN</sub> | A\*B | A⊕B | A+B | Q | C<sub>IN</sub>\*(A+B) | <center>C<sub>IN</sub> * (A+B)<br> + A\*B |C<sub>IN</sub>\*(A⊕B) |<center>C<sub>IN</sub> \* (A⊕B)<br>+ A*B |
+| A | B | C<sub>IN</sub> | A\*B | A⊕B | A+B | Q | C<sub>IN</sub>\*(A+B) | <center>C<sub>IN</sub>\*(A+B) <p> + A*B |C<sub>IN</sub>\*(A⊕B) |<center>C<sub>IN</sub>\*(A⊕B)<p>+ A*B |
 | - | - | -              |  -  |  -   |  -  | - | -                     | -                                       | -                     | -                                       |
 | 0 | 0 | 0              |  0  |  0   |  0  | 0 | <center>0             |  <center>0                              | <center>0             | <center>0                               |
 | 0 | 0 | 1              |  0  |  0   |  0  | 1 | <center>0             |  <center>0                              | <center>0             | <center>0                               |
