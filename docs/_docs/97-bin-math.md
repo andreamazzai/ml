@@ -598,7 +598,7 @@ Scrivendo la truth table, abbiamo:
 
 Il risultato Q della somma dei due bit A e B si può ottenere con una porta logica XOR, mentre il Carry C è chiaramente ottenibile con una porta AND. Ecco come si potrebbe costruire il circuito equivalente:
 
-![Adder](../../assets/math/half-adder.png)
+![Adder](../../assets/math/half-adder.png){:width="33%"}
 
 Quando attivo, il Carry evidenzierebbe una situazione di overflow (non nel senso spiegato prima), cioè di risultato che "non ci sta".
 
@@ -612,7 +612,7 @@ B          1001=
 Q         10100   
 ~~~
 
-Si nota che per svolgere l'operazione sono necessari 3 valori in input: A, B e il Carry eventualmente derivante dalla precedente colonna.
+Si nota che per svolgere l'intera operazione sono necessari 3 valori in input: A, B e il Carry eventualmente derivante dalla precedente colonna.
 
 Scrivendo la truth table per sommare i tre bit, chiameremo C<sub>IN</sub> il carry derivante dalla precedente colonna e, similarmente, chiameremo C<sub>OUT</sub> il carry risultante dalla somma di A, B e C<sub>IN</sub>:
 
@@ -649,12 +649,11 @@ L'adder mette a disposizione una porta XOR e una porta AND.
 
 Abbiamo detto che per realizzare la somma Q è necessaria una porta XOR a tre ingressi, ma è dimostrabile che due porte XOR a due ingressi in cascata realizzano lo stesso risultato. Ipotizzando di avere due adder, posso ottenere il risultato Q sfruttando le XOR disponibili:
 
-![Alt text](image.png)
+![Adder](../../assets/math/full-adder-1.png){:width="66%"}
 
-![Adder](../../assets/math/full-adder-1.png)
+bla bla bla
 
-
-È per questo motivo che una XOR all'ingresso B permette di negare gli input e, aggiungendo un carry in ingresso, diventa facile effettuare una sottrazione, così come esposto in precedenza parlando del complemento a 2.
+È per questo motivo che una XOR all'ingresso B permette di negare gli input e, aggiungendo un Carry in ingresso, diventa facile effettuare una sottrazione, così come esposto in precedenza parlando del complemento a 2.
 
 ## Link utili
 
