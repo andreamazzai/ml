@@ -5,7 +5,7 @@ excerpt: "Aritmetica binaria"
 ---
 ## WORK IN PROGRESS - WORK IN PROGRESS - WORK IN PROGRESS
 
-<small>[Concetti importanti](#concetti-importanti) - [Fonti](#fonti) - [Numeri Unsigned e numeri Signed](#numeri-unsigned-e-numeri-signed) - [Approfondimento Overflow](#approfondimento-overflow) - [L'Overflow e l'hardware](#loverflow-e-lhardware) - [Metodi di identificazione dell'Overflow](#metodi-di-identificazione-delloverflow) - [Semplificazione con 74LS151](#semplificazione-con-74ls151) - [Verifica addizioni e sottrazioni con 74LS151](#verifica-addizioni-e-sottrazioni-con-74ls151) - [Gli Adder](#gli-adder) - [Le somme con gli Adder](#le-somme-con-gli-adder) - [Le sottrazioni con gli Adder](#le-sottrazioni-con-gli-adder) - [Link utili](#link-utili)</small>
+<small>[Concetti importanti](#concetti-importanti) - [Fonti](#fonti) - [Numeri Unsigned e numeri Signed](#numeri-unsigned-e-numeri-signed) - [Approfondimento Overflow](#approfondimento-overflow) - [L'Overflow e l'hardware](#loverflow-e-lhardware) - [Metodi di identificazione dell'Overflow](#metodi-di-identificazione-delloverflow) - [Semplificazione con 74LS151](#semplificazione-con-74ls151) - [Verifica addizioni e sottrazioni con 74LS151](#verifica-addizioni-e-sottrazioni-con-74ls151) - [Gli Adder](#gli-adder) - [Le somme con gli Adder](#le-somme-con-gli-adder) - [Ripple Carry Adder](#ripple-carry-adder) - [Le sottrazioni con gli Adder](#le-sottrazioni-con-gli-adder) - [Link utili](#link-utili)</small>
 
 ## Concetti importanti
 
@@ -602,7 +602,7 @@ Il risultato Q della somma dei due bit A e B si può ottenere con una porta logi
 
 *Half Adder.*
 
-Il circuito appena creato viene definito Half Adder. Quando attivo, il Carry evidenzia una situazione di overflow, cioè di risultato dell'operazione che eccede la capacità di rappresentazione dei bit disponibili.
+Il circuito appena creato viene definito Half Adder. Il Carry, quando attivo, evidenzia una situazione di overflow, cioè di risultato dell'operazione che eccede la capacità di rappresentazione data dai bit disponibili.
 
 Ipotizziamo ora di voler effettuare una somma a più bit, ad esempio di due nibble (4 bit) o di due byte:
 
@@ -633,13 +633,13 @@ Anziché ricorrere alla combinazione di AND e OR (Sum of Products, esposta nel v
 
 L'analisi di Q produce la seguente mappa (C corrisponde a C<sub>IN</sub>):
 
-![Adder](../../assets/math/Kmap1.png)
+![Karnaugh Map](../../assets/math/Kmap1.png)
 
-Pur non potendo semplificare la truth table perché non è possibile creare gruppi di 1, si può notare il pattern risultante "a scacchiera", che indica che il circuito logico equivalente è una porta XOR con tre ingressi (si veda il video <a href="https://www.youtube.com/watch?v=3SwLBw7RYiI" target="_blank">Combinational Logic Minimization: XORs</a>, sempre di Lameres).
+Pur non potendo semplificare la truth table perché non è possibile creare gruppi di 1, si può notare il pattern "a scacchiera", che indica che il circuito logico equivalente è una porta XOR con tre ingressi (si veda il video <a href="https://www.youtube.com/watch?v=3SwLBw7RYiI" target="_blank">Combinational Logic Minimization: XORs</a>, sempre di Lameres).
 
 L'analisi di C<sub>OUT</sub> produce invece (C corrisponde a C<sub>IN</sub>):
 
-![Adder](../../assets/math/Kmap2.png)
+![Karnaugh Map](../../assets/math/Kmap2.png)
 
 Utilizzando la proprietà distributiva dell'algebra booleana, è possibile semplificare la funzione
 
@@ -649,13 +649,13 @@ F = C<sub>IN</sub>\*(A+B) + A*B, cioè
 
 C<sub>OUT</sub> = C<sub>IN</sub>\*(A+B) + A*B
 
-Avendo a disposizione l'Adder a due bit visto in precedenza, è possibile riutilizzarlo in scala per semplificare la costruzione di un Adder migliorato in grado di realizzare somme tra word in ingresso di lunghezza ad esempio di 4 bit, 8 bit e così via?
+Avendo a disposizione l'Adder a due bit visto in precedenza, è possibile riutilizzarlo in scala per semplificare la costruzione di un Adder migliorato in grado di realizzare somme tra word di lunghezza ad esempio di 4 bit, 8 bit e così via?
 
-Ogni Adder mette a disposizione una porta XOR e una porta AND.
+Abbiamo chiarito che ogni Half Adder mette a disposizione una porta XOR e una porta AND. Abbiamo anche detto che per realizzare la somma Q è necessaria una porta XOR a tre ingressi, ma è dimostrabile che una cascata di due porte XOR a due ingressi realizza lo stesso risultato. Ipotizzando di avere due Half Adder, è possibile ottenere il risultato Q sfruttando le due porte XOR disponibili:
 
-Abbiamo detto che per realizzare la somma Q è necessaria una porta XOR a tre ingressi, ma è dimostrabile che una cascata di due porte XOR a due ingressi realizza lo stesso risultato. Ipotizzando di avere due Adder, posso ottenere il risultato Q sfruttando le XOR disponibili:
+![Due Half Adder](../../assets/math/full-adder-1.png){:width="100%"}
 
-![Adder](../../assets/math/full-adder-1.png){:width="100%"}
+*Due Half Adder.*
 
 Per realizzare C<sub>OUT</sub> dobbiamo invece implementare la funzione F = C<sub>IN</sub>\*(A+B) + A\*B.
 
@@ -678,16 +678,23 @@ C<sub>OUT</sub> = C<sub>IN</sub>\*(A⊕B) + A\*B
 | 1 | 1 | 0              |  1  |  0   |  1  | 0 | <center>0             |  <center>1                             | <center>0             | <center>1                              |
 | 1 | 1 | 1              |  1  |  0   |  1  | 1 | <center>1             |  <center>1                             | <center>0             | <center>1                              |
 
-Come si può vedere dalla truth table, l'output della colonna **C<sub>IN</sub>\*(A+B) + A\*B** è uguale a quello della colonna **C<sub>IN</sub>\*(A⊕B) + A\*B**, pertanto, possiamo utilizzare l'Adder con porta XOR per completare il nostro Adder.
+Come si può vedere dalla truth table, l'output della colonna **C<sub>IN</sub>\*(A+B) + A\*B** è uguale a quello della colonna **C<sub>IN</sub>\*(A⊕B) + A\*B**, pertanto, possiamo utilizzare l'Half Adder con porta XOR per completare il nostro Adder migliorato.
 
 A questo punto, possiamo realizzare la funzione necessaria aggiungendo una semplice OR per effettuare la somma logica tra **C<sub>IN</sub>\*(A⊕B)** e tra **A\*B**.
 
+![Full Adder](../../assets/math/full-adder-2.png){:width="100%"}
 
-![Alt text](image.png)
+*Full Adder.*
 
-![Adder](../../assets/math/full-adder-2.png){:width="100%"}
+Il **Full Adder** appena creato è in grado di effettuare la somma di due termini tenendo in considerazione il Carry in ingresso e generando un Carry in uscita.
 
-DEVO ANDARE A CAPIRE QUANDO LAMERES DEFINISCE UN HALF ADDER E UN FULL ADDER
+## Ripple Carry Adder
+
+Possiamo ora creare un Multiple Bit Adder per effettuare somme di nibble, byte e, più in generale, word di qualsiasi dimensione.
+
+![Multiple Bit Adder, o Ripple Carry Adder](../../assets/math/multiple-bit-adder.png){:width="100%"}
+
+*Multiple Bit Adder, o Ripple Carry Adder.*
 
 bla bla bla
 
@@ -697,7 +704,7 @@ bla bla bla
 
 ## Link utili
 
-- <a href="https://www.righto.com/2017/03/inside-vintage-74181-alu-chip-how-it.html" target="_blank">Inside the vintage 74181 ALU chip: how it works and why it's so strange</a> di Ken Shirriff. Fondamentale per capire il perché dell'implementazione apparentemente così strana del chip.
+- <a href="https://www.youtube.com/watch?v=Fu5LfmjhEBA" target="_blank">Ripple Carry Adders</a> di Brock La Shirriff. Fondamentale per capire il perché dell'implementazione apparentemente così strana del chip.
 - La pagina delle <a href="https://tomnisbet.github.io/nqsap/docs/74181-alu-notes" target="_blank">note sul 74181</a> di Tom Nisbet.
 - <a href="https://www.youtube.com/watch?v=Fq0MIJjlGsw" target="_blank">Demo of 74LS181 (74HCT181) ALU</a> e <a href="https://www.youtube.com/watch?v=jmROTNtoUGI" target="_blank">Comparator Functions of 74LS181 (74HCT181) ALU</a>: due ottimi video di David Courtney.
 - Il <a href="https://www.atarimania.com/documents/6502%20(65xx)%20Microprocessor%20Instant%20Reference%20Card.pdf" target="_blank">compendio della Micro Logic</a>, dal quale è tratta l'immagine sulle modalità di [scorrimento e rotazione](#il-registro-h) del 6502.
