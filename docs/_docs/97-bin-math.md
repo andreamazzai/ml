@@ -584,39 +584,37 @@ C                               1
 A           0+     0+     1+     1+
 B           0=     1=     0=     1=
           ----   ----   ----   ----
-Q           0      1      1     10 
+Q           0      1      1      0 
 ~~~
 
-Nella quarta colonna notiamo che per mostrare il risultato della somma di due bit entrambi a 1 sono necessarie due posizioni, in quanto vi è un riporto.
+Nella quarta ipotesi notiamo che il risultato della somma di due bit entrambi a 1 genera un riporto, cioè un Carry. Scrivendo la truth table, nella quale C<sub>OUT</sub> identifica il Carry generato dalla somma dei bit A e B, otteniamo:
 
-Scrivendo la truth table, abbiamo:
+| A | B | **Q** | C<sub>OUT</sub> |
+| - | - | -     | -               |
+| 0 | 0 | 0     | 0               |
+| 0 | 1 | 1     | 0               |
+| 1 | 0 | 1     | 0               |
+| 1 | 1 | 0     | 1               |
 
-| A | B | **Q** | C |
-| - | - | - | - |
-| 0 | 0 | 0 | 0 |
-| 0 | 1 | 1 | 0 |
-| 1 | 0 | 1 | 0 |
-| 1 | 1 | 0 | 1 |
-
-Il risultato Q della somma dei due bit A e B si può ottenere con una porta logica XOR, mentre il Carry C è chiaramente ottenibile con una porta AND. Ecco come si potrebbe costruire il circuito equivalente:
+Il risultato Q della somma dei due bit A e B si può ottenere con una porta logica XOR, mentre il Carry C<sub>OUT</sub> è chiaramente ottenibile con una porta AND. Ecco come si potrebbe costruire il circuito equivalente:
 
 ![Adder](../../assets/math/half-adder.png){:width="50%"}
 
 Quando attivo, il Carry evidenzia una situazione di overflow (non nel senso spiegato prima), cioè di risultato che "non ci sta".
 
-Ipotizziamo ora di dover effettuare una somma a più bit, ad esempio di due nibble (4 bit):
+Ipotizziamo ora di dover effettuare una somma a più bit, ad esempio di due nibble (4 bit) o di due byte:
 
 ~~~text
-C         1 11
-A          1011+
-B          1001=
-          ------
-Q         10100   
+C       1 11           1  1
+A        1011+        10110011+
+B        1001=        00101010=
+        ------       ----------
+Q       10100         11011101
 ~~~
 
 Si nota che per svolgere l'intera operazione sono necessari 3 valori in input: A, B e il Carry eventualmente derivante dalla precedente colonna.
 
-Scrivendo la truth table per sommare i tre bit, chiameremo C<sub>IN</sub> il carry derivante dalla precedente colonna e, similarmente, chiameremo C<sub>OUT</sub> il carry risultante dalla somma di A, B e C<sub>IN</sub>:
+Scrivendo la truth table per sommare i tre bit di ogni colonna chiameremo C<sub>IN</sub> il carry derivante dalla precedente colonna e, similarmente, chiameremo C<sub>OUT</sub> il carry risultante dalla somma di ogni tripletta di A, B e C<sub>IN</sub>:
 
 | A | B | C<sub>IN</sub> | Q | C<sub>OUT</sub> |
 | - | - | -              | - | -               |
@@ -645,11 +643,11 @@ C<sub>OUT</sub> produce invece (C corrisponde a C<sub>IN</sub>):
 
 F = C<sub>IN</sub>\*(A+B) + A*B
 
-Avendo a disposizione l'adder di due bit visto in precedenza, è possibile riutilizzarlo in scala per semplificare la costruzione di un adder che permetta di realizzare somme tra word in ingresso di lunghezza ad esempio di 4 bit, 8 bit e così via?
+Avendo a disposizione l'Adder a due bit visto in precedenza, è possibile riutilizzarlo in scala per semplificare la costruzione di un Adder che permetta di realizzare somme tra word in ingresso di lunghezza ad esempio di 4 bit, 8 bit e così via?
 
-L'adder mette a disposizione una porta XOR e una porta AND.
+L'Adder mette a disposizione una porta XOR e una porta AND.
 
-Abbiamo detto che per realizzare la somma Q è necessaria una porta XOR a tre ingressi, ma è dimostrabile che due porte XOR a due ingressi in cascata realizzano lo stesso risultato. Ipotizzando di avere due adder, posso ottenere il risultato Q sfruttando le XOR disponibili:
+Abbiamo detto che per realizzare la somma Q è necessaria una porta XOR a tre ingressi, ma è dimostrabile che due porte XOR a due ingressi in cascata realizzano lo stesso risultato. Ipotizzando di avere due Adder, posso ottenere il risultato Q sfruttando le XOR disponibili:
 
 ![Adder](../../assets/math/full-adder-1.png){:width="100%"}
 
