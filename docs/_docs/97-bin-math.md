@@ -568,8 +568,15 @@ Questo corrisponde esattamente a quanto indicato nella sezione [Un esempio prati
 
 Per finire, da quanto visto fino ad ora possiamo dedurre un'altra regola: la somma di due Signed di segno opposto e la sottrazione di due Signed dello stesso segno non possono causare Overflow.
 
-## Adder e Carry
+## Gli Adder
 
 Un Adder è un'unità logica basilare che permette di eseguire somme e, opportunamente configurato, sottrazioni.
 
 È per questo motivo che una XOR all'ingresso B permette di negare gli input e, aggiungendo un carry in ingresso, diventa facile effettuare una sottrazione, così come esposto in precedenza parlando del complemento a 2.
+
+## Link utili
+
+- <a href="https://www.righto.com/2017/03/inside-vintage-74181-alu-chip-how-it.html" target="_blank">Inside the vintage 74181 ALU chip: how it works and why it's so strange</a> di Ken Shirriff. Fondamentale per capire il perché dell'implementazione apparentemente così strana del chip.
+- La pagina delle <a href="https://tomnisbet.github.io/nqsap/docs/74181-alu-notes" target="_blank">note sul 74181</a> di Tom Nisbet.
+- <a href="https://www.youtube.com/watch?v=Fq0MIJjlGsw" target="_blank">Demo of 74LS181 (74HCT181) ALU</a> e <a href="https://www.youtube.com/watch?v=jmROTNtoUGI" target="_blank">Comparator Functions of 74LS181 (74HCT181) ALU</a>: due ottimi video di David Courtney.
+- Il <a href="https://www.atarimania.com/documents/6502%20(65xx)%20Microprocessor%20Instant%20Reference%20Card.pdf" target="_blank">compendio della Micro Logic</a>, dal quale è tratta l'immagine sulle modalità di [scorrimento e rotazione](#il-registro-h) del 6502.
