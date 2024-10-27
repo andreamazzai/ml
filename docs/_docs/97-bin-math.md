@@ -600,7 +600,7 @@ Il risultato Q della somma dei due bit A e B si può ottenere con una porta logi
 
 ![Adder](../../assets/math/half-adder.png){:width="50%"}
 
-Quando attivo, il Carry evidenzia una situazione di overflow (non nel senso spiegato prima), cioè di risultato che "non ci sta".
+Quando attivo, il Carry evidenzia una situazione di overflow, cioè di risultato dell'operazione che eccede la capacità di rappresentazione dei bit disponibili.
 
 Ipotizziamo ora di dover effettuare una somma a più bit, ad esempio di due nibble (4 bit) o di due byte:
 
@@ -627,19 +627,19 @@ Scrivendo la truth table per sommare i tre bit di ogni colonna, assegneremo il n
 | 1 | 1 | 0              | 0 | 1               |
 | 1 | 1 | 1              | 1 | 1               |
 
-Anziché ricorrere alla combinazione di AND e OR (Sum of Products, esposta nel video di Brock LaMeres xxxxxxxxx), proviamo a semplificare utilizzando le mappe di Karnaugh (spiegate nel video xxxxxxx ancora di LaMeres).
+Anziché ricorrere alla combinazione di AND e OR (Sum of Products, esposta nel video di Brock LaMeres <a href="https://www.youtube.com/watch?v=04qG6HhC0wM" target="_blank">Combinational Logic Synthesis: SOP Forms & Minterms</a>), proviamo a semplificare utilizzando le mappe di Karnaugh (spiegate nel video <a href="https://www.youtube.com/watch?v=Y18RPvtS9AU" target="_blank">Combinational Logic Minimization: K-map Formation</a>, ancora di LaMeres).
 
 L'analisi di Q produce la seguente mappa (C corrisponde a C<sub>IN</sub>):
 
 ![Adder](../../assets/math/Kmap1.png)
 
-Pur non potendo semplificare la truth table perché non è possibile creare gruppi di 1, si può notare il pattern risultante "a scacchiera", che indica che il circuito logico equivalente è una porta XOR con tre ingressi (si veda il video yyyyyy, sempre di Lameres).
+Pur non potendo semplificare la truth table perché non è possibile creare gruppi di 1, si può notare il pattern risultante "a scacchiera", che indica che il circuito logico equivalente è una porta XOR con tre ingressi (si veda il video <a href="https://www.youtube.com/watch?v=3SwLBw7RYiI" target="_blank">Combinational Logic Minimization: XORs</a>, sempre di Lameres).
 
 L'analisi di C<sub>OUT</sub> produce invece (C corrisponde a C<sub>IN</sub>):
 
 ![Adder](../../assets/math/Kmap2.png)
 
-Utilizzando la proprietà distributiva dell'algebra booleana, è possibile semplificare la funzione 
+Utilizzando la proprietà distributiva dell'algebra booleana, è possibile semplificare la funzione
 
 F = B\*C<sub>IN</sub> + A\*C<sub>IN</sub> + A\*B
 
@@ -647,7 +647,7 @@ F = C<sub>IN</sub>\*(A+B) + A*B, cioè
 
 C<sub>OUT</sub> = C<sub>IN</sub>\*(A+B) + A*B
 
-Avendo a disposizione l'Adder a due bit visto in precedenza, è possibile riutilizzarlo in scala per semplificare la costruzione di un Adder che permetta di realizzare somme tra word in ingresso di lunghezza ad esempio di 4 bit, 8 bit e così via?
+Avendo a disposizione l'Adder a due bit visto in precedenza, è possibile riutilizzarlo in scala per semplificare la costruzione di un Adder migliorato in grado di realizzare somme tra word in ingresso di lunghezza ad esempio di 4 bit, 8 bit e così via?
 
 Ogni Adder mette a disposizione una porta XOR e una porta AND.
 
