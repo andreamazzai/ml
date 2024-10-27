@@ -645,17 +645,25 @@ F = C<sub>IN</sub>\*(A+B) + A*B
 
 Avendo a disposizione l'Adder a due bit visto in precedenza, è possibile riutilizzarlo in scala per semplificare la costruzione di un Adder che permetta di realizzare somme tra word in ingresso di lunghezza ad esempio di 4 bit, 8 bit e così via?
 
-L'Adder mette a disposizione una porta XOR e una porta AND.
+Ogni Adder mette a disposizione una porta XOR e una porta AND.
 
 Abbiamo detto che per realizzare la somma Q è necessaria una porta XOR a tre ingressi, ma è dimostrabile che due porte XOR a due ingressi in cascata realizzano lo stesso risultato. Ipotizzando di avere due Adder, posso ottenere il risultato Q sfruttando le XOR disponibili:
 
 ![Adder](../../assets/math/full-adder-1.png){:width="100%"}
-![Alt text](image.png)
-Per realizzare C<sub>OUT</sub> abbiamo invece la funzione F = C<sub>IN</sub>\*(A+B) + A\*B. Analizzandola, troviamo la somma (OR logico) tra A AND B e Carry AND (A OR B).
 
-Il risultato di A\*B è disponibile 
+Per realizzare C<sub>OUT</sub> abbiamo invece la funzione F = C<sub>IN</sub>\*(A+B) + A\*B. Analizzandola, troviamo la somma (OR logico) tra A AND B e C<sub>IN</sub> AND (A OR B).
+
+Il risultato di A\*B è disponibile sull'output della porta AND del primo Adder; il risultato di C<sub>IN</sub>\*(A+B) richiede una OR tra A e B e una successiva AND tra il risultato appena computato e C<sub>IN</sub>. Purtroppo, il secondo Adder ha disponibile una porta XOR e non una OR, tuttavia, è dimostrabile che la funzione necessaria, ma non disponibile con le porte a disposizione:
+
+A AND B e C<sub>IN</sub> AND (A OR B)
+
+è equivalente alla seguente funzione, disponibile con le porte a disposizione:
+
+A AND B e C<sub>IN</sub> AND (A XOR B)
 
 
+
+DEVO ANDARE A CAPIRE QUANDO LAMERES DEFINISCE UN HALF ADDER E UN FULL ADDER
 
 bla bla bla
 
