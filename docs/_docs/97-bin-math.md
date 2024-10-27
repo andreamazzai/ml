@@ -54,7 +54,7 @@ Ecco una serie di video su YouTube:
 
       Esempio: per invertire il numero 01010100 (84 decimale) si lasciano invariati i primi 3 bit partendo da destra (01010**100**) e si invertono poi tutti gli altri da **01010**100 a **10101**100, ottenendo come risultato finale 10101100 (-84).
 
-6. **Twos Complement Arithmetic** di Brock LaMeres - link
+6. **Two's Complement Arithmetic** di Brock LaMeres - <a href="https://www.youtube.com/watch?v=cbVTaQFPwik&list=PL643xA3Ie_Et2uM4xu1yFk-A5ZQQ8gQ5e&index=10&pp=iAQB" target="_blank">link</a>: a dispetto della qualità audio non perfetta (ma la pronuncia rimane ottima e facilmente comprensibile), l'esposizione dell'argomento è eccellente.
 
 E qualche pagina da visitare:
 
@@ -323,7 +323,7 @@ La truth table **(A7 == B7') AND (A7 <> Q7)** del primo caso si tradurrebbe nell
 
 ![Primo metodo](../../assets/math/overflow-detector-xor-not-and.png)
 
-Per dovere di cronaca 😊 riporto lo schema di due registri A e B e di un generico Adder che avevo disegnato per comprendere meglio le addizioni; si noti la circuiteria preposta ad individuare situazioni di Overflow.
+Per dovere di cronaca 😊 riporto lo schema di due registri A e B e di un generico Half Adder che avevo disegnato per comprendere meglio le addizioni; si noti la circuiteria preposta ad individuare situazioni di Overflow.
 
 [![Adder su carta](../../assets/math/adder.png "Adder su carta"){:width="50%"}](../../assets/math/adder.png){:width="75%"}
 
@@ -567,3 +567,9 @@ Questo corrisponde esattamente a quanto indicato nella sezione [Un esempio prati
 ![Connessioni in uscita dall'Instruction Register dell'NQSAP.](../../assets/math/IR-to-74151.png){:width="66%"}
 
 Per finire, da quanto visto fino ad ora possiamo dedurre un'altra regola: la somma di due Signed di segno opposto e la sottrazione di due Signed dello stesso segno non possono causare Overflow.
+
+## Adder e Carry
+
+Un Adder è un'unità logica basilare che permette di eseguire somme e, opportunamente configurato, sottrazioni.
+
+È per questo motivo che una XOR all'ingresso B permette di negare gli input e, aggiungendo un carry in ingresso, diventa facile effettuare una sottrazione, così come esposto in precedenza parlando del complemento a 2.
