@@ -5,7 +5,7 @@ excerpt: "Aritmetica binaria"
 ---
 ## WORK IN PROGRESS - WORK IN PROGRESS - WORK IN PROGRESS
 
-<small>[Concetti importanti](#concetti-importanti) - [Fonti](#fonti) - [Numeri Unsigned e numeri Signed](#numeri-unsigned-e-numeri-signed) - [Approfondimento Overflow](#approfondimento-overflow) - [L'Overflow e l'hardware](#loverflow-e-lhardware) - [Metodi di identificazione dell'Overflow](#metodi-di-identificazione-delloverflow) - [Semplificazione con 74LS151](#semplificazione-con-74ls151) - [Verifica addizioni e sottrazioni con 74LS151](#verifica-addizioni-e-sottrazioni-con-74ls151)</small>
+<small>[Concetti importanti](#concetti-importanti) - [Fonti](#fonti) - [Numeri Unsigned e numeri Signed](#numeri-unsigned-e-numeri-signed) - [Approfondimento Overflow](#approfondimento-overflow) - [L'Overflow e l'hardware](#loverflow-e-lhardware) - [Metodi di identificazione dell'Overflow](#metodi-di-identificazione-delloverflow) - [Semplificazione con 74LS151](#semplificazione-con-74ls151) - [Verifica addizioni e sottrazioni con 74LS151](#verifica-addizioni-e-sottrazioni-con-74ls151) - [Gli Adder](#gli-adder)</small> - [Link utili](#link-utili)</small>
 
 ## Concetti importanti
 
@@ -612,45 +612,42 @@ B          1001=
 Q         10100   
 ~~~
 
-Per svolgere l'operazione sono necessari 3 valori in input: A, B e il Carry eventualmente derivante dalla precedente colonna.
+Si nota che per svolgere l'operazione sono necessari 3 valori in input: A, B e il Carry eventualmente derivante dalla precedente colonna.
 
-Scrivendo la truth table per sommare tre cifre, otteniamo:
+Scrivendo la truth table per sommare i tre bit, chiameremo C<sub>IN</sub> il carry derivante dalla precedente colonna e, similarmente, chiameremo C<sub>OUT</sub> il carry risultante dalla somma di A, B e C<sub>IN</sub>:
 
-| A | B | C \|| Q | C |
-| - | - | - | - | - |
-| 0 | 0 | 0 \|| 0 | 0 |
-| 0 | 0 | 1 | 1 | 0 |
-| 0 | 1 | 0 | 1 | 0 |
-| 0 | 1 | 1 | 0 | 1 |
-| 1 | 0 | 0 | 0 | 1 |
-| 1 | 0 | 1 | 0 | 1 |
-| 1 | 1 | 0 | 0 | 1 |
-| 1 | 1 | 1 | 0 | 1 |
+| A | B | C<sub>IN</sub> | Q | C<sub>OUT</sub> |
+| - | - | -              | - | -               |
+| 0 | 0 | 0              | 0 | 0               |
+| 0 | 0 | 1              | 1 | 0               |
+| 0 | 1 | 0              | 1 | 0               |
+| 0 | 1 | 1              | 0 | 1               |
+| 1 | 0 | 0              | 1 | 0               |
+| 1 | 0 | 1              | 0 | 1               |
+| 1 | 1 | 0              | 0 | 1               |
+| 1 | 1 | 1              | 1 | 1               |
 
+Anziché ricorrere alla combinazione di AND e OR (Sum of Products, esposta nel video di Brock LaMeres xxxxxxxxx), proviamo a semplificare utilizzando le mappe di Karnaugh (spiegate nel video xxxxxxx ancora di LaMeres).
 
+Q produce la seguente mappa (C corrisponde a C<sub>IN</sub>):
 
+![Adder](../../assets/math/Kmap1.png)
 
+Pur non potendo semplificare la truth table perché non è possibile creare gruppi di 1, si può notare il pattern risultante, che indica che il circuito logico equivalente è una porta XOR con tre ingressi (si veda il video yyyyyy, sempre di Lameres).
 
+C<sub>OUT</sub> produce (C corrisponde a C<sub>IN</sub>):
 
+![Adder](../../assets/math/Kmap2.png)
 
+È possibile semplificare la funzione risultante F = B\*C<sub>IN</sub> + A\*C<sub>IN</sub> + A\*B:
 
+F = C<sub>IN</sub>\*(A+B) + A*B
 
+Avendo a disposizione l'adder di due bit visto in precedenza, è possibile riutilizzarlo in scala per semplificare la costruzione di un adder che permetta di realizzare somme tra word in ingresso di lunghezza ad esempio di 4 bit, 8 bit e così via?
 
+L'adder mette a disposizione una porta XOR e una porta AND.
 
-
-
-
-
-~~~text
-
-Ipotesi     1a     2a     3a     4a
-C                               1   
-A           0+     0+     1+     1+
-B           0=     1=     0=     1=
-          ----   ----   ----   ----
-Q           0      1      1     10 
-~~~
-
+Abbiamo detto che per realizzare la somma Q è necessaria una porta XOR a tre ingressi, ma è dimostrabile che due porte XOR a due ingressi in cascata realizzano lo stesso risultato. Ipotizzando di avere due adder, posso ottenere il risultato Q sfruttando le XOR disponibili:
 
 
 
