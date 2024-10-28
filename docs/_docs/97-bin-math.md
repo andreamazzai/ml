@@ -680,7 +680,7 @@ C<sub>OUT</sub> = C<sub>IN</sub>\*(A⊕B) + A\*B
 
 Come si può vedere dalla truth table, l'output della colonna **C<sub>IN</sub>\*(A+B) + A\*B** è uguale a quello della colonna **C<sub>IN</sub>\*(A⊕B) + A\*B**, pertanto, possiamo utilizzare l'Half Adder con porta XOR per completare il nostro Adder migliorato.
 
-A questo punto, possiamo realizzare la funzione necessaria aggiungendo una semplice OR per effettuare la somma logica tra **C<sub>IN</sub>\*(A⊕B)** e tra **A\*B**.
+A questo punto, possiamo realizzare la funzione necessaria aggiungendo una semplice OR per effettuare la somma logica tra **C<sub>IN</sub>\*(A⊕B)** e **A\*B**.
 
 ![Full Adder](../../assets/math/full-adder-2.png){:width="100%"}
 
@@ -696,7 +696,7 @@ Avendo a disposizione i Full Adder, a loro volta costituiti da due Half Adder e 
 
 *Multiple Bit Adder, o Ripple Carry Adder, a 4 bit.*
 
-Il C<sub>IN</sub> dell'Adder deve essere mantenuto allo stato LO, così il risultato dell'operazione dipenderà esclusivamente dagli input A e B.
+Il Multiple Bit Adder segue l'ordine di presentazione dei numeri binari, con il bit più significativo a sinistra e quello meno significativo a destra. Il C<sub>IN</sub> deve essere mantenuto allo stato LO, così il risultato dell'operazione dipenderà esclusivamente dagli input presenti in A0-A3 e B0-B3.
 
 Il Multiple Bit Adder creato ha un nome univoco: Ripple Carry Adder, perché il Carry "ondeggia" tra i Full Adder. Una considerazione da non tralasciare è, infatti, quella relativa al timing: come per ogni circuito logico, possiamo prelevare i segnali in output solo una volta che l'output col ritardo maggiore si è stabilizzato.
 
@@ -710,9 +710,9 @@ In conseguenza di questo, la frequenza operativa massima del circuito non potrà
 
 ### Carry Look-Ahead Adder
 
-Un Carry Look-Ahead Adder tenta di indirizzare il problema del ritardo introdotto dalla lunga catena di livelli presente in un Ripple Carry Adder. Se in Adder a 4 bit il ritardo può essere modesto, in un Adder a 16 o più bit può introdurre un rallentamento significativo della frequenza operativa.
+Un Adder di tipo Carry Look-Ahead tenta di indirizzare il problema del ritardo introdotto dalla lunga catena di livelli presente in un Ripple Carry Adder. Se in Adder a 4 bit il ritardo può essere modesto, un Adder a 16 o più bit può introdurre un rallentamento significativo della frequenza operativa.
 
-Ad oggi, ogni Full Adder dipende dal risultato dello stage precedente, con l'ultimo Full Adder che dipende da tutti gli stage precedenti. Si tratta di un compromesso : aggiungi le porte logiche e complicare il circuito per renderlo più veloce.
+Ad oggi, ogni Full Adder dipende dal risultato dello stage precedente, con l'ultimo Full Adder che dipende da tutti gli stage precedenti. Si tratta di un compromesso: aggiungi le porte logiche e complicare il circuito per renderlo più veloce.
 
 Per migliorare le prestazioni di un Ripple Carrty Adder, dobbiamo trovare un metodo per fare in modo che gli Full Adder sia indipendente dagli altri, cioè che il Carry sia computato localmente e non sia dipendente dagli altri Adder che lo precedono.
 
