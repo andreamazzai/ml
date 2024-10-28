@@ -95,6 +95,7 @@ Tra le cose apprese:
 
 ### Note
 
+- Il range di frequenza del computer BEAM varia da circa un Hertz a circa 2 KHz. Non sono state testate frequenze superiori, poiché l'obiettivo principale non era tanto quello di ottenere prestazioni elevate, quanto piuttosto di acquisire conoscenze.
 - Gli schemi KiCad non includono la gran parte dei LED singoli: sono indicati solamente i LED del modulo Clock e i LED che segnalano le modalità Program Mode / Run Mode nel modulo RAM / MAR. Sono invece rappresentate quasi tutte le LED Bar.
 
 ## Crediti e ringraziamenti

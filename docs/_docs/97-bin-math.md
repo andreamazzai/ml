@@ -572,9 +572,9 @@ Per finire, da quanto visto fino ad ora possiamo dedurre un'altra regola: la som
 
 Come si effettuano le addizioni? E le sottrazioni?
 
-Un Adder è un unità logica basilare che permette di eseguire somme e, opportunamente configurato, sottrazioni.
+Un Adder è un unità logica basilare che permette di eseguire somme e, opportunamente configurata, sottrazioni.
 
-## Le somme con gli Adder
+### Le somme con gli Adder
 
 Quali sono i possibili casi di somme tra due bit A e B?
 
@@ -688,21 +688,82 @@ A questo punto, possiamo realizzare la funzione necessaria aggiungendo una sempl
 
 Il **Full Adder** appena creato è in grado di effettuare la somma di due termini tenendo in considerazione il Carry in ingresso e generando un Carry in uscita.
 
-## Ripple Carry Adder
+### Ripple Carry Adder
 
 Avendo a disposizione i Full Adder, a loro volta costituiti da due Half Adder e una porta OR, possiamo ora creare un Multiple Bit Adder per effettuare somme di nibble, byte e, più in generale, word di qualsiasi dimensione. Si noterà che questo paragrafo permette di rispondere positivamente al quesito che ci interrogava sulla possibilità di implementare un circuito complesso a partire da una logica di base semplice e ripetibile.
 
 ![Multiple Bit Adder, o Ripple Carry Adder](../../assets/math/multiple-bit-adder.png){:width="100%"}
 
-*Multiple Bit Adder, o Ripple Carry Adder.*
+*Multiple Bit Adder, o Ripple Carry Adder, a 4 bit.*
 
-Il Multiple Bit Adder creato ha un nome univoco: Ripple Carry Adder, perché il Carry "ondeggia" tra i Full Adder. Una considerazione da non tralasciare è quella relativa al timing di un Ripple Carry Adder: come per ogni circuito logico, possiamo prelevare i segnali in output solo una volta che l'output col ritardo maggiore si è stabilizzato.
+Il C<sub>IN</sub> dell'Adder deve essere mantenuto allo stato LO, così il risultato dell'operazione dipenderà esclusivamente dagli input A e B.
 
-L'immagine seguente, tratta dal video RCA Timing citato nei link a fondo pagina, aiuta a visualizzare come il segnale C<sub>OUT</sub> dipenda da ben 9 livelli logici.
+Il Multiple Bit Adder creato ha un nome univoco: Ripple Carry Adder, perché il Carry "ondeggia" tra i Full Adder. Una considerazione da non tralasciare è, infatti, quella relativa al timing: come per ogni circuito logico, possiamo prelevare i segnali in output solo una volta che l'output col ritardo maggiore si è stabilizzato.
+
+L'immagine seguente, tratta dal video *RCA Timing* citato nei link a fondo pagina, aiuta a visualizzare come il segnale C<sub>OUT</sub> dipenda da ben 9 livelli (si deve considerare il caso peggiore).
 
 ![Timing di un Ripple Carry Adder](../../assets/math/rca-timing.png){:width="100%"}
 
-In conseguenza di questo, la frequenza operativa massima del circuito non potrà essere superiore all'inverso della somma dei ritardi introdotti dai livelli logici 1-9.
+*Timing di un Ripple Carry Adder.*
+
+In conseguenza di questo, la frequenza operativa massima del circuito non potrà essere superiore all'inverso della somma dei ritardi introdotti dai livelli 1-9.
+
+### Carry Look-Ahead Adder
+
+Un Carry Look-Ahead Adder tenta di indirizzare il problema del ritardo introdotto dalla lunga catena di livelli presente in un Ripple Carry Adder. Se in Adder a 4 bit il ritardo può essere modesto, in un Adder a 16 o più bit può introdurre un rallentamento significativo della frequenza operativa.
+
+Ad oggi, ogni Full Adder dipende dal risultato dello stage precedente, con l'ultimo Full Adder che dipende da tutti gli stage precedenti. Si tratta di un compromesso : aggiungi le porte logiche e complicare il circuito per renderlo più veloce.
+
+Per migliorare le prestazioni di un Ripple Carrty Adder, dobbiamo trovare un metodo per fare in modo che gli Full Adder sia indipendente dagli altri, cioè che il Carry sia computato localmente e non sia dipendente dagli altri Adder che lo precedono.
+
+
+creare for la sola logica del carry che dipenda solo da A B e C0. è stat afatta una nozione che si chiama Generate e Propagate.
+
+la circuiteria Look Ahead considera se lo stage precedente introduce un carry considerando due condizioni:
+in una truth table A B Cin, si Genera un COUT solo se A*B = 1
+si Propaga un carry solo se Cin è uno e A+B = 1
+per ogni stage, COUT = g + P * CIN
+= A*B + (A+B)\*CIN che abbiamo già visto perché è il COUT di ogni Full Adder
+
+gi = Ai*Bi
+pi = Ai+ Bi
+Ci+1 = gi + pi * Ci
+C1 = g0 + p0 * C0 che è uguale a A*B + (A+B)\*CIN
+C2 = g1 + p1 * C1 
+C2 = g1 + p1 * (g0 + p0 * C0) che significa che non dipendiamo più dal risultato dell'Adder precedente, ma solo dai suoi input.
+C2 = g1 + p1 * g0 + p1 * p0 * C0
+
+C3 = g2 + p2 * C2 
+C3 = g2 + p2 * (g1 + p1 * g0 + p1 * p0 * C0)
+C3 = g2 + p2 * g1 + p2 * p1 * g0 + p2 * p1 * p0 * C0
+notare che l'espressione tiene conto solo di g2, g1, g0 e p2, p1 e p0, cioè delle AND e degli OR degli stage precedenti
+
+C4 = g3 + p3 * C3 
+C4 = g3 + p3 * (g2 + p2 * (g1 + p1 * g0 + p1 * p0 * C0))
+C4 = g3 + p3 * (g2 + p2 * g1 + p2 * p1 * g0 + p2 * p1 * p0 * C0)
+C4 = g3 + p3 * g2 + p3 * p2 * g1 + p3 * p2 * p1 * g0 + p3 * p2 * p1 * p0 * C0
+notare che l'espressione tiene conto solo di g2, g1, g0 e p2, p1 e p0, cioè delle AND e degli OR degli stage precedenti
+
+A questo punto realizzo un Modified Full Adder.
+Q è sempre A XOR B XOR CIN
+Ma aggiungo anche p0 (OR) e g0 (AND)
+Ora metto la logica del Carry, che abbiamo detto essere 
+  C1 = g0 + p0 * C0, dunque C1 ha un livello 3 (il percorso di C0 attravera una XOR, una AND e una OR; il percorso di p0 attravera una OR, una AND e una OR) -- in effetti a questo punto siamo come nel RCA, il cui C1 veniva generato a livello 3.
+
+adndando però al prossimo Modified Adder, la somma è computata al 4° livello, mentre il Carry è al 3°.
+a proseguendo, anche la prossima somma è al 4° livello e il Carry sempre al 3°.
+e infine anche la ultima  somma è al 4° livello e il Carry sempre al 3°.
+
+dunque aggiungo molta logica, ma... ho creat un numero fisso di livello di logica indipendentemente dal numero di bit!
+il lavoro per creare il carry è molto elevato... ma ho le prestazioni massime.
+un problema potrebbe essere il fan-in! a un certo dovrò spacchettare la OR che raccoglie le AND (ma perché non parla delle AND da spacchettare?)
+in effetti dunque ogni tot bit il livello salirà di due (Ma allora forse in questo momento sta tenendo in conto anche le porte AND?), Ma non cresce sicuramente in maniera così veloce come con il RCA.
+
+
+
+ 
+
+  
 
 ## Le sottrazioni con gli Adder
 
