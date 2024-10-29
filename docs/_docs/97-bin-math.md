@@ -696,7 +696,7 @@ Avendo a disposizione i Full Adder, a loro volta costituiti da due Half Adder e 
 
 *Multiple Bit Adder, o Ripple Carry Adder, a 4 bit.*
 
-Il Multiple Bit Adder segue l'ordine di presentazione dei numeri binari, con il bit più significativo a sinistra e quello meno significativo a destra. Il C<sub>IN</sub> deve essere mantenuto allo stato LO, così il risultato dell'operazione dipenderà esclusivamente dagli input presenti in A0-A3 e B0-B3.
+Il Multiple Bit Adder in figura segue l'ordine di presentazione dei numeri binari, con il bit più significativo a sinistra e quello meno significativo a destra. Il C<sub>IN</sub> deve essere mantenuto allo stato LO, così il risultato dell'operazione dipenderà esclusivamente dagli input presenti in A0-A3 e B0-B3.
 
 Il Multiple Bit Adder creato ha un nome univoco: Ripple Carry Adder, perché il Carry "ondeggia" tra i Full Adder. Una considerazione da non tralasciare è, infatti, quella relativa al timing: come per ogni circuito logico, possiamo prelevare i segnali in output solo una volta che l'output col ritardo maggiore si è stabilizzato.
 
@@ -710,11 +710,13 @@ In conseguenza di questo, la frequenza operativa massima del circuito non potrà
 
 ### Carry Look-Ahead Adder
 
-Un Adder di tipo Carry Look-Ahead tenta di indirizzare il problema del ritardo introdotto dalla lunga catena di livelli presente in un Ripple Carry Adder. Se in Adder a 4 bit il ritardo può essere modesto, un Adder a 16 o più bit può introdurre un rallentamento significativo della frequenza operativa.
+Un Adder di tipo Carry Look-Ahead tenta di indirizzare il problema del ritardo introdotto dalla lunga catena di livelli presente in un Ripple Carry Adder. Se in Adder a 4 bit il ritardo può essere modesto, un Adder a 16 o più bit può introdurre una riduzione significativa della frequenza massima di lavoro.
+
+-- IN SEGUITO -- TESTO DA COMPLETARE --
 
 Ad oggi, ogni Full Adder dipende dal risultato dello stage precedente, con l'ultimo Full Adder che dipende da tutti gli stage precedenti. Si tratta di un compromesso: aggiungi le porte logiche e complicare il circuito per renderlo più veloce.
 
-Per migliorare le prestazioni di un Ripple Carrty Adder, dobbiamo trovare un metodo per fare in modo che gli Full Adder sia indipendente dagli altri, cioè che il Carry sia computato localmente e non sia dipendente dagli altri Adder che lo precedono.
+Per migliorare le prestazioni di un Ripple Carry Adder, dobbiamo trovare un metodo per fare in modo che ogni Full Adder sia indipendente dagli altri, cioè che il Carry sia computato localmente e non sia dipendente dagli altri Adder che lo precedono.
 
 
 creare for la sola logica del carry che dipenda solo da A B e C0. è stat afatta una nozione che si chiama Generate e Propagate.
@@ -758,12 +760,6 @@ dunque aggiungo molta logica, ma... ho creat un numero fisso di livello di logic
 il lavoro per creare il carry è molto elevato... ma ho le prestazioni massime.
 un problema potrebbe essere il fan-in! a un certo dovrò spacchettare la OR che raccoglie le AND (ma perché non parla delle AND da spacchettare?)
 in effetti dunque ogni tot bit il livello salirà di due (Ma allora forse in questo momento sta tenendo in conto anche le porte AND?), Ma non cresce sicuramente in maniera così veloce come con il RCA.
-
-
-
- 
-
-  
 
 ## Le sottrazioni con gli Adder
 
