@@ -598,7 +598,7 @@ Nella quarta ipotesi notiamo che il risultato della somma di due bit entrambi a 
 
 Il risultato Q della somma dei due bit A e B si può ottenere con una porta logica XOR, mentre il Carry C<sub>OUT</sub> è chiaramente ottenibile con una porta AND. Ecco come si potrebbe costruire il circuito equivalente:
 
-![Half Adder](../../assets/math/half-adder.png){:width="50%"}
+![Half Adder](../../assets/math/half-adder.png){:width="45%"}
 
 *Half Adder.*
 
@@ -633,13 +633,13 @@ Anziché ricorrere alla combinazione di AND e OR (Sum of Products, esposta nel v
 
 L'analisi di Q produce la seguente mappa (C corrisponde a C<sub>IN</sub>):
 
-![Karnaugh Map](../../assets/math/Kmap1.png){:width="25%"}
+![Karnaugh Map](../../assets/math/Kmap1.png){:width="40%"}
 
 Pur non potendo semplificare la truth table perché non è possibile creare gruppi di 1, si può notare il pattern "a scacchiera", che indica che il circuito logico equivalente è una porta XOR con tre ingressi (si veda il video <a href="https://www.youtube.com/watch?v=3SwLBw7RYiI" target="_blank">Combinational Logic Minimization: XORs</a>, sempre di Lameres).
 
 L'analisi di C<sub>OUT</sub> produce quest'altra mappa (C corrisponde a C<sub>IN</sub>):
 
-![Karnaugh Map](../../assets/math/Kmap2.png){:width="25%"}
+![Karnaugh Map](../../assets/math/Kmap2.png){:width="40%"}
 
 Utilizzando la proprietà distributiva dell'algebra booleana, è possibile semplificare la funzione
 
@@ -682,7 +682,7 @@ Come si può vedere dalla truth table, l'output della colonna **C<sub>IN</sub>\*
 
 A questo punto, possiamo realizzare la funzione necessaria aggiungendo una semplice OR per effettuare la somma logica tra **C<sub>IN</sub>\*(A⊕B)** e **A\*B**.
 
-![Full Adder](../../assets/math/full-adder-2.png){:width="100%"}
+![Full Adder](../../assets/math/full-adder-2.png){:width="90%"}
 
 *Full Adder.*
 
