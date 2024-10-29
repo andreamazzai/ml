@@ -633,13 +633,13 @@ Anziché ricorrere alla combinazione di AND e OR (Sum of Products, esposta nel v
 
 L'analisi di Q produce la seguente mappa (C corrisponde a C<sub>IN</sub>):
 
-![Karnaugh Map](../../assets/math/Kmap1.png)
+![Karnaugh Map](../../assets/math/Kmap1.png){:width="25%"}
 
 Pur non potendo semplificare la truth table perché non è possibile creare gruppi di 1, si può notare il pattern "a scacchiera", che indica che il circuito logico equivalente è una porta XOR con tre ingressi (si veda il video <a href="https://www.youtube.com/watch?v=3SwLBw7RYiI" target="_blank">Combinational Logic Minimization: XORs</a>, sempre di Lameres).
 
-L'analisi di C<sub>OUT</sub> produce invece (C corrisponde a C<sub>IN</sub>):
+L'analisi di C<sub>OUT</sub> produce quest'altra mappa (C corrisponde a C<sub>IN</sub>):
 
-![Karnaugh Map](../../assets/math/Kmap2.png)
+![Karnaugh Map](../../assets/math/Kmap2.png){:width="25%"}
 
 Utilizzando la proprietà distributiva dell'algebra booleana, è possibile semplificare la funzione
 
@@ -651,7 +651,7 @@ C<sub>OUT</sub> = C<sub>IN</sub>\*(A+B) + A*B
 
 Avendo a disposizione l'Adder a due bit visto in precedenza, è possibile riutilizzarlo in scala per semplificare la costruzione di un Adder migliorato in grado di realizzare somme tra word di lunghezza ad esempio di 4 bit, 8 bit e così via?
 
-Abbiamo chiarito che ogni Half Adder mette a disposizione una porta XOR e una porta AND. Abbiamo anche detto che per realizzare la somma Q è necessaria una porta XOR a tre ingressi, ma è dimostrabile che una cascata di due porte XOR a due ingressi realizza lo stesso risultato. Ipotizzando di avere due Half Adder, è possibile ottenere il risultato Q sfruttando le due porte XOR disponibili:
+Si è visto che ogni Half Adder mette a disposizione una porta XOR e una porta AND, entrambe a due ingressi. Per realizzare la somma Q è necessaria una porta XOR a tre ingressi, ma è dimostrabile che due porte XOR a due ingressi posizionate in cascata producono lo stesso risultato. Ipotizzando di avere due Half Adder, è possibile ottenere il risultato Q sfruttando le due porte XOR disponibili:
 
 ![Due Half Adder](../../assets/math/full-adder-1.png){:width="100%"}
 
