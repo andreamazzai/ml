@@ -633,13 +633,13 @@ Anziché ricorrere alla combinazione di AND e OR (Sum of Products, esposta nel v
 
 L'analisi di Q produce la seguente mappa (C corrisponde a C<sub>IN</sub>):
 
-![Karnaugh Map](../../assets/math/Kmap1.png){:width="40%"}
+![Karnaugh Map](../../assets/math/Kmap1.png){:width="35%"}
 
 Pur non potendo semplificare la truth table perché non è possibile creare gruppi di 1, si può notare il pattern "a scacchiera", che indica che il circuito logico equivalente è una porta XOR con tre ingressi (si veda il video <a href="https://www.youtube.com/watch?v=3SwLBw7RYiI" target="_blank">Combinational Logic Minimization: XORs</a>, sempre di Lameres).
 
 L'analisi di C<sub>OUT</sub> produce quest'altra mappa (C corrisponde a C<sub>IN</sub>):
 
-![Karnaugh Map](../../assets/math/Kmap2.png){:width="40%"}
+![Karnaugh Map](../../assets/math/Kmap2.png){:width="35%"}
 
 Utilizzando la proprietà distributiva dell'algebra booleana, è possibile semplificare la funzione
 
@@ -653,13 +653,13 @@ Avendo a disposizione l'Adder a due bit visto in precedenza, è possibile riutil
 
 Si è visto che ogni Half Adder mette a disposizione una porta XOR e una porta AND, entrambe a due ingressi. Per realizzare la somma Q è necessaria una porta XOR a tre ingressi, ma è dimostrabile che due porte XOR a due ingressi posizionate in cascata producono lo stesso risultato. Ipotizzando di avere due Half Adder, è possibile ottenere il risultato Q sfruttando le due porte XOR disponibili:
 
-![Due Half Adder](../../assets/math/full-adder-1.png){:width="100%"}
+![Due Half Adder](../../assets/math/full-adder-1.png){:width="90%"}
 
 *Due Half Adder.*
 
 Per realizzare C<sub>OUT</sub> dobbiamo invece implementare la funzione F = C<sub>IN</sub>\*(A+B) + A\*B.
 
-Il risultato di A\*B è disponibile sull'output della porta AND del primo Adder; il risultato di C<sub>IN</sub>\*(A+B) richiede una OR tra A e B e una successiva AND tra il risultato appena computato e C<sub>IN</sub>. Purtroppo, il secondo Adder non mette a disposizione una porta OR per effettuare A+B; tuttavia, è dimostrabile che la funzione:
+A\*B è disponibile sull'output della porta AND del primo Adder; C<sub>IN</sub>\*(A+B) richiede una OR tra A e B e una successiva AND tra il risultato appena computato e C<sub>IN</sub>. Purtroppo, il secondo Adder non mette a disposizione una porta OR per effettuare (A+B); tuttavia, è dimostrabile che la funzione:
 
 C<sub>OUT</sub> = C<sub>IN</sub>\*(A+B) + A\*B
 
@@ -678,7 +678,7 @@ C<sub>OUT</sub> = C<sub>IN</sub>\*(A⊕B) + A\*B
 | 1 | 1 | 0              |  1  |  0   |  1  | 0 | <center>0             |  <center>1                             | <center>0             | <center>1                              |
 | 1 | 1 | 1              |  1  |  0   |  1  | 1 | <center>1             |  <center>1                             | <center>0             | <center>1                              |
 
-Come si può vedere dalla truth table, l'output della colonna **C<sub>IN</sub>\*(A+B) + A\*B** è uguale a quello della colonna **C<sub>IN</sub>\*(A⊕B) + A\*B**, pertanto, possiamo utilizzare l'Half Adder con porta XOR per completare il nostro Adder migliorato.
+Come si può vedere dalla truth table, l'output della terz'ultima colonna **C<sub>IN</sub>\*(A+B) + A\*B** è uguale a quello dell'ultima colonna **C<sub>IN</sub>\*(A⊕B) + A\*B**, pertanto, possiamo utilizzare l'Half Adder con porta XOR per completare il nostro Adder migliorato.
 
 A questo punto, possiamo realizzare la funzione necessaria aggiungendo una semplice OR per effettuare la somma logica tra **C<sub>IN</sub>\*(A⊕B)** e **A\*B**.
 
