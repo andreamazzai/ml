@@ -9,6 +9,8 @@ header:
 ---
 ## BEAM 8-bit computer
 
+<small>[Il primo progetto: 6502](#il-primo-progetto-6502) - [Computer a 8 bit in logica TTL: SAP?](#computer-a-8-bit-in-logica-ttl-sap) - [Evoluzione del computer a 8 bit: BEAM](#evoluzione-del-computer-a-8-bit-beam) - [BEAM?](#beam) - [Studio e progettazione](#studio-e-progettazione) - [Realizzazione](#realizzazione) - [Note](#note) - [Crediti e ringraziamenti](#crediti-e-ringraziamenti) - [Letteratura](#letteratura) - [Avviso sui Diritti di Proprietà Intellettuale](#avviso-sui-diritti-di-proprietà-intellettuale)</small>
+
 <!-- TLDR: vai subito alla [documentazione del BEAM 8-bit computer](https://andreamazzai.github.io/beam/) su GitHub Pages -->
 
 >NOTA: in alcuni punti della documentazione si presuppone che il lettore abbia realizzato o comprenda il progetto del SAP Computer di Ben Eater. Ove possibile, vengono fornite delle referenze per facilitare la consultazione.

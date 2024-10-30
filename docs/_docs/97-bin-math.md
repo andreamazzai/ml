@@ -768,4 +768,4 @@ in effetti dunque ogni tot bit il livello salirà di due (Ma allora forse in que
 ## Link utili
 
 - <a href="https://www.youtube.com/watch?v=Fu5LfmjhEBA" target="_blank">Ripple Carry Adders</a> e <a href="https://www.youtube.com/watch?v=TNoQ_djJW0I" target="_blank">RCA Timing</a> di Brock LaMeres. Questi video illustrano la logica degli Half Adder, dei Full Adder e dei Ripple Carry Adder, inclusa una discussione sul timing. Non si può non menzionare lo stile espositivo del professor LaMeres, la cui grande carica di energia incolla lo spettatore al video.
-- La playlist <a href="https://www.youtube.com/playlist?list=PL643xA3Ie_Et2uM4xu1yFk-A5ZQQ8gQ5e" target="_blank">Intro to Logic Circuits</a> di Lameres, già suggerita anche nella [pagina iniziale](/home) della documentazione del BEAM.
+- La playlist <a href="https://www.youtube.com/playlist?list=PL643xA3Ie_Et2uM4xu1yFk-A5ZQQ8gQ5e" target="_blank">Intro to Logic Circuits</a> di Lameres, già suggerita anche nella [pagina iniziale](/) della documentazione del BEAM.
