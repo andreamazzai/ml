@@ -665,7 +665,7 @@ C<sub>OUT</sub> = C<sub>IN</sub>\*(A+B) + A\*B
 
 è equivalente alla seguente funzione, che è invece realizzabile con le porte a disposizione, tra cui la XOR anziché la OR:
 
-C<sub>OUT</sub> = C<sub>IN</sub>\*(A⊕B) + A\*Bpresentazione dei numeri binari
+C<sub>OUT</sub> = C<sub>IN</sub>\*(A⊕B) + A\*B
 
 | A | B | C<sub>IN</sub> | A\*B | A⊕B | A+B | Q | C<sub>IN</sub>\*(A+B) | C<sub>IN</sub>\*(A+B)<br><center>+ A*B |C<sub>IN</sub>\*(A⊕B) |C<sub>IN</sub>\*(A⊕B)<br><center>+ A*B |
 | - | - | -              |  -  |  -   |  -  | - | -                     | -                                      | -                     | -                                      |
