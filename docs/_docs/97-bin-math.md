@@ -706,15 +706,21 @@ L'immagine seguente, tratta dal video *RCA Timing* citato nei link a fondo pagin
 
 *Timing di un Ripple Carry Adder.*
 
-In conseguenza di questo, la frequenza operativa massima del circuito non potrà essere superiore all'inverso della somma dei ritardi introdotti dai livelli 1-9.
+Di conseguenza, la frequenza operativa massima del circuito non potrà superare l’inverso della somma dei ritardi introdotti dai livelli 1-9.
 
 ### Carry Look-Ahead Adder
 
-Un Adder di tipo Carry Look-Ahead tenta di indirizzare il problema del ritardo introdotto dalla lunga catena di livelli presente in un Ripple Carry Adder. Se in Adder a 4 bit il ritardo può essere modesto, un Adder a 16 o più bit può introdurre una riduzione significativa della frequenza massima di lavoro.
+Un Adder di tipo Carry Look-Ahead affronta il problema del ritardo causato dalla lunga catena di livelli presente in un Ripple Carry Adder. Mentre in un Adder a 4 bit il ritardo può essere modesto, in un Adder a 16 o più bit può ridurre significativamente la frequenza massima di lavoro.
 
--- IN SEGUITO -- TESTO DA COMPLETARE --
+Con quanto visto nel Ripple Carry Adder, ogni Full Adder dipende dal risultato dello stage precedente; nell'ottica di doversi mettere nella situazione del caso peggiore, si può dire che il risultato dell'ultimo Full Adder dipende da tutti gli stage precedenti.
 
-Ad oggi, ogni Full Adder dipende dal risultato dello stage precedente, con l'ultimo Full Adder che dipende da tutti gli stage precedenti. Si tratta di un compromesso: aggiungi le porte logiche e complicare il circuito per renderlo più veloce.
+Sulla base di questo, è possibile immaginare di creare dei Full Adder in grado di computare indipendentemente il Carry In, così da poter accorciare la catena di calcolo del Carry?   
+
+![Carry Look Ahead Adder](../../assets/math/CLA.png)
+
+{:width="100%"}
+
+Si tratta di un compromesso: aggiungi le porte logiche e complicare il circuito per renderlo più veloce.
 
 Per migliorare le prestazioni di un Ripple Carry Adder, dobbiamo trovare un metodo per fare in modo che ogni Full Adder sia indipendente dagli altri, cioè che il Carry sia computato localmente e non sia dipendente dagli altri Adder che lo precedono.
 
