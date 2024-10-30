@@ -598,7 +598,7 @@ Nella quarta ipotesi notiamo che il risultato della somma di due bit entrambi a 
 
 Il risultato Q della somma dei due bit A e B si può ottenere con una porta logica XOR, mentre il Carry C<sub>OUT</sub> è chiaramente ottenibile con una porta AND. Ecco come si potrebbe costruire il circuito equivalente:
 
-![Half Adder](../../assets/math/half-adder.png){:width="45%"}
+![Half Adder](../../assets/math/half-adder.png){:width="50%"}
 
 *Half Adder.*
 
@@ -653,7 +653,7 @@ Avendo a disposizione l'Adder a due bit visto in precedenza, è possibile riutil
 
 Si è visto che ogni Half Adder mette a disposizione una porta XOR e una porta AND, entrambe a due ingressi. Per realizzare la somma Q è necessaria una porta XOR a tre ingressi, ma è dimostrabile che due porte XOR a due ingressi posizionate in cascata producono lo stesso risultato. Ipotizzando di avere due Half Adder, è possibile ottenere il risultato Q sfruttando le due porte XOR disponibili:
 
-![Due Half Adder](../../assets/math/full-adder-1.png){:width="90%"}
+![Due Half Adder](../../assets/math/full-adder-1.png){:width="100%"}
 
 *Due Half Adder.*
 
@@ -665,7 +665,7 @@ C<sub>OUT</sub> = C<sub>IN</sub>\*(A+B) + A\*B
 
 è equivalente alla seguente funzione, che è invece realizzabile con le porte a disposizione, tra cui la XOR anziché la OR:
 
-C<sub>OUT</sub> = C<sub>IN</sub>\*(A⊕B) + A\*B
+C<sub>OUT</sub> = C<sub>IN</sub>\*(A⊕B) + A\*Bpresentazione dei numeri binari
 
 | A | B | C<sub>IN</sub> | A\*B | A⊕B | A+B | Q | C<sub>IN</sub>\*(A+B) | C<sub>IN</sub>\*(A+B)<br><center>+ A*B |C<sub>IN</sub>\*(A⊕B) |C<sub>IN</sub>\*(A⊕B)<br><center>+ A*B |
 | - | - | -              |  -  |  -   |  -  | - | -                     | -                                      | -                     | -                                      |
@@ -682,7 +682,7 @@ Come si può vedere dalla truth table, l'output della terz'ultima colonna **C<su
 
 A questo punto, possiamo realizzare la funzione necessaria aggiungendo una semplice OR per effettuare la somma logica tra **C<sub>IN</sub>\*(A⊕B)** e **A\*B**.
 
-![Full Adder](../../assets/math/full-adder-2.png){:width="90%"}
+![Full Adder](../../assets/math/full-adder-2.png){:width="100%"}
 
 *Full Adder.*
 
@@ -696,7 +696,7 @@ Avendo a disposizione i Full Adder, a loro volta costituiti da due Half Adder e 
 
 *Multiple Bit Adder, o Ripple Carry Adder, a 4 bit.*
 
-Il Multiple Bit Adder in figura segue l'ordine di presentazione dei numeri binari, con il bit più significativo a sinistra e quello meno significativo a destra. Il C<sub>IN</sub> deve essere mantenuto allo stato LO, così il risultato dell'operazione dipenderà esclusivamente dagli input presenti in A0-A3 e B0-B3.
+La disposizione del Multiple Bit Adder in figura segue l'ordine di presentazione dei numeri binari, con il bit più significativo a sinistra e quello meno significativo a destra. Il C<sub>IN</sub> deve essere mantenuto allo stato LO, così il risultato dell'operazione dipenderà esclusivamente dagli input presenti in A0-A3 e B0-B3.
 
 Il Multiple Bit Adder creato ha un nome univoco: Ripple Carry Adder, perché il Carry "ondeggia" tra i Full Adder. Una considerazione da non tralasciare è, infatti, quella relativa al timing: come per ogni circuito logico, possiamo prelevare i segnali in output solo una volta che l'output col ritardo maggiore si è stabilizzato.
 
@@ -768,3 +768,4 @@ in effetti dunque ogni tot bit il livello salirà di due (Ma allora forse in que
 ## Link utili
 
 - <a href="https://www.youtube.com/watch?v=Fu5LfmjhEBA" target="_blank">Ripple Carry Adders</a> e <a href="https://www.youtube.com/watch?v=TNoQ_djJW0I" target="_blank">RCA Timing</a> di Brock LaMeres. Questi video illustrano la logica degli Half Adder, dei Full Adder e dei Ripple Carry Adder, inclusa una discussione sul timing. Non si può non menzionare lo stile espositivo del professor LaMeres, la cui grande carica di energia incolla lo spettatore al video.
+- La playlist <a href="https://www.youtube.com/playlist?list=PL643xA3Ie_Et2uM4xu1yFk-A5ZQQ8gQ5e" target="_blank">Intro to Logic Circuits</a> di Lameres, già suggerita anche nella [pagina iniziale](/home) della documentazione del BEAM.
