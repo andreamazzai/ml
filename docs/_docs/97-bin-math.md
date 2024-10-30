@@ -710,6 +710,8 @@ Di conseguenza, la frequenza operativa massima del circuito non potrà superare 
 
 ### Carry Look Ahead Adder
 
+WORK IN PROGRESS -- WORK IN PROGRESS -- WORK IN PROGRESS
+
 Un Adder di tipo Carry Look Ahead affronta il problema del ritardo causato dalla lunga catena di livelli presente in un Ripple Carry Adder. Mentre in un Ripple Carry Adder a 4 bit il ritardo può essere modesto, il ritardo in un Adder a 16 o più bit può ridurre significativamente la frequenza massima di lavoro.
 
 Infatti, in un Ripple Carry Adder ogni Full Adder dipende dal risultato dello stage precedente; nell'ottica di doversi mettere nella situazione del caso peggiore, si può dire che il risultato dell'ultimo Full Adder dipende da tutti gli stage precedenti.
