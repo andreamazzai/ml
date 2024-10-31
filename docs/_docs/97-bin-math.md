@@ -690,7 +690,7 @@ A questo punto, possiamo realizzare la funzione necessaria aggiungendo una sempl
 
 *Full Adder.*
 
-Il **Full Adder** appena creato è in grado di effettuare la somma di due termini tenendo in considerazione il Carry in ingresso e generando un Carry in uscita.
+Il **Full Adder** appena creato è in grado di effettuare la somma di due termini tenendo in considerazione il Carry in ingresso e generando un eventuale Carry in uscita.
 
 ### Ripple Carry Adder
 
@@ -730,12 +730,14 @@ Per raggiungere questo obiettivo, è stato necessario trovare un compromesso: la
 
 Come si vede nell'immagine precedente, gli ingressi dei vari stadi di un CLA dipendono solamente dai termini A e B e dal Carry C<sub>0</sub>; questo è stato possibile grazie a una serie di sostituzioni algebriche che permettono ad ogni singolo Adder<sub>(N)</sub> di poter computare la propria somma e il proprio Carry Out partendo dagli ingressi A<sub>(N)</sub> e B<sub>(N)</sub> e da C<sub>0</sub>.
 
-In altre parole, si desidera creare una logica dipendente dai soli termini A e B e dal Carry C<sub>0</sub>. Riducendo questo concetto a espressioni logiche, due sono i casi da analizzare:
+In altre parole, si è creata una logica dipendente dai soli termini A e B e dal Carry C<sub>0</sub>. Come è stato possibile ottenere questo risultato?
 
-1) In quali situazioni un Adder, il cui Carry In è a 0, *genera* un Carry Out che viene passato al prossimo stadio?
-2) In quali situazioni un Adder, il cui Carry In è a 1, *propaga* il proprio Carry In al prossimo stadio?
+Riducendo questo concetto a espressioni logiche, due sono i casi da analizzare:
 
-In questo modo, si risponde alla domanda chiave: in quali situazioni un Adder<sub>(N+1)</sub> ritrova sicuramente in Carry In sul proprio ingresso?
+1. In quali situazioni un Adder, il cui Carry In è a 0, ***genera*** un Carry Out che viene passato al prossimo stadio?
+2. In quali situazioni un Adder, il cui Carry In è a 1, ***propaga*** il proprio Carry In al prossimo stadio?
+
+Valutando i due casi, si trova risposta alla domanda chiave: in quali situazioni un Adder<sub>(N)</sub> ritrova sicuramente un Carry In sul proprio ingresso?
 
 Identificando le situazioni nelle quali un Carry viene *generato* o *propagato*, ogni Adder<sub>(N)</sub> può essere dotato di un circuito in grado di sapere se troverà un Carry in ingresso computandolo a partire *dagli ingressi* dell'Adder<sub>(N-1)</sub> precedente, e dunque senza dipendere da quanto presente *dall'uscita* dello stadio precedente.
 
@@ -745,16 +747,16 @@ Riprendendo la truth table di un Full Adder, troviamo che se C<sub>IN</sub> è a
 
 Se C<sub>IN</sub> è invece a 1, il C<sub>OUT</sub> è a 1 quando A o B sono a 1, dunque per realizzare questo circuito possiamo utilizzare una porta OR. Questo comportamento viene descritto con l'espressione **p = A+B**.
 
-| C<sub>IN</sub> | A | B | Q | C<sub>OUT</sub> | Generate<br>Propagate |
-| -              | - | - | - | -               | -                     |
-| 0              | 0 | 0 | 0 | 0               |                       |
-| 0              | 0 | 1 | 1 | 0               |                       |
-| 0              | 1 | 0 | 1 | 0               |                       |
-| 0              | 1 | 1 | 0 | 1               | <== **Generate**      |
-| 1              | 0 | 0 | 1 | 0               |                       |
-| 1              | 0 | 1 | 0 | 1               | <== **Propagate**     |
-| 1              | 1 | 0 | 0 | 1               | <== **Propagate**     |
-| 1              | 1 | 1 | 1 | 1               | <== **Propagate**     |
+| C<sub>IN</sub> | A     | B     | Q | C<sub>OUT</sub> | Generate<br>Propagate |
+| -              | -     | -     | - | -               | -                     |
+| 0              | 0     | 0     | 0 | 0               |                       |
+| 0              | 0     | 1     | 1 | 0               |                       |
+| 0              | 1     | 0     | 1 | 0               |                       |
+| **0**          | **1** | **1** | 0 | **1**           | <== **Generate**      |
+| 1              | 0     | 0     | 1 | 0               |                       |
+| **1**          | 0     | **1** | 0 | **1**           | <== **Propagate**     |
+| **1**          | **1** | 0     | 0 | **1**           | <== **Propagate**     |
+| **1**          | **1** | **1** | 1 | **1**           | <== **Propagate**     |
 
 In altre parole:
 
