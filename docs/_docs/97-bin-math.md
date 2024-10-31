@@ -673,14 +673,14 @@ C<sub>OUT</sub> = C<sub>IN</sub>\*(A⊕B) + A\*B, realizzabile con le porte a di
 
 | C<sub>IN</sub> | A | B | A\*B | A⊕B | A+B | Q | C<sub>IN</sub>\*(A+B) | C<sub>IN</sub>\*(A+B)<br><center>+ A*B |C<sub>IN</sub>\*(A⊕B) |C<sub>IN</sub>\*(A⊕B)<br><center>+ A*B |
 | -              | - | - |  -   |  -   |  -  | - | -                     | -                                      | -                     | -                                      |
-| 0              | 0 | 0 |  0   |  0   |  0  | 0 | <center>0             |  <center> **0**                         | <center>0             | <center>**0**                          |
-| 0              | 0 | 1 |  0   |  1   |  1  | 1 | <center>0             |  <center> **0**                         | <center>0             | <center>**0**                          |
-| 0              | 1 | 0 |  0   |  1   |  1  | 1 | <center>0             |  <center> **0**                         | <center>0             | <center>**0**                          |
-| 0              | 1 | 1 |  1   |  0   |  1  | 0 | <center>0             |  <center> **1**                         | <center>0             | <center>**1**                          |
-| 1              | 0 | 0 |  0   |  0   |  0  | 1 | <center>0             |  <center> **0**                         | <center>0             | <center>**0**                          |
-| 1              | 0 | 1 |  0   |  1   |  1  | 0 | <center>1             |  <center> **1**                         | <center>1             | <center>**1**                          |
-| 1              | 1 | 0 |  0   |  1   |  1  | 0 | <center>1             |  <center> **1**                         | <center>1             | <center>**1**                          |
-| 1              | 1 | 1 |  1   |  0   |  1  | 1 | <center>1             |  <center> **1**                         | <center>0             | <center>**1**                          |
+| 0              | 0 | 0 |  0   |  0   |  0  | 0 | <center>0             |  <center>0                             | <center>0             | <center>0                              |
+| 0              | 0 | 1 |  0   |  1   |  1  | 1 | <center>0             |  <center>0                             | <center>0             | <center>0                              |
+| 0              | 1 | 0 |  0   |  1   |  1  | 1 | <center>0             |  <center>0                             | <center>0             | <center>0                              |
+| 0              | 1 | 1 |  1   |  0   |  1  | 0 | <center>0             |  <center>1                             | <center>0             | <center>1                              |
+| 1              | 0 | 0 |  0   |  0   |  0  | 1 | <center>0             |  <center>0                             | <center>0             | <center>0                              |
+| 1              | 0 | 1 |  0   |  1   |  1  | 0 | <center>1             |  <center>1                             | <center>1             | <center>1                              |
+| 1              | 1 | 0 |  0   |  1   |  1  | 0 | <center>1             |  <center>1                             | <center>1             | <center>1                              |
+| 1              | 1 | 1 |  1   |  0   |  1  | 1 | <center>1             |  <center>1                             | <center>0             | <center>1                              |
 
 Come si può vedere dalla truth table, l'output della terz'ultima colonna **C<sub>IN</sub>\*(A+B) + A\*B** è uguale a quello dell'ultima colonna **C<sub>IN</sub>\*(A⊕B) + A\*B**, pertanto, possiamo utilizzare l'Half Adder con porta XOR per completare il nostro Adder migliorato.
 
@@ -752,16 +752,16 @@ Se C<sub>IN</sub> è invece a 1, il C<sub>OUT</sub> è a 1 quando A o B sono a 1
 | 0              | 0     | 0     | 0 | 0               |                      |
 | 0              | 0     | 1     | 1 | 0               |                      |
 | 0              | 1     | 0     | 1 | 0               |                      |
-| **0**          | **1** | **1** | 0 | **1**           | <== **Generate**     |
+| **0**          | **1** | **1** | 0 | **1**           | <-- **Generate**     |
 | 1              | 0     | 0     | 1 | 0               |                      |
-| **1**          | 0     | **1** | 0 | **1**           | <== **Propagate**    |
-| **1**          | **1** | 0     | 0 | **1**           | <== **Propagate**    |
-| **1**          | **1** | **1** | 1 | **1**           | <== **Propagate**    |
+| **1**          | 0     | **1** | 0 | **1**           | <-- **Propagate**    |
+| **1**          | **1** | 0     | 0 | **1**           | <-- **Propagate**    |
+| **1**          | **1** | **1** | 1 | **1**           | <-- **Propagate**    |
 
 In altre parole:
 
-- l'espressione Generate permette a un Adder "N" di identificare quando, in assenza di un Carry agli ingressi dello stadio precedente "N-1", questo produrrà ("genererà") un Carry in uscita;
-- l'espressione Propagate permette a un Adder "N" di identificare quando, in presenza di un Carry agli ingressi dello stadio precedente "N-1", questo produrrà ("propagherà") un Carry in uscita.
+- l'espressione Generate permette a un Adder "N" di identificare quando, in assenza di un Carry agli ingressi dello stadio precedente "N-1", questi produrrà ("genererà") un Carry in uscita;
+- l'espressione Propagate permette a un Adder "N" di identificare quando, in presenza di un Carry agli ingressi dello stadio precedente "N-1", questi produrrà ("propagherà") un Carry in uscita.
 
 La circuiteria Look Ahead considera se lo stage precedente introduce un Carry analizzando appunto due condizioni: in una truth table i cui ingressi siano A, B e C<sub>IN</sub>:
 
