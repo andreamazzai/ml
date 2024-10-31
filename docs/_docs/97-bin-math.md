@@ -673,14 +673,14 @@ C<sub>OUT</sub> = C<sub>IN</sub>\*(A⊕B) + A\*B, realizzabile con le porte a di
 
 | C<sub>IN</sub> | A | B | A\*B | A⊕B | A+B | Q | C<sub>IN</sub>\*(A+B) | C<sub>IN</sub>\*(A+B)<br><center>+ A*B |C<sub>IN</sub>\*(A⊕B) |C<sub>IN</sub>\*(A⊕B)<br><center>+ A*B |
 | -              | - | - |  -   |  -   |  -  | - | -                     | -                                      | -                     | -                                      |
-| 0              | 0 | 0 |  0   |  0   |  0  | 0 | <center>0             |  <center>**0**                         | <center>0             | <center>**0**                          |
-| 0              | 0 | 1 |  0   |  1   |  1  | 1 | <center>0             |  <center>**0**                         | <center>0             | <center>**0**                          |
-| 0              | 1 | 0 |  0   |  1   |  1  | 1 | <center>0             |  <center>**0**                         | <center>0             | <center>**0**                          |
-| 0              | 1 | 1 |  1   |  0   |  1  | 0 | <center>0             |  <center>**1**                         | <center>0             | <center>**1**                          |
-| 1              | 0 | 0 |  0   |  0   |  0  | 1 | <center>0             |  <center>**0**                         | <center>0             | <center>**0**                          |
-| 1              | 0 | 1 |  0   |  1   |  1  | 0 | <center>1             |  <center>**1**                         | <center>1             | <center>**1**                          |
-| 1              | 1 | 0 |  0   |  1   |  1  | 0 | <center>1             |  <center>**1**                         | <center>1             | <center>**1**                          |
-| 1              | 1 | 1 |  1   |  0   |  1  | 1 | <center>1             |  <center>**1**                         | <center>0             | <center>**1**                          |
+| 0              | 0 | 0 |  0   |  0   |  0  | 0 | <center>0             |  <center> **0**                         | <center>0             | <center>**0**                          |
+| 0              | 0 | 1 |  0   |  1   |  1  | 1 | <center>0             |  <center> **0**                         | <center>0             | <center>**0**                          |
+| 0              | 1 | 0 |  0   |  1   |  1  | 1 | <center>0             |  <center> **0**                         | <center>0             | <center>**0**                          |
+| 0              | 1 | 1 |  1   |  0   |  1  | 0 | <center>0             |  <center> **1**                         | <center>0             | <center>**1**                          |
+| 1              | 0 | 0 |  0   |  0   |  0  | 1 | <center>0             |  <center> **0**                         | <center>0             | <center>**0**                          |
+| 1              | 0 | 1 |  0   |  1   |  1  | 0 | <center>1             |  <center> **1**                         | <center>1             | <center>**1**                          |
+| 1              | 1 | 0 |  0   |  1   |  1  | 0 | <center>1             |  <center> **1**                         | <center>1             | <center>**1**                          |
+| 1              | 1 | 1 |  1   |  0   |  1  | 1 | <center>1             |  <center> **1**                         | <center>0             | <center>**1**                          |
 
 Come si può vedere dalla truth table, l'output della terz'ultima colonna **C<sub>IN</sub>\*(A+B) + A\*B** è uguale a quello dell'ultima colonna **C<sub>IN</sub>\*(A⊕B) + A\*B**, pertanto, possiamo utilizzare l'Half Adder con porta XOR per completare il nostro Adder migliorato.
 
@@ -747,16 +747,16 @@ Riprendendo la truth table di un Full Adder, troviamo che se C<sub>IN</sub> è a
 
 Se C<sub>IN</sub> è invece a 1, il C<sub>OUT</sub> è a 1 quando A o B sono a 1, dunque per realizzare questo circuito possiamo utilizzare una porta OR. Questo comportamento viene descritto con l'espressione **p = A+B**.
 
-| C<sub>IN</sub> | A     | B     | Q | C<sub>OUT</sub> | Generate<br>Propagate |
-| -              | -     | -     | - | -               | -                     |
-| 0              | 0     | 0     | 0 | 0               |                       |
-| 0              | 0     | 1     | 1 | 0               |                       |
-| 0              | 1     | 0     | 1 | 0               |                       |
-| **0**          | **1** | **1** | 0 | **1**           | <== **Generate**      |
-| 1              | 0     | 0     | 1 | 0               |                       |
-| **1**          | 0     | **1** | 0 | **1**           | <== **Propagate**     |
-| **1**          | **1** | 0     | 0 | **1**           | <== **Propagate**     |
-| **1**          | **1** | **1** | 1 | **1**           | <== **Propagate**     |
+| C<sub>IN</sub> | A     | B     | Q | C<sub>OUT</sub> | Generate / Propagate |
+| -              | -     | -     | - | -               | -                    |
+| 0              | 0     | 0     | 0 | 0               |                      |
+| 0              | 0     | 1     | 1 | 0               |                      |
+| 0              | 1     | 0     | 1 | 0               |                      |
+| **0**          | **1** | **1** | 0 | **1**           | <== **Generate**     |
+| 1              | 0     | 0     | 1 | 0               |                      |
+| **1**          | 0     | **1** | 0 | **1**           | <== **Propagate**    |
+| **1**          | **1** | 0     | 0 | **1**           | <== **Propagate**    |
+| **1**          | **1** | **1** | 1 | **1**           | <== **Propagate**    |
 
 In altre parole:
 
