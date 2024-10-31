@@ -51,8 +51,8 @@ excerpt: "Cosa c'è da fare"
 ## BIN MATH
 
 - Ripple Mode Carry e Carry Look Ahead --- Ne parliamo perché i '161 usati nel MAR e i '181 dell'ALU ne parlano nei datasheet.
-- Link a quel professore del montana
 - controllare tutti i link e inserire il link che apre nuova pagina <a href="https://link.di.esempio/file.pdf" target="_blank">ipertesto</a>
+- controllare le truth table, che non convenga rifare e mettere Cin all'inizio.
 
 ---
 Here's a simple footnote,[^1] and here's a longer one.[^bignote]
