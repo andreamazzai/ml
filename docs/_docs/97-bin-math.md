@@ -618,26 +618,26 @@ Si noti che per svolgere l'intera operazione è necessario fornire all'Adder 3 v
 
 Scrivendo la truth table per sommare i tre bit di ogni colonna, assegneremo il nome C<sub>IN</sub> al carry derivante dalla precedente colonna e, similarmente, chiameremo C<sub>OUT</sub> il carry risultante dalla somma di ogni tripletta di A, B e C<sub>IN</sub>:
 
-| A | B | C<sub>IN</sub> | Q | C<sub>OUT</sub> |
-| - | - | -              | - | -               |
-| 0 | 0 | 0              | 0 | 0               |
-| 0 | 0 | 1              | 1 | 0               |
-| 0 | 1 | 0              | 1 | 0               |
-| 0 | 1 | 1              | 0 | 1               |
-| 1 | 0 | 0              | 1 | 0               |
-| 1 | 0 | 1              | 0 | 1               |
-| 1 | 1 | 0              | 0 | 1               |
-| 1 | 1 | 1              | 1 | 1               |
+| C<sub>IN</sub> | A | B | Q | C<sub>OUT</sub> |
+| -              | - | - | - | -               |
+| 0              | 0 | 0 | 0 | 0               |
+| 0              | 0 | 1 | 1 | 0               |
+| 0              | 1 | 0 | 1 | 0               |
+| 0              | 1 | 1 | 0 | 1               |
+| 1              | 0 | 0 | 1 | 0               |
+| 1              | 0 | 1 | 0 | 1               |
+| 1              | 1 | 0 | 0 | 1               |
+| 1              | 1 | 1 | 1 | 1               |
 
 Anziché ricorrere alla combinazione di AND e OR (Sum of Products, esposta nel video di Brock LaMeres <a href="https://www.youtube.com/watch?v=04qG6HhC0wM" target="_blank">Combinational Logic Synthesis: SOP Forms & Minterms</a>), proviamo a semplificare utilizzando le mappe di Karnaugh (spiegate nel video <a href="https://www.youtube.com/watch?v=Y18RPvtS9AU" target="_blank">Combinational Logic Minimization: K-map Formation</a>, ancora di LaMeres).
 
-L'analisi di Q produce la seguente mappa (C corrisponde a C<sub>IN</sub>):
+L'analisi di Q produce la seguente mappa (nella quale C corrisponde a C<sub>IN</sub> visto nella truth table):
 
 ![Karnaugh Map](../../assets/math/Kmap1.png){:width="35%"}
 
 Pur non potendo semplificare la truth table perché non è possibile creare gruppi di 1, si può notare il pattern "a scacchiera", che indica che il circuito logico equivalente è una porta XOR con tre ingressi (si veda il video <a href="https://www.youtube.com/watch?v=3SwLBw7RYiI" target="_blank">Combinational Logic Minimization: XORs</a>, sempre di Lameres).
 
-L'analisi di C<sub>OUT</sub> produce quest'altra mappa (C corrisponde a C<sub>IN</sub>):
+L'analisi di C<sub>OUT</sub> produce quest'altra mappa (nella quale, come in precedenza, C corrisponde a C<sub>IN</sub> visto nella truth table):
 
 ![Karnaugh Map](../../assets/math/Kmap2.png){:width="35%"}
 
@@ -649,7 +649,7 @@ F = C<sub>IN</sub>\*(A+B) + A*B, cioè
 
 C<sub>OUT</sub> = C<sub>IN</sub>\*(A+B) + A*B
 
-Avendo a disposizione l'Adder a due bit visto in precedenza, è possibile riutilizzarlo in scala per semplificare la costruzione di un Adder migliorato in grado di realizzare somme tra word di lunghezza ad esempio di 4 bit, 8 bit e così via?
+Avendo a disposizione l'Adder a due bit visto in precedenza, ci si chiede ora se sia possibile riutilizzarlo in scala per semplificare la costruzione di un Adder migliorato in grado di realizzare somme tra word di lunghezza ad esempio di 4 bit, 8 bit e così via.
 
 Si è visto che ogni Half Adder mette a disposizione una porta XOR e una porta AND, entrambe a due ingressi. Per realizzare la somma Q è necessaria una porta XOR a tre ingressi, ma è dimostrabile che due porte XOR a due ingressi posizionate in cascata producono lo stesso risultato. Ipotizzando di avere due Half Adder, è possibile ottenere il risultato Q sfruttando le due porte XOR disponibili:
 
