@@ -616,7 +616,7 @@ Q       10100         11011101
 
 Si noti che per svolgere l'intera operazione è necessario fornire all'Adder 3 valori in input: A, B e il Carry eventualmente derivante dalla precedente colonna.
 
-Scrivendo la truth table per sommare i tre bit di ogni colonna, assegneremo il nome C<sub>IN</sub> al carry derivante dalla precedente colonna e, similarmente, chiameremo C<sub>OUT</sub> il carry risultante dalla somma di ogni tripletta di A, B e C<sub>IN</sub>:
+Scrivendo la truth table per sommare i tre bit di ogni colonna, assegneremo il nome C<sub>IN</sub> al carry derivante dalla precedente colonna e, similarmente, chiameremo C<sub>OUT</sub> il carry risultante dalla somma di ogni tripletta C<sub>IN</sub>, A e B:
 
 | C<sub>IN</sub> | A | B | Q | C<sub>OUT</sub> |
 | -              | - | - | - | -               |
@@ -665,11 +665,11 @@ Tentiamo di rispondere al quesito. Si è visto che ogni Half Adder mette a dispo
 
 2) Per realizzare **C<sub>OUT</sub>** dobbiamo invece implementare la funzione F = C<sub>IN</sub>\*(A+B) + A\*B.
 
-A\*B è disponibile sull'output della porta AND del primo Adder; C<sub>IN</sub>\*(A+B) richiede una OR tra A e B e una successiva AND con C<sub>IN</sub>. Purtroppo, il secondo Adder non mette a disposizione una porta OR per effettuare (A+B), ma una XOR che ci permette di effettuare invece (A⊕B); tuttavia, è dimostrabile che la funzione:
+A\*B è disponibile sull'output della porta AND del primo Adder; C<sub>IN</sub>\*(A+B) richiede una OR tra A e B e una successiva AND con C<sub>IN</sub>. Purtroppo, nessuno dei due Adder mette a disposizione una porta OR per effettuare (A+B); tuttavia, è dimostrabile che la funzione:
 
 C<sub>OUT</sub> = C<sub>IN</sub>\*(A+B) + A\*B, non realizzabile con le porte a disposizione, è equivalente alla funzione
 
-C<sub>OUT</sub> = C<sub>IN</sub>\*(A⊕B) + A\*B, realizzabile con le porte a disposizione.
+C<sub>OUT</sub> = C<sub>IN</sub>\*(A⊕B) + A\*B, realizzabile con le porte a disposizione (si noti la sostituzione della OR "+" con la XOR "⊕").
 
 | C<sub>IN</sub> | A | B | A\*B | A⊕B | A+B | Q | C<sub>IN</sub>\*(A+B) | C<sub>IN</sub>\*(A+B)<br><center>+ A*B |C<sub>IN</sub>\*(A⊕B) |C<sub>IN</sub>\*(A⊕B)<br><center>+ A*B |
 | -              | - | - |  -   |  -   |  -  | - | -                     | -                                      | -                     | -                                      |
