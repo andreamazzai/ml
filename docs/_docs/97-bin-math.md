@@ -631,13 +631,13 @@ Scrivendo la truth table per sommare i tre bit di ogni colonna, assegneremo il n
 
 Anziché ricorrere alla combinazione di AND e OR (Sum of Products, esposta nel video di Brock LaMeres <a href="https://www.youtube.com/watch?v=04qG6HhC0wM" target="_blank">Combinational Logic Synthesis: SOP Forms & Minterms</a>), proviamo a semplificare utilizzando le mappe di Karnaugh (spiegate nel video <a href="https://www.youtube.com/watch?v=Y18RPvtS9AU" target="_blank">Combinational Logic Minimization: K-map Formation</a>, ancora di LaMeres).
 
-L'analisi di Q produce la seguente mappa (nella quale C corrisponde a C<sub>IN</sub> visto nella truth table):
+L'analisi di **Q** produce la seguente mappa (nella quale C corrisponde a C<sub>IN</sub> visto nella truth table):
 
 ![Karnaugh Map](../../assets/math/Kmap1.png){:width="35%"}
 
 Pur non potendo semplificare la truth table perché non è possibile creare gruppi di 1, si può notare il pattern "a scacchiera", che indica che il circuito logico equivalente è una porta XOR con tre ingressi (si veda il video <a href="https://www.youtube.com/watch?v=3SwLBw7RYiI" target="_blank">Combinational Logic Minimization: XORs</a>, sempre di Lameres).
 
-L'analisi di C<sub>OUT</sub> produce quest'altra mappa (nella quale, come in precedenza, C corrisponde a C<sub>IN</sub> visto nella truth table):
+L'analisi di **C<sub>OUT</sub>** produce quest'altra mappa (nella quale, come in precedenza, C corrisponde a C<sub>IN</sub> visto nella truth table):
 
 ![Karnaugh Map](../../assets/math/Kmap2.png){:width="35%"}
 
@@ -651,21 +651,19 @@ C<sub>OUT</sub> = C<sub>IN</sub>\*(A+B) + A*B
 
 Avendo a disposizione l'Adder a due bit visto in precedenza, ci si chiede ora se sia possibile riutilizzarlo in scala per semplificare la costruzione di un Adder migliorato in grado di realizzare somme tra word di lunghezza ad esempio di 4 bit, 8 bit e così via.
 
-Si è visto che ogni Half Adder mette a disposizione una porta XOR e una porta AND, entrambe a due ingressi. Per realizzare la somma Q è necessaria una porta XOR a tre ingressi, ma è dimostrabile che due porte XOR a due ingressi posizionate in cascata producono lo stesso risultato. Ipotizzando di avere due Half Adder, è possibile ottenere il risultato Q sfruttando le due porte XOR disponibili:
+Si è visto che ogni Half Adder mette a disposizione una porta XOR e una porta AND, entrambe a due ingressi. Per realizzare la somma **Q** è necessaria una porta XOR a tre ingressi, ma è dimostrabile che due porte XOR a due ingressi posizionate in cascata producono lo stesso risultato. Infatti, ipotizzando di avere due Half Adder, è possibile ottenere il risultato Q sfruttando le due porte XOR disponibili:
 
 ![Due Half Adder](../../assets/math/full-adder-1.png){:width="100%"}
 
 *Due Half Adder.*
 
-Per realizzare C<sub>OUT</sub> dobbiamo invece implementare la funzione F = C<sub>IN</sub>\*(A+B) + A\*B.
+Per realizzare **C<sub>OUT</sub>** dobbiamo invece implementare la funzione F = C<sub>IN</sub>\*(A+B) + A\*B.
 
-A\*B è disponibile sull'output della porta AND del primo Adder; C<sub>IN</sub>\*(A+B) richiede una OR tra A e B e una successiva AND tra il risultato appena computato e C<sub>IN</sub>. Purtroppo, il secondo Adder non mette a disposizione una porta OR per effettuare (A+B); tuttavia, è dimostrabile che la funzione:
+A\*B è disponibile sull'output della porta AND del primo Adder; C<sub>IN</sub>\*(A+B) richiede una OR tra A e B e una successiva AND con C<sub>IN</sub>. Purtroppo, il secondo Adder non mette a disposizione una porta OR per effettuare (A+B), ma una XOR che ci permette di effettuare invece (A⊕B); tuttavia, è dimostrabile che la funzione:
 
-C<sub>OUT</sub> = C<sub>IN</sub>\*(A+B) + A\*B
+C<sub>OUT</sub> = C<sub>IN</sub>\*(A+B) + A\*B, non realizzabile con le porte a disposizione, è equivalente alla funzione:
 
-è equivalente alla seguente funzione, che è invece realizzabile con le porte a disposizione, tra cui la XOR anziché la OR:
-
-C<sub>OUT</sub> = C<sub>IN</sub>\*(A⊕B) + A\*B
+C<sub>OUT</sub> = C<sub>IN</sub>\*(A⊕B) + A\*B, realizzabile con le porte a disposizione:
 
 | A | B | C<sub>IN</sub> | A\*B | A⊕B | A+B | Q | C<sub>IN</sub>\*(A+B) | C<sub>IN</sub>\*(A+B)<br><center>+ A*B |C<sub>IN</sub>\*(A⊕B) |C<sub>IN</sub>\*(A⊕B)<br><center>+ A*B |
 | - | - | -              |  -  |  -   |  -  | - | -                     | -                                      | -                     | -                                      |
