@@ -704,7 +704,7 @@ La disposizione del Multiple Bit Adder in figura segue l'ordine di presentazione
 
 Il Multiple Bit Adder creato ha un nome univoco: Ripple Carry Adder (RCA), perché il Carry "ondeggia", si muove tra i Full Adder. Una considerazione da non tralasciare è, infatti, quella relativa al timing: come per ogni circuito logico, possiamo prelevare i segnali in output solo una volta che l'output col ritardo maggiore si è stabilizzato.
 
-L'immagine seguente, tratta dal video *RCA Timing* citato nei link a fondo pagina, aiuta a visualizzare come il segnale C<sub>OUT</sub> dipenda da ben 9 livelli (nell'analisi di un circuito, si deve considerare il caso peggiore).
+L'immagine seguente, tratta dal video <a href="https://www.youtube.com/watch?v=TNoQ_djJW0I" target="_blank">Ripple Carry Adders Timing</a>, aiuta a visualizzare come il segnale C<sub>OUT</sub> dipenda da ben 9 livelli (nell'analisi di un circuito, si deve considerare il caso peggiore).
 
 ![Timing di un Ripple Carry Adder](../../assets/math/rca-timing.png){:width="100%"}
 
@@ -713,8 +713,6 @@ L'immagine seguente, tratta dal video *RCA Timing* citato nei link a fondo pagin
 Di conseguenza, la frequenza operativa massima del circuito non potrà superare l’inverso della somma dei ritardi introdotti dai livelli 1-9.
 
 ### Carry Look Ahead Adder
-
-WORK IN PROGRESS -- WORK IN PROGRESS -- WORK IN PROGRESS
 
 Un Adder di tipo Carry Look Ahead (CLA) affronta il problema del ritardo causato dalla lunga catena di livelli presente in un Ripple Carry Adder.
 
@@ -726,26 +724,26 @@ Per indirizzare la problematica appena esposta, è necessario che ogni Full Adde
 
 *Carry Look Ahead Adder.*
 
-Tutto questo porta ad un compromesso: la velocità di risposta di ogni Full Adder aumenta, a discapito della aumentata complessità dovuta all'incremento di porte logice.
+Tutto questo porta ad un compromesso: la velocità di risposta di ogni Full Adder aumenta, a discapito della aumentata complessità dovuta all'incremento di porte logiche.
 
-L'immagine precedente mostra che gli ingressi dei vari stadi di un CLA dipendono solamente dai termini A e B e dal Carry C<sub>0</sub>; questo è possibile grazie a una serie di sostituzioni algebriche che permettono ad ogni singolo Full Adder<sub>(N)</sub> di poter computare la propria somma e il proprio Carry Out partendo dagli ingressi A<sub>(N)</sub> e B<sub>(N)</sub> e da C<sub>0</sub>.
+L'immagine precedente mostra che gli ingressi dei vari stadi di un Carry Look Ahead (CLA) dipendono solamente dai termini A e B e dal Carry C<sub>0</sub>; questo è possibile grazie a una serie di sostituzioni algebriche che permettono ad ogni singolo Full Adder<sub>(i)</sub> di poter computare la propria somma e il proprio Carry Out partendo dagli ingressi A<sub>(i)</sub> e B<sub>(i)</sub> e da C<sub>0</sub>.
 
 In altre parole, si crea una logica dipendente dai soli termini A e B e dal Carry C<sub>0</sub>. Come si ottiene questo risultato?
 
 Riducendo questo concetto a espressioni logiche, due sono i casi da analizzare:
 
-1. In quali situazioni un Full Adder<sub>(N-1)</sub>, il cui Carry In è a 0, ***genera*** un Carry Out che viene passato al prossimo stadio?
-2. In quali situazioni un Full Adder<sub>(N-1)</sub>, il cui Carry In è a 1, ***propaga*** il proprio Carry In al prossimo stadio?
+1. In quali situazioni un Full Adder<sub>(i-1)</sub>, il cui Carry In è a 0, ***genera*** un Carry Out che viene passato al prossimo Full Adder<sub>(i)</sub>?
+2. In quali situazioni un Full Adder<sub>(i-1)</sub>, il cui Carry In è a 1, ***propaga*** il proprio Carry In al prossimo Full Adder<sub>(i)</sub>?
 
-Valutando i due casi, si trova risposta alla domanda chiave: in quali situazioni un Adder<sub>(N)</sub> ritrova un Carry In a 1 sul proprio ingresso?
+Valutando i due casi, si trova risposta alla domanda chiave: in quali situazioni un Adder<sub>(i)</sub> ritrova un Carry In a 1 sul proprio ingresso?
 
 **VERIFICARE** Identificando le situazioni nelle quali un Carry viene *generato* o *propagato*, ogni Adder<sub>(N)</sub> può essere dotato di un circuito in grado di sapere se troverà un Carry in ingresso computandolo a partire *dagli ingressi* dell'Adder<sub>(N-1)</sub> precedente, e dunque senza dipendere da quanto presente *dall'uscita* dello stadio precedente.
 
 Le due situazioni vengono tradotte in espressioni denominate **Generate** e **Propagate**.
 
-In quali casi un Full Adder genera un Carry senza che sia presente un Carry al suo iongresso Carry In? Riprendendo la truth table di un Full Adder, troviamo che se C<sub>IN</sub> è a 0, il C<sub>OUT</sub> è a 1 solo se entrambi A **e** B sono a 1, dunque per realizzare questo circuito possiamo utilizzare una porta AND. Questo comportamento viene descritto con l'espressione **g = A\*B** e si può leggere come "la logica Generate di ogni Full Adder corrisponde ad A*B".
+In quali casi un Full Adder *genera* un Carry senza che sia presente un Carry al suo ingresso Carry In? Riprendendo la truth table di un Full Adder, troviamo che se C<sub>IN</sub> di quell'Adder è a 0, il C<sub>OUT</sub> è a 1 solo se entrambi A **e** B sono a 1, dunque per realizzare questo circuito possiamo utilizzare una porta AND. Questo comportamento viene descritto con l'espressione **g = A\*B** e si può leggere come "la logica Generate di ogni Full Adder corrisponde ad A*B".
 
-Quando, invece, un Full Adder propaga un Carry presente al suo ingresso Carry In? Se C<sub>IN</sub> è invece a 1, il C<sub>OUT</sub> è a 1 quando A **o** B sono a 1, dunque per realizzare questo circuito possiamo utilizzare una porta OR. Questo comportamento viene descritto con l'espressione **p = A+B** e si può leggere come "la logica Propagate di ogni Full Adder corrisponde ad A+B".
+Quando, invece, un Full Adder *propaga* un Carry presente al suo ingresso Carry In? Se C<sub>IN</sub> di quell'Adder è a 1, il C<sub>OUT</sub> è a 1 quando A **o** B sono a 1, dunque per realizzare questo circuito possiamo utilizzare una porta OR. Questo comportamento viene descritto con l'espressione **p = A+B** e si può leggere come "la logica Propagate di ogni Full Adder corrisponde ad A+B".
 
 | C<sub>IN</sub> | A     | B     | Q | C<sub>OUT</sub> | Generate / Propagate |
 | -              | -     | -     | - | -               | -                    |
