@@ -739,11 +739,11 @@ Valutando i due casi, si trova risposta alla domanda chiave: in quali situazioni
 
 **VERIFICARE** Identificando le situazioni nelle quali un Carry viene *generato* o *propagato*, ogni Adder<sub>(N)</sub> può essere dotato di un circuito in grado di sapere se troverà un Carry in ingresso computandolo a partire *dagli ingressi* dell'Adder<sub>(N-1)</sub> precedente, e dunque senza dipendere da quanto presente *dall'uscita* dello stadio precedente.
 
-Le due situazioni vengono tradotte in espressioni denominate **Generate** e **Propagate**.
+Le due situazioni appena descritte vengono tradotte in espressioni denominate **Generate** e **Propagate**.
 
 In quali casi un Full Adder *genera* un Carry senza che sia presente un Carry al suo ingresso Carry In? Riprendendo la truth table di un Full Adder, troviamo che se C<sub>IN</sub> di quell'Adder è a 0, il C<sub>OUT</sub> è a 1 solo se entrambi A **e** B sono a 1, dunque per realizzare questo circuito possiamo utilizzare una porta AND. Questo comportamento viene descritto con l'espressione **g = A\*B** e si può leggere come "la logica Generate di ogni Full Adder corrisponde ad A*B".
 
-Quando, invece, un Full Adder *propaga* un Carry presente al suo ingresso Carry In? Se C<sub>IN</sub> di quell'Adder è a 1, il C<sub>OUT</sub> è a 1 quando A **o** B sono a 1, dunque per realizzare questo circuito possiamo utilizzare una porta OR. Questo comportamento viene descritto con l'espressione **p = A+B** e si può leggere come "la logica Propagate di ogni Full Adder corrisponde ad A+B".
+Quando, invece, un Full Adder *propaga* un Carry presente al suo ingresso Carry In? Se il C<sub>IN</sub> di quell'Adder è a 1, il C<sub>OUT</sub> è a 1 quando A **o** B sono a 1, dunque per realizzare questo circuito possiamo utilizzare una porta OR. Questo comportamento viene descritto con l'espressione **p = A+B** e si può leggere come "la logica Propagate di ogni Full Adder corrisponde ad A+B".
 
 | C<sub>IN</sub> | A     | B     | Q | C<sub>OUT</sub> | Generate / Propagate |
 | -              | -     | -     | - | -               | -                    |
@@ -761,21 +761,21 @@ In altre parole:
 - l'espressione Generate viene utilizzata da un Adder "N" per identificare quando, in assenza di un Carry agli ingressi dello stadio precedente "N-1", questi produrrà ("genererà") un Carry in uscita;
 - l'espressione Propagate viene utilizzata da un Adder "N" per identificare quando, in presenza di un Carry agli ingressi dello stadio precedente "N-1", questi produrrà ("propagherà") un Carry in uscita.
 
-La circuiteria Look Ahead considera se lo stadio precedente introduce un Carry analizzando appunto due condizioni: in una truth table i cui ingressi siano A, B e C<sub>IN</sub>:
+La circuiteria Look Ahead considera se lo stadio precedente introduce un Carry analizzando le due condizioni: dati gli ingressi A, B e C<sub>IN</sub>:
 
-- che **genera** un C<sub>OUT</sub> solo se A*B = 1
-- che **propaga** un C<sub>OUT</sub> solo se C<sub>IN</sub> è a 1 e A+B = 1
+- un Carry C<sub>OUT</sub> è **generato** solo se A*B = 1
+- un Carry C<sub>OUT</sub> è **propagato** solo se C<sub>IN</sub> = 1 e A+B = 1
 
 A questo punto possiamo identificare il Carry Out per ogni stadio con una generica espressione:
 
-C<sub>OUT</sub> = g + P * C<sub>IN</sub>, cioè, effettuando le sostituzioni di g e p:
+C<sub>OUT</sub> = g + p*C<sub>IN</sub>, cioè, effettuando le sostituzioni di **g** e **p**:
 
-C<sub>OUT</sub> = A*B + (A+B)\*CIN, con la quale abbiamo familiarità perché altro non è il C<sub>OUT</sub> di ogni Full Adder.
+C<sub>OUT</sub> = A*B + (A+B)\*C<sub>IN</sub>, con la quale abbiamo familiarità perché altri non è il C<sub>OUT</sub> di ogni Full Adder.
 
-Utilizzamo ora **i** per identificare la posizione di ogni bit all'interno del Multiple Bit Adder, ad esempio 0-3 per un Adder a 4 bit e scrivere le espressioni generali per **p** e **g**:
+Utilizzamo ora **i** per identificare la posizione di ogni bit all'interno del Multiple Bit Adder, ad esempio 0-3 per un Adder a 4 bit, e scrivere le espressioni generali per **p** e **g**:
 
-gi = Ai*Bi (ad esempio, g2 = A2\*B2)
-pi = Ai+Bi (ad esempio, p3 = A3\*B3)
+gi = A<sub>i</sub>*B<sub>i</sub> (ad esempio, g<sub>2</sub> = A<sub>2</sub>\*B<sub>2</sub>)\
+pi = A<sub>i</sub>+B<sub>i</sub> (ad esempio, p<sub>3</sub> = A<sub>3</sub>\*B<sub>3</sub>)
 
 Andiamo a computare il Carry In "C" di un Adder **i+1** utilizzando gli input dello stadio precedente **i**:
 
