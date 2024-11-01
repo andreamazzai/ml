@@ -768,27 +768,52 @@ La circuiteria Look Ahead considera se lo stadio precedente introduce un Carry a
 - che **genera** un C<sub>OUT</sub> solo se A*B = 1
 - che **propaga** un C<sub>OUT</sub> solo se C<sub>IN</sub> è a 1 e A+B = 1
 
-per ogni stadio, C<sub>OUT</sub> = g + P * CIN
-= A*B + (A+B)\*CIN che abbiamo già visto perché è il C<sub>OUT</sub> di ogni Full Adder
+A questo punto possiamo identificare il Carry Out per ogni stadio con una generica espressione:
 
-gi = Ai*Bi
-pi = Ai+ Bi
-Ci+1 = gi + pi * Ci
-C1 = g0 + p0 * C0 che è uguale a A*B + (A+B)\*CIN
-C2 = g1 + p1 * C1 
-C2 = g1 + p1 * (g0 + p0 * C0) che significa che non dipendiamo più dal risultato dell'Adder precedente, ma solo dai suoi input.
-C2 = g1 + p1 * g0 + p1 * p0 * C0
+C<sub>OUT</sub> = g + P * C<sub>IN</sub>, cioè, effettuando le sostituzioni di g e p:
 
-C3 = g2 + p2 * C2 
-C3 = g2 + p2 * (g1 + p1 * g0 + p1 * p0 * C0)
-C3 = g2 + p2 * g1 + p2 * p1 * g0 + p2 * p1 * p0 * C0
-notare che l'espressione tiene conto solo di g2, g1, g0 e p2, p1 e p0, cioè delle AND e degli OR degli stadio precedenti
+C<sub>OUT</sub> = A*B + (A+B)\*CIN, con la quale abbiamo familiarità perché altro non è il C<sub>OUT</sub> di ogni Full Adder.
 
-C4 = g3 + p3 * C3 
-C4 = g3 + p3 * (g2 + p2 * (g1 + p1 * g0 + p1 * p0 * C0))
-C4 = g3 + p3 * (g2 + p2 * g1 + p2 * p1 * g0 + p2 * p1 * p0 * C0)
-C4 = g3 + p3 * g2 + p3 * p2 * g1 + p3 * p2 * p1 * g0 + p3 * p2 * p1 * p0 * C0
-notare che l'espressione tiene conto solo di g2, g1, g0 e p2, p1 e p0, cioè delle AND e degli OR degli stadi precedenti
+Utilizzamo ora **i** per identificare la posizione di ogni bit all'interno del Multiple Bit Adder, ad esempio 0-3 per un Adder a 4 bit e scrivere le espressioni generali per **p** e **g**:
+
+gi = Ai*Bi (ad esempio, g2 = A2\*B2)
+pi = Ai+Bi (ad esempio, p3 = A3\*B3)
+
+Andiamo a computare il Carry In "C" di un Adder **i+1** utilizzando gli input dello stadio precedente **i**:
+
+Ci+1 = gi + pi\*Ci
+
+Possiamo ora scrivere le espressioni per i Carry In di tutti gli stadi:
+
+L'espresisone per il Carry In del secondo Adder è:
+
+C1 = g0 + p0\*C0, cioè
+C1 = A0*B0 + (A0+B0)\*C0
+
+Si noti che questa espressione dipende dunque dai soli input A, B e C0.
+Andiamo ora a scrivere l'espressione per il Carry In del terzo Adder:
+
+C2 = g1 + p1\*C1, cioè, sostituendo C1:
+C2 = g1 + p1\*(g0 + p0\*\C0), che significa che C2 non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B dell'Adder precedente e da C0. Applicando la proprietà distributiva, si ottiene:
+C2 = g1 + p1\*g0 + p1\*p0*\C0
+
+Si noti che questa espressione dipende dunque dai soli input A, B e C0.
+Andiamo ora a scrivere l'espressione per il Carry In del quarto Adder:
+
+C3 = g2 + p2\*C2, cioè, sostituendo C2:
+C3 = g2 + p2\*(g1 + p1\*g0 + p1\*p0\*C0), che significa che C3 non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B degli Adder precedenti e da C0. Applicando la proprietà distributiva, si ottiene:
+C3 = g2 + p2\*g1 + p2\*p1\*g0 + p2\*p1\*p0\*C0
+
+Si noti che questa espressione dipende dunque dai soli input A, B e C0.
+Andiamo ora a scrivere l'espressione per C4, che è il Carry Out del quarto Adder:
+
+C4 = g3 + p3\*C3, cioè, sostituendo C3:
+C4 = g3 + p3\*(g2 + p2\*(g1 + p1\*g0 + p1\*\p0\*C0)), che significa che C4 non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B degli Adder precedenti e da C0. Applicando la proprietà distributiva, si ottiene:
+C4 = g3 + p3\*(g2 + p2\*g1 + p2\*p1\*\g0 + p2\*\p1\*\p0\*\C0). Applicando nuovamente la proprietà distributiva, si ottiene:
+C4 = g3 + p3\*\g2 + p3\*p2\*g1 + p3\*p2\*p1\*g0 + p3\*p2\*p1\*p0\*C0
+
+Si noti che questa espressione dipende dunque dai soli input A, B e C0.
+
 
 A questo punto realizzo un Modified Full Adder.
 Q è sempre A XOR B XOR CIN
