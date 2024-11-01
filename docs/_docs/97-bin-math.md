@@ -716,9 +716,9 @@ Un Adder di tipo Carry Look Ahead (CLA) affronta il problema del ritardo causato
 
 Se in un Ripple Carry Adder a 4 bit il ritardo può essere modesto, il ritardo in un Adder a 16 o più bit può ridurre significativamente la frequenza massima di lavoro. Infatti, ogni Full Adder di un RCA dipende dal risultato dell'Adder precedente; dovendo considerare il caso peggiore, si può dire che il risultato dell'ultimo Full Adder dipende da tutti i Full Adder precedenti.
 
-Per indirizzare la problematica appena esposta, è necessario che ogni Full Adder possa calcolare il proprio Carry Out in maniera indipendente dal Carry Out reso disponibile dallo stadio precedente. Perché questo accada, ad ogni Full Adder deve essere aggiunta circuiteria in grado di calcolare il proprio Carry In.
+Per indirizzare la problematica appena esposta, è necessario che ogni Full Adder possa calcolare il proprio Carry Out in maniera indipendente dal Carry Out reso disponibile dallo stadio precedente. Perché questo accada, ad ogni Full Adder deve essere aggiunta circuiteria in grado di calcolare il proprio Carry In, senza che si utilizzi il Carry Out del Full Adder precedente.
 
-Tutto questo porterà ad un compromesso: la velocità di risposta di ogni Full Adder aumenta, a discapito della aumentata complessità dovuta all'incremento di porte logiche.
+Chiaramente, questo porta ad un compromesso: la velocità di risposta di ogni Full Adder aumenta, a discapito della aumentata complessità dovuta all'incremento di porte logiche.
 
 ![Carry Look Ahead Adder](../../assets/math/carry-look-ahead-schema.png){:width="80%"}
 
@@ -728,21 +728,20 @@ L'immagine mostra che gli ingressi dei vari stadi di un Carry Look Ahead Adder (
 
 In altre parole, si crea una logica dipendente dai soli termini A e B e dal Carry C<sub>0</sub>. Come si ottiene questo risultato?
 
-Identificando le situazioni nelle quali un Carry viene *generato* o *propagato*, ogni Adder<sub>(i)</sub> può essere dotato di un circuito in grado di sapere se troverà un Carry in ingresso computandolo a partire *dagli ingressi* dell'Adder<sub>(i-1)</sub> precedente, e dunque senza dipendere da quanto presente *dall'uscita* dello stadio precedente.
+Identificando le situazioni nelle quali un Carry viene *generato* o *propagato*, ogni Adder<sub>(i)</sub> può essere dotato di un circuito in grado di sapere se troverà un Carry in ingresso computandolo a partire *dagli ingressi* dell'Adder<sub>(i-1)</sub> precedente, e dunque senza dipendere da quanto presente *dall'uscita* di quell'Adder.
+
+Si deve trovare risposta alla domanda chiave "in quali situazioni un Adder<sub>(i)</sub> trova un Carry In a 1 sul proprio ingresso?"
 
 Riducendo questo concetto a espressioni logiche, due sono i casi da analizzare:
 
 1. In quali situazioni un Full Adder<sub>(i-1)</sub>, il cui Carry In è a 0, ***genera*** un Carry Out che viene passato al prossimo Full Adder<sub>(i)</sub>?
 2. In quali situazioni un Full Adder<sub>(i-1)</sub>, il cui Carry In è a 1, ***propaga*** il proprio Carry In al prossimo Full Adder<sub>(i)</sub>?
 
-Valutando i due casi, si trova risposta alla domanda chiave: in quali situazioni un Adder<sub>(i)</sub> trova un Carry In a 1 sul proprio ingresso?
-
-
 Le due situazioni appena descritte vengono tradotte in espressioni denominate **Generate** e **Propagate**.
 
-In quali casi un Full Adder *genera* un Carry senza che al suo ingresso Carry In sia presente un Carry? Riprendendo la truth table di un Full Adder, troviamo che se C<sub>IN</sub> di quell'Adder è a 0, il C<sub>OUT</sub> è a 1 solo se entrambi A **e** B sono a 1, dunque, per realizzare questo circuito possiamo utilizzare una porta AND. Questo comportamento viene descritto con l'espressione **g = A\*B** e si può leggere come "la logica Generate di ogni Full Adder corrisponde ad A AND B".
+1. In quali casi un Full Adder *genera* un Carry Out senza che al suo ingresso Carry In sia presente un Carry? Riprendendo la truth table di un Full Adder, troviamo che se C<sub>IN</sub> di quell'Adder è a 0, il C<sub>OUT</sub> è a 1 solo se entrambi A **e** B sono a 1, dunque, per realizzare questo circuito possiamo utilizzare una porta AND. Questo comportamento viene descritto con l'espressione **g = A\*B** e si può leggere come "la logica Generate di ogni Full Adder corrisponde ad A AND B".
 
-Quando, invece, un Full Adder *propaga* un Carry presente al suo ingresso Carry In? Se il C<sub>IN</sub> di quell'Adder è a 1, il C<sub>OUT</sub> è a 1 quando A **o** B sono a 1, dunque, per realizzare questo circuito possiamo utilizzare una porta OR. Questo comportamento viene descritto con l'espressione **p = A+B** e si può leggere come "la logica Propagate di ogni Full Adder corrisponde ad A OR B".
+2. Quando, invece, un Full Adder *propaga* un Carry presente al suo ingresso Carry In? Se il C<sub>IN</sub> di quell'Adder è a 1, il C<sub>OUT</sub> è a 1 quando A **o** B sono a 1, dunque, per realizzare questo circuito possiamo utilizzare una porta OR. Questo comportamento viene descritto con l'espressione **p = A+B** e si può leggere come "la logica Propagate di ogni Full Adder corrisponde ad A OR B".
 
 | C<sub>IN</sub> | A     | B     | Q | C<sub>OUT</sub> | Generate / Propagate |
 | -              | -     | -     | - | -               | -                    |
@@ -757,9 +756,9 @@ Quando, invece, un Full Adder *propaga* un Carry presente al suo ingresso Carry 
 
 *Truth table di un Full Adder.*
 
-In altre parole, La circuiteria Look Ahead considera se lo stadio precedente introduce un Carry analizzando le due condizioni precedenti. Dati gli ingressi A, B e C<sub>IN</sub>:
+In altre parole, la circuiteria Look Ahead considera se lo stadio precedente introduce un Carry analizzando le due condizioni precedenti. Dati gli ingressi A, B e C<sub>IN</sub>:
 
-- l'espressione Generate viene utilizzata da un Adder "i" per identificare quando, in assenza di un Carry agli ingressi dello stadio precedente "i-1", questi produrrà ("genererà") un Carry C<sub>OUT</sub>solo se A*B = 1, Carry Out che l'Adder<sub>i</sub> ritroverà sul suo Carry In;
+- l'espressione Generate viene utilizzata da un Adder "i" per identificare quando, in assenza di un Carry agli ingressi dello stadio precedente "i-1", questi produrrà ("genererà") un Carry C<sub>OUT</sub> solo se A*B = 1, Carry Out che l'Adder<sub>i</sub> ritroverà sul suo Carry In;
 - l'espressione Propagate viene utilizzata da un Adder "i" per identificare quando, in presenza di un Carry agli ingressi dello stadio precedente "i-1", questi produrrà ("propagherà") un Carry C<sub>OUT</sub> solo se C<sub>IN</sub> = 1 e A+B = 1, Carry Out che l'Adder<sub>i</sub> ritroverà sul suo Carry In.
 
 A questo punto possiamo identificare il Carry Out per ogni stadio con una generica espressione:
@@ -776,7 +775,7 @@ pi = A<sub>i</sub>+B<sub>i</sub> (ad esempio, p<sub>3</sub> = A<sub>3</sub>\*B<s
 Andiamo a computare il Carry In "C" di un Adder **i+1** analizzando gli input dello stadio precedente **i**:
 
 C<sub>i+1</sub> = g<sub>i</sub> + p<sub>i</sub>\*C<sub>i</sub>, che equivale a\
-C<sub>i+1</sub> = A<sub>i</sub>\*B<sub>i</sub> + p<sub>i</sub>\*C<sub>i</sub>
+C<sub>i+1</sub> = A<sub>i</sub>\*B<sub>i</sub> + (A<sub>i</sub>+B<sub>i</sub>)\*C<sub>i</sub>
 
 Possiamo ora scrivere le espressioni per i Carry In di tutti gli stadi. L'espressione per il Carry In del secondo Adder è:
 
