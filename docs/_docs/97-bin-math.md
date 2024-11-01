@@ -706,7 +706,7 @@ Il Multiple Bit Adder creato ha un nome univoco: Ripple Carry Adder (RCA), perch
 
 L'immagine seguente, tratta dal video <a href="https://www.youtube.com/watch?v=TNoQ_djJW0I" target="_blank">Ripple Carry Adders Timing</a>, aiuta a visualizzare come il segnale C<sub>OUT</sub> dipenda da ben 9 livelli (nell'analisi di un circuito, si deve considerare il caso peggiore).
 
-![Timing di un Ripple Carry Adder](../../assets/math/rca-timing.png){:width="100%"}
+![Timing di un Ripple Carry Adder](../../assets/math/rca-timing.png){:width="80%"}
 
 *Timing di un Ripple Carry Adder.*
 
@@ -720,7 +720,7 @@ Se in un Ripple Carry Adder a 4 bit il ritardo può essere modesto, il ritardo i
 
 Per indirizzare la problematica appena esposta, è necessario che ogni Full Adder possa calcolare il proprio Carry Out in maniera indipendente dal Carry Out reso disponibile dallo stadio precedente. Perché questo accada, ad ogni Full Adder deve essere aggiunta circuiteria in grado di calcolare il proprio Carry In:
 
-![Carry Look Ahead Adder](../../assets/math/carry-look-ahead-schema.png){:width="100%"}
+![Carry Look Ahead Adder](../../assets/math/carry-look-ahead-schema.png){:width="80%"}
 
 *Carry Look Ahead Adder.*
 
@@ -811,7 +811,7 @@ Si noti che anche questa espressione dipende, dunque, dai soli input A, B e C<su
 
 Andiamo ora a realizzare un Carry Look Ahead Adder, ma prima modifichiamo i Full Adder considerando quanto visto sopra e creiamo dei Modified Full Adder.
 
-![Logica della somma del Modified Full Adder](../../assets/math/modifified-full-adder-1.png){:width="25%"}
+![Logica della somma del Modified Full Adder](../../assets/math/modifified-full-adder-1.png){:width="20%"}
 
 *Logica della somma del Modified Full Adder.*
 
@@ -819,7 +819,7 @@ La somma **Q**, come sempre, corrisponde ad A<sub>0</sub>⊕B<sub>0</sub>⊕C<su
 
 Vediamo la logica del Carry C<sub>1</sub> = g<sub>0</sub> + p<sub>0</sub>\*C<sub>0</sub>:
 
-![Logica del Carry del Modified Full Adder](../../assets/math/modifified-full-adder-2.png){:width="25%"}
+![Logica del Carry del Modified Full Adder](../../assets/math/modifified-full-adder-2.png){:width="20%"}
 
 *Logica del Carry del Modified Full Adder.*
 
@@ -827,13 +827,13 @@ Si noti che il Carry Out C<sub>1</sub> del primo Adder si trova al livello 3, ch
 
 Aggiungendo il prossimo Modified Full Adder, si verifica che la somma è computata al 4° livello, mentre il Carry è, come nell'adder precedente, computato ancora al 3° livello.
 
-![Modified Full Adder a due stadi](../../assets/math/modifified-full-adder-3.png){:width="50%"}
+![Modified Full Adder a due stadi](../../assets/math/modifified-full-adder-3.png){:width="40%"}
 
 *Modified Full Adder a due stadi.*
 
 Proseguendo con il terzo e con il quarto Modified Full Adder, la somma permane al 4° livello, mentre il Carry continua ad essere generato al 3° livello.
 
-![Modified Full Adder a quattro stadi](../../assets/math/modifified-full-adder-4.png){:width="100%"}
+![Modified Full Adder a quattro stadi](../../assets/math/modifified-full-adder-4.png){:width="80%"}
 
 *Modified Full Adder a quattro stadi.*
 
