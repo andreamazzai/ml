@@ -814,23 +814,39 @@ C4 = g3 + p3\*\g2 + p3\*p2\*g1 + p3\*p2\*p1\*g0 + p3\*p2\*p1\*p0\*C0
 
 Si noti che questa espressione dipende dunque dai soli input A, B e C0.
 
-A questo punto realizzo un Modified Full Adder.
+Andiamo ora a realizzare un Carry Look Ahead Adder, ma prima modifichiamo i Full Adder considerando quanto visto sopra e creiamo dei Modified Full Adder.
 
-Q è sempre A XOR B XOR CIN
-Ma aggiungo anche p0 (OR) e g0 (AND)
-Ora metto la logica del Carry, che abbiamo detto essere 
-  C1 = g0 + p0 * C0, dunque C1 ha un livello 3 (il percorso di C0 attravera una XOR, una AND e una OR; il percorso di p0 attravera una OR, una AND e una OR) -- in effetti a questo punto siamo come nel RCA, il cui C1 veniva generato a livello 3.
+![Modified Full Adder](../../assets/math/modifified-full-adder-1.png){:width="100%"}
 
-adndando però al prossimo Modified Adder, la somma è computata al 4° livello, mentre il Carry è al 3°.
-a proseguendo, anche la prossima somma è al 4° livello e il Carry sempre al 3°.
-e infine anche la ultima  somma è al 4° livello e il Carry sempre al 3°.
+*Modified Full Adder.*
 
-dunque aggiungo molta logica, ma... ho creat un numero fisso di livello di logica indipendentemente dal numero di bit!
-il lavoro per creare il carry è molto elevato... ma ho le prestazioni massime.
-un problema potrebbe essere il fan-in! a un certo dovrò spacchettare la OR che raccoglie le AND (ma perché non parla delle AND da spacchettare?)
-in effetti dunque ogni tot bit il livello salirà di due (Ma allora forse in questo momento sta tenendo in conto anche le porte AND?), Ma non cresce sicuramente in maniera così veloce come con il RCA.
+La somma **Q**, come sempre, corrisponde ad A<sub>0</sub>⊕B<sub>0</sub>⊕C<sub>0</sub>. Aggiungiamo al Full Adder una porta OR e una porta AND con il solo scopo di ottenere i termini p<sub>0</sub> (cioè A<sub>0</sub>+B<sub>0</sub>) e g<sub>0</sub> (cioé A<sub>0</sub>*B<sub>0</sub>).
 
-DA CONTESTUALIZZARE: In questo modo, il risultato di ogni Adder attraversa un numero fisso e ridotto di livelli.
+Vediamo la logica del Carry C1 = g0 + p0\*C0:
+
+![Logica del Carry del Modified Full Adder](../../assets/math/modifified-full-adder-2.png){:width="100%"}
+
+*Logica del Carry del Modified Full Adder.*
+
+Si noti che il Carry Out C1 del primo Adder si trova al livello 3, che significa che il percorso più lungo è rappresentato da una OR che ha in ingresso A0 e B0, il cui output p0 entra in una AND, il cui output entra in una OR finale dalla quale si ottiene C1. In effetti, a questo punto, siamo come nel RCA, il cui C1 veniva generato al 3° livello.
+
+Aggiungendo il prossimo Modified Full Adder, si verifica che la somma è computata al 4° livello, mentre il Carry è, come nell'adder precedente, computato ancora al 3° livello.
+
+![Modified Full Adder a due stadi](../../assets/math/modifified-full-adder-3.png){:width="100%"}
+
+*Modified Full Adder a due stadi.*
+
+Proseguendo con il terzo e con il quarto Modified Full Adder, la somma permane al 4° livello, mentre il Carry continua ad essere generato al 3° livello.
+
+![Modified Full Adder a quattro stadi](../../assets/math/modifified-full-adder-4.png){:width="100%"}
+
+*Modified Full Adder a quattro stadi.*
+
+Come si può notare dagli screenshot, utilizzati su gentile concessione del [professor Lameres](#link-utili), ogni Adder successivo aggiunge molta logica, ma il Multiple Bit Adder creato permette di effettuare somme con un numero fisso di livelli indipendentemente dal numero di bit in input, a differenza del Ripple Carry Adder (per il quale, peraltro, la somma di una word di 4 bit richiedeva ben 9 livelli).
+
+In definitiva, il lavoro svolto per creare il Carry in un CLA Adder è molto elevato, ma si hanno in cambio le massime prestazioni.
+
+Un aspetto da tenere in considerazione potrebbe essere il fattore fan-in, che limita il numero di ingressi che una porta logica può avere. La porta OR finale, che genera il Carry Out, avrà un numero di input sempre maggiore all'aumentare del numero di bit dell'Adder, così come una delle AND connesse a questa OR. A un certo punto sarà necessario suddividere la OR e la AND in due livelli, causando così un incremento di 2 livelli. Dunque, anche all'aumentare del numero dei bit del CLA Adder il numero di livelli aumentarà, ma con una crescita decisamente inferiore rispetto a quella del Ripple Carry Adder, nel quale ogni singolo bit aggiunge due livelli da attraversare.
 
 ## Le sottrazioni con gli Adder
 
