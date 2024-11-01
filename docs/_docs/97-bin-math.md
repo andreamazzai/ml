@@ -804,7 +804,7 @@ Si noti che questa espressione dipende, dunque, dai soli input A, B e C<sub>0</s
 Andiamo ora a scrivere l'espressione per C<sub>4</sub>, che è il Carry Out del quarto Adder:
 
 C<sub>4</sub> = g<sub>3</sub> + p<sub>3</sub>\*C<sub>3</sub>, cioè, sostituendo C<sub>3</sub>:\
-C<sub>4</sub> = g<sub>3</sub> + p<sub>3</sub>\*(g<sub>2</sub> + p<sub>2</sub>\*g<sub>1</sub> + p<sub>2</sub>\*p<sub>1</sub>\*C<sub>0</sub> + p<sub>2</sub>\*p<sub>1</sub>\*p<sub>0</sub>\*C<sub>0</sub>), che significa che C<sub>4</sub> non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B degli Adder precedenti e da C<sub>0</sub>. Applicando la proprietà distributiva, si ottiene:\
+C<sub>4</sub> = g<sub>3</sub> + p<sub>3</sub>\*(g<sub>2</sub> + p<sub>2</sub>\*g<sub>1</sub> + p<sub>2</sub>\*p<sub>1</sub>\*g<sub>0</sub> + p<sub>2</sub>\*p<sub>1</sub>\*p<sub>0</sub>\*C<sub>0</sub>), che significa che C<sub>4</sub> non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B degli Adder precedenti e da C<sub>0</sub>. Applicando la proprietà distributiva, si ottiene:\
 C<sub>4</sub> = g<sub>3</sub> + p<sub>3</sub>\*g<sub>2</sub> + p<sub>3</sub>\*p<sub>2</sub>\*g<sub>1</sub> + p<sub>3</sub>\*p<sub>2</sub>\*p<sub>1</sub>\*C<sub>0</sub> + p<sub>3</sub>\*p<sub>2</sub>\*p<sub>1</sub>\*p<sub>0</sub>\*C<sub>0</sub>
 
 Si noti che anche questa espressione dipende, dunque, dai soli input A, B e C<sub>0</sub>.
