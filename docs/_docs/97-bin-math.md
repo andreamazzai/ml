@@ -785,37 +785,37 @@ Ci+1 = gi + pi\*Ci
 
 Possiamo ora scrivere le espressioni per i Carry In di tutti gli stadi:
 
-L'espresisone per il Carry In del secondo Adder è:
+L'espressione per il Carry In del secondo Adder è:
 
-C1 = g0 + p0\*C0, cioè
+C1 = g0 + p0\*C0, cioè\
 C1 = A0*B0 + (A0+B0)\*C0
 
-Si noti che questa espressione dipende dunque dai soli input A, B e C0.
+Si noti che questa espressione dipende dunque dai soli input A, B e C0.\
 Andiamo ora a scrivere l'espressione per il Carry In del terzo Adder:
 
-C2 = g1 + p1\*C1, cioè, sostituendo C1:
-C2 = g1 + p1\*(g0 + p0\*\C0), che significa che C2 non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B dell'Adder precedente e da C0. Applicando la proprietà distributiva, si ottiene:
+C2 = g1 + p1\*C1, cioè, sostituendo C1:\
+C2 = g1 + p1\*(g0 + p0\*\C0), che significa che C2 non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B dell'Adder precedente e da C0. Applicando la proprietà distributiva, si ottiene:\
 C2 = g1 + p1\*g0 + p1\*p0*\C0
 
-Si noti che questa espressione dipende dunque dai soli input A, B e C0.
+Si noti che questa espressione dipende dunque dai soli input A, B e C0.\
 Andiamo ora a scrivere l'espressione per il Carry In del quarto Adder:
 
-C3 = g2 + p2\*C2, cioè, sostituendo C2:
-C3 = g2 + p2\*(g1 + p1\*g0 + p1\*p0\*C0), che significa che C3 non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B degli Adder precedenti e da C0. Applicando la proprietà distributiva, si ottiene:
+C3 = g2 + p2\*C2, cioè, sostituendo C2:\
+C3 = g2 + p2\*(g1 + p1\*g0 + p1\*p0\*C0), che significa che C3 non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B degli Adder precedenti e da C0. Applicando la proprietà distributiva, si ottiene:\
 C3 = g2 + p2\*g1 + p2\*p1\*g0 + p2\*p1\*p0\*C0
 
-Si noti che questa espressione dipende dunque dai soli input A, B e C0.
+Si noti che questa espressione dipende dunque dai soli input A, B e C0.\
 Andiamo ora a scrivere l'espressione per C4, che è il Carry Out del quarto Adder:
 
-C4 = g3 + p3\*C3, cioè, sostituendo C3:
-C4 = g3 + p3\*(g2 + p2\*(g1 + p1\*g0 + p1\*\p0\*C0)), che significa che C4 non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B degli Adder precedenti e da C0. Applicando la proprietà distributiva, si ottiene:
-C4 = g3 + p3\*(g2 + p2\*g1 + p2\*p1\*\g0 + p2\*\p1\*\p0\*\C0). Applicando nuovamente la proprietà distributiva, si ottiene:
+C4 = g3 + p3\*C3, cioè, sostituendo C3:\
+C4 = g3 + p3\*(g2 + p2\*(g1 + p1\*g0 + p1\*\p0\*C0)), che significa che C4 non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B degli Adder precedenti e da C0. Applicando la proprietà distributiva, si ottiene:\
+C4 = g3 + p3\*(g2 + p2\*g1 + p2\*p1\*\g0 + p2\*\p1\*\p0\*\C0). Applicando nuovamente la proprietà distributiva, si ottiene:\
 C4 = g3 + p3\*\g2 + p3\*p2\*g1 + p3\*p2\*p1\*g0 + p3\*p2\*p1\*p0\*C0
 
 Si noti che questa espressione dipende dunque dai soli input A, B e C0.
 
-
 A questo punto realizzo un Modified Full Adder.
+
 Q è sempre A XOR B XOR CIN
 Ma aggiungo anche p0 (OR) e g0 (AND)
 Ora metto la logica del Carry, che abbiamo detto essere 
