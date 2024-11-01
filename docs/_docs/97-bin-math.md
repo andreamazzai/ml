@@ -773,9 +773,10 @@ Utilizzamo ora **i** per identificare la posizione di ogni bit all'interno del M
 gi = A<sub>i</sub>*B<sub>i</sub> (ad esempio, g<sub>2</sub> = A<sub>2</sub>\*B<sub>2</sub>)\
 pi = A<sub>i</sub>+B<sub>i</sub> (ad esempio, p<sub>3</sub> = A<sub>3</sub>\*B<sub>3</sub>)
 
-Andiamo a computare il Carry In "C" di un Adder **i+1** utilizzando gli input dello stadio precedente **i**:
+Andiamo a computare il Carry In "C" di un Adder **i+1** analizzando gli input dello stadio precedente **i**:
 
-C<sub>i+1</sub> = g<sub>i</sub> + p<sub>i</sub>\*C<sub>i</sub>
+C<sub>i+1</sub> = g<sub>i</sub> + p<sub>i</sub>\*C<sub>i</sub>, che equivale a\
+C<sub>i+1</sub> = A<sub>i</sub>\*B<sub>i</sub> + p<sub>i</sub>\*C<sub>i</sub>
 
 Possiamo ora scrivere le espressioni per i Carry In di tutti gli stadi. L'espressione per il Carry In del secondo Adder è:
 
