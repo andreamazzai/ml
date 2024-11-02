@@ -728,7 +728,7 @@ L'immagine mostra che gli ingressi dei vari stadi di un Carry Look Ahead Adder (
 
 In altre parole, si crea una logica dipendente dai soli termini A e B e dal Carry C<sub>0</sub>. Come si ottiene questo risultato?
 
-Identificando le situazioni nelle quali un Carry viene *generato* o *propagato*, ogni Adder<sub>(i)</sub> può essere dotato di un circuito in grado di sapere se troverà un Carry in ingresso computandolo a partire *dagli ingressi* dell'Adder<sub>(i-1)</sub> precedente, e dunque senza dipendere da quanto presente *dall'uscita* di quell'Adder.
+Identificando le situazioni nelle quali un Carry viene *generato* o *propagato*, ogni Adder<sub>(i)</sub> può essere dotato di un circuito in grado di sapere se troverà un Carry in ingresso computandolo a partire *dagli ingressi* dell'Adder<sub>(i-1)</sub> precedente e da C<sub>0</sub>, ossia senza dipendere da quanto presente *dall'uscita* di quell'Adder.
 
 Si deve trovare risposta alla domanda chiave "in quali situazioni un Adder<sub>(i)</sub> trova un Carry In a 1 sul proprio ingresso?"
 
@@ -739,20 +739,20 @@ Riducendo questo concetto a espressioni logiche, due sono i casi da analizzare:
 
 Le due situazioni appena descritte vengono tradotte in espressioni denominate **Generate** e **Propagate**.
 
-1. In quali casi un Full Adder *genera* un Carry Out senza che al suo ingresso Carry In sia presente un Carry? Riprendendo la truth table di un Full Adder, troviamo che se C<sub>IN</sub> di quell'Adder è a 0, il C<sub>OUT</sub> è a 1 solo se entrambi A **e** B sono a 1, dunque, per realizzare questo circuito possiamo utilizzare una porta AND. Questo comportamento viene descritto con l'espressione **g = A\*B** e si può leggere come "la logica Generate di ogni Full Adder corrisponde ad A AND B".
+1. In quali casi un Full Adder **genera** un Carry Out senza che al suo ingresso Carry In sia presente un Carry? Analizzando la truth table di un Full Adder, troviamo che se C<sub>IN</sub> di quell'Adder è a 0, il C<sub>OUT</sub> è a 1 solo se entrambi A **e** B sono a 1: dunque, per realizzare questo circuito possiamo utilizzare una porta AND. Questo caso viene descritto con l'espressione **g = A\*B** e si può leggere come "la logica Generate di ogni Full Adder corrisponde ad A AND B".
 
-2. Quando, invece, un Full Adder *propaga* un Carry presente al suo ingresso Carry In? Se il C<sub>IN</sub> di quell'Adder è a 1, il C<sub>OUT</sub> è a 1 quando A **o** B sono a 1, dunque, per realizzare questo circuito possiamo utilizzare una porta OR. Questo comportamento viene descritto con l'espressione **p = A+B** e si può leggere come "la logica Propagate di ogni Full Adder corrisponde ad A OR B".
+2. Quando, invece, un Full Adder **propaga** un Carry presente sul suo ingresso Carry In? Se il C<sub>IN</sub> di quell'Adder è a 1, il C<sub>OUT</sub> è a 1 quando A **o** B sono a 1, dunque, per realizzare questo circuito possiamo utilizzare una porta OR. Questo caso viene descritto con l'espressione **p = A+B** e si può leggere come "la logica Propagate di ogni Full Adder corrisponde ad A OR B".
 
-| C<sub>IN</sub> | A     | B     | Q | C<sub>OUT</sub> | Generate / Propagate |
-| -              | -     | -     | - | -               | -                    |
-| 0              | 0     | 0     | 0 | 0               |                      |
-| 0              | 0     | 1     | 1 | 0               |                      |
-| 0              | 1     | 0     | 1 | 0               |                      |
-| **0**          | **1** | **1** | 0 | **1**           | **<-- Generate**     |
-| 1              | 0     | 0     | 1 | 0               |                      |
-| **1**          | 0     | **1** | 0 | **1**           | **<-- Propagate**    |
-| **1**          | **1** | 0     | 0 | **1**           | **<-- Propagate**    |
-| **1**          | **1** | **1** | 1 | **1**           | **<-- Propagate**    |
+| C<sub>IN</sub> | A     | B     | Q | C<sub>OUT</sub> | Generate / Propagate    |
+| -              | -     | -     | - | -               | -                       |
+| 0              | 0     | 0     | 0 | 0               |                         |
+| 0              | 0     | 1     | 1 | 0               |                         |
+| 0              | 1     | 0     | 1 | 0               |                         |
+| **0**          | **1** | **1** | 0 | **1**           | ** Generate** (A AND B) |
+| 1              | 0     | 0     | 1 | 0               |                         |
+| **1**          | 0     | **1** | 0 | **1**           | ** Propagate** (A OR B) |
+| **1**          | **1** | 0     | 0 | **1**           | ** Propagate** (A OR B) |
+| **1**          | **1** | **1** | 1 | **1**           | ** Propagate** (A OR B) |
 
 *Truth table di un Full Adder.*
 
@@ -803,7 +803,7 @@ C<sub>4</sub> = g<sub>3</sub> + p<sub>3</sub>\*C<sub>3</sub>, cioè, sostituendo
 C<sub>4</sub> = g<sub>3</sub> + p<sub>3</sub>\*(g<sub>2</sub> + p<sub>2</sub>\*g<sub>1</sub> + p<sub>2</sub>\*p<sub>1</sub>\*g<sub>0</sub> + p<sub>2</sub>\*p<sub>1</sub>\*p<sub>0</sub>\*C<sub>0</sub>), che significa che C<sub>4</sub> non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B degli Adder precedenti e da C<sub>0</sub>. Applicando la proprietà distributiva, si ottiene:\
 C<sub>4</sub> = g<sub>3</sub> + p<sub>3</sub>\*g<sub>2</sub> + p<sub>3</sub>\*p<sub>2</sub>\*g<sub>1</sub> + p<sub>3</sub>\*p<sub>2</sub>\*p<sub>1</sub>\*g<sub>0</sub> + p<sub>3</sub>\*p<sub>2</sub>\*p<sub>1</sub>\*p<sub>0</sub>\*C<sub>0</sub>
 
-Si noti che anche questa espressione dipende, dunque, dai soli input A, B e C<sub>0</sub>.
+Considerando le espressioni di ogni Adder, si evince che tutte dipendono dai soli input A, B e C<sub>0</sub>, che è esattamente lo scopo da perseguire: calcolare il Carry di ogni stadio senza dover attendere il calcolo del Carry dello stadio precedente.
 
 Andiamo ora a realizzare un Carry Look Ahead Adder, ma prima modifichiamo i Full Adder considerando quanto visto sopra e creiamo dei Modified Full Adder.
 
