@@ -631,7 +631,7 @@ Anziché ricorrere alla combinazione di AND e OR (Sum of Products, esposta nel v
 
 L'analisi di **Q** produce la seguente mappa (nella quale C corrisponde al C<sub>IN</sub> visto nella truth table):
 
-![Karnaugh Map](../../assets/math/Kmap1.png){:width="35%"}
+![Karnaugh Map](../../assets/math/Kma(A<sub>1</sub>+B<sub>1</sub>).png){:width="35%"}
 
 Pur non potendo semplificare la truth table perché non è possibile creare gruppi di 1, si può notare il pattern "a scacchiera", che indica che il circuito logico equivalente è una porta XOR con tre ingressi (si veda il video <a href="https://www.youtube.com/watch?v=3SwLBw7RYiI" target="_blank">Combinational Logic Minimization: XORs</a>, sempre di Lameres).
 
@@ -739,9 +739,9 @@ Riducendo questo concetto a espressioni logiche, due sono i casi da analizzare:
 
 Le due situazioni appena descritte vengono tradotte in espressioni denominate **Generate** e **Propagate**.
 
-1. In quali casi un Full Adder **genera** un Carry Out senza che al suo ingresso Carry In sia presente un Carry? Analizzando la truth table di un Full Adder, troviamo che se C<sub>IN</sub> di quell'Adder è a 0, il C<sub>OUT</sub> è a 1 solo se entrambi A **e** B sono a 1: dunque, per realizzare questo circuito possiamo utilizzare una porta AND. Questo caso viene descritto con l'espressione **g = A\*B** e si può leggere come "la logica Generate di ogni Full Adder corrisponde ad A AND B".
+1. In quali casi un Full Adder **genera** un Carry Out senza che al suo ingresso Carry In sia presente un Carry? Analizzando la truth table di un Full Adder, troviamo che se C<sub>IN</sub> è a 0, il C<sub>OUT</sub> è a 1 solo se entrambi A **e** B sono a 1: dunque, per realizzare questo circuito possiamo utilizzare una porta AND. Questo caso viene descritto con l'espressione **g = A\*B** e si può leggere come "la logica Generate di ogni Full Adder corrisponde ad A AND B".
 
-2. Quando, invece, un Full Adder **propaga** un Carry presente sul suo ingresso Carry In? Se il C<sub>IN</sub> di quell'Adder è a 1, il C<sub>OUT</sub> è a 1 quando A **o** B sono a 1, dunque, per realizzare questo circuito possiamo utilizzare una porta OR. Questo caso viene descritto con l'espressione **p = A+B** e si può leggere come "la logica Propagate di ogni Full Adder corrisponde ad A OR B".
+2. Quando, invece, un Full Adder **propaga** un Carry presente sul suo ingresso Carry In? Se il C<sub>IN</sub> di quell'Adder è a 1, il C<sub>OUT</sub> è a 1 quando A **o** B sono a 1: dunque, per realizzare questo circuito possiamo utilizzare una porta OR. Questo caso viene descritto con l'espressione **p = A+B** e si può leggere come "la logica Propagate di ogni Full Adder corrisponde ad A OR B".
 
 | C<sub>IN</sub> | A     | B     | Q | C<sub>OUT</sub> | Generate / Propagate    |
 | -              | -     | -     | - | -               | -                       |
@@ -756,12 +756,12 @@ Le due situazioni appena descritte vengono tradotte in espressioni denominate **
 
 *Truth table di un Full Adder.*
 
-In altre parole, la circuiteria Look Ahead considera se lo stadio precedente introduce un Carry analizzando le due condizioni precedenti. Dati gli ingressi A, B e C<sub>IN</sub>:
+In altre parole, la circuiteria Look Ahead valuta se lo stadio precedente introduce un Carry Out analizzando le due condizioni precedenti. Dati gli ingressi A, B e C<sub>IN</sub>:
 
-- l'espressione Generate viene utilizzata da un Adder "i" per identificare quando, in assenza di un Carry agli ingressi dello stadio precedente "i-1", questi produrrà ("genererà") un Carry C<sub>OUT</sub> solo se A*B = 1, Carry Out che l'Adder<sub>i</sub> ritroverà sul suo Carry In;
-- l'espressione Propagate viene utilizzata da un Adder "i" per identificare quando, in presenza di un Carry agli ingressi dello stadio precedente "i-1", questi produrrà ("propagherà") un Carry C<sub>OUT</sub> solo se C<sub>IN</sub> = 1 e A+B = 1, Carry Out che l'Adder<sub>i</sub> ritroverà sul suo Carry In.
+- l'espressione Generate viene utilizzata da un Adder "i" per identificare quando, in assenza di un Carry agli ingressi dello stadio precedente "i-1", questi produrrà ("genererà") un Carry C<sub>OUT</sub> (condizione verificata solo se A*B = 1), Carry Out che l'Adder<sub>i</sub> ritroverà sul suo Carry In;
+- l'espressione Propagate viene utilizzata da un Adder "i" per identificare quando, in presenza di un Carry agli ingressi dello stadio precedente "i-1", questi produrrà ("propagherà") un Carry C<sub>OUT</sub> (condizione verificata solo se C<sub>IN</sub> = 1 e A+B = 1), Carry Out che l'Adder<sub>i</sub> ritroverà sul suo Carry In.
 
-A questo punto possiamo identificare il Carry Out per ogni stadio con una generica espressione:
+A questo punto sappiamo identificare l'eventuale presenza del Carry Out di ogni stadio con una generica espressione:
 
 C<sub>OUT</sub> = g + p\*C<sub>IN</sub>, cioè, effettuando le sostituzioni di **g** e **p**:
 
@@ -769,10 +769,10 @@ C<sub>OUT</sub> = A*B + (A+B)\*C<sub>IN</sub>, con la quale abbiamo già familia
 
 Utilizzamo ora **i** per identificare la posizione di ogni bit all'interno del Multiple Bit Adder, ad esempio 0-3 per un Adder a 4 bit, e scrivere le espressioni generali per **p** e **g**:
 
-gi = A<sub>i</sub>*B<sub>i</sub> (ad esempio, g<sub>2</sub> = A<sub>2</sub>\*B<sub>2</sub>)\
-pi = A<sub>i</sub>+B<sub>i</sub> (ad esempio, p<sub>3</sub> = A<sub>3</sub>\*B<sub>3</sub>)
+gi = A<sub>i</sub>\*B<sub>i</sub> (ad esempio, g<sub>2</sub> = A<sub>2</sub>\*B<sub>2</sub>)\
+pi = A<sub>i</sub>+B<sub>i</sub> (ad esempio, p<sub>3</sub> = A<sub>3</sub>+B<sub>3</sub>)
 
-Andiamo a computare il Carry In "C" di un Adder **i+1** analizzando gli input dello stadio precedente **i**:
+Andiamo a computare il Carry In "C" di un generico Adder **i+1**, che equivale al Carry Out dell'Adder **i** che lo precede, analizzando gli input di quest'ultimo:
 
 C<sub>i+1</sub> = g<sub>i</sub> + p<sub>i</sub>\*C<sub>i</sub>, che equivale a\
 C<sub>i+1</sub> = A<sub>i</sub>\*B<sub>i</sub> + (A<sub>i</sub>+B<sub>i</sub>)\*C<sub>i</sub>
@@ -780,30 +780,33 @@ C<sub>i+1</sub> = A<sub>i</sub>\*B<sub>i</sub> + (A<sub>i</sub>+B<sub>i</sub>)\*
 Possiamo ora scrivere le espressioni per i Carry In di tutti gli stadi. L'espressione per il Carry In del secondo Adder è:
 
 C<sub>1</sub> = g<sub>0</sub> + p<sub>0</sub>\*C<sub>0</sub>, cioè\
-C<sub>1</sub> = A<sub>0</sub>*B<sub>0</sub> + (A<sub>0</sub>+B<sub>0</sub>)\*C<sub>0</sub>
+C<sub>1</sub> = A<sub>0</sub>\*B<sub>0</sub> + (A<sub>0</sub>+B<sub>0</sub>)\*C<sub>0</sub>
 
-Si noti che questa espressione dipende, dunque, dai soli input A, B e C<sub>0</sub>.\
+Si noti che questa espressione dipende dai soli input A, B e C<sub>0</sub>, che corrisponde esattamente a quanto si desidera fare.\
 Andiamo ora a scrivere l'espressione per il Carry In del terzo Adder:
 
 C<sub>2</sub> = g<sub>1</sub> + p<sub>1</sub>\*C<sub>1</sub>, cioè, sostituendo C<sub>1</sub>:\
 C<sub>2</sub> = g<sub>1</sub> + p<sub>1</sub>\*(g<sub>0</sub> + p<sub>0</sub>\*C<sub>0</sub>), che significa che C<sub>2</sub> non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B dell'Adder precedente e da C<sub>0</sub>. Applicando la proprietà distributiva, si ottiene:\
-C<sub>2</sub> = g<sub>1</sub> + p<sub>1</sub>\*g<sub>0</sub> + p<sub>1</sub>\*p<sub>0</sub>*C<sub>0</sub>
+C<sub>2</sub> = g<sub>1</sub> + p<sub>1</sub>\*g<sub>0</sub> + p<sub>1</sub>\*p<sub>0</sub>*C<sub>0</sub>, cioè:
+C<sub>2</sub> = A<sub>1</sub>\*B<sub>1</sub> + (A<sub>1</sub>+B<sub>1</sub>)*A<sub>0</sub>\*B<sub>0</sub> + (A<sub>1</sub>+B<sub>1</sub>)*(A<sub>0</sub>+B<sub>0</sub>)*C0
 
-Si noti che questa espressione dipende, dunque, dai soli input A, B e C<sub>0</sub>.\
-Andiamo ora a scrivere l'espressione per il Carry In del quarto Adder:
+Anche questa espressione dipende dunque dai soli input A, B e C<sub>0</sub>.\
+Procediamo scrivendo l'espressione per il Carry In del quarto Adder:
 
 C<sub>3</sub> = g<sub>2</sub> + p<sub>2</sub>\*C<sub>2</sub>, cioè, sostituendo C<sub>2</sub>:\
 C<sub>3</sub> = g<sub>2</sub> + p<sub>2</sub>\*(g<sub>1</sub> + p<sub>1</sub>\*g<sub>0</sub> + p<sub>1</sub>\*p<sub>0</sub>\*C<sub>0</sub>), che significa che C<sub>3</sub> non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B degli Adder precedenti e da C<sub>0</sub>. Applicando la proprietà distributiva, si ottiene:\
-C<sub>3</sub> = g<sub>2</sub> + p<sub>2</sub>\*g<sub>1</sub> + p<sub>2</sub>\*p<sub>1</sub>\*g<sub>0</sub> + p<sub>2</sub>\*p<sub>1</sub>\*p<sub>0</sub>\*C<sub>0</sub>
+C<sub>3</sub> = g<sub>2</sub> + p<sub>2</sub>\*g<sub>1</sub> + p<sub>2</sub>\*p<sub>1</sub>\*g<sub>0</sub> + p<sub>2</sub>\*p<sub>1</sub>\*p<sub>0</sub>\*C<sub>0</sub>, cioé:
+C3 = A<sub>2</sub>\*B<sub>2</sub> + (A<sub>2</sub>+B<sub>2</sub>)*A<sub>1</sub>\*B<sub>1</sub> + (A<sub>2</sub>+B<sub>2</sub>)*(A<sub>1</sub>+B<sub>1</sub>)*A<sub>0</sub>\*B<sub>0</sub> + (A<sub>2</sub>+B<sub>2</sub>)*(A<sub>1</sub>+B<sub>1</sub>)*(A<sub>0</sub>+B<sub>0</sub>)*C0
 
-Si noti che questa espressione dipende, dunque, dai soli input A, B e C<sub>0</sub>.\
-Andiamo ora a scrivere l'espressione per C<sub>4</sub>, che è il Carry Out del quarto Adder:
+Come nei casi precedenti, questa espressione dipende dai soli input A, B e C<sub>0</sub>.\
+Andiamo infine a scrivere l'espressione per C<sub>4</sub>, che è il Carry Out del quarto Adder:
 
 C<sub>4</sub> = g<sub>3</sub> + p<sub>3</sub>\*C<sub>3</sub>, cioè, sostituendo C<sub>3</sub>:\
 C<sub>4</sub> = g<sub>3</sub> + p<sub>3</sub>\*(g<sub>2</sub> + p<sub>2</sub>\*g<sub>1</sub> + p<sub>2</sub>\*p<sub>1</sub>\*g<sub>0</sub> + p<sub>2</sub>\*p<sub>1</sub>\*p<sub>0</sub>\*C<sub>0</sub>), che significa che C<sub>4</sub> non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B degli Adder precedenti e da C<sub>0</sub>. Applicando la proprietà distributiva, si ottiene:\
-C<sub>4</sub> = g<sub>3</sub> + p<sub>3</sub>\*g<sub>2</sub> + p<sub>3</sub>\*p<sub>2</sub>\*g<sub>1</sub> + p<sub>3</sub>\*p<sub>2</sub>\*p<sub>1</sub>\*g<sub>0</sub> + p<sub>3</sub>\*p<sub>2</sub>\*p<sub>1</sub>\*p<sub>0</sub>\*C<sub>0</sub>
+C<sub>4</sub> = g<sub>3</sub> + p<sub>3</sub>\*g<sub>2</sub> + p<sub>3</sub>\*p<sub>2</sub>\*g<sub>1</sub> + p<sub>3</sub>\*p<sub>2</sub>\*p<sub>1</sub>\*g<sub>0</sub> + p<sub>3</sub>\*p<sub>2</sub>\*p<sub>1</sub>\*p<sub>0</sub>\*C<sub>0</sub>, cioé:
+C4 = A<sub>3</sub>\*B<sub>3</sub> + (A<sub>3</sub>+B<sub>3</sub>)*A<sub>2</sub>\*B<sub>2</sub> + (A<sub>3</sub>+B<sub>3</sub>)*(A<sub>2</sub>+B<sub>2</sub>)*A<sub>1</sub>\*B<sub>1</sub> + (A<sub>3</sub>+B<sub>3</sub>)*(A<sub>2</sub>+B<sub>2</sub>)*(A<sub>1</sub>+B<sub>1</sub>)*A<sub>0</sub>\*B<sub>0</sub> + (A<sub>3</sub>+B<sub>3</sub>)*(A<sub>2</sub>+B<sub>2</sub>)*(A<sub>1</sub>+B<sub>1</sub>)*(A<sub>0</sub>+B<sub>0</sub>)*C0
 
-Considerando le espressioni di ogni Adder, si evince che tutte dipendono dai soli input A, B e C<sub>0</sub>, che è esattamente lo scopo da perseguire: calcolare il Carry di ogni stadio senza dover attendere il calcolo del Carry dello stadio precedente.
+Osservando le espressioni di ogni Adder, si deduce che tutte dipendono dai soli input A, B e C<sub>0</sub>, che è esattamente lo scopo da perseguire: calcolare il Carry di ogni stadio senza dover attendere il calcolo del Carry effettuato dallo stadio precedente.
 
 Andiamo ora a realizzare un Carry Look Ahead Adder, ma prima modifichiamo i Full Adder considerando quanto visto sopra e creiamo dei Modified Full Adder.
 
