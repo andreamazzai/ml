@@ -728,7 +728,7 @@ L'immagine mostra che gli ingressi dei vari stadi di un Carry Look Ahead Adder (
 
 In altre parole, si crea una logica dipendente dai soli termini A e B e dal Carry C<sub>0</sub>. Come si ottiene questo risultato?
 
-Identificando le situazioni nelle quali un Carry viene *generato* o *propagato*, ogni Adder<sub>(i)</sub> può essere dotato di un circuito in grado di sapere se troverà un Carry in ingresso computandolo a partire *dagli ingressi* di tutti gli Adder precedenti e da C<sub>0</sub>, ossia senza dipendere da quanto presente *dall'uscita C<sub>OUT</sub>* dell'Adder precedente.
+Identificando le situazioni nelle quali un Carry viene *generato* o *propagato*, ogni Adder<sub>(i)</sub> può essere dotato di un circuito in grado di sapere se troverà un Carry in ingresso computandolo a partire *dagli ingressi* di tutti gli Adder precedenti e da C<sub>0</sub>, ossia senza dipendere da quanto presente *dall'uscita* C<sub>OUT</sub> dell'Adder<sub>(i-1)</sub>.
 
 Si deve trovare risposta alla domanda chiave "in quali situazioni un Adder<sub>(i)</sub> trova un Carry In a 1 sul proprio ingresso?"
 
@@ -758,10 +758,10 @@ Le due situazioni appena descritte vengono tradotte in espressioni denominate **
 
 In altre parole, la circuiteria Look Ahead valuta se lo stadio precedente introduce un Carry Out analizzando le due condizioni precedenti. Dati gli ingressi A, B e C<sub>IN</sub>:
 
-- l'espressione Generate viene utilizzata da un Adder "i" per identificare quando, in assenza di un Carry agli ingressi dello stadio precedente "i-1", questi produrrà ("genererà") un Carry C<sub>OUT</sub> (condizione verificata solo se A*B = 1), Carry Out che l'Adder<sub>i</sub> ritroverà sul suo Carry In;
-- l'espressione Propagate viene utilizzata da un Adder "i" per identificare quando, in presenza di un Carry agli ingressi dello stadio precedente "i-1", questi produrrà ("propagherà") un Carry C<sub>OUT</sub> (condizione verificata solo se C<sub>IN</sub> = 1 e A+B = 1), Carry Out che l'Adder<sub>i</sub> ritroverà sul suo Carry In.
+- l'espressione Generate viene utilizzata da un Adder "i" per identificare quando, in assenza di un Carry agli ingressi dello stadio precedente "i-1", questi produrrà ("genererà") un Carry C<sub>OUT</sub> (condizione verificata solo se A*B = 1), Carry Out che l'Adder<sub>(i)</sub> ritroverà sul suo Carry In;
+- l'espressione Propagate viene utilizzata da un Adder "i" per identificare quando, in presenza di un Carry agli ingressi dello stadio precedente "i-1", questi produrrà ("propagherà") un Carry C<sub>OUT</sub> (condizione verificata solo se C<sub>IN</sub> = 1 e A+B = 1), Carry Out che l'Adder<sub>(i)</sub> ritroverà sul suo Carry In.
 
-A questo punto sappiamo identificare l'eventuale presenza del Carry Out di ogni stadio con una generica espressione:
+A questo punto, possiamo identificare l'eventuale presenza del Carry Out di ogni stadio con una generica espressione:
 
 C<sub>OUT</sub> = g + p\*C<sub>IN</sub>, cioè, effettuando le sostituzioni di **g** e **p**:
 
@@ -769,8 +769,8 @@ C<sub>OUT</sub> = A*B + (A+B)\*C<sub>IN</sub>, con la quale abbiamo già familia
 
 Utilizziamo ora **i** per identificare la posizione di ogni bit all'interno del Multiple Bit Adder, ad esempio 0-3 per un Adder a 4 bit, e scrivere le espressioni generali per **p** e **g**:
 
-gi = A<sub>i</sub>\*B<sub>i</sub> (ad esempio, g<sub>2</sub> = A<sub>2</sub>\*B<sub>2</sub>)\
-pi = A<sub>i</sub>+B<sub>i</sub> (ad esempio, p<sub>3</sub> = A<sub>3</sub>+B<sub>3</sub>)
+g<sub>i</sub> = A<sub>i</sub>\*B<sub>i</sub> (ad esempio, g<sub>2</sub> = A<sub>2</sub>\*B<sub>2</sub>)\
+p<sub>i</sub> = A<sub>i</sub>+B<sub>i</sub> (ad esempio, p<sub>3</sub> = A<sub>3</sub>+B<sub>3</sub>)
 
 Andiamo a computare il Carry In "C" di un generico Adder **i+1**, che equivale al Carry Out dell'Adder **i** che lo precede, analizzando gli input di quest'ultimo:
 
@@ -806,9 +806,9 @@ C<sub>4</sub> = g<sub>3</sub> + p<sub>3</sub>\*(g<sub>2</sub> + p<sub>2</sub>\*g
 C<sub>4</sub> = g<sub>3</sub> + p<sub>3</sub>\*g<sub>2</sub> + p<sub>3</sub>\*p<sub>2</sub>\*g<sub>1</sub> + p<sub>3</sub>\*p<sub>2</sub>\*p<sub>1</sub>\*g<sub>0</sub> + p<sub>3</sub>\*p<sub>2</sub>\*p<sub>1</sub>\*p<sub>0</sub>\*C<sub>0</sub>, cioé:\
 C<sub>4</sub> = A<sub>3</sub>\*B<sub>3</sub> + (A<sub>3</sub>+B<sub>3</sub>)\*A<sub>2</sub>\*B<sub>2</sub> + (A<sub>3</sub>+B<sub>3</sub>)\*(A<sub>2</sub>+B<sub>2</sub>)\*A<sub>1</sub>\*B<sub>1</sub> + (A<sub>3</sub>+B<sub>3</sub>)\*(A<sub>2</sub>+B<sub>2</sub>)\*(A<sub>1</sub>+B<sub>1</sub>)\*A<sub>0</sub>\*B<sub>0</sub> + (A<sub>3</sub>+B<sub>3</sub>)\*(A<sub>2</sub>+B<sub>2</sub>)\*(A<sub>1</sub>+B<sub>1</sub>)\*(A<sub>0</sub>+B<sub>0</sub>)*C<sub>0</sub>
 
-Osservando le espressioni di ogni Adder, si deduce che tutte dipendono dai soli input A, B e C<sub>0</sub>, che è esattamente lo scopo da perseguire: calcolare il Carry di ogni stadio senza dover attendere il calcolo del Carry effettuato dallo stadio precedente.
+Osservando le espressioni di ogni Adder, si deduce che tutte dipendono dai soli input A, B e C<sub>0</sub>, che è esattamente lo scopo da perseguire: ogni stadio calcola il proprio Carry senza dover attendere il calcolo del Carry effettuato dallo stadio precedente.
 
-Andiamo ora a realizzare un Carry Look Ahead Adder, ma prima modifichiamo i Full Adder considerando quanto visto sopra e creiamo dei *Modified* Full Adder.
+Andiamo ora a realizzare un Carry Look Ahead Adder, ma prima modifichiamo i Full Adder considerando quanto visto sopra, creando dei *Modified* Full Adder.
 
 ![Logica della somma del Modified Full Adder](../../assets/math/modifified-full-adder-1.png){:width="20%"}
 
@@ -824,7 +824,7 @@ Vediamo la logica del Carry C<sub>1</sub> = g<sub>0</sub> + p<sub>0</sub>\*C<sub
 
 Si noti che il Carry Out C<sub>1</sub> del primo Adder si trova al livello 3, che significa che il percorso più lungo è rappresentato da una OR che ha in ingresso A<sub>0</sub> e B<sub>0</sub>, il cui output p<sub>0</sub> entra in una AND, il cui output entra in una OR finale dalla quale si ottiene C<sub>1</sub>. In effetti, a questo punto, siamo nella stessa situazione del RCA, il cui C<sub>1</sub> veniva generato al 3° livello.
 
-Aggiungendo il prossimo Modified Full Adder, si verifica che la somma è computata al 4° livello, mentre il Carry è, come nell'adder precedente, computato ancora al 3° livello.
+Aggiungendo il prossimo Modified Full Adder, si verifica che la somma è computata al 4° livello, mentre il Carry è, come nell'adder precedente, computato ancora al 3° livello (OR in basso a sinistra).
 
 ![Modified Full Adder a due stadi](../../assets/math/modifified-full-adder-3.png){:width="40%"}
 
@@ -844,7 +844,11 @@ Un aspetto da tenere in considerazione potrebbe essere il fattore fan-in, che li
 
 ## Le sottrazioni con gli Adder
 
-È per questo motivo che una XOR all'ingresso B permette di negare gli input e, aggiungendo un Carry in ingresso, diventa facile effettuare una sottrazione, così come esposto in precedenza parlando del complemento a 2.
+Le sottrazioni binarie si effettuano sommando minuendo e [complemento a due del sottraendo](#numeri-unsigned-e-numeri-signed), come anticipato in precedenza: anziché eseguire "A - B", si inverte B e lo si somma ad A, ottenendo un'operazione "A + (-B)".
+
+WORK IN PROGRESS - WORK IN PROGRESS - WORK IN PROGRESS
+
+una XOR all'ingresso B permette di negare gli input e, aggiungendo un Carry in ingresso, diventa facile effettuare una sottrazione, così come esposto in precedenza parlando del complemento a 2.
 
 ## Link utili
 
