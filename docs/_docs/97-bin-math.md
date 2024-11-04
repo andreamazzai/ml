@@ -568,7 +568,7 @@ Per finire, da quanto visto fino ad ora possiamo dedurre un'altra regola: la som
 
 ## Gli Adder
 
-Come si effettuano le addizioni? E le sottrazioni?
+Abbiamo discusso di somme e sottrazioni, dando quasi per scontato che esistano dei circuiti che le implementano. Un accenno si trova in uno schema presente nella sezione [Metodi di identificazione dell’Overflow](#metodi-di-identificazione-delloverflow), ma non ci accontentiamo e vogliamo saperne di più. Come si effettuano le addizioni? E le sottrazioni?
 
 Un Adder è un unità logica basilare che permette di eseguire somme e, opportunamente configurata, sottrazioni.
 
@@ -585,7 +585,7 @@ B           0=     1=     0=     1=
 Q           0      1      1     10 
 ~~~
 
-Nella quarta ipotesi notiamo che il risultato della somma di due bit entrambi a 1 genera un riporto, cioè un Carry. Scrivendo la truth table e considerando il Carry generato dalla somma dei bit A e B, otteniamo:
+Nella quarta ipotesi notiamo che la somma di due bit entrambi a 1 genera un riporto, cioè un Carry. Scrivendo la truth table e considerando il Carry generato dalla somma dei bit A e B, otteniamo:
 
 | A | B | **Q** | C<sub>OUT</sub> |
 | - | - | -     | -               |
@@ -724,11 +724,11 @@ Chiaramente, questo porta ad un compromesso: la velocità di risposta di ogni Fu
 
 *Carry Look Ahead Adder.*
 
-L'immagine mostra che gli ingressi dei vari stadi di un Carry Look Ahead Adder (CLA) dipendono solamente dai termini A e B e dal Carry C<sub>0</sub>; questo è possibile grazie a una serie di sostituzioni algebriche che permettono ad ogni singolo Full Adder<sub>(i)</sub> di poter computare la propria somma e il proprio Carry Out partendo dagli ingressi A<sub>(i)</sub> e B<sub>(i)</sub> e da C<sub>0</sub>.
+L'immagine mostra che gli ingressi dei vari stadi di un Carry Look Ahead Adder (CLA) dipendono solamente dai termini A e B e dal Carry C<sub>0</sub>; questo è possibile grazie a una serie di sostituzioni algebriche che permettono ad ogni singolo Full Adder di poter computare la propria somma e il proprio Carry Out partendo dagli ingressi A, B e da C<sub>0</sub>.
 
 In altre parole, si crea una logica dipendente dai soli termini A e B e dal Carry C<sub>0</sub>. Come si ottiene questo risultato?
 
-Identificando le situazioni nelle quali un Carry viene *generato* o *propagato*, ogni Adder<sub>(i)</sub> può essere dotato di un circuito in grado di sapere se troverà un Carry in ingresso computandolo a partire *dagli ingressi* dell'Adder<sub>(i-1)</sub> precedente e da C<sub>0</sub>, ossia senza dipendere da quanto presente *dall'uscita* di quell'Adder.
+Identificando le situazioni nelle quali un Carry viene *generato* o *propagato*, ogni Adder<sub>(i)</sub> può essere dotato di un circuito in grado di sapere se troverà un Carry in ingresso computandolo a partire *dagli ingressi* di tutti gli Adder precedenti e da C<sub>0</sub>, ossia senza dipendere da quanto presente *dall'uscita C<sub>OUT</sub>* dell'Adder precedente.
 
 Si deve trovare risposta alla domanda chiave "in quali situazioni un Adder<sub>(i)</sub> trova un Carry In a 1 sul proprio ingresso?"
 
