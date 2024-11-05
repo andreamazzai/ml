@@ -106,7 +106,9 @@ Due sono gli aspetti da evidenziare:
 
 - Risoluzione del problema del doppio zero.
   - La regola che sta alla base della teoria del complemento a 2 è: come posso rappresentare il numero "-1" in modo che, aggiungendovi "1", si ottenga "0"?
-  - Similarmente ai vecchi tachimetri delle automobili, che una volta giunti a 99.999 passavano a 00.000, il 99.999 del tachimetro corrisponde allo 1111.1111 dell'aritmetica binaria a 8 bit: sommato a 0000.0001, genera come risultato 0000.0000 (il punto separatore fra i primi 4 bit e i secondi 4 bit dei numeri a 8 bit è inserito solamente per agevolarne la visualizzazione e non ne modifica in alcun modo i valori).
+  - Similarmente ai vecchi contachilometri meccanici delle automobili, che una volta giunti a 99.999 passavano a 00.000, il 99.999 del contachilomentri corrisponde allo 1111.1111 dell'aritmetica binaria a 8 bit: sommato a 0000.0001, genera come risultato 0000.0000.
+  
+  Nota: in queta pagina, il punto separatore fra i primi 4 bit e i secondi 4 bit dei numeri binari a 8 bit è inserito solamente per agevolarne la lettura e non ne modifica in alcun modo i valori.
 
 - Le sottrazioni si possono eseguire senza errori sommando minuendo e complemento a 2 del sottraendo.
   - Ad esempio, invece di eseguire "15 - 7", si effettua "15 + (-7)": l'addizione è l'operazione più semplice in assoluto da eseguire e implementare; utilizzando il complemento a 2 diventa possibile applicare alle sottrazioni le stesse regole già applicate alle addizioni, semplificandone enormemente i calcoli.
