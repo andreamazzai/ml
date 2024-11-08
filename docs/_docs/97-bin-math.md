@@ -653,7 +653,7 @@ cioé
 
 C<sub>OUT</sub> = C<sub>IN</sub>\*(A+B) + A*B
 
-Avendo a disposizione l'Adder a due bit visto in precedenza, ci si chiede ora se non sia possibile riutilizzarlo in scala per semplificare la costruzione di un Adder migliorato in grado di realizzare somme tra word di lunghezza ad esempio di 4 bit, 8 bit e così via.
+Avendo a disposizione l'Adder a due bit visto in precedenza, ci si chiede ora se non sia possibile riutilizzarlo in scala per semplificare la costruzione di un Adder in grado di realizzare somme tra word di lunghezza ad esempio di 4 bit, 8 bit e così via.
 
 Tentiamo di rispondere al quesito. Si è visto che ogni Half Adder mette a disposizione una porta XOR e una porta AND, entrambe a due ingressi.
 
