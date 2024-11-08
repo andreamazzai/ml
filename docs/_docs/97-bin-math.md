@@ -94,7 +94,7 @@ B    -2  ==>  1010
 Q     3       1111 ==> -7
 ~~~
 
-Tuttavia, la somma binaria di 0101 (5) e 1010 (-2) non porta al risultato aspettato (3), bensì a un chiaro errore. La rappresentazione Modulo e Segno non permette di trasformare un'operazione "A - B" in "A + (-B)".
+Tuttavia, la somma binaria di 0101 (5) e 1010 (-2) non porta al risultato aspettato (3), bensì a un chiaro errore: è chiaro che la rappresentazione Modulo e Segno non permette di trasformare un'operazione "A - B" in "A + (-B)".
 
 Tralasciando la spiegazione del metodo **Complemento a 1 (1C)** (inversione di tutti i bit del numero), anch'esso non ottimale, il **Complemento a 2 (2C)** risulta invece perfetto per la rappresentazione dei numeri negativi, portando tra l'altro in dote una grandissima semplificazione nell'esecuzione delle sottrazioni.
 
@@ -750,11 +750,11 @@ Le due situazioni appena descritte vengono tradotte in espressioni denominate **
 | 0              | 0     | 0     | 0 | 0               |                         |
 | 0              | 0     | 1     | 1 | 0               |                         |
 | 0              | 1     | 0     | 1 | 0               |                         |
-| **0**          | **1** | **1** | 0 | **1**           | ** Generate** (A AND B) |
+| **0**          | **1** | **1** | 0 | **1**           | **Generate** (A AND B)  |
 | 1              | 0     | 0     | 1 | 0               |                         |
-| **1**          | 0     | **1** | 0 | **1**           | ** Propagate** (A OR B) |
-| **1**          | **1** | 0     | 0 | **1**           | ** Propagate** (A OR B) |
-| **1**          | **1** | **1** | 1 | **1**           | ** Propagate** (A OR B) |
+| **1**          | 0     | **1** | 0 | **1**           | **Propagate** (A OR B)  |
+| **1**          | **1** | 0     | 0 | **1**           | **Propagate** (A OR B)  |
+| **1**          | **1** | **1** | 1 | **1**           | **Propagate** (A OR B)  |
 
 *Truth table di un Full Adder.*
 
