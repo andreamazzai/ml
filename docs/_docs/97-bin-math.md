@@ -792,7 +792,7 @@ C<sub>2</sub> = g<sub>1</sub> + p<sub>1</sub>\*(g<sub>0</sub> + p<sub>0</sub>\*C
 C<sub>2</sub> = g<sub>1</sub> + p<sub>1</sub>\*g<sub>0</sub> + p<sub>1</sub>\*p<sub>0</sub>*C<sub>0</sub>, cioè:\
 C<sub>2</sub> = A<sub>1</sub>\*B<sub>1</sub> + (A<sub>1</sub>+B<sub>1</sub>)\*A<sub>0</sub>\*B<sub>0</sub> + (A<sub>1</sub>+B<sub>1</sub>)\*(A<sub>0</sub>+B<sub>0</sub>)\*C<sub>0</sub>
 
-Anche questa espressione dipende dunque dai soli input A, B e C<sub>0</sub>.\
+Anche questa espressione dipende, dunque, dai soli input A, B e C<sub>0</sub>.\
 Procediamo scrivendo l'espressione per il Carry In del quarto Adder:
 
 C<sub>3</sub> = g<sub>2</sub> + p<sub>2</sub>\*C<sub>2</sub>, cioè, sostituendo C<sub>2</sub>:\
@@ -800,7 +800,7 @@ C<sub>3</sub> = g<sub>2</sub> + p<sub>2</sub>\*(g<sub>1</sub> + p<sub>1</sub>\*g
 C<sub>3</sub> = g<sub>2</sub> + p<sub>2</sub>\*g<sub>1</sub> + p<sub>2</sub>\*p<sub>1</sub>\*g<sub>0</sub> + p<sub>2</sub>\*p<sub>1</sub>\*p<sub>0</sub>\*C<sub>0</sub>, cioé:\
 C<sub>3</sub> = A<sub>2</sub>\*B<sub>2</sub> + (A<sub>2</sub>+B<sub>2</sub>)\*A<sub>1</sub>\*B<sub>1</sub> + (A<sub>2</sub>+B<sub>2</sub>)\*(A<sub>1</sub>+B<sub>1</sub>)\*A<sub>0</sub>\*B<sub>0</sub> + (A<sub>2</sub>+B<sub>2</sub>)\*(A<sub>1</sub>+B<sub>1</sub>)\*(A<sub>0</sub>+B<sub>0</sub>)\*C<sub>0</sub>
 
-Come nei casi precedenti, questa espressione dipende dai soli input A, B e C<sub>0</sub>.\
+Come nei casi precedenti, anche questa espressione dipende dai soli input A, B e C<sub>0</sub>.\
 Andiamo infine a scrivere l'espressione per C<sub>4</sub>, che è il Carry Out del quarto Adder:
 
 C<sub>4</sub> = g<sub>3</sub> + p<sub>3</sub>\*C<sub>3</sub>, cioè, sostituendo C<sub>3</sub>:\
@@ -846,11 +846,28 @@ Un aspetto da tenere in considerazione potrebbe essere il fattore fan-in, che li
 
 ## Le sottrazioni con gli Adder
 
-Le sottrazioni binarie si effettuano sommando minuendo e [complemento a due del sottraendo](#numeri-unsigned-e-numeri-signed), come anticipato in precedenza: anziché eseguire "A - B", si inverte B e lo si somma ad A, ottenendo un'operazione "A + (-B)".
+Nel corso di questa pagina, si è appreso che le sottrazioni binarie si effettuano sommando minuendo e [complemento a due del sottraendo](#numeri-unsigned-e-numeri-signed): anziché eseguire "A - B", si inverte B e lo si somma ad A, ottenendo un'operazione "A + (-B)".
 
-WORK IN PROGRESS - WORK IN PROGRESS - WORK IN PROGRESS
+Fin qui tutto facile: possiamo utilizzare un Multiple bit Adder, ad esempio un Ripple Carry Adder o un Carry Look Ahead Adder, e mettere in ingresso A e -B, cioè il complemento a 2 di B. [Ricordiamo](#fonti) che "per convertire un numero positivo in negativo è sufficiente invertire tutti i bit ed aggiungere 1".
 
-una XOR all'ingresso B permette di negare gli input e, aggiungendo un Carry in ingresso, diventa facile effettuare una sottrazione, così come esposto in precedenza parlando del complemento a 2.
+Come possiamo invertire i bit di un numero binario ed aggiungere 1? L'*inversione* può essere facilmente effettuata da logica XOR.
+
+| Ctl | B | **Q** |
+| -   | - | -     |
+| 0   | 0 | 0     |
+| 0   | 1 | 1     |
+| 1   | 0 | 1     |
+| 1   | 1 | 0     |
+
+Ipotizzando di utilizzare il segnale Ctl come segnale di controllo, si può notare che Q è uguale a B se Ctl è a 0, mentre Q è uguale all'inverso di B se Ctl è a 1.
+
+Rimane l'ultimo passaggio, cioè *aggiungere 1*. Il primo Adder di un Multiple Bit Adder è dotato di un segnale Carry In che, come notato nella sezione [Ripple Carry Adder](#ripple-carry-adder), è normalmente a 0; impostando il Carry In ad 1, otteniamo il risultato desiderato.
+
+Dunque, per negare un numero binario trasformandolo nel proprio complemento a due, possiamo utilizzare delle porte XOR per invertire tutti i bit di ingresso e il segnale di Carry In del primo Adder per aggiungere 1: il SAP computer di Ben Eater permette di effettuare le sottrazioni sfruttando proprio quanto appena descritto:
+
+![Dettaglio degli input di un Multiple Bit Adder](../../assets/math/adder-input-xor.png){:width="80%"}
+
+*Dettaglio degli input di un Multiple Bit Adder.*
 
 ## Link utili
 
