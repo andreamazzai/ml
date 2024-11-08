@@ -343,7 +343,7 @@ I tre metodi esaminati sembrano portare a una strada chiusa; tuttavia, è possib
 
 ![Overflow somma](../../assets/math/overflow-detector-a+b.png){:width="43%"}
 
-Qualche considerazione permette di riutilizzare lo stesso metodo anche per la verifica dell'Overflow nelle *sottrazioni*. Nelle sezioni [Fonti](#fonti) e [Numeri Unsigned e numeri Signed](#numeri-unsigned-e-numeri-signed) di questa pagina abbiamo appreso come una sottrazione possa essere svolta eseguendo una addizione di minuendo e complemento a 2 del sottraendo, dunque:
+Qualche considerazione permette di riutilizzare lo stesso metodo anche per la verifica dell'Overflow nelle *sottrazioni*. Infatti, nelle sezioni [Fonti](#fonti) e [Numeri Unsigned e numeri Signed](#numeri-unsigned-e-numeri-signed) di questa pagina abbiamo appreso come una sottrazione possa essere svolta eseguendo una addizione tra minuendo e complemento a 2 del sottraendo, dunque:
 
 - Il valore B7' in ingresso all'ultimo Adder del '181 è invertito rispetto al valore di B7 dato in input al chip (in una sottrazione A7 - B7, B7' viene invertito dalla circuiteria interna dell'ALU e possiamo dunque usare l'inverso di B7 come input del circuito che determina l'eventuale stato di Overflow):
 
@@ -602,7 +602,7 @@ Il risultato Q della somma dei due bit A e B si può ottenere con una porta logi
 
 *Half Adder.*
 
-Il circuito appena creato viene definito Half Adder. Il Carry, quando attivo, evidenzia una situazione di overflow, cioè di risultato dell'operazione che eccede la capacità di rappresentazione data dai bit disponibili.
+Il circuito appena creato viene definito Half Adder. Il Carry, quando attivo, evidenzia una situazione di overflow, cioè di risultato dell'operazione che eccede la capacità di rappresentazione permessa dai bit disponibili.
 
 Ipotizziamo ora di voler effettuare una somma a più bit, ad esempio di due nibble (4 bit) o di due byte:
 
@@ -633,7 +633,7 @@ Anziché ricorrere alla combinazione di AND e OR (Sum of Products, esposta nel v
 
 L'analisi di **Q** produce la seguente mappa (nella quale C corrisponde al C<sub>IN</sub> visto nella truth table):
 
-![Karnaugh Map](../../assets/math/Kma(A<sub>1</sub>+B<sub>1</sub>).png){:width="35%"}
+![Karnaugh Map](../../assets/math/Kmap1.png){:width="35%"}
 
 Pur non potendo semplificare la truth table perché non è possibile creare gruppi di 1, si può notare il pattern "a scacchiera", che indica che il circuito logico equivalente è una porta XOR con tre ingressi (si veda il video <a href="https://www.youtube.com/watch?v=3SwLBw7RYiI" target="_blank">Combinational Logic Minimization: XORs</a>, sempre di Lameres).
 
