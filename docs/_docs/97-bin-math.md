@@ -827,13 +827,13 @@ Si noti che il Carry Out C<sub>1</sub> del primo Adder si trova al livello 3, ch
 
 Aggiungendo il prossimo Modified Full Adder, si verifica che la somma è computata al 4° livello, mentre il Carry è, come nell'adder precedente, computato ancora al 3° livello (OR in basso a sinistra).
 
-![Modified Full Adder a due stadi](../../assets/math/modified-full-adder-3.png){:width="40%"}
+![Modified Full Adder a due stadi](../../assets/math/modified-full-adder-3.png){:width="42%"}
 
 *Modified Full Adder a due stadi.*
 
 Proseguendo con il terzo e con il quarto Modified Full Adder, la somma permane al 4° livello, mentre il Carry continua ad essere generato al 3° livello.
 
-![Modified Full Adder a quattro stadi](../../assets/math/modified-full-adder-4.png){:width="80%"}
+![Modified Full Adder a quattro stadi](../../assets/math/modified-full-adder-4.png){:width="84%"}
 
 *Modified Full Adder a quattro stadi.*
 
@@ -864,11 +864,11 @@ Rimane l'ultimo passaggio, cioè *aggiungere 1*. Il primo Adder di un Multiple B
 
 Dunque, per negare un numero binario trasformandolo nel proprio complemento a due, possiamo utilizzare delle porte XOR per invertire tutti i bit di ingresso e il segnale di Carry In del primo Adder per aggiungere 1: nel video <a href="https://www.youtube.com/watch?v=mOVOS9AjgFs" target="_blank">ALU Design</a> per il SAP computer, Ben Eater  sfrutta proprio quanto appena descritto:
 
-![Dettaglio degli input di un Multiple Bit Adder](../../assets/math/adder-input-xor.png){:width="80%"}
+![Dettaglio degli input del Multiple Bit Adder del SAP Computer di Ben Eater](../../assets/math/adder-input-xor.png){:width="80%"}
 
-*Dettaglio degli input di un Multiple Bit Adder.*
+*Dettaglio degli input del Multiple Bit Adder del SAP Computer di Ben Eater.*
 
-Nello schema abbiamo due RCA a 4 bit in cascata e un segnale SU (Ctl) che permette di selezionare se gli ingressi B debbano essere normali o invertiti e, contemporaneamente all'eventuale inversione, aggiungere un Carry In al primo Adder, trasformando B nel suo complemento a 2 e sommandolo ad A per effettuare finalmente la sottrazione A + (-B).
+Nello schema abbiamo due RCA <a href="https://www.ti.com/lit/ds/symlink/sn54s283.pdf" target="_blank">74LS283</a> a 4 bit in cascata e un segnale SU (Ctl) che permette di selezionare se gli ingressi B debbano essere normali o invertiti e, contemporaneamente all'eventuale inversione, di aggiungere un Carry In al primo Adder, trasformando B nel suo complemento a 2 e sommandolo ad A per effettuare finalmente la sottrazione A + (-B).
 
 ## Link utili
 
