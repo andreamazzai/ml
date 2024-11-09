@@ -819,7 +819,7 @@ La somma **Q**, come sempre, corrisponde ad A<sub>0</sub>⊕B<sub>0</sub>⊕C<su
 
 Aggiungiamo la logica del Carry C<sub>1</sub> = g<sub>0</sub> + p<sub>0</sub>\*C<sub>0</sub>:
 
-![Logica del Carry del Modified Full Adder](../../assets/math/modified-full-adder-2.png){:width="25%"}
+![Logica del Carry del Modified Full Adder](../../assets/math/modified-full-adder-2.png){:width="23%"}
 
 *Logica del Carry del Modified Full Adder.*
 
@@ -832,8 +832,6 @@ Aggiungendo il prossimo Modified Full Adder, si verifica che la somma è computa
 *Modified Full Adder a due stadi.*
 
 Proseguendo con il terzo e con il quarto Modified Full Adder, la somma permane al 4° livello, mentre il Carry continua ad essere generato al 3° livello.
-
-![Alt text](image.png)
 
 ![Modified Full Adder a quattro stadi](../../assets/math/modified-full-adder-4.png){:width="80%"}
 
