@@ -587,7 +587,7 @@ B           0=     1=     0=     1=
 Q           0      1      1     10 
 ~~~
 
-Nella quarta ipotesi notiamo che la somma di due bit entrambi a 1 genera un riporto, cioè un Carry. Scrivendo la truth table e considerando il Carry generato dalla somma dei bit A e B, otteniamo:
+Nella quarta ipotesi notiamo che la somma di due bit entrambi a 1 genera un riporto, cioè un Carry "C". Scrivendo la truth table e considerando il Carry generato dalla somma dei bit A e B, otteniamo:
 
 | A | B | **Q** | C<sub>OUT</sub> |
 | - | - | -     | -               |
@@ -643,13 +643,9 @@ L'analisi di **C<sub>OUT</sub>** produce quest'altra mappa (nella quale, come in
 
 Utilizzando la proprietà distributiva dell'algebra booleana, è possibile semplificare la funzione
 
-F = B\*C<sub>IN</sub> + A\*C<sub>IN</sub> + A\*B
+F = B\*C<sub>IN</sub> + A\*C<sub>IN</sub> + A\*B in
 
-in
-
-F = C<sub>IN</sub>\*(A+B) + A*B
-
-cioé
+F = C<sub>IN</sub>\*(A+B) + A*B, cioé
 
 C<sub>OUT</sub> = C<sub>IN</sub>\*(A+B) + A*B
 
@@ -694,7 +690,7 @@ Il **Full Adder** appena creato è in grado di effettuare la somma di due termin
 
 ### Ripple Carry Adder
 
-Avendo a disposizione i Full Adder, a loro volta costituiti da due Half Adder e una porta OR, possiamo ora creare un Multiple Bit Adder per effettuare somme di nibble, byte e, più in generale, word di qualsiasi dimensione. Si noterà che questo paragrafo permette di rispondere positivamente al quesito che ci interrogava sulla possibilità di implementare un circuito complesso a partire da una logica di base semplice e ripetibile.
+Avendo a disposizione i Full Adder costituiti da due Half Adder e una porta OR, possiamo ora creare un Multiple Bit Adder per effettuare somme di nibble, byte e, più in generale, word di qualsiasi dimensione. Si noterà che questo paragrafo permette di rispondere positivamente al quesito che ci interrogava sulla possibilità di implementare un circuito complesso a partire da una logica di base semplice e ripetibile.
 
 ![Multiple Bit Adder, o Ripple Carry Adder](../../assets/math/multiple-bit-adder.png){:width="100%"}
 
@@ -716,7 +712,7 @@ Di conseguenza, la frequenza operativa massima del circuito non potrà superare 
 
 Un Adder di tipo Carry Look Ahead (CLA) affronta il problema del ritardo causato dalla lunga catena di livelli presente in un Ripple Carry Adder.
 
-Se in un Ripple Carry Adder a 4 bit il ritardo può essere modesto, il ritardo in un Adder a 16 o più bit può ridurre significativamente la frequenza massima di lavoro. Infatti, ogni Full Adder di un RCA dipende dal risultato dell'Adder precedente; dovendo considerare il caso peggiore, si può dire che il risultato dell'ultimo Full Adder dipende da tutti i Full Adder precedenti.
+Se in un Ripple Carry Adder a 4 bit il ritardo può essere modesto, il ritardo in un Adder a 16 o più bit può ridurre significativamente la frequenza massima di lavoro. Infatti, ogni Full Adder di un RCA dipende dal risultato dell'Adder precedente; dovendo considerare il caso peggiore, il risultato dell'ultimo Full Adder dipende da tutti i Full Adder precedenti.
 
 Per indirizzare la problematica appena esposta, è necessario che ogni Full Adder possa calcolare il proprio Carry Out in maniera indipendente dal Carry Out reso disponibile dallo stadio precedente. Perché questo accada, ad ogni Full Adder deve essere aggiunta circuiteria in grado di calcolare il proprio Carry In, senza che si utilizzi il Carry Out del Full Adder precedente.
 
@@ -730,7 +726,7 @@ L'immagine mostra che gli ingressi dei vari stadi di un Carry Look Ahead Adder (
 
 In altre parole, si crea una logica dipendente dai soli termini A e B e dal Carry C<sub>0</sub>. Come si ottiene questo risultato?
 
-Identificando le situazioni nelle quali un Carry viene *generato* o *propagato*, ogni Adder<sub>(i)</sub> può essere dotato di un circuito in grado di sapere se troverà un Carry in ingresso computandolo a partire *dagli ingressi* di tutti gli Adder precedenti e da C<sub>0</sub>, ossia senza dipendere da quanto presente *dall'uscita* C<sub>OUT</sub> dell'Adder<sub>(i-1)</sub>.
+Identificando le situazioni nelle quali un Carry viene *generato* o *propagato*, ogni Adder<sub>(i)</sub> può essere dotato di un circuito in grado di sapere se troverà un Carry in ingresso computandolo a partire *dagli ingressi* di tutti gli Adder precedenti e da C<sub>0</sub>, ossia senza dipendere da quanto presente *dall'uscita* C<sub>OUT</sub> dell'Adder<sub>(i-1)</sub> precedente.
 
 Si deve trovare risposta alla domanda chiave "in quali situazioni un Adder<sub>(i)</sub> trova un Carry In a 1 sul proprio ingresso?"
 
@@ -743,7 +739,7 @@ Le due situazioni appena descritte vengono tradotte in espressioni denominate **
 
 1. In quali casi un Full Adder **genera** un Carry Out senza che al suo ingresso Carry In sia presente un Carry? Analizzando la truth table di un Full Adder, troviamo che se C<sub>IN</sub> è a 0, il C<sub>OUT</sub> è a 1 solo se entrambi A **e** B sono a 1: dunque, per realizzare questo circuito possiamo utilizzare una porta AND. Questo caso viene descritto con l'espressione **g = A\*B** e si può leggere come "la logica Generate di ogni Full Adder corrisponde ad A AND B".
 
-2. Quando, invece, un Full Adder **propaga** un Carry presente sul suo ingresso Carry In? Se il C<sub>IN</sub> di quell'Adder è a 1, il C<sub>OUT</sub> è a 1 quando A **o** B sono a 1: dunque, per realizzare questo circuito possiamo utilizzare una porta OR. Questo caso viene descritto con l'espressione **p = A+B** e si può leggere come "la logica Propagate di ogni Full Adder corrisponde ad A OR B".
+2. Quando, invece, un Full Adder **propaga** un Carry presente sul suo ingresso Carry In? Se il C<sub>IN</sub> di quell'Adder è a 1, il C<sub>OUT</sub> è a 1 quando A **o** B sono a 1: dunque, questo circuito può essere realizzato utilizzando una porta OR. Questo caso viene descritto con l'espressione **p = A+B** e si può leggere come "la logica Propagate di ogni Full Adder corrisponde ad A OR B".
 
 | C<sub>IN</sub> | A     | B     | Q | C<sub>OUT</sub> | Generate / Propagate    |
 | -              | -     | -     | - | -               | -                       |
@@ -758,7 +754,7 @@ Le due situazioni appena descritte vengono tradotte in espressioni denominate **
 
 *Truth table di un Full Adder.*
 
-In altre parole, la circuiteria Look Ahead valuta se lo stadio precedente introduce un Carry Out analizzando le due condizioni precedenti. Dati gli ingressi A, B e C<sub>IN</sub>:
+Detto diversamente, la circuiteria Look Ahead valuta se lo stadio precedente introduce un Carry Out analizzando le due condizioni precedenti. Dati gli ingressi A, B e C<sub>IN</sub>:
 
 - l'espressione Generate viene utilizzata da un Adder "i" per identificare quando, in assenza di un Carry agli ingressi dello stadio precedente "i-1", questi produrrà ("genererà") un Carry C<sub>OUT</sub> (condizione verificata solo se A*B = 1), Carry Out che l'Adder<sub>(i)</sub> ritroverà sul suo Carry In;
 - l'espressione Propagate viene utilizzata da un Adder "i" per identificare quando, in presenza di un Carry agli ingressi dello stadio precedente "i-1", questi produrrà ("propagherà") un Carry C<sub>OUT</sub> (condizione verificata solo se C<sub>IN</sub> = 1 e A+B = 1), Carry Out che l'Adder<sub>(i)</sub> ritroverà sul suo Carry In.
@@ -784,11 +780,11 @@ Possiamo ora scrivere le espressioni per i Carry In di tutti gli stadi. L'espres
 C<sub>1</sub> = g<sub>0</sub> + p<sub>0</sub>\*C<sub>0</sub>, cioè\
 C<sub>1</sub> = A<sub>0</sub>\*B<sub>0</sub> + (A<sub>0</sub>+B<sub>0</sub>)\*C<sub>0</sub>
 
-Si noti che questa espressione dipende dai soli input A, B e C<sub>0</sub>, che corrisponde esattamente a quanto si desidera fare.\
+Si noti che questa espressione dipende dai soli input A, B e C<sub>0</sub>, che corrisponde esattamente a quanto si desidera fare: non dipendere dal Carry Out dell'Adder precedente.\
 Andiamo ora a scrivere l'espressione per il Carry In del terzo Adder:
 
 C<sub>2</sub> = g<sub>1</sub> + p<sub>1</sub>\*C<sub>1</sub>, cioè, sostituendo C<sub>1</sub>:\
-C<sub>2</sub> = g<sub>1</sub> + p<sub>1</sub>\*(g<sub>0</sub> + p<sub>0</sub>\*C<sub>0</sub>), che significa che C<sub>2</sub> non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B dell'Adder precedente e da C<sub>0</sub>. Applicando la proprietà distributiva, si ottiene:\
+C<sub>2</sub> = g<sub>1</sub> + p<sub>1</sub>\*(g<sub>0</sub> + p<sub>0</sub>\*C<sub>0</sub>), che significa che C<sub>2</sub> non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B degli Adder precedenti e da C<sub>0</sub>. Applicando la proprietà distributiva, si ottiene:\
 C<sub>2</sub> = g<sub>1</sub> + p<sub>1</sub>\*g<sub>0</sub> + p<sub>1</sub>\*p<sub>0</sub>*C<sub>0</sub>, cioè:\
 C<sub>2</sub> = A<sub>1</sub>\*B<sub>1</sub> + (A<sub>1</sub>+B<sub>1</sub>)\*A<sub>0</sub>\*B<sub>0</sub> + (A<sub>1</sub>+B<sub>1</sub>)\*(A<sub>0</sub>+B<sub>0</sub>)\*C<sub>0</sub>
 
@@ -810,17 +806,17 @@ C<sub>4</sub> = A<sub>3</sub>\*B<sub>3</sub> + (A<sub>3</sub>+B<sub>3</sub>)\*A<
 
 Osservando le espressioni di ogni Adder, si deduce che tutte dipendono dai soli input A, B e C<sub>0</sub>, che è esattamente lo scopo da perseguire: ogni stadio calcola il proprio Carry senza dover attendere il calcolo del Carry effettuato dallo stadio precedente.
 
-Andiamo ora a realizzare un Carry Look Ahead Adder, ma prima modifichiamo i Full Adder considerando quanto visto sopra, creando dei *Modified* Full Adder.
+Andiamo ora a realizzare un Carry Look Ahead Adder, ma prima, considerando quanto visto sopra, modifichiamo i Full Adder creando dei *Modified* Full Adder.
 
-![Logica della somma del Modified Full Adder](../../assets/math/modifified-full-adder-1.png){:width="20%"}
+![Logica della somma del Modified Full Adder](../../assets/math/modified-full-adder-1.png){:width="20%"}
 
 *Logica della somma del Modified Full Adder.*
 
-La somma **Q**, come sempre, corrisponde ad A<sub>0</sub>⊕B<sub>0</sub>⊕C<sub>0</sub>. Aggiungiamo al Full Adder una porta OR e una porta AND con il solo scopo di ottenere i termini p<sub>0</sub> (cioè A<sub>0</sub>+B<sub>0</sub>) e g<sub>0</sub> (cioé A<sub>0</sub>*B<sub>0</sub>).
+La somma **Q**, come sempre, corrisponde ad A<sub>0</sub>⊕B<sub>0</sub>⊕C<sub>0</sub>. Aggiungiamo al Full Adder una porta OR e una porta AND con il solo scopo di ottenere i termini p (cioè A<sub>0</sub>+B<sub>0</sub> per il primo Adder) e g<sub>0</sub> (cioé A<sub>0</sub>*B<sub>0</sub> per il primo Adder).
 
-Vediamo la logica del Carry C<sub>1</sub> = g<sub>0</sub> + p<sub>0</sub>\*C<sub>0</sub>:
+Aggiungiamo la logica del Carry C<sub>1</sub> = g<sub>0</sub> + p<sub>0</sub>\*C<sub>0</sub>:
 
-![Logica del Carry del Modified Full Adder](../../assets/math/modifified-full-adder-2.png){:width="20%"}
+![Logica del Carry del Modified Full Adder](../../assets/math/modified-full-adder-2.png){:width="20%"}
 
 *Logica del Carry del Modified Full Adder.*
 
@@ -828,13 +824,13 @@ Si noti che il Carry Out C<sub>1</sub> del primo Adder si trova al livello 3, ch
 
 Aggiungendo il prossimo Modified Full Adder, si verifica che la somma è computata al 4° livello, mentre il Carry è, come nell'adder precedente, computato ancora al 3° livello (OR in basso a sinistra).
 
-![Modified Full Adder a due stadi](../../assets/math/modifified-full-adder-3.png){:width="40%"}
+![Modified Full Adder a due stadi](../../assets/math/modified-full-adder-3.png){:width="40%"}
 
 *Modified Full Adder a due stadi.*
 
 Proseguendo con il terzo e con il quarto Modified Full Adder, la somma permane al 4° livello, mentre il Carry continua ad essere generato al 3° livello.
 
-![Modified Full Adder a quattro stadi](../../assets/math/modifified-full-adder-4.png){:width="80%"}
+![Modified Full Adder a quattro stadi](../../assets/math/modified-full-adder-4.png){:width="80%"}
 
 *Modified Full Adder a quattro stadi.*
 
@@ -868,6 +864,8 @@ Dunque, per negare un numero binario trasformandolo nel proprio complemento a du
 ![Dettaglio degli input di un Multiple Bit Adder](../../assets/math/adder-input-xor.png){:width="80%"}
 
 *Dettaglio degli input di un Multiple Bit Adder.*
+
+In questo esempio due RCA a 4 bit in cascata e un segnale SU (CTL) che permette di selezionare se gli ingressi B devono essere normali o invertiti e, contemporaneamente all'eventuale inversione, aggiunge un Carri In al primo Adder.
 
 ## Link utili
 
