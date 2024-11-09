@@ -868,10 +868,9 @@ Dunque, per negare un numero binario trasformandolo nel proprio complemento a du
 
 *Dettaglio degli input di un Multiple Bit Adder.*
 
-In questo esempio due RCA a 4 bit in cascata e un segnale SU (CTL) che permette di selezionare se gli ingressi B devono essere normali o invertiti e, contemporaneamente all'eventuale inversione, aggiunge un Carri In al primo Adder.
+Nello schema abbiamo due RCA a 4 bit in cascata e un segnale SU (Ctl) che permette di selezionare se gli ingressi B debbano essere normali o invertiti e, contemporaneamente all'eventuale inversione, aggiungere un Carry In al primo Adder, trasformando B nel suo complemento a 2 e sommandolo ad A per effettuare finalmente la sottrazione A + (-B).
 
 ## Link utili
 
 - <a href="https://www.youtube.com/watch?v=Fu5LfmjhEBA" target="_blank">Ripple Carry Adders (RCA)</a>, <a href="https://www.youtube.com/watch?v=TNoQ_djJW0I" target="_blank">Ripple Carry Adders Timing</a> e <a href="https://www.youtube.com/watch?v=6kTdgkbYZqA" target="_blank">Carry Look Ahead (CLA) Adders</a> di Brock LaMeres. Questi video illustrano la logica degli Half Adder e dei Full Adder, dei Ripple Carry Adder e dei Carry Look Ahead Adders. Non si può non menzionare lo stile espositivo del professor LaMeres, la cui grande carica di energia incolla lo spettatore al video.
 - La playlist completa <a href="https://www.youtube.com/playlist?list=PL643xA3Ie_Et2uM4xu1yFk-A5ZQQ8gQ5e" target="_blank">Intro to Logic Circuits</a> di Lameres, già suggerita anche nella [pagina iniziale](/beam/) della documentazione del BEAM.
-- 
