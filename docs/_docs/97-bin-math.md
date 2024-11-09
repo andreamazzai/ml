@@ -777,13 +777,16 @@ C<sub>i+1</sub> = A<sub>i</sub>\*B<sub>i</sub> + (A<sub>i</sub>+B<sub>i</sub>)\*
 
 Possiamo ora scrivere le espressioni per i Carry In di tutti gli stadi. L'espressione per il Carry In del secondo Adder è:
 
-C<sub>1</sub> = g<sub>0</sub> + p<sub>0</sub>\*C<sub>0</sub>, cioè\
+C<sub>1</sub> = g<sub>0</sub> + p<sub>0</sub>\*C<sub>0</sub>, cioè,\
 C<sub>1</sub> = A<sub>0</sub>\*B<sub>0</sub> + (A<sub>0</sub>+B<sub>0</sub>)\*C<sub>0</sub>
 
 Si noti che questa espressione dipende dai soli input A, B e C<sub>0</sub>, che corrisponde esattamente a quanto si desidera fare: non dipendere dal Carry Out dell'Adder precedente.\
 Andiamo ora a scrivere l'espressione per il Carry In del terzo Adder:
 
-C<sub>2</sub> = g<sub>1</sub> + p<sub>1</sub>\*C<sub>1</sub>, cioè, sostituendo C<sub>1</sub>:\
+C<sub>2</sub> = g<sub>1</sub> + p<sub>1</sub>\*C<sub>1</sub>\
+
+Dobbiamo sbarazzarci di C1, perché stiamo cercando di rendere ogni Adder indipendente dal Carry Out dell'Adder precedente, dunque, sostituendo C<sub>1</sub>:
+
 C<sub>2</sub> = g<sub>1</sub> + p<sub>1</sub>\*(g<sub>0</sub> + p<sub>0</sub>\*C<sub>0</sub>), che significa che C<sub>2</sub> non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B degli Adder precedenti e da C<sub>0</sub>. Applicando la proprietà distributiva, si ottiene:\
 C<sub>2</sub> = g<sub>1</sub> + p<sub>1</sub>\*g<sub>0</sub> + p<sub>1</sub>\*p<sub>0</sub>*C<sub>0</sub>, cioè:\
 C<sub>2</sub> = A<sub>1</sub>\*B<sub>1</sub> + (A<sub>1</sub>+B<sub>1</sub>)\*A<sub>0</sub>\*B<sub>0</sub> + (A<sub>1</sub>+B<sub>1</sub>)\*(A<sub>0</sub>+B<sub>0</sub>)\*C<sub>0</sub>
