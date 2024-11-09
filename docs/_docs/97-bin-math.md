@@ -837,11 +837,11 @@ Proseguendo con il terzo e con il quarto Modified Full Adder, la somma permane a
 
 *Modified Full Adder a quattro stadi.*
 
-Come si può notare dagli screenshot, utilizzati per gentile concessione del [professor Lameres](#link-utili), ogni Adder successivo aggiunge molta logica, ma il Multiple Bit Adder creato permette di effettuare somme con un numero fisso di livelli indipendentemente dal numero di bit in input, a differenza del Ripple Carry Adder (per il quale, peraltro, la somma di una word di 4 bit richiedeva ben 9 livelli).
+Come si può notare dagli screenshot, utilizzati per gentile concessione del [professor Lameres](#link-utili), ogni Adder successivo aggiunge molta logica, ma il Multiple Bit Adder creato permette di effettuare somme con un numero fisso di livelli indipendentemente dal numero di bit in input, a differenza del Ripple Carry Adder (per il quale, peraltro, la somma di una word di soli 4 bit richiedeva ben 9 livelli).
 
 In definitiva, il lavoro svolto per creare il Carry in un CLA Adder è molto elevato, ma si hanno in cambio le massime prestazioni.
 
-Un aspetto da tenere in considerazione potrebbe essere il fattore fan-in, che limita il numero di ingressi che una porta logica può avere. La porta OR finale, che genera il Carry Out, avrà un numero di input sempre maggiore all'aumentare del numero di bit dell'Adder, così come le AND connesse a questa OR. A un certo punto sarà necessario suddividere le OR e le AND in due livelli, causando così un incremento di 2 livelli nel computo totale dei livelli dell'Adder. Pertanto, il numero di livelli aumenta anche all'aumentare del numero dei bit del CLA Adder, ma con una crescita decisamente inferiore rispetto a quella del Ripple Carry Adder, nel quale ogni singolo bit aggiunge ben due livelli da attraversare.
+Un aspetto da tenere in considerazione potrebbe essere il fattore fan-in, che limita il numero di ingressi che una porta logica può avere. La porta OR finale, che genera il Carry Out, avrà un numero di input sempre maggiore all'aumentare del numero di bit dell'Adder, così come le AND connesse a questa OR. A un certo punto sarà necessario suddividere le OR e le AND in due livelli, causando così un incremento di 2 livelli nel computo totale dei livelli dell'Adder. Pertanto, il numero di livelli aumenta anche all'aumentare del numero dei bit del CLA Adder, ma con una linearità decisamente inferiore rispetto a quella del Ripple Carry Adder, nel quale ogni singolo bit aggiunge ben due livelli da attraversare.
 
 ## Le sottrazioni con gli Adder
 
@@ -851,18 +851,18 @@ Fin qui tutto facile: possiamo utilizzare un Multiple bit Adder, ad esempio un R
 
 Come possiamo invertire i bit di un numero binario ed aggiungere 1? L'*inversione* può essere facilmente effettuata da logica XOR.
 
-| Ctl | B | **Q** |
-| -   | - | -     |
-| 0   | 0 | 0     |
-| 0   | 1 | 1     |
-| 1   | 0 | 1     |
-| 1   | 1 | 0     |
+| Ctl | B | Q |
+| -   | - | - |
+| 0   | 0 | 0 |
+| 0   | 1 | 1 |
+| 1   | 0 | 1 |
+| 1   | 1 | 0 |
 
-Ipotizzando di utilizzare il segnale Ctl come segnale di controllo, si può notare che Q è uguale a B se Ctl è a 0, mentre Q è uguale all'inverso di B se Ctl è a 1.
+Ipotizzando di utilizzare un segnale Ctl come segnale di controllo, si può notare che Q è uguale a B se Ctl è a 0, mentre Q è uguale all'inverso di B se Ctl è a 1: dunque, impostando Ctl, si possono invertire tutti i bit del minuendo B.
 
 Rimane l'ultimo passaggio, cioè *aggiungere 1*. Il primo Adder di un Multiple Bit Adder è dotato di un segnale Carry In che, come notato nella sezione [Ripple Carry Adder](#ripple-carry-adder), è normalmente a 0; impostando il Carry In ad 1, otteniamo il risultato desiderato.
 
-Dunque, per negare un numero binario trasformandolo nel proprio complemento a due, possiamo utilizzare delle porte XOR per invertire tutti i bit di ingresso e il segnale di Carry In del primo Adder per aggiungere 1: il SAP computer di Ben Eater permette di effettuare le sottrazioni sfruttando proprio quanto appena descritto:
+Dunque, per negare un numero binario trasformandolo nel proprio complemento a due, possiamo utilizzare delle porte XOR per invertire tutti i bit di ingresso e il segnale di Carry In del primo Adder per aggiungere 1: nel video <a href="https://www.youtube.com/watch?v=mOVOS9AjgFs" target="_blank">ALU Design</a> per il SAP computer, Ben Eater  sfrutta proprio quanto appena descritto:
 
 ![Dettaglio degli input di un Multiple Bit Adder](../../assets/math/adder-input-xor.png){:width="80%"}
 
@@ -874,3 +874,4 @@ In questo esempio due RCA a 4 bit in cascata e un segnale SU (CTL) che permette 
 
 - <a href="https://www.youtube.com/watch?v=Fu5LfmjhEBA" target="_blank">Ripple Carry Adders (RCA)</a>, <a href="https://www.youtube.com/watch?v=TNoQ_djJW0I" target="_blank">Ripple Carry Adders Timing</a> e <a href="https://www.youtube.com/watch?v=6kTdgkbYZqA" target="_blank">Carry Look Ahead (CLA) Adders</a> di Brock LaMeres. Questi video illustrano la logica degli Half Adder e dei Full Adder, dei Ripple Carry Adder e dei Carry Look Ahead Adders. Non si può non menzionare lo stile espositivo del professor LaMeres, la cui grande carica di energia incolla lo spettatore al video.
 - La playlist completa <a href="https://www.youtube.com/playlist?list=PL643xA3Ie_Et2uM4xu1yFk-A5ZQQ8gQ5e" target="_blank">Intro to Logic Circuits</a> di Lameres, già suggerita anche nella [pagina iniziale](/beam/) della documentazione del BEAM.
+- 
