@@ -825,10 +825,12 @@ Si noti che il Carry Out C<sub>1</sub> del primo Adder si trova al livello 3, ch
 Aggiungendo il prossimo Modified Full Adder, si verifica che la somma è computata al 4° livello, mentre il Carry è, come nell'adder precedente, computato ancora al 3° livello (OR in basso a sinistra).
 
 ![Modified Full Adder a due stadi](../../assets/math/modified-full-adder-3.png){:width="40%"}
-![Alt text](image.png)
+
 *Modified Full Adder a due stadi.*
 
 Proseguendo con il terzo e con il quarto Modified Full Adder, la somma permane al 4° livello, mentre il Carry continua ad essere generato al 3° livello.
+
+![Alt text](image.png)
 
 ![Modified Full Adder a quattro stadi](../../assets/math/modified-full-adder-4.png){:width="80%"}
 
