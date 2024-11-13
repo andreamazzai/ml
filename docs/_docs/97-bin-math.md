@@ -690,7 +690,7 @@ Il **Full Adder** appena creato è in grado di effettuare la somma di due termin
 
 ## Multiple Bit Adder
 
-Per effettuare somme di più bit si utilizzano i Multiple Bit Adder. Il ruolo del Carry negli Adder è fondamentale e vi sono almeno due modalità di gestione del Carry. Nelle prossime sezioni si descrivono le modalità Ripple Carry Adder e Carry Look Ahead, implementate anche nei 74LS181 utilizzati nell'[ALU](../docs/alu/#carry-addizioni-e-sottrazioni).
+Per effettuare somme di più bit si utilizzano i Multiple Bit Adder. Il ruolo del Carry negli Adder è fondamentale e vi sono almeno due modalità di gestione del Carry. Nelle prossime sezioni si descrivono le modalità Ripple Carry Adder e Carry Look Ahead, implementate anche nei 74LS181 utilizzati nell'[ALU](../alu/#carry-addizioni-e-sottrazioni).
 
 ### Ripple Carry Adder
 
