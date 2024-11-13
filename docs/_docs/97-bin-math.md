@@ -3,7 +3,7 @@ title: "Aritmetica binaria"
 permalink: /docs/math/
 excerpt: "Aritmetica binaria"
 ---
-<small>[Concetti importanti](#concetti-importanti) - [Fonti](#fonti) - [Numeri Unsigned e numeri Signed](#numeri-unsigned-e-numeri-signed) - [Approfondimento Overflow](#approfondimento-overflow) - [L'Overflow e l'hardware](#loverflow-e-lhardware) - [Metodi di identificazione dell'Overflow](#metodi-di-identificazione-delloverflow) - [Semplificazione con 74LS151](#semplificazione-con-74ls151) - [Verifica addizioni e sottrazioni con 74LS151](#verifica-addizioni-e-sottrazioni-con-74ls151) - [Gli Adder](#gli-adder) - [Le somme con gli Adder](#le-somme-con-gli-adder) - [Ripple Carry Adder](#ripple-carry-adder) - [Carry Look Ahead Adder](#carry-look-ahead-adder) - [Le sottrazioni con gli Adder](#le-sottrazioni-con-gli-adder) - [Link utili](#link-utili)</small>
+<small>[Concetti importanti](#concetti-importanti) - [Fonti](#fonti) - [Numeri Unsigned e numeri Signed](#numeri-unsigned-e-numeri-signed) - [Approfondimento Overflow](#approfondimento-overflow) - [L'Overflow e l'hardware](#loverflow-e-lhardware) - [Metodi di identificazione dell'Overflow](#metodi-di-identificazione-delloverflow) - [Semplificazione con 74LS151](#semplificazione-con-74ls151) - [Verifica addizioni e sottrazioni con 74LS151](#verifica-addizioni-e-sottrazioni-con-74ls151) - [Gli Adder](#gli-adder) - [Le somme con gli Adder](#le-somme-con-gli-adder) - [Multiple Bit Adder](#multiple-bit-adder) - [Ripple Carry Adder](#ripple-carry-adder) - [Carry Look Ahead Adder](#carry-look-ahead-adder) - [Le sottrazioni con gli Adder](#le-sottrazioni-con-gli-adder) - [Link utili](#link-utili)</small>
 
 ## Concetti importanti
 
@@ -688,6 +688,10 @@ A questo punto, possiamo realizzare la funzione necessaria aggiungendo una sempl
 
 Il **Full Adder** appena creato è in grado di effettuare la somma di due termini tenendo in considerazione il Carry in ingresso e generando un eventuale Carry in uscita.
 
+## Multiple Bit Adder
+
+Per effettuare somme di più bit si utilizzano i Multiple Bit Adder. Il ruolo del Carry negli Adder è fondamentale e vi sono almeno due modalità di gestione del Carry. Nelle prossime sezioni si descrivono le modalità Ripple Carry Adder e Carry Look Ahead, implementate anche nei 74LS181 utilizzati nell'[ALU](/../docs/alu/#carry-addizioni-e-sottrazioni).
+
 ### Ripple Carry Adder
 
 Avendo a disposizione i Full Adder costituiti da due Half Adder e una porta OR, possiamo ora creare un Multiple Bit Adder per effettuare somme di nibble, byte e, più in generale, word di qualsiasi dimensione. Si noterà che questo paragrafo permette di rispondere positivamente al quesito che ci interrogava sulla possibilità di implementare un circuito complesso a partire da una logica di base semplice e ripetibile.
@@ -862,13 +866,13 @@ Ipotizzando di utilizzare un segnale Ctl come segnale di controllo, si può nota
 
 Rimane l'ultimo passaggio, cioè *aggiungere 1*. Il primo Adder di un Multiple Bit Adder è dotato di un segnale Carry In che, come notato nella sezione [Ripple Carry Adder](#ripple-carry-adder), è normalmente a 0; impostando il Carry In ad 1, otteniamo il risultato desiderato.
 
-Dunque, per negare un numero binario trasformandolo nel proprio complemento a due, possiamo utilizzare delle porte XOR per invertire tutti i bit di ingresso e il segnale di Carry In del primo Adder per aggiungere 1: nel video <a href="https://www.youtube.com/watch?v=mOVOS9AjgFs" target="_blank">ALU Design</a> per il SAP computer, Ben Eater  sfrutta proprio quanto appena descritto:
+Dunque, per negare un numero binario trasformandolo nel proprio complemento a due, possiamo utilizzare delle porte XOR per invertire tutti i bit di ingresso e il segnale di Carry In del primo Adder per aggiungere 1: Ben Eater lo illustra molto chiaramente nel video <a href="https://www.youtube.com/watch?v=mOVOS9AjgFs" target="_blank">ALU Design</a> per il SAP computer.
 
 ![Dettaglio degli input del Multiple Bit Adder del SAP Computer di Ben Eater](../../assets/math/adder-input-xor.png){:width="80%"}
 
 *Dettaglio degli input del Multiple Bit Adder del SAP Computer di Ben Eater.*
 
-Nello schema abbiamo due RCA <a href="https://www.ti.com/lit/ds/symlink/sn54s283.pdf" target="_blank">74LS283</a> a 4 bit in cascata e un segnale SU (Ctl) che permette di selezionare se gli ingressi B debbano essere normali o invertiti e, contemporaneamente all'eventuale inversione, di aggiungere un Carry In al primo Adder, trasformando B nel suo complemento a 2 e sommandolo ad A per effettuare finalmente la sottrazione A + (-B).
+Nello schema abbiamo due RCA <a href="https://www.ti.com/lit/ds/symlink/sn54s283.pdf" target="_blank">74LS283</a> a 4 bit in cascata e un segnale Subtract (SU, da noi rinominato Ctl) che permette di selezionare se gli ingressi B debbano essere normali o invertiti e, contemporaneamente all'eventuale inversione, di aggiungere un Carry In al primo Adder, trasformando B nel suo complemento a 2 per sommarlo ad A ed effettuare finalmente la sottrazione A + (-B).
 
 ## Link utili
 
