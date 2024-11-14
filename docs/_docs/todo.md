@@ -32,8 +32,7 @@ excerpt: "Cosa c'è da fare"
 - https://bread80.com/2019/09/02/adding-adc-sbc-inc-dec-operations-to-ben-eaters-alu/#easy-footnote-4-43 da leggere per capire se buono
 - subito dopo il capitolo "Il registro H" capire "(da fare: in questo caso, ma anche nel caso delle istruzioni di shift / rotazione e forse anche CPX e CPY, verificare se non potessi usare D invece di H)"
 - rivedere "L'ALU dell'NQSAP per dare senso al fatto che ho studiato NQSAP ma parlo della realizzazione del BEAM
-- Parlare del bench di test sulla base di quanto appreso da David Courtney.
-- link al mio video dell'ALU
+- Parlare del bench di test sulla base di quanto appreso da David Courtney + link al mio video dell'ALU
 
 ## STACK
 
