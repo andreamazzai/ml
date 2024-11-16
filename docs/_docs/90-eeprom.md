@@ -11,36 +11,45 @@ excerpt: "EEPROM Programmer"
 
 Tutti i progetti descritti sono basati su Arduino, ad evidenza della versatilità di questo strumento.
 
-Il programmatore di EEPROM prende spunto dal semplice progetto sviluppato da Ben Eater per la programmazione del computer SAP e dal TommyPROM sviluppato da Tom Nisbet, che include molte più funzioni. Quest'ultimo è un programmatore che supporta una varietà di EEPROM, Flash ed EPROM e che include un software molto completo; una versione ridotta del software è stata utilizzata da Tom e pubblicata sul suo repository per assolvere semplicemente allo scopo di programmare le EEPROM dell'NQSAP.
+## PROGRAMMATORE
 
-Durante la realizzazione del SAP, avevo costruito il programmatore seguendo le istruzioni di Ben Eater. Nello sviluppo della Control Logic del BEAM e nel debug del microcode e dei vari moduli, dotato di ben 4 EEPROM e con una quantità di dato da programmare molto maggiore di quella del SAP, i tempi di programmazione diventavano noiosi (credo di ricordare intorno ai 90 secondi per ogni EEPROM); poiché le ri-programmazioni si ripetevano incessantemente per scrivere il microcode corretto per le varie istruzioni, migliorare le funzionalità e indirizzare i bug, diventavo sempre più intollerante rispetto al tempo speso guardando la fila crescente di puntini sullo schermo durante la programmazione.
+- Nei link mettere il link a Tommy PROM, spiegare  CHE IL MIO PROGRAMMATORE DI EPPROM  di è basata un po sul DIWSEGNO  originale di ben , UN PO' SUL TOMMYPROM
+- Verificare anche se è Il programmatore dietro di ben Tom che utilizza lo stesso codice di programmazione del Tommyprom; in realtà mi sembra di ricordare che sia una versione tagliata del tommyprom
 
-Inoltre le dimensioni delle EEPROM del BEAM Erano ben diverse da quelle del sap , per il numero molto maggiore di istruzioni supportate e per il numero di microistruzioni possibili , pari a 16. 
+La mia prima esperienza su un programmatore di EEPROM risaleva alla costruzione del computer SAP progettato da Ben Eater e alla realizzazione del programmatore basato sul suo schema e sul suo sketch. Questo progetto, molto semplice, permetteva di programmare le EEPROM del microcode, ma risultava particolarmente lento.
 
-Il programmatore di Tom permette anche la programmazione a partire da un file residente sul proprio computer, che viene trasferito sull'Arduino.
+Durante lo studio del computer NQSAP di Tom nisbet e la rivisitazione del suo progetto per creare il computer BEAM, avevo realizzato che il numero di EEPROM da programmare (quattro anziché due) e la loro dimensione avrebbero ulteriormente espanso i tempi di programmazione di ogni revisione del microcode. Il programmatore di Ben era funzionale, ma non sfruttava la possibilità delle EEPROM moderne di scrittura di *pagine*, che permette la programmazione di una EEPROM da 32KB in pochi secondi.
+Ciononostante, continuavo a usare questo programmatore, con tempi di scrittura di una EEPROM di circa 90 secondi.
 
-Altro aspetto: la velocità. Il programmatore di Ben era funzionale, ma non sfruttava la possibilità delle EEPROM moderne di scrittura di blocchi, che permette la programmazione di una EEPROM da 32KB in pochi secondi.
+Man mano che la costruzione dei moduli del BEAM proseguiva, le ri-programmazioni del microcode si ripetevano sempre più frequentemente per completare l'Instruction Set ed indirizzarne i bug e il tempo speso guardando la fila crescente di puntini sullo schermo durante la programmazione iniziava ad essere seccante.
 
-28C series EEPROMS, like the X28C256, sometimes ship from the factory with Data Protection enabled. Use the UNLOCK command to disable this. See the 28C256 Notes for more information. https://tomnisbet.github.io/TommyPROM/docs/28C256-notes
+Tom aveva sviluppato un suo programmatore, il <a href="https://github.com/TomNisbet/TommyPROM" target="_blank">TommyPROM</a>, che supporta una varietà di EPROM, EEPROM e memorie Flash, che include un software molto completo e che è molto veloce perché supporta la modalità di scrittura Page Write; una versione ridotta del software del TommyProm è stata utilizzata da Tom e pubblicata sul suo repository dell'NQSAP per assolvere semplicemente allo scopo di programmarne le EEPROM.
+
+Non volevo iniziare un nuovo progetto - quello del programmatore di EEPROM - mentre stavo ancora lavorando sul BEAM, ma a un certo punto ho realizzato che, alla lunga, costruendo un programmatore basato sul TommyProm avrei speso meno tempo di tutto quello che avrei sprecato utilizzando il programmatore di Ben.
+
+Il mio programmatore iniziale era basato sul design di Ben Eater, dunque con i '595. In una sezione della documentazione, Tom evidenziava che il suo codice non funzionava sul progetto di Ben e che necessitava di significative modifiche: se si desideravano i benefici del TommyProm sull'hardware di ben, Tom indicava che la strada più facile era quella di non modificare il software, ma di modificare l'hardware e renderlo uguale a quello del TommyProm.
+
+Nella mia testardaggine ho voluto fare a metà, cioè modificare solo parzialmente l'hardware inizialmente sviluppato seguendo il progetto di Ben, ed approfittarne per studiare ed aggiornare il software di Tom per renderlo compatibile apportando il minor numero di modifiche possibili all'hardware.
+
+Le modifiche apportate rispetto al programmatore del SAP sono le seguenti:
+
+- il pin Write Enable (/WE) della EEPROM non viene più viene controllato dal segnale D13 di Arduino, bensì da A2.
+- il pin Chip Enable (/CE) non è più connesso a ground (chip sempre attivo), ma è controllato dal pin A0 di Arduino.
+- il pin Output Enable (/OE) non è più connesso allo shift register, ma è controllato dal pin A1 di Arduino.
+
+Nello sketch di Ben, D13 controlla il segnale Write Enable. Poiché D13 è internamente connesso al LED integrato su Arduino, che al boot lampeggia, significa che si potrebbero verificare delle scritture indesiderate della EEPROM ad ogni accensione del programmatore. Questo non è un problema per lo sketch di Ben, perché ad ogni esecuzione dello sketch la EEPROM viene completamente programmata, sovrascrivendo le eventuali scritture spurie appena descritte. Dal momento che il TommyProm può invece essere utilizzato anche per effettuare sole letture da una EEPROM, le scritture spurie potrebbero causare un problema.
+
+**Vale anche per i 595?** Il pin /OE controllato dagli Shift Register  che nella design del Tommy promnon funziona bene perché OE verrebbe modificato ogni volta che vengono inviati nuovi indirizzi agli shift register 164.
 
 Nel suo progetto, Tom inizialmente utilizzava Shift Register 74LS164, poi dava anche indicazioni per l'uso dei più diffusi 74LS595 (o meglio dire 74HC595?).
-
-Il mio programmatore iniziale era basato sul design di Ben Eater, dunque con i '595. In una sezione della documentazione, Tom evidenziava che il suo codice non funzionava sul progetto di Ben e che necessitava di significative modifiche: Se si desideravanoi benefici del Tommy promsull'hardware di ben , probabilmente la strada più facile era quella di modificare l'hardware e renderlo uguale a quello di Tommy anziché modificare il software .
-
-Nella mia testardaggine ho voluto fare a metà , cioè non modificare totalmente l'hardware inizialmente sviluppato seguendo il progetto di ben virgola e approfittarne per mettere il naso sul software e renderlo compatibile col minor numero di modifiche possibili da fare per rendere comunque il programmatore molto veloce.
-
-Verificare la modifica su d 13: Questo segnale viene utilizzato percontrollare il WE, mentre CEE sempre attivo; poiché di 13 è collegato al led di Arduino virgola che al boot lampeggia , significa che si potrebbero verificare delle scritture indesiderate della eprom all'accensione dell'arduino .questo non è un problema per lo sketch di ben , perché il programmatore fa solamente delle scritture e una volta partito il programma programma completamente la promo ; mentre il programmatore Tommy promè anche in grado di effettuare solamente delle letture da una eproma e dunque effettuare delle scritture casuali potrebbe essere problematico .
-
-Altra questione : il pin oe è controllato dagli shift register virgola che nella design del Tommy promnon funziona bene perché o è verrebbe modificato ogni volta che vengono inviati nuovi indirizzi agli shift register
 
 Per questi motivi Tom consiglia di effettuare qualche semplice modifica hardware per adattare il design di ben a quello di Tom.
 
 [![Schema del programmatore di EEPROM del computer SAP](../../assets/eeprom/eeprom-ben.png "Schema del programmatore di EEPROM del computer SAP"){:width="100%"}](../../assets/eeprom/eeprom-ben.png)
 
+28C series EEPROMS, like the X28C256, sometimes ship from the factory with Data Protection enabled. Use the UNLOCK command to disable this. See the 28C256 Notes for more information. https://tomnisbet.github.io/TommyPROM/docs/28C256-notes
+
 *Schema del programmatore di EEPROM del computer SAP.*
-
-![Alt text](image.png)
-
 
 ## Schema
 
@@ -52,6 +61,8 @@ Per questi motivi Tom consiglia di effettuare qualche semplice modifica hardware
 
 - Il video <a href="https://www.youtube.com/watch?v=K88pgWhEb1M" target="_blank">Build an Arduino EEPROM programmer</a> e il repository GitHub <a href="https://github.com/beneater/eeprom-programmer" target="_blank">Arduino EEPROM programmer</a> di Ben Eater.
 - Il programmatore di EEPROM <a href="https://github.com/TomNisbet/TommyPROM" target="_blank">TommyProm</a> di Tom Nisbet.
+- Il programmatore di EEPROM <a href="https://github.com/TomNisbet/TommyPROM" target="_blank">TommyProm</a> di Tom Nisbet.
+
 
 ## TO DO
 

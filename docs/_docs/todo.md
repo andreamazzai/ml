@@ -8,6 +8,7 @@ excerpt: "Cosa c'è da fare"
 
 - Rivedere Flag vs flag, anche in relazione al Carry vs carry
 - decidere se quando spiego il microcode delle istruzioni devo usare la numerazione degli step partendo da 0 o da 1
+- quello di BEN è SAP o SAP-1?
 
 ### HOME
 
@@ -37,11 +38,6 @@ excerpt: "Cosa c'è da fare"
 ## STACK
 
 - controllare se il mio SP funziona correttamente; vedo che Tom ha usato dei cablaggi diversi per i pin 7 e 10   20-08-2024
-
-## PROGRAMMATORE
-
-- Nei link mettere il link a Tommy PROM, spiegare  CHE IL MIO PROGRAMMATORE DI EPPROM  di è basata un po sul DIWSEGNO  originale di ben , UN PO' SUL TOMMYPROM
-- Verificare anche se è Il programmatore dietro di ben Tom che utilizza lo stesso codice di programmazione del Tommyprom; in realtà mi sembra di ricordare che sia una versione tagliata del tommyprom
 
 ## BIN MATH
 
