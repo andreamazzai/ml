@@ -45,9 +45,15 @@ Devo infine dire che nelle mie due realizzazioni ho notato che i chip TTL sembra
 
 ## Circuito di test
 
-Anziché utilizzare jumper per fare i test sul bus e sui moduli in costruzione, ho costruito un semplice circuito di test, risultato particolarmente comodo per accelerare il test e l'eventuale troubleshootin
+Anziché utilizzare jumper per fare i test sul bus e sui moduli in costruzione, ho costruito un semplice circuito di test, risultato particolarmente comodo per accelerare il test e l'eventuale troubleshooting.
 
-[![Schema del modulo di test](../../assets/varie/12-test-schema.png "Schema del modulo di test"){:width="100%"}](../../assets/varie/12-test-schema.png)
+[![Modulo di test in lettura dal bus](../../assets/varie/test-board.png "Modulo di test in lettura dal bus"){:width="100%"}](../../assets/varie/test-board.png)
+
+*Modulo di test in lettura dal bus.*
+
+Con il pulsante premuto, viene emesso in un output corrispondente ai bit impostati sullo switch a bilanciere, mentre il pulsante rilasciato permette di visualizzare sulla LED bar i segnali presenti in input. I primi due led di sinistra rappresentano rispettivamente l'impostazione del circuito in output o in input.
+
+[![Schema del modulo di test](../../assets/varie/test-schema.png "Schema del modulo di test"){:width="100%"}](../../assets/varie/test-schema.png)
 
 *Schema del modulo di test.*
 
