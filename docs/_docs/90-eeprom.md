@@ -3,7 +3,7 @@ title: "EEPROM Programmer"
 permalink: /docs/eeprom-programmer/
 excerpt: "EEPROM Programmer"
 ---
-[![Registro di output del computer BEAM](../../assets/output/65-beam-output.png "Registro di output del computer BEAM"){:width="100%"}](../../assets/output/65-beam-output.png)
+[![EEPROM programmer](../../assets/output/eeprom-programmer.png "EEPROM programmer"){:width="100%"}](../../assets/output/eeprom-programmer.png)
 
 **WORK IN PROGRESS - WORK IN PROGRESS - WORK IN PROGRESS**
 
