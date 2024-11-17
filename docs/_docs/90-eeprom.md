@@ -3,7 +3,7 @@ title: "EEPROM Programmer"
 permalink: /docs/eeprom-programmer/
 excerpt: "EEPROM Programmer"
 ---
-[![EEPROM programmer](../../assets/output/eeprom-programmer.png "EEPROM programmer"){:width="100%"}](../../assets/output/eeprom-programmer.png)
+[![EEPROM programmer](../../assets/eeprom/eeprom-programmer.png "EEPROM programmer"){:width="100%"}](../../assets/eeprom/eeprom-programmer.png)
 
 **WORK IN PROGRESS - WORK IN PROGRESS - WORK IN PROGRESS**
 
