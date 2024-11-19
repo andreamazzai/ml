@@ -2,7 +2,7 @@
 
 ## Breadboard computer TTL a 8 bit basato sulla realizzazione di Ben Eater e sui miglioramenti di Tom Nisbet
 
-Il BEAM è un computer TTL su breaboard ispirato al [SAP 8-bit computer di Ben Eater](https://eater.net/8bit); include anche i miglioramenti e le espansioni presenti nell'[NQSAP di Tom Nisbet](https://github.com/tomnisbet/nqsap).
+Il BEAM è un computer TTL su breaboard ispirato al [SAP-1-1 8-bit computer di Ben Eater](https://eater.net/8bit); include anche i miglioramenti e le espansioni presenti nell'[NQSAP di Tom Nisbet](https://github.com/tomnisbet/nqsap).
 
 Alcuni aspetti interessanti del progetto:
 

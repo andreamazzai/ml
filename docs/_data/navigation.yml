@@ -70,7 +70,7 @@
     children:
       - title: "> BEAM su GitHub"
         url: "https://github.com/andreamazzai/beam"
-      - title: <a href = "https://eater.net/8bit/" target = "_blank">> SAP di Ben Eater</a>
+      - title: <a href = "https://eater.net/8bit/" target = "_blank">> SAP-1 di Ben Eater</a>
         url: ""
       - title: <a href = "https://github.com/TomNisbet/nqsap" target = "_blank">> NQSAP di Tom Nisbet</a>
         url: ""

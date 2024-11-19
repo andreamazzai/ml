@@ -20,7 +20,7 @@ Il registro dei Flag dell'NQSAP emula i 4 flag **NVZC** del 6502:
 - **Z**ero (Z)
 - **C**arry (C)
 
-E' completamente differente dal semplice registro dei Flag del computer SAP di Ben Eater, nel quale un unico registro tipo D <a href="https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf" target="_blank">74LS173</a> memorizzava i soli 2 flag C e Z nello stesso momento: la gestione delle istruzioni necessitava di 4 set di microcode, cioè uno per ogni combinazione dei segnali di flag portati agli ingressi delle EEPROM; ogni set di microcode era infatti sviluppato "su misura" per attivare in output i corretti segnali per la gestione di C e/o Z. Questo è ben spiegato nel video di Ben Eater <a href="https://www.youtube.com/watch?v=Zg1NdPKoosU" target="_blank">Conditional jump instructions</a>.
+E' completamente differente dal semplice registro dei Flag del computer SAP-1 di Ben Eater, nel quale un unico registro tipo D <a href="https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf" target="_blank">74LS173</a> memorizzava i soli 2 flag C e Z nello stesso momento: la gestione delle istruzioni necessitava di 4 set di microcode, cioè uno per ogni combinazione dei segnali di flag portati agli ingressi delle EEPROM; ogni set di microcode era infatti sviluppato "su misura" per attivare in output i corretti segnali per la gestione di C e/o Z. Questo è ben spiegato nel video di Ben Eater <a href="https://www.youtube.com/watch?v=Zg1NdPKoosU" target="_blank">Conditional jump instructions</a>.
 
 L'approccio di Tom era invece basato su una verifica logica eseguita in hardware: il microcode non variava a seconda dello stato dei flag, che non erano più direttamente connessi agli indirizzi delle ROM che attivano poi a loro volta diversi segnali di output in base all'indirizzo/flag presentato in ingresso!
 
@@ -48,7 +48,7 @@ Se ad esempio una generica istruzione *Jump on Zero* fosse codificata come 010 s
 
 *Tabella funzioni Selector/Multiplexer 74LS151 con evidenza della ipotetica istruzione Jump on Zero.*
 
-Detto in altre parole: la logica del salto condizionale del SAP era implementata nel microcode, utilizzando linee di indirizzamento delle ROM. Poiché i flag dell'NQSAP erano invece implementati in hardware, non c'era bisogno di consumare preziose linee di indirizzamento delle EEPROM (e di raddoppiare la dimensione del microcode ad ogni aggiunta di un flag).
+Detto in altre parole: la logica del salto condizionale del SAP-1 era implementata nel microcode, utilizzando linee di indirizzamento delle ROM. Poiché i flag dell'NQSAP erano invece implementati in hardware, non c'era bisogno di consumare preziose linee di indirizzamento delle EEPROM (e di raddoppiare la dimensione del microcode ad ogni aggiunta di un flag).
 
 I miglioramenti derivanti da questa architettura sono:
 
@@ -93,7 +93,7 @@ Interessante notare che le istruzioni CLC, CLV e SEC non hanno bisogno di segnal
 
 ## I salti condizionali e incondizionati
 
-Ogni variazione di un flag nel computer SAP di Ben Eater generava una variazione degli indirizzi delle EEPROM, così da poter attivare segnali in uscita opportunamente diversi in conseguenza delle diverse combinazioni degli stati dei flag.
+Ogni variazione di un flag nel computer SAP-1 di Ben Eater generava una variazione degli indirizzi delle EEPROM, così da poter attivare segnali in uscita opportunamente diversi in conseguenza delle diverse combinazioni degli stati dei flag.
 
 L'approccio dell'NQSAP è molto diverso, in quanto tutti i segnali dei flag (presenti sulle uscite Q e /Q dei FF '74) vengono presentati a un '151; la sua funzione è quella di selezionare uno dei flag da mettere sulla sua uscita per eventualmente permettere l'attivazione del segnale /PC-LOAD, che abilita il caricamento del contenuto del bus sul Program Counter (e dunque i salti). E' sufficiente infatti caricare un nuovo valore nel Program Counter (PC) perché questo diventi il nuovo indirizzo a partire dal quale saranno caricate ed eseguite (fetch/execute) le successive istruzioni del programma caricato nella memoria del computer.
 
@@ -278,7 +278,7 @@ Il modulo Flag del computer BEAM è sostanzialmente una copia del modulo Flag de
 
 - I video di Ben Eater <a href="https://www.youtube.com/watch?v=ObnosznZvHY" target="_blank">CPU flags register</a> e <a href="https://www.youtube.com/watch?v=Zg1NdPKoosU" target="_blank">Conditional jump instructions</a>, che spiegano la costruzione del modulo dei Flag e le modifiche necessarie al microcode per la gestione delle istruzioni di salto condizionale. Si noterà la differenza con l'approccio dell'NQSAP, che non richiede microcode ad-hoc per ogni flag e non abbisogna di linee di indirizzamento EEPROM dedicate.
 
-- Tom segnala di aver preso ispirazione dal thread Reddit <a href="https://www.reddit.com/r/beneater/comments/jwxke0/how_to_add_a_decremental_and_incremental_circuit/" target="_blank">How to add a decremental and incremental circuit to the ALU ?</a> per l'idea di pilotare il caricamento del [Program Counter](../programcounter/) dal registro dei Flag anziché gestirli con copie multiple del microcode come avveniva come sul SAP di Ben Eater.
+- Tom segnala di aver preso ispirazione dal thread Reddit <a href="https://www.reddit.com/r/beneater/comments/jwxke0/how_to_add_a_decremental_and_incremental_circuit/" target="_blank">How to add a decremental and incremental circuit to the ALU ?</a> per l'idea di pilotare il caricamento del [Program Counter](../programcounter/) dal registro dei Flag anziché gestirli con copie multiple del microcode come avveniva come sul SAP-1 di Ben Eater.
 
 - Inoltre, anche l'ispirazione per la realizzazione del Flag V deriva da un altro thread su Reddit, <a href="https://www.reddit.com/r/beneater/comments/kmuuex/question_for_all_74ls181_alu_people" target="_blank">Question for all 74ls181 alu people</a>; in particolar modo, l'utente <a href="https://www.reddit.com/user/SaltPeppah/" target="_blank">SaltPeppah</a> suggeriva l'uso del 74LS151 segnalando il link indicato nella sezione [Overflow](#overflow) della pagina dei Flag e nella sezione [Approfondimento Overlow](../math/#approfondimento-overflow) della pagina dedicata all'aritmetica binaria, dove l'argomento viene trattato per esteso.
 

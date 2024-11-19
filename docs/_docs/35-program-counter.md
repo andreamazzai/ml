@@ -7,7 +7,7 @@ excerpt: "Program Counter del computer BEAM"
 
 [![Program Counter del computer BEAM](../../assets/pc/35-beam-pc.png "Program Counter del computer BEAM"){:width="100%"}](../../assets/pc/35-beam-pc.png)
 
-Il Program Counter (PC) del computer BEAM presenta poche differenze rispetto al PC del SAP di Ben Eater.
+Il Program Counter (PC) del computer BEAM presenta poche differenze rispetto al PC del SAP-1 di Ben Eater.
 
 E' ora un registro ad 8 bit anziché a 4 bit, perciò permette di indirizzare 256 byte e non più solo 16:
 

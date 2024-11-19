@@ -9,11 +9,11 @@ excerpt: "Control Logic del computer BEAM"
 
 In generale, la gestione delle istruzioni è affidata alla Control Logic, che consta di tre capisaldi: Instruction Register, Ring Counter e Microcode. L'Instruction Register contiene l'istruzione in esecuzione, il Ring Counter tiene traccia delle microistruzioni che compongono l'istruzione e il Microcode definisce i segnali di controllo necessari per eseguire le microistruzioni.
 
-Questa pagina descrive le Control Logic dell'NQSAP e del BEAM, evidenzia alcune differenze con la Control Logic del SAP di Ben Eater e approfondisce gli argomenti che avevo trovato più ostici o più interessanti.
+Questa pagina descrive le Control Logic dell'NQSAP e del BEAM, evidenzia alcune differenze con la Control Logic del SAP-1 di Ben Eater e approfondisce gli argomenti che avevo trovato più ostici o più interessanti.
 
 Per facilità di consultazione e semplificazione del confronto fra i tre computer SAP, NQSAP e BEAM, è opportuno riepilogare in tabella alcuni degli aspetti ricorrenti nel testo.
 
-| ↓ ↓ Caratteristica / Sistema → →       | SAP       | NQSAP      | BEAM          |
+| ↓ ↓ Caratteristica / Sistema → →       | SAP-1       | NQSAP      | BEAM          |
 | -                                      | -         | -          | -             |
 | Autore                                 | Ben Eater | Tom Nisbet | Andrea Mazzai |
 | IR condiviso tra Opcode e Operando     | Sì        | No         | No            |
@@ -37,9 +37,9 @@ Legenda: IR = Instruction Register; RC = Ring Counter
 
 Alcune note propedeutiche:
 
-1. Nel computer SAP di Ben Eater, la denominazione dei segnali di controllo è "modulo-centrica", riflettendo la funzione specifica di ciascun modulo: ad esempio, il segnale RO (RAM Out) esporta il contenuto della RAM sul bus, mentre AI (A Input) carica il registro A. Nel computer NQSAP di Tom Nisbet e nel BEAM, invece, la nomenclatura è "computer-centrica", adottando un punto di vista a livello di bus: per esempio, RO diventa RR (RAM Read) e AI diventa WA (Write A).
+1. Nel computer SAP-1 di Ben Eater, la denominazione dei segnali di controllo è "modulo-centrica", riflettendo la funzione specifica di ciascun modulo: ad esempio, il segnale RO (RAM Out) esporta il contenuto della RAM sul bus, mentre AI (A Input) carica il registro A. Nel computer NQSAP di Tom Nisbet e nel BEAM, invece, la nomenclatura è "computer-centrica", adottando un punto di vista a livello di bus: per esempio, RO diventa RR (RAM Read) e AI diventa WA (Write A).
 
-2. Nell'NQSAP e nel BEAM l'Instruction Register (IR) è incluso nello schema della Control Logic, mentre negli schemi del SAP stava su un foglio separato.
+2. Nell'NQSAP e nel BEAM l'Instruction Register (IR) è incluso nello schema della Control Logic, mentre negli schemi del SAP-1 stava su un foglio separato.
 
 [![Schema della Control Logic dell'NQSAP](../../assets/control/40-control-logic-schema-nqsap.png "Schema della Control Logic dell'NQSAP"){:width="100%"}](../../assets/control/40-control-logic-schema-nqsap.png)
 
@@ -49,7 +49,7 @@ Alcune note propedeutiche:
 
 Il ruolo dell'Instruction Register è di memorizzare l'istruzione corrente prelevandola dalla memoria.
 
-L'Instruction Register del SAP presentava una dimensione di un byte, all'interno del quale erano contenuti sia l'istruzione che l'operando:
+L'Instruction Register del SAP-1 presentava una dimensione di un byte, all'interno del quale erano contenuti sia l'istruzione che l'operando:
 
 - i 4 bit più significativi erano dedicati all'istruzione;
 - i 4 bit meno significativi erano riservati a un operando o a un indirizzo opzionali.
@@ -83,13 +83,13 @@ Ad esempio:
 
 *Rappresentazione di un programma di somma, sottrazione e output caricato nei 16 byte della memoria del SAP.*
 
-In conseguenza del numero di bit utilizzato per l'istruzione, la connessione tra Instruction Register del SAP ed EEPROM contenenti il microcode poteva avere una ampiezza di soli 4 bit, come visibile in figura:
+In conseguenza del numero di bit utilizzato per l'istruzione, la connessione tra Instruction Register del SAP-1 ed EEPROM contenenti il microcode poteva avere una ampiezza di soli 4 bit, come visibile in figura:
 
 [![Schema della Control Logic e dell'Instruction Register del SAP](../../assets/control/40-control-logic-schema-SAP.png "Schema della Control Logic e dell'Instruction Register del SAP"){:width="100%"}](../../assets/control/40-control-logic-schema-SAP.png)
 
 *Schema della Control Logic e dell'Instruction Register del SAP.*
 
-Una fondamentale differenza tra l'IR del SAP e quello dell'NQSAP e del BEAM è la dimensione. Il 6502 ha un set di istruzioni *relativamente* piccolo, composto da 56 istruzioni di base; tuttavia, queste istruzioni possono essere utilizzate con diverse modalità di <a href="https://www.masswerk.at/6502/6502_instruction_set.html#modes" target="_blank">indirizzamento</a>, il che porta il numero totale di combinazioni possibili a circa 150.
+Una fondamentale differenza tra l'IR del SAP-1 e quello dell'NQSAP e del BEAM è la dimensione. Il 6502 ha un set di istruzioni *relativamente* piccolo, composto da 56 istruzioni di base; tuttavia, queste istruzioni possono essere utilizzate con diverse modalità di <a href="https://www.masswerk.at/6502/6502_instruction_set.html#modes" target="_blank">indirizzamento</a>, il che porta il numero totale di combinazioni possibili a circa 150.
 
 Per poter gestire queste combinazioni ed emulare così il set di istruzioni del 6502, la dimensione dell'opcode deve essere di un intero byte e l'architettura del sistema deve gestire istruzioni di lunghezza variabile:
 
@@ -116,7 +116,7 @@ Tirando le fila, per un computer come l'NQSAP o il BEAM:
 
 Per l'NQSAP, Tom ha deciso di utilizzare comunque EEPROM da 256Kb anziché da 64Kb; il BEAM richiede invece obbligatoriamente EEPROM da 256Kb, perché le EEPROM da 128Kb con interfaccia parallela <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">non sono disponibili in commercio</a>.
 
-Come si vedrà in seguito parlando del Ring Counter, un aspetto importante del caricamento dei registri è il [*momento*](#il-clock-il-glitching-delle-eeprom-e-linstruction-register-parte-2) in cui vengono caricati: al Falling Edge\* del clock, oppure al Rising Edge\*: il caricamento dell'Instruction Register del SAP e dell'NQSAP avviene al Rising Edge, mentre quello del BEAM avviene al Falling Edge.
+Come si vedrà in seguito parlando del Ring Counter, un aspetto importante del caricamento dei registri è il [*momento*](#il-clock-il-glitching-delle-eeprom-e-linstruction-register-parte-2) in cui vengono caricati: al Falling Edge\* del clock, oppure al Rising Edge\*: il caricamento dell'Instruction Register del SAP-1 e dell'NQSAP avviene al Rising Edge, mentre quello del BEAM avviene al Falling Edge.
 
 \* Questa pagina utilizza sempre i termini Rising Edge e Falling Edge in riferimento al clock normale (CLK). Alcuni componenti ricevono un segnale di clock invertito (/CLK), che in alcuni grafici è rappresentato solo per evidenziare visivamente la fase del segnale effettivamente ricevuto.
 
@@ -162,13 +162,13 @@ Nel BEAM, ad esempio, l'istruzione LDA #$94 (che nel linguaggio mnemonico del 65
     - PCI, Program Counter Increment - incrementa il PC
     - NI, Next Instruction - resetta il Ring Counter\*\*\*
 
-\* Non bisogna trascurare il fatto che i primi due step di *tutte* le istruzioni sono *sempre* identici. Alla fine del secondo step, l'Instruction Register contiene l'opcode dell'istruzione, che, insieme alle microistruzioni, definisce le operazioni che gli step successivi devono eseguire. Questo vale per qualsiasi istruzione, compresa la prima che una CPU esegue all'accensione. Prima di costruire il SAP di Ben Eater, non riuscivo a immaginare quale meccanismo permettesse ad una CPU di sapere cosa dovesse fare una volta accesa; l'averlo compreso è stato piuttosto appagante.
+\* Non bisogna trascurare il fatto che i primi due step di *tutte* le istruzioni sono *sempre* identici. Alla fine del secondo step, l'Instruction Register contiene l'opcode dell'istruzione, che, insieme alle microistruzioni, definisce le operazioni che gli step successivi devono eseguire. Questo vale per qualsiasi istruzione, compresa la prima che una CPU esegue all'accensione. Prima di costruire il SAP-1 di Ben Eater, non riuscivo a immaginare quale meccanismo permettesse ad una CPU di sapere cosa dovesse fare una volta accesa; l'averlo compreso è stato piuttosto appagante.
 
 \*\* Perché anche H? Si veda la sezione dedicata alla spiegazione del [registro H](../alu/#il-registro-h) nella pagina dell'ALU.
 
 \*\*\* Approfondimenti in merito nella sezione [Lunghezza delle istruzioni](#lunghezza-delle-istruzioni) in questa stessa pagina.
 
-Uno schema che mostra chiaramente gli step di alcune istruzioni del SAP è visibile in questa immagine tratta dal video <a href="https://www.youtube.com/watch?v=dHWFpkGsxOs" target="_blank">8-bit CPU control logic: Part 3</a> di Ben Eater; gli step 000 e 001 sono comuni per tutte le istruzioni e compongono quella che viene chiamata **Fase Fetch**, evidenziata in giallo.
+Uno schema che mostra chiaramente gli step di alcune istruzioni del SAP-1 è visibile in questa immagine tratta dal video <a href="https://www.youtube.com/watch?v=dHWFpkGsxOs" target="_blank">8-bit CPU control logic: Part 3</a> di Ben Eater; gli step 000 e 001 sono comuni per tutte le istruzioni e compongono quella che viene chiamata **Fase Fetch**, evidenziata in giallo.
 
 [![Microcode del SAP](../../assets/control/40-cl-ben-step-microcode.png "Microcode del SAP"){:width="100%"}](../../assets/control/40-cl-ben-step-microcode.png)
 
@@ -259,7 +259,7 @@ In generale, i momenti essenziali di un ciclo di clock in un computer sono due: 
 
 Per quale motivo si parla di eccezioni? Sicuramente il Ring Counter è una di queste, per il motivo spiegato al punto precedente; l'Instruction Register *può* essere un'altra eccezione.
 
-In effetti, nel SAP il caricamento dell'IR è sincrono con il Rising Edge del clock:
+In effetti, nel SAP-1 il caricamento dell'IR è sincrono con il Rising Edge del clock:
 
 [![Dettaglio Instruction Register del SAP](../../assets/control/40-cl-sap-ir-detail.png "Dettaglio Instruction Register del SAP"){:width="66%"}](../../assets/control/40-cl-sap-ir-detail.png)
 
@@ -277,13 +277,13 @@ Nelle EEPROM come la <a href="https://ww1.microchip.com/downloads/en/DeviceDoc/d
 
 Ad esempio, un <a href="https://www.reddit.com/r/beneater/comments/f7gcvx/glitches_on_eeprom_datalines_when_their_adress/" target="_blank">thread su Reddit</a> di rolf-electronics evidenzia il fenomeno nei primi 3 quadranti della seguente immagine, con i segnali di output che mostrano oscillazioni significative al momento del cambiamento degli input delle EEPROM:
 
-[![Glitching nel SAP di Rolf Electronics](../../assets/control/40-glitching-rolf.png "Glitching nel SAP di Rolf Electronics"){:width="66%"}](../../assets/control/40-glitching-rolf.png)
+[![Glitching nel SAP-1 di Rolf Electronics](../../assets/control/40-glitching-rolf.png "Glitching nel SAP-1 di Rolf Electronics"){:width="66%"}](../../assets/control/40-glitching-rolf.png)
 
 Ora, qual è la relazione tra il glitching e il caricamento dell'Instruction Register al Rising Edge del clock?
 
 Il grafico seguente mostra i fronti di salita e di discesa dei soli segnali di controllo attivati nei quattro step dell'istruzione LDA del SAP. I colori indicano che il glitching è innescato da un cambiamento intenzionale, cioè dal microcode che modifica volutamente lo stato di un determinato segnale. Le aree grigie, invece, rappresentano il glitching dei segnali non modificati dalla microistruzione corrente.
 
-Il glitching dovuto alle variazioni degli indirizzi di ingresso delle EEPROM del SAP (ma è così anche nell'NQSAP) avviene:
+Il glitching dovuto alle variazioni degli indirizzi di ingresso delle EEPROM del SAP-1 (ma è così anche nell'NQSAP) avviene:
 
 - ad ogni Falling Edge del Clock come conseguenza del cambiamento delle uscite del Ring Counter (momenti 1, 5, 9, 13, 17)
 - al Rising Edge del Clock come conseguenza del caricamento dell'istruzione nell'Instruction Register (momento 7 nello step 1).
@@ -395,7 +395,7 @@ Concludendo la sezione, è importante ricordare che tutti i segnali di una micro
 
 Altro aspetto importante da prendere in considerazione è il numero di microistruzioni che possono comporre ogni istruzione.
 
-Il SAP prevedeva un numero fisso di 5 step; conseguentemente, tutte le istruzioni avevano la stessa durata, indipendentemente dalla loro complessità. Tuttavia, nel microcode che segue possiamo vedere che in realtà l'istruzione di caricamento immediato LDA potrebbe essere eseguita in soli tre step, mentre somma e sottrazione necessitano di cinque step:
+Il SAP-1 prevedeva un numero fisso di 5 step; conseguentemente, tutte le istruzioni avevano la stessa durata, indipendentemente dalla loro complessità. Tuttavia, nel microcode che segue possiamo vedere che in realtà l'istruzione di caricamento immediato LDA potrebbe essere eseguita in soli tre step, mentre somma e sottrazione necessitano di cinque step:
 
 [![Microcode del computer SAP](../../assets/control/40-cl-sap-microcode.png "Microcode del computer SAP"){:width="66%"}](../../assets/control/40-cl-sap-microcode.png)
 
@@ -433,7 +433,7 @@ Come indicato anche nella sezione [Differenze](.../alu/#differenze-tra-moduli-al
 
 ## I 74LS138 per la gestione dei segnali
 
-La complessità dell'NQSAP è tale per cui i soli 16 segnali di controllo disponibili nella Control Logic del SAP non sarebbero stati sufficienti per pilotare moduli complessi come ad esempio l'ALU e il registro dei Flag; in conseguenza di questo, diventava necessario ampliare in maniera considerevole il numero di linee di controllo utilizzabili.
+La complessità dell'NQSAP è tale per cui i soli 16 segnali di controllo disponibili nella Control Logic del SAP-1 non sarebbero stati sufficienti per pilotare moduli complessi come ad esempio l'ALU e il registro dei Flag; in conseguenza di questo, diventava necessario ampliare in maniera considerevole il numero di linee di controllo utilizzabili.
 
 L'aumento del numero di EEPROM e l'inserimento di quattro demultiplexer <a href="https://www.ti.com/lit/ds/symlink/sn74ls138.pdf" target="_blank">74LS138</a> consente di gestire l'elevato numero di segnali richiesti dall'NQSAP e dal BEAM.
 

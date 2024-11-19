@@ -14,7 +14,7 @@ Tutti i progetti descritti in questa pagina sono basati su Arduino, ad evidenza 
 - Nei link mettere il link a Tommy PROM, spiegare  CHE IL MIO PROGRAMMATORE DI EPPROM  di è basata un po sul DIWSEGNO  originale di ben , UN PO' SUL TOMMYPROM
 - Verificare anche se è Il programmatore dietro di ben Tom che utilizza lo stesso codice di programmazione del Tommyprom; in realtà mi sembra di ricordare che sia una versione tagliata del tommyprom
 
-La mia prima esperienza con un programmatore di EEPROM risale alla costruzione del computer SAP di Ben Eater e alla realizzazione del programmatore basato sul suo schema e sketch. Questo progetto, molto semplice, permetteva di programmare le EEPROM del microcode, ma la scrittura risultava particolarmente lenta.
+La mia prima esperienza con un programmatore di EEPROM risale alla costruzione del computer SAP-1 di Ben Eater e alla realizzazione del programmatore basato sul suo schema e sketch. Questo progetto, molto semplice, permetteva di programmare le EEPROM del microcode, ma la scrittura risultava particolarmente lenta.
 
 Durante lo studio del computer NQSAP di Tom Nisbet e la rivisitazione del suo progetto per creare il computer BEAM, mi ero reso conto che il numero di EEPROM da programmare (quattro anziché due) e la loro dimensione avrebbero ulteriormente aumentato i tempi di programmazione di ogni revisione del microcode. Il programmatore di Ben era funzionale, ma non sfruttava la possibilità delle EEPROM moderne di scrittura a *pagine*, che permette la programmazione di una EEPROM da 32KB in pochi secondi. Ciononostante, continuavo a usare questo programmatore, con tempi di scrittura di circa 90 secondi per ogni EEPROM.
 
@@ -28,7 +28,7 @@ Il mio programmatore iniziale era basato sul design di Ben Eater, quindi utilizz
 
 Nella mia testardaggine, ho deciso di fare un compromesso: modificare solo parzialmente l'hardware sviluppato seguendo il progetto iniziale di Ben e approfittarne per studiare e aggiornare il software di Tom, rendendolo compatibile col mio hardware effettuando il minor numero di modifiche possibili.
 
-Le modifiche minime necessarie rispetto al programmatore originale del SAP sono state le seguenti:
+Le modifiche minime necessarie rispetto al programmatore originale del SAP-1 sono state le seguenti:
 
 - il pin Write Enable della EEPROM (/WE) non viene più viene controllato dal segnale D13 di Arduino, bensì da A2.
 - il pin Chip Enable (/CE) non è più connesso a ground (chip sempre attivo), ma è controllato dal pin A0 di Arduino.

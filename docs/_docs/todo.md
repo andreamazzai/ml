@@ -8,7 +8,7 @@ excerpt: "Cosa c'è da fare"
 
 - Rivedere Flag vs flag, anche in relazione al Carry vs carry
 - decidere se quando spiego il microcode delle istruzioni devo usare la numerazione degli step partendo da 0 o da 1
-- quello di BEN è SAP o SAP-1?
+- quello di BEN è SAP-1 o SAP-1?
 
 ### HOME
 

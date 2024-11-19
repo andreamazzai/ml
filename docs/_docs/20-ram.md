@@ -7,9 +7,9 @@ excerpt: "Modulo di memoria del computer BEAM"
 
 [![Modulo di memoria del computer BEAM](../../assets/ram/20-ram-beam.png "Modulo di memoria del computer BEAM"){:width="100%"}](../../assets/ram/20-ram-beam.png)
 
-Il limite principale del computer SAP di Ben Eater era sicuramente la modesta quantità di RAM indirizzabile, pari a 16 byte; era possibile caricare un semplice contatore da 0 a 255 e viceversa, oppure un piccolo algoritmo di Fibonacci, ma nulla di più. Questo è stato lo stimolo primario per la realizzazione di un computer più potente.
+Il limite principale del computer SAP-1 di Ben Eater era sicuramente la modesta quantità di RAM indirizzabile, pari a 16 byte; era possibile caricare un semplice contatore da 0 a 255 e viceversa, oppure un piccolo algoritmo di Fibonacci, ma nulla di più. Questo è stato lo stimolo primario per la realizzazione di un computer più potente.
 
-All'approssimarsi del completamento della costruzione del SAP, avevo iniziato a documentarmi su vari blog e forum per raccogliere idee su possibili miglioramenti ed espansioni.
+All'approssimarsi del completamento della costruzione del SAP-1, avevo iniziato a documentarmi su vari blog e forum per raccogliere idee su possibili miglioramenti ed espansioni.
 
 ### Primi studi
 
@@ -22,14 +22,14 @@ Dal <a href="https://www.reddit.com/r/beneater/comments/crl270/,8_bit_computer_m
 
 Questo utente desiderava fare una espansione radicale del computer, passando da 16 byte a 64K; il mio desiderio era quello di crescere fino a 256 byte (e non complicarmi troppo la vita con un bus a 16 bit), ma alcune informazioni erano state comunque molto utili per una comprensione generale della questione.
 
-Per indirizzare 64K di memoria era necessario un registro MAR (Memory Address Register) a 16 bit (2^16 = 64K). Invece di utilizzare quattro registri tipo D <a href="https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf" target="_blank">74LS173</a> da 4 bit, come nel SAP originale, sembrava più pratico adottare due registri tipo D <a href="https://www.ti.com/lit/ds/symlink/sn74ls273.pdf" target="_blank">74LS273</a> a 8 bit. Tuttavia, questi ultimi presentavano uno svantaggio rispetto alla versione a 4 bit: mancavano di un ingresso di Enable. Il computer, invece, richiedeva questo segnale, poiché il MAR doveva caricare un indirizzo di memoria solo quando specificamente richiesto, e non ad ogni ciclo di clock. Il segnale MI (Memory Address Register In) del SAP serviva proprio a questo: permetteva al MAR di memorizzare l'indirizzo presente sul bus solo quando necessario, in corrispondenza del fronte di salita del clock. Viceversa, in assenza di un ingresso di Enable, il flip-flop ‘273 avrebbe registrato il dato ad ogni ciclo di clock.
+Per indirizzare 64K di memoria era necessario un registro MAR (Memory Address Register) a 16 bit (2^16 = 64K). Invece di utilizzare quattro registri tipo D <a href="https://www.ti.com/lit/ds/sdls067a/sdls067a.pdf" target="_blank">74LS173</a> da 4 bit, come nel SAP-1 originale, sembrava più pratico adottare due registri tipo D <a href="https://www.ti.com/lit/ds/symlink/sn74ls273.pdf" target="_blank">74LS273</a> a 8 bit. Tuttavia, questi ultimi presentavano uno svantaggio rispetto alla versione a 4 bit: mancavano di un ingresso di Enable. Il computer, invece, richiedeva questo segnale, poiché il MAR doveva caricare un indirizzo di memoria solo quando specificamente richiesto, e non ad ogni ciclo di clock. Il segnale MI (Memory Address Register In) del SAP-1 serviva proprio a questo: permetteva al MAR di memorizzare l'indirizzo presente sul bus solo quando necessario, in corrispondenza del fronte di salita del clock. Viceversa, in assenza di un ingresso di Enable, il flip-flop ‘273 avrebbe registrato il dato ad ogni ciclo di clock.
 
 Nel mio progetto a 256 byte bastava un MAR a 8 bit (2^8 = 256), dunque si potevano semplicemente utilizzare due '173 a 4 bit continuando a sfruttare i segnali di Enable nativi. Per completezza, va detto che sarebbe stato possibile utilizzare anche il '273 e una porta AND per *costruire* un segnale di Enable artificiale: collegando i segnali CLK e MI agli ingressi della AND, l'output avrebbe pilotato l'ingresso CLK del FF, che così si sarebbe attivato solo quando entrambi i segnali, CLK e MI, fossero contemporaneamente presenti.
 
 Il '273, al pari del '173, presenta un ingresso Clear / Reset (CLR), che nel MAR è necessario per resettare il registro - o almeno *credevo* fosse necessario. Sembrava anche interessante l'ipotesi alternativa di usare un registro a 8 bit <a href="https://www.ti.com/lit/ds/symlink/sn74ls377.pdf" target="_blank">74LS377</a>, che include 8 FF con Enable; inizialmente credevo che **non** fosse possibile procedere in tal senso, perché nel MAR serviva anche il CLR, non presente in questo chip. In seguito avevo realizzato che il MAR poteva funzionare perfettamente anche senza un segnale di Clear / Reset; il '377 sarebbe diventato uno dei chip più utilizzati nel BEAM.
 >> Program counter - would have to be expanded to a 16 bit counter (should be trivial to do that) I currently have tons of 8 bit counters combined with a register (and the 4 bit 161 counters that Ben used)
 
-Come nel caso del MAR, per indirizzare 256 byte di RAM era necessario un registro [Program Counter](../programcounter) (PC) a 8 bit. Nel computer SAP era invece presente un contatore a 4 bit <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">74LS161</a> e dovevo pertanto cercare di combinarne due in cascata.
+Come nel caso del MAR, per indirizzare 256 byte di RAM era necessario un registro [Program Counter](../programcounter) (PC) a 8 bit. Nel computer SAP-1 era invece presente un contatore a 4 bit <a href="https://www.ti.com/lit/ds/symlink/sn54ls161a-sp.pdf" target="_blank">74LS161</a> e dovevo pertanto cercare di combinarne due in cascata.
 
 Sarebbe stato comodo utilizzare un singolo contatore a 8 bit, ma tra i chip disponibili sul mercato non ne ho trovato uno che includesse anche l'ingresso LOAD. Il LOAD permette il caricamento parallelo sul PC di uno specifico indirizzo al quale il computer deve saltare (ad esempio, per eseguire un'istruzione di salto assoluto o branch relativo).
 
@@ -80,13 +80,13 @@ A cosa servono i MUX nel modulo RAM (e nel MAR)? All'accensione, il contenuto de
 
 La selezione di cosa passare a RAM e MAR avviene mediante un MUX (nel nostro caso 2:1, cioè ad ogni uscita corrispondono due ingressi selezionabili): gli ingressi del MUX sono connessi sia ai dip-switch che utilizzeremo per la programmazione manuale del computer, sia al bus dati del computer; le uscite sono connesse agli ingressi della RAM e del MAR. Un semplice interruttore connesso all'ingresso di selezione del MUX consente di scegliere quali ingressi attivare.
 
-Ad esempio, nello schema del SAP visibile più in alto in questa pagina, i multiplexer '157 gestiscono gli ingressi della RAM: gli ingressi dei MUX sono connessi sia al dip-switch sia al bus del computer, mentre le uscite sono connesse alle porte di ingresso D1-D4 dei chip di RAM '189.
+Ad esempio, nello schema del SAP-1 visibile più in alto in questa pagina, i multiplexer '157 gestiscono gli ingressi della RAM: gli ingressi dei MUX sono connessi sia al dip-switch sia al bus del computer, mentre le uscite sono connesse alle porte di ingresso D1-D4 dei chip di RAM '189.
 
 Riprendevo il tema del "doppio passaggio" (o meglio "doppio bus", come capirò in seguito), che da quanto iniziavo a comprendere poteva rendere possibile la visualizzazione persistente del contenuto della RAM. A pagina 17 e 18 del "Building the SAP-3 rev 3.3.pdf" presente nel repository GitHub di <a href="https://github.com/rolf-electronics/The-8-bit-SAP-3" target="_blank">rolf-electronics</a>, altro utente del canale Reddit, avevo notato che era stato inserito un secondo transceiver '245.
 
 [![Modulo RAM di rolf electronics](../../assets/ram/20-rolf-ram.png "Modulo RAM di rolf electronics"){:width="50%"}](../../assets/ram/20-rolf-ram.png)
 
-Il funzionamento e la necessità dei transceiver mi erano chiarissimi, in quanto ampiamente utilizzati nel SAP computer per poter attivare i vari moduli del computer solo nel momento in cui fosse necessario farlo: tipicamente ogni modulo ha bisogno di un unico transceiver di interconnessione verso il bus.
+Il funzionamento e la necessità dei transceiver mi erano chiarissimi, in quanto ampiamente utilizzati nel SAP-1 computer per poter attivare i vari moduli del computer solo nel momento in cui fosse necessario farlo: tipicamente ogni modulo ha bisogno di un unico transceiver di interconnessione verso il bus.
 
 Lo schema del modulo RAM di Rolf ne prevede invece due, uno "interno" e uno "esterno", per separare il percorso dei dati *verso* la RAM da quello dei dati *dalla* RAM:
 
@@ -127,7 +127,7 @@ E' stato in questo momento (agosto 2022) che ho scoperto l'**NQSAP**, inserendol
 
 Tra i vari link sondati per l'upgrade della RAM, c'era anche <a href="https://www.reddit.com/r/beneater/comments/h8y28k/stepbystep_guide_to_upgrading_the_ram_with/" target="_blank">Step-by-Step Guide to Upgrading the RAM with Pictures</a>, che molti utenti hanno trovato ben fatto, ma che io ho trovato particolarmente difficile da digerire in quanto mancante di uno schema.
 
-Per aggiungere un ulteriore link utile per la comprensione delle architetture del modulo di RAM, evidenzio questo <a href="https://www.reddit.com/r/beneater/comments/ad2uko/upgrading_the_ram_module_to_256_bytes/" target="_blank">post su Reddit</a>. Le spiegazioni sono molto ben fatte e utili. Il chip di RAM utilizzato è interessante perché si presenta come due RAM distinte, ognuna con accessi dedicati e un segnale di Busy per gestire le richieste parallele sulla stessa locazione. Altro aspetto degno di nota nell'implementazione di questo utente è la possibilità di aumentare fino a 256 il numero di istruzioni del computer, grazie alla scelta di utilizzare un byte intero per l'istruzione ed un eventuale byte successivo per l'operando, anziché avere un unico byte di cui i 4 Most Significant Bit (MSB) rappresentano l'opcode e di cui i 4 Least Significant Bit (LSB) sono l'operando, come nel SAP di Ben Eater.
+Per aggiungere un ulteriore link utile per la comprensione delle architetture del modulo di RAM, evidenzio questo <a href="https://www.reddit.com/r/beneater/comments/ad2uko/upgrading_the_ram_module_to_256_bytes/" target="_blank">post su Reddit</a>. Le spiegazioni sono molto ben fatte e utili. Il chip di RAM utilizzato è interessante perché si presenta come due RAM distinte, ognuna con accessi dedicati e un segnale di Busy per gestire le richieste parallele sulla stessa locazione. Altro aspetto degno di nota nell'implementazione di questo utente è la possibilità di aumentare fino a 256 il numero di istruzioni del computer, grazie alla scelta di utilizzare un byte intero per l'istruzione ed un eventuale byte successivo per l'operando, anziché avere un unico byte di cui i 4 Most Significant Bit (MSB) rappresentano l'opcode e di cui i 4 Least Significant Bit (LSB) sono l'operando, come nel SAP-1 di Ben Eater.
 
 Un aspetto collaterale (ma importantissimo) dell'aumento del numero di istruzioni era la necessità di aumentare la [dimensione](../control/#instruction-register-e-istruzioni) delle EEPROM ospitanti il microcode: volendo gestire (fino a) 256 istruzioni, erano necessari 8 bit di istruzioni, 3 di step e 2 di flag = 13 pin totali, portanto si rendevano necessarie delle 28C64... e avevo dimenticato che mi sarebbe servito un bit aggiuntivo per la selezione delle due EEPROM! In quel momento, non sapevo ancora che avrei speso *intere settimane* a comprendere il fantastico modulo dei [Flag](../flags) dell'NQSAP di Tom Nisbet, che ha un approccio completamente diverso e che non necessita di segnali in uscita dalle EEPROM.
 
@@ -181,7 +181,7 @@ Per esempio, ipotizzavo che nel primo caso "Scrittura sulla RAM in Run Mode" acc
 
 Legenda:
 
-- **PROG** è il segnale dell'interruttore di selezione della modalità Program Mode (LO) / Run Mode (HI); negli schemi originali del SAP computer si trova nel MAR
+- **PROG** è il segnale dell'interruttore di selezione della modalità Program Mode (LO) / Run Mode (HI); negli schemi originali del SAP-1 computer si trova nel MAR
 - **/** significa NOT
 - **\*** significa AND
 

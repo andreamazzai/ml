@@ -9,11 +9,11 @@ header:
 ---
 ## BEAM 8-bit computer
 
-<small>[Il primo progetto: 6502](#il-primo-progetto-6502) - [Computer a 8 bit in logica TTL: SAP?](#computer-a-8-bit-in-logica-ttl-sap) - [Evoluzione del computer a 8 bit: BEAM](#evoluzione-del-computer-a-8-bit-beam) - [BEAM?](#beam) - [Studio e progettazione](#studio-e-progettazione) - [Realizzazione](#realizzazione) - [Note](#note) - [Crediti e ringraziamenti](#crediti-e-ringraziamenti) - [Letteratura](#letteratura) - [Avviso sui Diritti di Proprietà Intellettuale](#avviso-sui-diritti-di-proprietà-intellettuale)</small>
+<small>[Il primo progetto: 6502](#il-primo-progetto-6502) - [Computer a 8 bit in logica TTL: SAP-1](#computer-a-8-bit-in-logica-ttl-sap) - [Evoluzione del computer a 8 bit: BEAM](#evoluzione-del-computer-a-8-bit-beam) - [BEAM?](#beam) - [Studio e progettazione](#studio-e-progettazione) - [Realizzazione](#realizzazione) - [Note](#note) - [Crediti e ringraziamenti](#crediti-e-ringraziamenti) - [Letteratura](#letteratura) - [Avviso sui Diritti di Proprietà Intellettuale](#avviso-sui-diritti-di-proprietà-intellettuale)</small>
 
 <!-- TLDR: vai subito alla [documentazione del BEAM 8-bit computer](https://andreamazzai.github.io/beam/) su GitHub Pages -->
 
->NOTA: in alcuni punti della documentazione si presuppone che il lettore abbia realizzato o comprenda il progetto del SAP Computer di Ben Eater. Ove possibile, vengono fornite delle referenze per facilitare la consultazione.
+>NOTA: in alcuni punti della documentazione si presuppone che il lettore abbia realizzato o comprenda il progetto del SAP-1 Computer di Ben Eater. Ove possibile, vengono fornite delle referenze per facilitare la consultazione.
 
 Dopo diversi decenni dalla fine degli studi (diploma di scuola superiore ad indirizzo elettronico conseguito nel 1989), nel 2021 ho deciso di rimettere mano all'elettronica, in particolar modo a quella digitale. Ho iniziato ad interessarmi ad Arduino e Raspberry Pi, riscontrando subito una certa difficoltà: le mie basi di programmazione e di amministrazione di sistemi erano da una parte ben poco sviluppate, dall'altra molto arrugginite; non avevo alcuna conoscenza di C o di altri linguaggi compilati e la mia conoscenza di Linux era molto modesta.
 
@@ -23,15 +23,15 @@ Verso la fine dell'anno ho scoperto casualmente il blog di <a href="https://eate
 
 ### Computer a 8 bit in logica TTL: SAP
 
-Nei primi mesi del 2022, dopo aver completato i primi moduli base del computer 6502, ho seguito la <a href="https://www.youtube.com/playlist?list=PLowKtXNTBypGqImE405J2565dvjafglHU" target="_blank">playlist</a> del computer **SAP** (Simple As Possible) in logica TTL a 8-bit, al quale mi sono appassionato ancora di più. Durante la costruzione ho appreso moltissimo - sia per l'eccellente stile di esposizione di Ben, sia per il grande impegno che ho profuso nell'approfondimento della materia su altri siti e libri.
+Nei primi mesi del 2022, dopo aver completato i primi moduli base del computer 6502, ho seguito la <a href="https://www.youtube.com/playlist?list=PLowKtXNTBypGqImE405J2565dvjafglHU" target="_blank">playlist</a> del computer **SAP-1** (Simple As Possible) in logica TTL a 8-bit, al quale mi sono appassionato ancora di più. Durante la costruzione ho appreso moltissimo - sia per l'eccellente stile di esposizione di Ben, sia per il grande impegno che ho profuso nell'approfondimento della materia su altri siti e libri.
 
-[![La mia realizzazione del computer SAP](assets/home/sap.png "La mia realizzazione del computer SAP"){:width="66%"}](assets/home/sap.png)
+[![La mia realizzazione del computer SAP-1](assets/home/sap.png "La mia realizzazione del computer SAP-1"){:width="66%"}](assets/home/sap.png)
 
-*La mia realizzazione del computer SAP.*
+*La mia realizzazione del computer SAP-1.*
 
 ### Evoluzione del computer a 8 bit: BEAM
 
-Ho completato il SAP computer a settembre, ma già in precedenza avevo cominciato a studiare i miglioramenti e le espansioni fatte da altri follower di Ben, soprattutto in merito alla possibilità di automatizzare l'inserimento del programma da eseguire con un bootloader, nonché alla necessità di incrementare la RAM oltre i 16 byte; durante l'estate di quell'anno ho scoperto il fantastico progetto <a href="https://tomnisbet.github.io/nqsap/" target="_blank">NQSAP</a> di **Tom Nisbet**: un computer a 8-bit basato su quello di Ben Eater, ma ingegnerizzato per emulare le istruzioni del 6502. Ho realizzato velocemente che sarebbe stato il mio successivo progetto, perché metteva insieme molti aspetti che trovavo di grande interesse:
+Ho completato il SAP-1 computer a settembre, ma già in precedenza avevo cominciato a studiare i miglioramenti e le espansioni fatte da altri follower di Ben, soprattutto in merito alla possibilità di automatizzare l'inserimento del programma da eseguire con un bootloader, nonché alla necessità di incrementare la RAM oltre i 16 byte; durante l'estate di quell'anno ho scoperto il fantastico progetto <a href="https://tomnisbet.github.io/nqsap/" target="_blank">NQSAP</a> di **Tom Nisbet**: un computer a 8-bit basato su quello di Ben Eater, ma ingegnerizzato per emulare le istruzioni del 6502. Ho realizzato velocemente che sarebbe stato il mio successivo progetto, perché metteva insieme molti aspetti che trovavo di grande interesse:
 
 1. Evoluzione del computer di Ben Eater, col quale avevo iniziato a riacquistare confidenza con l'elettronica digitale.
 2. Emulazione del processore del mio primo computer, completa di registri indice, modalità di indirizzamento e Stack Pointer.
@@ -44,7 +44,7 @@ Cercando un nome per il mio progetto, ho identificato in "BEAM" quello ideale: d
 
 ## Studio e progettazione
 
-Nei primi otto mesi di lavoro sul progetto BEAM, mi sono dedicato interamente allo studio. L'obiettivo era comprendere ogni dettaglio dell'NQSAP, che introduceva numerose aggiunte al SAP e implementava diverse idee davvero ingegnose. Questo periodo di analisi è stato cruciale per padroneggiare i nuovi concetti e le innovazioni del progetto.
+Nei primi otto mesi di lavoro sul progetto BEAM, mi sono dedicato interamente allo studio. L'obiettivo era comprendere ogni dettaglio dell'NQSAP, che introduceva numerose aggiunte al SAP-1 e implementava diverse idee davvero ingegnose. Questo periodo di analisi è stato cruciale per padroneggiare i nuovi concetti e le innovazioni del progetto.
 
 La documentazione dell'NQSAP non era completa e avevo scovato anche alcuni errori condividendoli con Tom, che li aveva prontamente corretti. Per aumentare la mia comprensione della materia, dopo lo studio dell'NQSAP avevo analizzato anche l'evoluzione NQSAP-PCB, alla quale Tom aveva apportato diversi miglioramenti. Nella realizzazione del BEAM, ho cercato di prendere il meglio da entrambi i progetti.
 
@@ -54,7 +54,7 @@ Tra gli aspetti da citare e sui quali ho speso molto, **molto**, ***davvero molt
 - comprensione dell'aritmetica binaria in complemento di 2;
 - comprensione dell'overflow, strettamente legato al punto precedente;
 - integrazione dell'ALU 74181 e dell'Instruction Register (IR) in modalità "[hardwired](docs/alu/#relazione-diretta-hardwired-tra-instruction-register-e-alu)" per poter generare "automaticamente" i segnali di ingresso dell'ALU a seconda dell'istruzione presente nell'IR;
-- nuovo modulo di memoria basato su SRAM con pin IO comuni, a differenza dei 74189 utilizzati nel SAP con porte di Input e di Output dedicate;
+- nuovo modulo di memoria basato su SRAM con pin IO comuni, a differenza dei 74189 utilizzati nel SAP-1 con porte di Input e di Output dedicate;
 - il registro dei flag - sicuramente il più complesso del computer:
   - utilizzo del 74151 per decodificare lo stato di overflow e la gestione del flag stesso - argomento strettamente legato alla perfetta comprensione dell'aritmetica binaria;
   - utilizzo del 74151 per poter gestire le istruzioni di [salto condizionale in modalità hardwired](docs/flags/#i-salti-condizionali-e-incondizionati), similarmente a quanto fatto per la ALU;
@@ -79,7 +79,7 @@ A luglio 2023 ho cercato di ricomporre tutto ciò che avevo appreso e ho provato
 
 La fase costruttiva è iniziata a ottobre 2023 e si è conclusa nei primi giorni di maggio 2024. Il risultato è quello visibile in foto.
 
-In queste pagine si trovano note, appunti e insegnamenti appresi ed applicati nella realizzazione del BEAM, analisi dei moduli dell'NQSAP e dell'NQSAP-PCB, differenze tra i sistemi, qualche confronto con il SAP ed altro ancora.
+In queste pagine si trovano note, appunti e insegnamenti appresi ed applicati nella realizzazione del BEAM, analisi dei moduli dell'NQSAP e dell'NQSAP-PCB, differenze tra i sistemi, qualche confronto con il SAP-1 ed altro ancora.
 
 [![BEAM Breadboard Computer](assets/home/beam.png "BEAM breadboard computer"){:width="66%"}](assets/home/beam.png)
 

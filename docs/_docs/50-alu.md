@@ -7,7 +7,7 @@ excerpt: "Unità Aritmetica e Logica del computer BEAM"
 
 [![Unità Aritmetica e Logica del computer BEAM](../../assets/alu/50-alu-beam.png "Unità Aritmetica e Logica del computer BEAM"){:width="100%"}](../../assets/alu/50-alu-beam.png)
 
-L'Unità Aritmetica e Logica (ALU) del SAP computer di Ben Eater era limitata a addizioni e sottrazioni. L'NQSAP di Tom Nisbet aggiungeva operazioni logiche e di scorrimento (shift) e avevo iniziato a studiarla in dettaglio.
+L'Unità Aritmetica e Logica (ALU) del SAP-1 computer di Ben Eater era limitata a addizioni e sottrazioni. L'NQSAP di Tom Nisbet aggiungeva operazioni logiche e di scorrimento (shift) e avevo iniziato a studiarla in dettaglio.
 
 ### Il 74LS181
 
@@ -21,7 +21,7 @@ Inoltre, poiché nel modulo si utilizzano due '181 per poter comporre una word d
 
 ## Il registro A
 
-Il registro A non è direttamente connesso alla ALU, ma, analizzando a livello logico quanto accade nel computer, ha senso includerne la descrizione questa pagina. Il registro A è un registro molto semplice, simile ai registri A e B già visti nel SAP di Ben Eater; il BEAM lo implementa utilizzando un registro tipo D <a href="https://www.ti.com/lit/ds/symlink/sn54ls377.pdf" target="_blank">74LS377</a>.
+Il registro A non è direttamente connesso alla ALU, ma, analizzando a livello logico quanto accade nel computer, ha senso includerne la descrizione questa pagina. Il registro A è un registro molto semplice, simile ai registri A e B già visti nel SAP-1 di Ben Eater; il BEAM lo implementa utilizzando un registro tipo D <a href="https://www.ti.com/lit/ds/symlink/sn54ls377.pdf" target="_blank">74LS377</a>.
 
 Il registro A dell'NQSAP e del BEAM sono diversi per costruzione, ma identici dal punto di vista funzionale. Lo schema seguente, pur facendo riferimento al BEAM, è riutilizzabile in tutte le spiegazioni che seguono, anche quando principalmente rivolte alla descrizione del modulo ALU dell'NQSAP.
 
@@ -43,7 +43,7 @@ Il modulo ALU è sommariamente composto da due registri di input H e B e da una 
 
 ## Il registro H
 
-Nel computer SAP di Ben Eater i registri di input all'ALU erano A e B, mentre nell'NQSAP sono H e B. Come accennato nella sezione precedente, il registro H si può comportare come un comune registro a 8 bit e può sostituire il registro A come input dell'ALU.
+Nel computer SAP-1 di Ben Eater i registri di input all'ALU erano A e B, mentre nell'NQSAP sono H e B. Come accennato nella sezione precedente, il registro H si può comportare come un comune registro a 8 bit e può sostituire il registro A come input dell'ALU.
 
 Poiché le istruzioni del 6502 fanno riferimento al registro A, è necessario che A ed H siano sempre allineati, così che i '181 ritrovino trasparentemente in H il contenuto di A (ad esempio una somma ADC sarà effettivamente realizzata dando in input ai '181 i registri H e B: essendo H una copia di A, il risultato della somma sarà uguale ad A + B).
 

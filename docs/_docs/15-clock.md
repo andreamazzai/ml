@@ -5,11 +5,11 @@ excerpt: "Modulo di clock del computer BEAM"
 ---
 [![Modulo di Clock del computer BEAM](../../assets/clock/15-beam-clock.png "Modulo di Clock del computer BEAM"){:width="100%"}](../../assets/clock/15-beam-clock.png)
 
-Il modulo di clock del computer BEAM riprende quello progettato da Ben Eater per il computer SAP, utilizzando però solo comodi pulsanti tattili anziché interruttori a scorrimento e aggiungendo qualche interazione con i segnali di controllo esterni provenienti dal Loader.
+Il modulo di clock del computer BEAM riprende quello progettato da Ben Eater per il computer SAP-1, utilizzando però solo comodi pulsanti tattili anziché interruttori a scorrimento e aggiungendo qualche interazione con i segnali di controllo esterni provenienti dal Loader.
 
 - Il primo 555 è utilizzato come generatore astabile con possibilità di selezionare la frequenza di funzionamento attraverso un potenziometro; un pulsante "Turbo" permette di bypassare temporaneamente la resistenza del potenziometro portando la frequenza di lavoro al valore massimo. Se si esegue qualche programma a bassa velocità di clock allo scopo di effettuare una analisi visiva degli output, questo pulsante si comporta come un "Fast Forward".
 - Il secondo 555 in modalità monostabile permette di eseguire singole microistruzioni ("Step").
-- Il terzo 555 in modalità bistabile permette di avviare e fermare il clock del primo 555 utilizzando un comodo pulsante "Start/Stop", anziché un interruttore come avveniva sul circuito del SAP.
+- Il terzo 555 in modalità bistabile permette di avviare e fermare il clock del primo 555 utilizzando un comodo pulsante "Start/Stop", anziché un interruttore come avveniva sul circuito del SAP-1.
 
 Una pressione del pulsante Step durante il normale funzionamento (astabile) ferma il computer alla microistruzione attuale e permette di proseguire in modalità "Step by Step" premendo ripetutamente lo stesso pulsante; premendo il pulsante Start/Stop, il computer riprende a lavorare col clock astabile.
 

@@ -866,11 +866,11 @@ Ipotizzando di utilizzare un segnale Ctl come segnale di controllo, si può nota
 
 Rimane l'ultimo passaggio, cioè *aggiungere 1*. Il primo Adder di un Multiple Bit Adder è dotato di un segnale Carry In che, come notato nella sezione [Ripple Carry Adder](#ripple-carry-adder), è normalmente a 0; impostando il Carry In ad 1, otteniamo il risultato desiderato.
 
-Dunque, per negare un numero binario trasformandolo nel proprio complemento a due, possiamo utilizzare delle porte XOR per invertire tutti i bit di ingresso e il segnale di Carry In del primo Adder per aggiungere 1: Ben Eater lo illustra molto chiaramente nel video <a href="https://www.youtube.com/watch?v=mOVOS9AjgFs" target="_blank">ALU Design</a> per il SAP computer.
+Dunque, per negare un numero binario trasformandolo nel proprio complemento a due, possiamo utilizzare delle porte XOR per invertire tutti i bit di ingresso e il segnale di Carry In del primo Adder per aggiungere 1: Ben Eater lo illustra molto chiaramente nel video <a href="https://www.youtube.com/watch?v=mOVOS9AjgFs" target="_blank">ALU Design</a> per il SAP-1 computer.
 
-![Dettaglio degli input del Multiple Bit Adder del SAP Computer di Ben Eater](../../assets/math/adder-input-xor.png){:width="80%"}
+![Dettaglio degli input del Multiple Bit Adder del SAP-1 Computer di Ben Eater](../../assets/math/adder-input-xor.png){:width="80%"}
 
-*Dettaglio degli input del Multiple Bit Adder del SAP Computer di Ben Eater.*
+*Dettaglio degli input del Multiple Bit Adder del SAP-1 Computer di Ben Eater.*
 
 Nello schema abbiamo due RCA <a href="https://www.ti.com/lit/ds/symlink/sn54s283.pdf" target="_blank">74LS283</a> a 4 bit in cascata e un segnale Subtract (SU, da noi rinominato Ctl) che permette di selezionare se gli ingressi B debbano essere normali o invertiti e, contemporaneamente all'eventuale inversione, di aggiungere un Carry In al primo Adder, trasformando B nel suo complemento a 2 per sommarlo ad A ed effettuare finalmente la sottrazione A + (-B).
 
