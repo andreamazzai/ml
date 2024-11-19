@@ -27,6 +27,11 @@ excerpt: "Cosa c'è da fare"
 
 - mettere dei link
 
+## EEPROM
+
+- ci sono 3 sketch: microcode, loader, SSD
+- nel microcode ci sono due diverse chiamate writeEEPROM e writeEEPROM2, credo che la seconda non serva
+
   ## ALU
 
 - /WE ↘↗
