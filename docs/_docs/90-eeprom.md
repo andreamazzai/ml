@@ -3,7 +3,7 @@ title: "EEPROM Programmer"
 permalink: /docs/eeprom-programmer/
 excerpt: "EEPROM Programmer"
 ---
-<small>[PROGRAMMATORE](#programmatore) - [Schemi](#schemi) - [Link utili](#link-utili)</small>
+<small>[PROGRAMMATORE](#programmatore) - [Schema](#schema) - [Link utili](#link-utili)</small>
 
 [![EEPROM programmer](../../assets/eeprom/eeprom-programmer.png "EEPROM programmer"){:width="100%"}](../../assets/eeprom/eeprom-programmer.png)
 
@@ -18,15 +18,23 @@ La mia prima esperienza con un programmatore di EEPROM risale alla costruzione d
 
 Durante lo studio del computer NQSAP di Tom Nisbet e la rivisitazione del suo progetto per creare il computer BEAM, mi ero reso conto che il numero di EEPROM da programmare (quattro anziché due) e la loro [dimensione](../control/#instruction-register-e-istruzioni) avrebbero ulteriormente aumentato i tempi di programmazione di ogni revisione del microcode. Il programmatore di Ben era funzionale, ma non sfruttava la funzionalità di scrittura a *pagine* delle EEPROM moderne, che permette la programmazione di una EEPROM da 32KB in pochi secondi. Ciononostante, continuavo a usare questo programmatore, con tempi di scrittura di circa 90 secondi per ogni EEPROM.
 
+[![Schema del programmatore di EEPROM del computer SAP](../../assets/eeprom/eeprom-ben.png "Schema del programmatore di EEPROM del computer SAP"){:width="100%"}](../../assets/eeprom/eeprom-ben.png)
+
+*Schema del programmatore di EEPROM del computer SAP.*
+
 Con il progredire della costruzione dei moduli del BEAM, le riprogrammazioni necessarie ad implementare l'Instruction Set e risolvere i bug del microcode diventavano sempre più frequenti; il tempo trascorso ad attendere il completamento dei cicli di programmazione iniziava a diventare frustrante.
 
 Tom aveva sviluppato un suo programmatore, il <a href="https://github.com/TomNisbet/TommyPROM" target="_blank">TommyPROM</a>, che supportava una varietà di EPROM, EEPROM e memorie Flash. Questo programmatore includeva un software molto ricco e molto veloce grazie al supporto della modalità di scrittura *Page Write*. Una versione ridotta del software del TommyPROM - col semplice scopo di programmare le EEPROM 28C256 - è stata utilizzata da Tom e pubblicata sul suo repository dell'NQSAP.
 
 Non volevo iniziare un nuovo progetto, quello di un nuovo programmatore di EEPROM, mentre stavo ancora lavorando sul BEAM. Tuttavia, a un certo punto ho realizzato che avrei speso meno tempo nel costruire un programmatore basato sul TommyPROM rispetto al tempo che avrei sprecato continuando ad utilizzare il programmatore elementare di Ben.
 
-Il mio programmatore iniziale era basato sul design di Ben Eater, quindi utilizzava i <a href="https://www.ti.com/lit/ds/symlink/sn74hc595.pdf" target="_blank">74HC595</a> anziché i <a href="https://www.ti.com/lit/ds/symlink/sn74ls164.pdf" target="_blank">74HCT164</a> utilizzati in origine da Tom. In una sezione della documentazione, Tom evidenziava che il suo codice non funzionava sul progetto di Ben e che necessitava di significative modifiche. Se si desideravano i benefici del TommyPROM sull'hardware di Ben, Tom indicava che la strada più facile non era quella di modificare il software, bensì di adattare l'hardware rendendolo uguale a quello del TommyPROM.
+[![Schema del programmatore di EEPROM TommyPROM di Tom Nisbet](../../assets/eeprom/TommyPROM-nano-sch.png "Schema del programmatore di EEPROM TommyPROM di Tom Nisbet"){:width="100%"}](../../assets/eeprom/TommyPROM-nano-sch.png)
 
-Nella mia testardaggine, avevo optato per un compromesso: modificare solo parzialmente l'hardware sviluppato nel progetto iniziale di Ben e contemporaneamente approfittarne per studiare e aggiornare il software di Tom rendendolo compatibile col mio hardware ed effettuando il minor numero di modifiche possibili. In quel momento non sapevo che il programmatore rivisitato avrebbe visto la lucce in un tempo sostanzialmente limitato, ma che la corretta implementazione della modalità *Page Write* avrebbe richiesto uno sorzo molto più esteso.
+*Schema del programmatore di EEPROM TommyPROM di Tom Nisbet.*
+
+Il mio programmatore iniziale era uguale a quello sviluppato da Ben Eater e utilizzava i <a href="https://www.ti.com/lit/ds/symlink/sn74hc595.pdf" target="_blank">74HC595</a> anziché i <a href="https://www.ti.com/lit/ds/symlink/sn74ls164.pdf" target="_blank">74HCT164</a> utilizzati in origine da Tom. In una sezione della documentazione, Tom evidenziava che il suo codice non funzionava sul progetto di Ben e che necessitava di significative modifiche. Se si desideravano i benefici del TommyPROM sull'hardware di Ben, Tom indicava che la strada più facile non era quella di modificare il software, bensì di adattare l'hardware rendendolo uguale a quello del TommyPROM.
+
+Nella mia testardaggine, avevo optato per un compromesso: modificare solo parzialmente l'hardware sviluppato nel progetto iniziale di Ben e contemporaneamente approfittarne per studiare e aggiornare il software di Tom rendendolo compatibile col mio hardware ed effettuando il minor numero di modifiche possibili. In quel momento non sapevo che il programmatore rivisitato avrebbe visto la lucce in un tempo sostanzialmente limitato, ma che la corretta implementazione della modalità *Page Write* avrebbe richiesto uno sforzo molto più esteso.
 
 Le modifiche minime necessarie rispetto al programmatore originale del SAP-1 erano le seguenti:
 
@@ -40,15 +48,7 @@ Altro aspetto da tenere in considerazione era il pin /OE delle EEPROM: gli Shift
 
 28C series EEPROMS, like the X28C256, sometimes ship from the factory with Data Protection enabled. Use the UNLOCK command to disable this. See the 28C256 Notes for more information. https://tomnisbet.github.io/TommyPROM/docs/28C256-notes
 
-## Schemi
-
-[![Schema del programmatore di EEPROM del computer SAP](../../assets/eeprom/eeprom-ben.png "Schema del programmatore di EEPROM del computer SAP"){:width="100%"}](../../assets/eeprom/eeprom-ben.png)
-
-*Schema del programmatore di EEPROM del computer SAP.*
-
-[![Schema del programmatore di EEPROM TommyPROM di Tom Nisbet](../../assets/eeprom/TommyPROM-nano-sch.png "Schema del programmatore di EEPROM TommyPROM di Tom Nisbet"){:width="100%"}](../../assets/eeprom/TommyPROM-nano-sch.png)
-
-*Schema del programmatore di EEPROM TommyPROM di Tom Nisbet.*
+## Schema
 
 [![Schema del programmatore di EEPROM del computer BEAM](../../assets/eeprom/90-eeprom-schema.png "Schema del programmatore di EEPROM del computer BEAM"){:width="100%"}](../../assets/eeprom/90-eeprom-schema.png)
 
