@@ -36,7 +36,11 @@ Le modifiche minime necessarie rispetto al programmatore originale del SAP-1 son
 
 Come spiegava Tom, D13 controlla il segnale Write Enable. Poiché D13 è internamente connesso al LED integrato su Arduino, che lampeggia durante il boot, a ogni accensione del programmatore potrebbero verificarsi scritture indesiderate nella EEPROM. Questo non rappresentava un problema per lo sketch di Ben, poiché a ogni esecuzione la EEPROM veniva completamente riprogrammata, sovrascrivendo eventuali scritture spurie. Tuttavia, dato che il TommyPROM poteva essere utilizzato anche solo per leggere una EEPROM, queste scritture iniziali indesiderate avrebbero potuto causare problemi.
 
-**Vale anche per i 595?** Il pin /OE controllato dagli Shift Register  che nella design del Tommy prom non funziona bene perché OE verrebbe modificato ogni volta che vengono inviati nuovi indirizzi agli shift register 164.
+Altro aspetto da tenere in considerazione è il pin /OE delle EEPROM: se controllato dagli Shift Register 74HCT164, potrebbe diventare critico, in quanto questi SR non sono dotati di una memoria intermedia che funga da latch durante l'aggiornamento degli output: ad ogni ciclo di clock, gli output vengono modificati, cioè /OE potrebbe essere sottoposto ad attivazioni indesiderate. Viceversa, i 74HC595 permettono il caricamento seriale dei dati in un latch interno e la erogazione contemporanea di tutti i nuovi stati di output con un segnale dedicato (RCLK), annullando il rischio di attivazioni indesiderate di /OE. Tuttavia, durante la realizzazione delle modifiche al programmatore non avevo ben compreso questo aspetto e avevo deciso di seguire l'indicazione di Tom, cioè di dedicare un output di Arduino specificamente ad /OE della EEPROM.
+
+Dispone di latch interni (STCP) per bloccare le uscite parallele. Le uscite non cambiano fino a quando il latch non viene aggiornato, garantendo maggiore controllo.
+
+ che nella design del Tommy prom non funziona bene perché OE verrebbe modificato ogni volta che vengono inviati nuovi indirizzi agli shift register 164.
 
 Nel suo progetto originale, Tom utilizzava Shift Register 74LS164, ma forniva anche indicazioni per l'uso dei più diffusi 74LS595 (o meglio dire 74HC595?).
 
