@@ -76,20 +76,22 @@ Per governare tutti i segnali di controllo di ALU, RAM, SP, registri ecc. sono n
 
 Vediamo in dettaglio il microcode di alcune istruzioni di esempio:
 
+~~~text
   <0>       <1>           <2>       <3>      <4>          <5>              <6>             <7>    <8>    <9>
 { RPC|WM,   RR|WIR|PCI    HLT,      NI,      0,           0,               0,              0,     0,     0 }, // istruzione 0 - HLT
 { RPC|WM,   RR|WIR|PCI,   RPC|WM,   RR|WM,   RR|WPC|NI,   0,               0,              0,     0,     0 }, // istruzione 0 - JPM (indiretto)
 { RPC|WM,   RR|WIR|PCI,   RPC|WM,   RR|WB,   RX|WH,       CS|C0|FNZC|RL,   RA|WH|PCI|NI,   0,     0,     0 }, // istruzione 6 - CPX
+~~~
 
 L'istruzione più lunga è la CPX, la cui durata è di 7 step (da 0 a 6).
 
-Come si può vedere nello sketch Arduino di programmazione del microcode (righe da 105 a 145), ad ogni EEPROM corrispondono univocamente alcuni dei 32 segnali / 32 bit discussi poco sopra. Si può dedurre che EEPROM contiene solamente *una parte* del microcode di ogni istruzione, in particolar modo la porzione relativa ai segnali cablati sugli output di quella determinata EEPROM. Ma come è suddiviso il microcode nelle quattro EEPROM?
+Come si può vedere nello sketch Arduino di programmazione del microcode (righe da 105 a 145), ad ogni EEPROM corrispondono univocamente alcuni dei 32 segnali / 32 bit discussi poco sopra. Si può dedurre che ogni EEPROM contiene solamente *una parte* del microcode di ogni istruzione, in particolar modo la porzione relativa ai segnali cablati sugli output di quella determinata EEPROM. Ma come è suddiviso il microcode nelle quattro EEPROM?
 
 [![Rappresentazione di alcune istruzioni del microcode di ogni EEPROM](../../assets/eeprom/4-eeprom-rappresentazione.png "Rappresentazione di alcune istruzioni del microcode di ogni EEPROM"){:width="100%"}](../../assets/eeprom/4-eeprom-rappresentazione.png)
 
 *Rappresentazione di alcune istruzioni del microcode di ogni EEPROM.*
 
-In pratica, si devono tenere in considerazione i segnali associati ad ogni EEPROM e indicare quali segnali debbano essere attivi ad ogni combinazione di istruzione / step.
+In pratica, si devono tenere in considerazione i segnali associati ad ogni EEPROM e indicare quali di questi debbano essere attivi ad ogni combinazione di istruzione / step.
 
 Anziché effettuare quattro programmazioni distinte, risulta però molto più comodo (anche se più dispendioso) utilizzare EEPROM di dimensioni maggiori e scrivere su ognuna di esse, in sequenza, i quattro microcode specifici di tutte le EEPROM, effettuando quattro programmazioni tutte uguali.
 
@@ -104,17 +106,34 @@ Impostando a valori fissi le linee di indirizzamento A12 e A13 sarà possibile m
 
 In relazione al conteggio della dimensione, si veda anche la sezione [Instruction Register e Istruzioni](../control/#instruction-register-e-istruzioni).
 
+Fatta questa premessa, utile per capire la struttura del microcode nelle varie EEPROM, possiamo analizzare alcuni aspetti importanti dello sketch Arduino del programmatore.
+
+### Calcolo del CRC pre-programmazione
+
+Per capire se il programmatore stesse funzionando correttamente, avevo introdotto una verifica della corrispondenza tra il Cyclic Redundancy Check (CRC) calcolato prima della scrittura del microcode e quello calcolato dalla rilettura della EEPROM alla fine della sua programmazione.
+
+Il codice che programma le EEPROM, come si vedrà in seguito, dapprima prepara i 32 bit / 4 byte di microcode di ogni step dell'istruzione corrente (routine **buildInstruction**) e li memorizza in un array tipo uint32_t di lunghezza 16, cioè 4 byte * 16 = 64 Byte; successivamente, le scritture avvengono in questa sequenza (routine **writeOpcode**):
+
+- il 1° byte di ogni step viene scritto sui primi 16 byte contigui della 1a porzione della EEPROM (indirizzo 0x0000 a 0x000F)
+- il 2° byte di ogni step viene scritto sui primi 16 byte contigui della 2a porzione della EEPROM (indirizzo 0x1000 a 0x100F)
+- il 3° byte di ogni step viene scritto sui primi 16 byte contigui della 3a porzione della EEPROM (indirizzo 0x2000 a 0x200F)
+- il 4° byte di ogni step viene scritto sui primi 16 byte contigui della 4a porzione della EEPROM (indirizzo 0x3000 a 0x300F)
+
+Il contatore dell'istruzione viene poi incrementato e vengono preparati i 16 step dell'istruzione successiva, che vengono scritti considerando l'offset di 16 byte di lunghezza di ogni istruzione, dunque:
+
+- il 1° byte di ogni step viene scritto sui 16 byte contigui successivi della 1a porzione della EEPROM (indirizzo 0x0010 a 0x001F)
+- il 2° byte di ogni step viene scritto sui 16 byte contigui successivi della 2a porzione della EEPROM (indirizzo 0x1010 a 0x101F)
+- il 3° byte di ogni step viene scritto sui 16 byte contigui successivi della 3a porzione della EEPROM (indirizzo 0x2010 a 0x201F)
+- il 4° byte di ogni step viene scritto sui 16 byte contigui successivi della 4a porzione della EEPROM (indirizzo 0x3010 a 0x301F)
+
+e così via fino alla fine delle istruzioni.
+
+Per semplicità, il calcolo del CRC non è effettuato secondo la logica di scrittura "frazionata" della EEPROM, ma segue una più intuitiva logica sequenziale degli indirizzi da 0x0000 a 0x3FFF.
+Per calcolare in sequenza i valori degli step, viene eseguita una serie di cicli annidati: per ogni porzione di EEPROM e per ogni istruzione si generano i 16 step, che vengono utilizzati per calcolare il CRC. In questo modo, 
+in quel momento (1a EEPROM, 2a EEPROM etc) e li utilizzo per calcolare il checksum. */
 
 
-
-
-
-
-  // printContents(0x0000, 64);
-
-
-
-
+ ()La stessa routine buildInstruction è utilizzata anche dalla routine di calcolo del CRC.
 
 ~~~c++
 
