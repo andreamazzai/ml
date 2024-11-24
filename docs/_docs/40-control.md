@@ -3,7 +3,7 @@ title: "Control Logic"
 permalink: /docs/control/
 excerpt: "Control Logic del computer BEAM"
 ---
-<small>[Instruction Register e Istruzioni](#instruction-register-e-istruzioni) - [Ring Counter e Microistruzioni](#ring-counter-e-microistruzioni) - [Clock, "glitching" delle EEPROM e Instruction Register (parte 2)](#clock-glitching-delle-eeprom-e-instruction-register-parte-2) - [Lunghezza delle istruzioni](#lunghezza-delle-istruzioni) - [I 74LS138 per la gestione dei segnali](#i-74ls138-per-la-gestione-dei-segnali) - [Caricamento di un programma dal Loader](#caricamento-di-un-programma-dal-loader) - [Riepilogo segnali dell’NQSAP e del BEAM](#riepilogo-segnali-dellnqsap-e-del-beam) - [Microcode](#microcode) - [Microcode](#microcode) - [Note](#note) - [Link Utili](#link-utili) - [Riflessione sul microcode](#riflessione-sul-microcode)</small>
+<small>[Instruction Register e Istruzioni](#instruction-register-e-istruzioni) - [Ring Counter e Microistruzioni](#ring-counter-e-microistruzioni) - [Fasi](#fasi) - [Clock, "glitching" delle EEPROM e Instruction Register (parte 2)](#clock-glitching-delle-eeprom-e-instruction-register-parte-2) - [Lunghezza delle istruzioni](#lunghezza-delle-istruzioni) - [I 74LS138 per la gestione dei segnali](#i-74ls138-per-la-gestione-dei-segnali) - [Caricamento di un programma dal Loader](#caricamento-di-un-programma-dal-loader) - [Riepilogo segnali dell’NQSAP e del BEAM](#riepilogo-segnali-dellnqsap-e-del-beam) - [Segnali di controllo](#segnali-di-controllo) - [Bus e altri segnali](#bus-e-altri-segnali) - [Microcode](#microcode) - [Differenze rispetto all’Instruction Set del 6502](#differenze-rispetto-allinstruction-set-del-6502) - [Schema](#schema) - [Differenze tra Control Logic dell’NQSAP e del BEAM](#differenze-tra-control-logic-dellnqsap-e-del-beam) - [Note](#note) - [Link Utili](#link-utili) - [Riflessione sul microcode](#riflessione-sul-microcode)</small>
 
 [![Control Logic del computer BEAM](../../assets/control/40-beam-control.png "Control Logic del computer BEAM"){:width="100%"}](../../assets/control/40-beam-control.png)
 
@@ -114,9 +114,9 @@ Tirando le fila, per un computer come l'NQSAP o il BEAM:
   - 3 o 4 pin per le microistruzioni (NQSAP, 2^3 = 8 step; BEAM, 2^4 = 16 step), delle quali si parla nella sezione dedicata al [Ring Counter](#ring-counter-e-microistruzioni);
   - 2 pin per la selezione delle EEPROM.
 
-Per l'NQSAP, Tom ha deciso di utilizzare comunque EEPROM da 256Kb anziché da 64Kb; il BEAM richiede invece obbligatoriamente EEPROM da 256Kb, perché le EEPROM da 128Kb con interfaccia parallela <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">non sono disponibili in commercio</a>.
+Per l'NQSAP, Tom ha deciso di utilizzare comunque EEPROM da 256Kb anziché da 64Kb; il BEAM richiede invece obbligatoriamente EEPROM da 256Kb (non sono disponibili in commercio <a href="https://eu.mouser.com/c/semiconductors/memory-ics/eeprom/?interface%20type=Parallel" target="_blank">EEPROM da 128Kb con interfaccia parallela</a>).
 
-Come si vedrà in seguito parlando del Ring Counter, un aspetto importante del caricamento dei registri è il [*momento*](#il-clock-il-glitching-delle-eeprom-e-linstruction-register-parte-2) in cui vengono caricati: al Falling Edge\* del clock, oppure al Rising Edge\*: il caricamento dell'Instruction Register del SAP-1 e dell'NQSAP avviene al Rising Edge, mentre quello del BEAM avviene al Falling Edge.
+Come si vedrà in seguito parlando del Ring Counter, un aspetto importante del caricamento dei registri è il [*momento*](#clock-glitching-delle-eeprom-e-instruction-register-parte-2) in cui vengono caricati: al Falling Edge\* del clock, oppure al Rising Edge\*: il caricamento dell'Instruction Register del SAP-1 e dell'NQSAP avviene al Rising Edge, mentre quello del BEAM avviene al Falling Edge.
 
 \* Questa pagina utilizza sempre i termini Rising Edge e Falling Edge in riferimento al clock normale (CLK). Alcuni componenti ricevono un segnale di clock invertito (/CLK), che in alcuni grafici è rappresentato solo per evidenziare visivamente la fase del segnale effettivamente ricevuto.
 
