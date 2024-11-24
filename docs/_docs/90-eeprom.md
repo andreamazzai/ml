@@ -72,13 +72,24 @@ Altro aspetto da tenere in considerazione era il pin /OE delle EEPROM: gli Shift
 
 
 
-Per governare tutti i segnali di controllo di ALU, RAM, SP, registri ecc. sono necessarie quattro EEPROM. Ogni *Step* di ogni *Istruzione* del BEAM occupa un byte su ogni EEPROM, dunque 16 step * 256 istruzioni =  4096 byte dedicati alla decodifica delle istruzioni e all'impostazione degli opportuni segnali di output. Per indirizzare 4096 byte sono necessari 12 pin di indirizzamento (2^8 = 256 istruzioni + 2^4 = 16 step), cioè da A0 a A11. Sarebbero sufficienti quattro EEPROM da 4KB, ognuna delle quali programmata con il proprio microcode.
+Per governare tutti i segnali di controllo di ALU, RAM, SP, registri ecc. sono necessarie quattro EEPROM, cioè un totale di 32 bit. Ogni EEPROM mette a disposizione per l'output 8 bit, cioè un byte. Poiché ogni *Step* di ogni *Istruzione* del BEAM deve essere indirizzabile singolarmente su ogni EEPROM, sono necessarie EEPROM di dimensione 16 step * 256 istruzioni = 4096 byte dedicati alla decodifica delle istruzioni e all'impostazione degli opportuni segnali di output. Per indirizzare 4096 byte sono necessari 12 pin di indirizzamento (2^8 = 256 istruzioni e 2^4 = 16 step), cioè da A0 a A11; quattro EEPROM da 4KB, ognuna delle quali programmata con il proprio microcode, possono svolgere il compito richiesto.
 
-Ogni EEPROM contiene *solamente* una parte del microcode di ogni istruzione, in particolar modo quella relativa ai segnali che quella determinata EEPROM può mettere in output. Come è suddiviso il microcode nelle quattro EEPROM?
+Vediamo in dettaglio il microcode di alcune istruzioni di esempio:
+
+  <0>       <1>           <2>       <3>      <4>          <5>              <6>             <7>    <8>    <9>
+{ RPC|WM,   RR|WIR|PCI    HLT,      NI,      0,           0,               0,              0,     0,     0 }, // istruzione 0 - HLT
+{ RPC|WM,   RR|WIR|PCI,   RPC|WM,   RR|WM,   RR|WPC|NI,   0,               0,              0,     0,     0 }, // istruzione 0 - JPM (indiretto)
+{ RPC|WM,   RR|WIR|PCI,   RPC|WM,   RR|WB,   RX|WH,       CS|C0|FNZC|RL,   RA|WH|PCI|NI,   0,     0,     0 }, // istruzione 6 - CPX
+
+L'istruzione più lunga è la CPX, la cui durata è di 7 step (da 0 a 6).
+
+Come si può vedere nello sketch Arduino di programmazione del microcode (righe da 105 a 145), ad ogni EEPROM corrispondono univocamente alcuni dei 32 segnali / 32 bit discussi poco sopra. Si può dedurre che EEPROM contiene solamente *una parte* del microcode di ogni istruzione, in particolar modo la porzione relativa ai segnali cablati sugli output di quella determinata EEPROM. Ma come è suddiviso il microcode nelle quattro EEPROM?
 
 [![Rappresentazione di alcune istruzioni del microcode di ogni EEPROM](../../assets/eeprom/4-eeprom-rappresentazione.png "Rappresentazione di alcune istruzioni del microcode di ogni EEPROM"){:width="100%"}](../../assets/eeprom/4-eeprom-rappresentazione.png)
 
 *Rappresentazione di alcune istruzioni del microcode di ogni EEPROM.*
+
+In pratica, si devono tenere in considerazione i segnali associati ad ogni EEPROM e indicare quali segnali debbano essere attivi ad ogni combinazione di istruzione / step.
 
 Anziché effettuare quattro programmazioni distinte, risulta però molto più comodo (anche se più dispendioso) utilizzare EEPROM di dimensioni maggiori e scrivere su ognuna di esse, in sequenza, i quattro microcode specifici di tutte le EEPROM, effettuando quattro programmazioni tutte uguali.
 
