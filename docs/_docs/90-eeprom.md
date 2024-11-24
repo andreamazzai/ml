@@ -72,11 +72,11 @@ Altro aspetto da tenere in considerazione era il pin /OE delle EEPROM: gli Shift
 
 
 
-Per govenare tutti i segnali di controllo di ALU, RAM, SP, registri ecc. sono necessarie 4 EEPROM. Ogni Step di ogni Istruzione del BEAM occupa un byte su ogni EEPROM, dunque 16 step * 256 istruzioni =  4096 byte dedicati alla decodifica delle istruzioni e all'impostazione degli opportuni segnali di output. Per indirizzare 4096 byte sono necessari 12 pin di indirizzamento (2^8 = 256 istruzioni + 2^4 = 16 step), cioè da A0 a A11. Sarebbero sufficienti quattro EEPROM da 4KB, ognuna delle quali programmata con il proprio microcode.
+Per governare tutti i segnali di controllo di ALU, RAM, SP, registri ecc. sono necessarie quattro EEPROM. Ogni *Step* di ogni *Istruzione* del BEAM occupa un byte su ogni EEPROM, dunque 16 step * 256 istruzioni =  4096 byte dedicati alla decodifica delle istruzioni e all'impostazione degli opportuni segnali di output. Per indirizzare 4096 byte sono necessari 12 pin di indirizzamento (2^8 = 256 istruzioni + 2^4 = 16 step), cioè da A0 a A11. Sarebbero sufficienti quattro EEPROM da 4KB, ognuna delle quali programmata con il proprio microcode.
 
-Anziché effettuare quattro programmazioni distinte, risulta molto più comodo utilizzare EEPROM di dimensioni maggiori e scrivere su ognuna di esse, in sequenza, i microcode specifici di ogni EEPROM.
+Anziché effettuare quattro programmazioni distinte, risulta però molto più comodo (anche se più dispendioso) utilizzare EEPROM di dimensioni maggiori e scrivere su ognuna di esse, in sequenza, i microcode specifici di ogni EEPROM.
 
- | Microcode | <p align=center>Indirizzo<br>iniziale<sub>base10</sub> | <p align=center>Indirizzo<br>finale<sub>base10</sub>    | <p align=center>Indirizzo<br>iniziale<sub>hex</sub> | <p align=center>Indirizzo<br>finale<sub>hex</sub> |
+ | Microcode | Indirizzo<br>iniziale<sub>base10</sub> | Indirizzo<br>finale<sub>base10</sub> | Indirizzo<br>iniziale<sub>hex</sub> | Indirizzo<br>finale<sub>hex</sub> |
  |------------|-------|-------------------|--------|--------|
  | 1°         | 0     | 4095              | 0x0000 | 0x0FFF |
  | 2°         | 4096  | 8191              | 0x1000 | 0x1FFF |
