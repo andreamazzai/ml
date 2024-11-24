@@ -74,25 +74,22 @@ Altro aspetto da tenere in considerazione era il pin /OE delle EEPROM: gli Shift
 
 Per governare tutti i segnali di controllo di ALU, RAM, SP, registri ecc. sono necessarie quattro EEPROM. Ogni *Step* di ogni *Istruzione* del BEAM occupa un byte su ogni EEPROM, dunque 16 step * 256 istruzioni =  4096 byte dedicati alla decodifica delle istruzioni e all'impostazione degli opportuni segnali di output. Per indirizzare 4096 byte sono necessari 12 pin di indirizzamento (2^8 = 256 istruzioni + 2^4 = 16 step), cioè da A0 a A11. Sarebbero sufficienti quattro EEPROM da 4KB, ognuna delle quali programmata con il proprio microcode.
 
-Anziché effettuare quattro programmazioni distinte, risulta però molto più comodo (anche se più dispendioso) utilizzare EEPROM di dimensioni maggiori e scrivere su ognuna di esse, in sequenza, i microcode specifici di ogni EEPROM.
-
- | Microcode | Indirizzo<br>iniziale<sub>base10</sub> | Indirizzo<br>finale<sub>base10</sub> | Indirizzo<br>iniziale<sub>hex</sub> | Indirizzo<br>finale<sub>hex</sub> |
- |------------|-------|-------------------|--------|--------|
- | 1°         | 0     | 4095              | 0x0000 | 0x0FFF |
- | 2°         | 4096  | 8191              | 0x1000 | 0x1FFF |
- | 3°         | 8192  | 12287             | 0x2000 | 0x2FFF |
- | 4°         | 12288 | 16383             | 0x2000 | 0x3FFF |
-
-Impostando poi a valori fissi le linee di indirizzamento A12 e A13 sarà possibile mettere in output su ogni EEPROM la porzione corretta di microcode; si vedano le connessioni fisse a Vcc o GND nello [schema](../control/#schema) della Control Logic.
-
-Abbiamo menzionato che ogni EEPROM contiene una parte del microcode di ogni istruzione, in particolar modo quello relativo ai segnali che quella EEPROM può mettere in output. Come è suddiviso il microcode nelle quattro EEPROM?
+Ogni EEPROM contiene *solamente* una parte del microcode di ogni istruzione, in particolar modo quella relativa ai segnali che quella determinata EEPROM può mettere in output. Come è suddiviso il microcode nelle quattro EEPROM?
 
 [![Rappresentazione di alcune istruzioni del microcode di ogni EEPROM](../../assets/eeprom/4-eeprom-rappresentazione.png "Rappresentazione di alcune istruzioni del microcode di ogni EEPROM"){:width="100%"}](../../assets/eeprom/4-eeprom-rappresentazione.png)
 
 *Rappresentazione di alcune istruzioni del microcode di ogni EEPROM.*
 
+Anziché effettuare quattro programmazioni distinte, risulta però molto più comodo (anche se più dispendioso) utilizzare EEPROM di dimensioni maggiori e scrivere su ognuna di esse, in sequenza, i quattro microcode specifici di tutte le EEPROM, effettuando quattro programmazioni tutte uguali.
 
-![Alt text](image.png)
+ | Microcode | Indirizzo<br>iniziale<sub>base10</sub> | Indirizzo<br>finale<sub>base10</sub> | Indirizzo<br>iniziale<sub>hex</sub> | Indirizzo<br>finale<sub>hex</sub> | A12 | A13 |
+ |------------|-------|-------------------|--------|--------|---|---|
+ | 1°         | 0     | 4095              | 0x0000 | 0x0FFF | 0 | 0 |
+ | 2°         | 4096  | 8191              | 0x1000 | 0x1FFF | 1 | 0 |
+ | 3°         | 8192  | 12287             | 0x2000 | 0x2FFF | 0 | 1 |
+ | 4°         | 12288 | 16383             | 0x2000 | 0x3FFF | 1 | 1 |
+
+Impostando a valori fissi le linee di indirizzamento A12 e A13 sarà possibile mettere in output su ogni EEPROM la porzione corretta di microcode; si vedano le connessioni fisse a Vcc o GND nello [schema](../control/#schema) della Control Logic.
 
 In relazione al conteggio della dimensione, si veda anche la sezione [Instruction Register e Istruzioni](../control/#instruction-register-e-istruzioni).
 
