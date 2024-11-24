@@ -85,6 +85,15 @@ Anziché effettuare quattro programmazioni distinte, risulta molto più comodo u
 
 Impostando poi a valori fissi le linee di indirizzamento A12 e A13 sarà possibile mettere in output su ogni EEPROM la porzione corretta di microcode; si vedano le connessioni fisse a Vcc o GND nello [schema](../control/#schema) della Control Logic.
 
+Abbiamo menzionato che ogni EEPROM contiene una parte del microcode di ogni istruzione, in particolar modo quello relativo ai segnali che quella EEPROM può mettere in output. Come è suddiviso il microcode nelle quattro EEPROM?
+
+[![Rappresentazione di alcune istruzioni del microcode di ogni EEPROM](../../assets/eeprom/4-eeprom-rappresentazione.png "Rappresentazione di alcune istruzioni del microcode di ogni EEPROM"){:width="100%"}](../../assets/eeprom/4-eeprom-rappresentazione.png)
+
+*Rappresentazione di alcune istruzioni del microcode di ogni EEPROM.*
+
+
+![Alt text](image.png)
+
 In relazione al conteggio della dimensione, si veda anche la sezione [Instruction Register e Istruzioni](../control/#instruction-register-e-istruzioni).
 
 
