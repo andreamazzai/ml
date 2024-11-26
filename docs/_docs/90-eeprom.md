@@ -71,7 +71,7 @@ Per governare i 29 segnali di controllo di ALU, RAM, SP, registri ecc. sono nece
 
 Vediamo in dettaglio il microcode di alcune istruzioni di esempio:
 
-![Alt text](microcode-esempio.png)
+![ ](../../assets/eeprom/microcode-esempio.png)
 
 L'istruzione più lunga è la CPX, la cui durata è di 7 step (da 0 a 6). Come si può vedere nello sketch Arduino di programmazione del microcode (righe da 105 a 145), ad ogni EEPROM corrispondono univocamente alcuni dei 32 segnali / 32 bit discussi poco sopra:
 
