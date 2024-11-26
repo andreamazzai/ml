@@ -67,16 +67,15 @@ Per governare tutti i segnali di controllo di ALU, RAM, SP, registri ecc. sono n
 
 Vediamo in dettaglio il microcode di alcune istruzioni di esempio:
 
-~~~text
-  <0>     <1>         <2>     <3>    <4>        <5>            <6>           <7> <8> <9>
-{ RPC|WM, RR|WIR|PCI  HLT,    NI,    0,         0,             0,            0,  0,  0 }, // istruzione 0 - HLT
-{ RPC|WM, RR|WIR|PCI, RPC|WM, RR|WM, RR|WPC|NI, 0,             0,            0,  0,  0 }, // istruzione 0 - JPM (indiretto)
-{ RPC|WM, RR|WIR|PCI, RPC|WM, RR|WB, RX|WH,     CS|C0|FNZC|RL, RA|WH|PCI|NI, 0,  0,  0 }, // istruzione 6 - CPX
-~~~
+![Alt text](image.png)
 
 L'istruzione più lunga è la CPX, la cui durata è di 7 step (da 0 a 6).
 
-Come si può vedere nello sketch Arduino di programmazione del microcode (righe da 105 a 145), ad ogni EEPROM corrispondono univocamente alcuni dei 32 segnali / 32 bit discussi poco sopra. Si può dedurre che ogni EEPROM contiene solamente *una parte* del microcode di ogni istruzione, in particolar modo la porzione relativa ai segnali cablati sugli output di quella determinata EEPROM. Ma come è suddiviso il microcode nelle quattro EEPROM?
+[![Definizione dei segnali di controllo gestiti da ogni EEPROM](../../assets/eeprom/eeprom-pins.png "Definizione dei segnali di controllo gestiti da ogni EEPROM"){:width="100%"}](../../assets/eeprom/eeprom-pins.png)
+
+*Definizione dei segnali di controllo gestiti da ogni EEPROM.*
+
+Come si può vedere nello sketch Arduino di programmazione del microcode (righe da 105 a 145), ad ogni EEPROM corrispondono univocamente alcuni dei 32 segnali / 32 bit discussi poco sopra. Si può dedurre che ogni EEPROM contenga solamente *una parte* del microcode di ogni istruzione, in particolar modo la porzione relativa ai segnali cablati sugli output di quella determinata EEPROM. Ma come è suddiviso il microcode nelle quattro EEPROM?
 
 [![Rappresentazione di alcune istruzioni del microcode di ogni EEPROM](../../assets/eeprom/4-eeprom-rappresentazione.png "Rappresentazione di alcune istruzioni del microcode di ogni EEPROM"){:width="100%"}](../../assets/eeprom/4-eeprom-rappresentazione.png)
 
