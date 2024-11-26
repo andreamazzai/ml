@@ -66,14 +66,16 @@ Il programmatore di EEPROM sviluppato non è interattivo, a differenza del ben p
 Per governare i 29 segnali di controllo di ALU, RAM, SP, registri ecc. sono necessarie quattro EEPROM, cioè un totale di 32 bit.
 
 - Ogni EEPROM mette a disposizione 8 bit in output, cioè un byte.
-- Poiché ogni *Istruzione* del BEAM è composta da 16 *Step*, sono necessarie EEPROM di dimensione 256 * 16 = 4096 byte dedicati a decodifica delle istruzioni e impostazione degli opportuni segnali in uscita.
+- Poiché ogni istruzione del BEAM è composta da 16 step, sono necessarie EEPROM di dimensione 256 * 16 = 4096 byte dedicati a decodifica delle istruzioni e impostazione degli opportuni segnali in uscita.
 - Per indirizzare 4096 byte sono necessari 12 pin di indirizzamento (2^8 = 256 istruzioni e 2^4 = 16 step), cioè da A0 a A11; quattro EEPROM da 4KB, ognuna delle quali programmata con il proprio microcode, possono svolgere il compito richiesto.
 
-Vediamo in dettaglio il microcode di alcune istruzioni di esempio:
+Vediamo in dettaglio il microcode di alcune istruzioni di esempio, in particolar modo HLT (blocca l'esecuzione del codice), JMP (salta a un nuovo indirizzo definito nella locazione di memoria indicata dall'operando) e CPX (confronta il registro X con l'operando). L'istruzione più lunga tra quelle rappresentate è CPX, la cui durata è di 7 step (da 0 a 6); alcune istruzioni del BEAM raggiungono una lunghezza di 10 step.
 
 ![ ](../../assets/eeprom/microcode-esempio.png)
 
-L'istruzione più lunga è la CPX, la cui durata è di 7 step (da 0 a 6). Come si può vedere nello sketch Arduino di programmazione del microcode (righe da 105 a 145), ad ogni EEPROM corrispondono univocamente alcuni dei 32 segnali / 32 bit discussi poco sopra:
+Ogni step abilita uno o più segnali di controllo: ad esempio il settimo step dell'istruzione CPX attiva contemporaneamente RA, WH, PCI e NI.
+
+Come si può vedere nello [sketch](/code/Beam-Microcode.ino) Arduino del programmatore di EEPROM (righe da 105 a 145), ad ognuna di essee corrispondono univocamente alcuni dei 32 segnali / 32 bit discussi poco sopra:
 
 [![Definizione dei segnali di controllo gestiti da ogni EEPROM](../../assets/eeprom/eeprom-pins.png "Definizione dei segnali di controllo gestiti da ogni EEPROM"){:width="100%"}](../../assets/eeprom/eeprom-pins.png)
 
@@ -898,3 +900,4 @@ void loop()
 - 28C series EEPROMS, like the X28C256, sometimes ship from the factory with Data Protection enabled. Use the UNLOCK command to disable this. See the 28C256 Notes for more information. https://tomnisbet.github.io/TommyPROM/docs/28C256-notes
 - verificare l'ordine dei paragrafi ed eventualmene correggere i link a inizio pagina
 
+Per approfondimenti sul microcode, si veda anche la pagina che descrive la [Control Logic](../control/) del BEAM.

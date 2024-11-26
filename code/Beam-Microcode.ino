@@ -1,18 +1,19 @@
 #include "Arduino.h"
 // per la connessione si usa ttyUSB0
 
-// Questo è lo sketch da utilizzare (04 settembre agosto 2024).
+// Questo è lo sketch da utilizzare (04 settembre 2024).
 // Modificato N in NI per coerenza con gli schemi
 
 // Definizione dei pin immaginando di avere l'USB di Arduino a sinistra
-#define SHIFT_DATA  2 // riferito a nomenclatura GPIO, dunque pin D2 = 5
-#define SHIFT_CLK   3 // riferito a nomenclatura GPIO, dunque pin D3 = 6
-#define SHIFT_LATCH 4 // riferito a nomenclatura GPIO, dunque pin D4 = 7
-#define EEPROM_D0 5   // D0 per la EEPROM, D5 del Nano
-#define EEPROM_D7 12  // D7 per la EEPROM, D12 del Nano
-#define WE 14         // /WE per la EEPROM, A0/D14 del Nano
-#define OE 15         // /OE per la EEPROM, A1/D15 del Nano
-#define CE 16         // /CE per la EEPROM, A2/D16 del Nano
+// Pinout: pagina 10 https://docs.arduino.cc/resources/datasheets/A000005-datasheet.pdf
+#define SHIFT_DATA  2 // riferito a GPIO,   dunque pin logico     D2 = fisico  5
+#define SHIFT_CLK   3 // riferito a GPIO,   dunque pin logico     D3 = fisico  6
+#define SHIFT_LATCH 4 // riferito a GPIO,   dunque pin logico     D4 = fisico  7
+#define EEPROM_D0   5 //  D0 per la EEPROM, dunque pin logico     D5 = fisico  8
+#define EEPROM_D7  12 //  D7 per la EEPROM, dunque pin logico    D12 = fisico 15
+#define WE         14 // /WE per la EEPROM, dunque pin logico A0/D14 = fisico 19
+#define OE         15 // /OE per la EEPROM, dunque pin logico A1/D15 = fisico 20
+#define CE         16 // /CE per la EEPROM, dunque pin logico A2/D16 = fisico 21
 
 // void initMicroCodeBlock(int block);
 void setAddress(uint16_t address, bool outputEnable);
@@ -52,15 +53,15 @@ void setup()
   {
     ; // wait for serial port to connect. Needed for native USB
   }
-  pinMode(SHIFT_DATA, OUTPUT); // Arduino to SR 595 pins set to output
+  pinMode(SHIFT_DATA, OUTPUT);  // Mette in output i pin di Arduino che controllano i '595
   pinMode(SHIFT_CLK, OUTPUT);
   pinMode(SHIFT_LATCH, OUTPUT);
-  digitalWrite(WE, HIGH); // WE = HI e così facendo Arduino mette automaticamente un pull-up
+  digitalWrite(WE, HIGH);       // WE = HI e così facendo Arduino mette automaticamente un pull-up...
   digitalWrite(OE, HIGH);
-  pinMode(WE, OUTPUT); // così, quando attivo il pin, questo è già attivo HI
+  pinMode(WE, OUTPUT);          // ... così, quando attivo il pin, questo è già attivo HI
   pinMode(OE, OUTPUT);
   pinMode(CE, OUTPUT);
-  pinMode(LED_BUILTIN, OUTPUT); // per poter lampeggiare alla fine della programmazione
+  pinMode(LED_BUILTIN, OUTPUT); // D13, per poter lampeggiare alla fine della programmazione
   Serial.println("\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
   Serial.println("+++++++                                            +++++++");
   Serial.println("+++++          Microcode EEPROM programmer           +++++");
@@ -597,15 +598,29 @@ const uint32_t mMaxWriteTime = 20;  // Max time (in ms) to wait for write cycle 
 
 bool waitForWriteCycleEnd(byte lastValue, byte *b1Ptr)
 {
+  // Codice tratto da Tom Nisbet e fatta qualche mia modifica
+  // Vedi DATA Polling e Toggle Bit pagina 3 https://ww1.microchip.com/downloads/en/DeviceDoc/doc0006.pdf
+  //
   // Verify programming complete by reading the last value back until it matches the
   // value written twice in a row.  The D7 bit will read the inverse of last written
   // data and the D6 bit will toggle on each read while in programming mode.
   //
   // Note that the max readcount is set to the device's maxReadTime (in uSecs)
-  // divided by two because there are two 1 uSec delays in the loop.  In reality,
+  // divided by two because there are two 1 uSec delays in the loop (rimossi).  In reality,
   // the loop could run for longer because this does not account for the time needed
   // to run all of the loop code.  In actual practice, the loop will terminate much
   // earlier because it will detect the end of the write well before the max time.
+
+  // * Nota che in https://github.com/TomNisbet/TommyPROM/issues/17 Tom dice che potrebbero verificarsi
+  // errori in rilettura gestendo solo OE, dunque ha aggiunto CE, che "rispecchia meglio le waveforms
+  // del datasheet", e in effetti "AC Read Waveforms" a pagina 6 del DS mostra che la Read completa è 
+  // 1) attivare /CE e poi /OE
+  // 2) disattivare /OE e /CE
+  // mentre io faccio un po' diverso:
+  // 1) attivare /OE e poi /CE
+  // 2) disattivare /OE e /CE
+  // e nel punto * non disabilito e riabilito CE come indicato da Tom... però mi funziona lo stesso.
+
   setDataBusMode(INPUT);
   uint32_t readCount;
   for (readCount = mMaxWriteTime * 1000 / 2; readCount > 0; readCount--)
@@ -614,7 +629,7 @@ bool waitForWriteCycleEnd(byte lastValue, byte *b1Ptr)
     enableChip();
     byte b1 = readDataBus();
     *b1Ptr = b1;
-    disableOutput();
+    disableOutput(); // *
     enableOutput();
     byte b2 = readDataBus();
     disableOutput();
@@ -625,6 +640,34 @@ bool waitForWriteCycleEnd(byte lastValue, byte *b1Ptr)
     }
   }
   return false;
+
+      /*
+      // Segue il CODICE ORIGINALE di Tom; si vede che lui prima attiva il chip e poi l'output,
+      // mentre io prima lo metto in output e poi lo attivo
+      bool waitForWriteCycleEnd(byte lastValue) {
+          setDataBusMode(INPUT);
+          delayMicroseconds(1);
+          for (int readCount = mMaxWriteTime * 1000 / 2; (readCount > 0); readCount--) {
+              enableChip();
+              enableOutput();
+              delayMicroseconds(1);
+              byte b1 = readDataBus();
+              disableOutput();
+              disableChip();
+              enableChip();
+              enableOutput();
+              delayMicroseconds(1);
+              byte b2 = readDataBus();
+              disableOutput();
+              disableChip();
+              if ((b1 == b2) && (b1 == lastValue)) {
+                  return true;
+              }
+          }
+
+          return false;
+      }
+      */
 }
 
 // ************************************************************
@@ -668,7 +711,7 @@ void setAddress(uint16_t address, bool outputEnable) // 2° parametro = outputEn
 // ************************************************************
 void eeprom_erase(byte value)
 {
-  // value = 0xff; // overwrite value that was set on calling reference - used for debug purposes
+  // value = 0xff; // overwrite value that was set on call - used for debug purposes
   Serial.println("\n+++++++++++++++++++++++++++++");
   Serial.print("Erasing EEPROM with value 0x");
   Serial.print(value, HEX);
@@ -722,7 +765,7 @@ void eeprom_erase(byte value)
           Serial.println(b1Value, HEX);
           Serial.print("Opcode: 0x");
         } */
-    }
+  }
   // printContents(0x0000, 512);
   Serial.println("Done!");
 }
