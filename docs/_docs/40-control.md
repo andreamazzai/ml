@@ -401,7 +401,7 @@ Il SAP-1 prevedeva un numero fisso di 5 step; conseguentemente, tutte le istruzi
 
 *Microcode del computer SAP.*
 
-Nello schema del *Ring Counter del SAP* si nota che il contatore '161 presenta le sue uscite agli ingressi di selezione del demultiplexer '138, che attiva in sequenza le uscite invertite (active = LO) da 00 a 05: ad ogni attivazione di quest'ultima, le due NAND attivano l'ingresso di Reset /MR del '161, che riporta il conteggio degli step allo zero iniziale, cominciando così una nuova istruzione.
+Nello schema del *Ring Counter del SAP-1* si nota che il contatore '161 presenta le sue uscite agli ingressi di selezione del demultiplexer '138, che attiva in sequenza le uscite invertite (active = LO) da 00 a 05: ad ogni attivazione di quest'ultima, le due NAND attivano l'ingresso di Reset /MR del '161, che riporta il conteggio degli step allo zero iniziale, cominciando così una nuova istruzione.
 
 E' facile notare come questa architettura comporti uno spreco di cicli di elaborazione durante l'esecuzione di istruzioni che richiedono pochi passaggi, in quanto il RC deve comunque attendere l'attivazione dell'ultima uscita 05 per essere resettato.
 
