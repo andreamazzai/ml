@@ -3,13 +3,13 @@ title: "EEPROM Programmer"
 permalink: /docs/eeprom-programmer/
 excerpt: "EEPROM Programmer"
 ---
-<small>[PROGRAMMATORE](#programmatore) - [Schema](#schema) - [Link utili](#link-utili)</small>
+<small>[Il programmatore di EEPROM](#il-programmatore-di-eeprom) - [Schema](#schema) - [Spiegazione del codice](#spiegazione-del-codice) - [Le EEPROM e il loro contenuto](#le-eeprom-e-il-loro-contenuto) - [Link utili](#link-utili)</small>
 
 [![EEPROM programmer](../../assets/eeprom/eeprom-programmer.png "EEPROM programmer"){:width="100%"}](../../assets/eeprom/eeprom-programmer.png)
 
 Tutti i progetti descritti in questa pagina sono basati su Arduino, ad evidenza della sua versatilità.
 
-## PROGRAMMATORE
+## Il programmatore di EEPROM
 
 La mia prima esperienza con la programmazione di EEPROM risale alla costruzione del computer SAP-1 di Ben Eater e alla realizzazione del programmatore basato sui suoi schema e sketch. Questo progetto, molto semplice, permetteva di programmare le EEPROM del microcode, anche se la scrittura risultava particolarmente lenta. Ciononostante, la programmazione di una EEPROM (dapprima manualmente, poi con il programmatore) è stato un momento euforico - mai avrei pensato di riuscire a comprendere i (tutto sommato semplici) meccanismi che lo rendevano possibile.
 
@@ -61,21 +61,25 @@ Il programmatore di EEPROM sviluppato non è interattivo, a differenza del ben p
 6. Calcolo del checksum rileggendo i dati scritti e confronto col valore calcolato al punto 1
 7. Stampa del tempo trascorso
 
-### Un po' di teoria... in pratica
+### Le EEPROM e il loro contenuto
 
-Per governare tutti i segnali di controllo di ALU, RAM, SP, registri ecc. sono necessarie quattro EEPROM, cioè un totale di 32 bit. Ogni EEPROM mette a disposizione 8 bit in output, cioè un byte. Poiché ogni *Istruzione* del BEAM è composta da 16 *Step*, sono necessarie EEPROM di dimensione 256 * 16 = 4096 byte dedicati a decodifica delle istruzioni e impostazione degli opportuni segnali in uscita. Per indirizzare 4096 byte sono necessari 12 pin di indirizzamento (2^8 = 256 istruzioni e 2^4 = 16 step), cioè da A0 a A11; quattro EEPROM da 4KB, ognuna delle quali programmata con il proprio microcode, possono svolgere il compito richiesto.
+Per governare i 29 segnali di controllo di ALU, RAM, SP, registri ecc. sono necessarie quattro EEPROM, cioè un totale di 32 bit.
+
+- Ogni EEPROM mette a disposizione 8 bit in output, cioè un byte.
+- Poiché ogni *Istruzione* del BEAM è composta da 16 *Step*, sono necessarie EEPROM di dimensione 256 * 16 = 4096 byte dedicati a decodifica delle istruzioni e impostazione degli opportuni segnali in uscita.
+- Per indirizzare 4096 byte sono necessari 12 pin di indirizzamento (2^8 = 256 istruzioni e 2^4 = 16 step), cioè da A0 a A11; quattro EEPROM da 4KB, ognuna delle quali programmata con il proprio microcode, possono svolgere il compito richiesto.
 
 Vediamo in dettaglio il microcode di alcune istruzioni di esempio:
 
-![Alt text](image.png)
+![Alt text](microcode-esempio.png)
 
-L'istruzione più lunga è la CPX, la cui durata è di 7 step (da 0 a 6).
+L'istruzione più lunga è la CPX, la cui durata è di 7 step (da 0 a 6). Come si può vedere nello sketch Arduino di programmazione del microcode (righe da 105 a 145), ad ogni EEPROM corrispondono univocamente alcuni dei 32 segnali / 32 bit discussi poco sopra:
 
 [![Definizione dei segnali di controllo gestiti da ogni EEPROM](../../assets/eeprom/eeprom-pins.png "Definizione dei segnali di controllo gestiti da ogni EEPROM"){:width="100%"}](../../assets/eeprom/eeprom-pins.png)
 
 *Definizione dei segnali di controllo gestiti da ogni EEPROM.*
 
-Come si può vedere nello sketch Arduino di programmazione del microcode (righe da 105 a 145), ad ogni EEPROM corrispondono univocamente alcuni dei 32 segnali / 32 bit discussi poco sopra. Si può dedurre che ogni EEPROM contenga solamente *una parte* del microcode di ogni istruzione, in particolar modo la porzione relativa ai segnali cablati sugli output di quella determinata EEPROM. Ma come è suddiviso il microcode nelle quattro EEPROM?
+Si può dedurre che ogni EEPROM contenga solamente *una parte* del microcode di ogni istruzione, in particolar modo la porzione relativa ai segnali cablati sugli output di quella determinata EEPROM. Ma come è suddiviso il microcode nelle quattro EEPROM?
 
 [![Rappresentazione di alcune istruzioni del microcode di ogni EEPROM](../../assets/eeprom/4-eeprom-rappresentazione.png "Rappresentazione di alcune istruzioni del microcode di ogni EEPROM"){:width="100%"}](../../assets/eeprom/4-eeprom-rappresentazione.png)
 
@@ -891,4 +895,6 @@ void loop()
 
 ## TO DO
 
-28C series EEPROMS, like the X28C256, sometimes ship from the factory with Data Protection enabled. Use the UNLOCK command to disable this. See the 28C256 Notes for more information. https://tomnisbet.github.io/TommyPROM/docs/28C256-notes
+- 28C series EEPROMS, like the X28C256, sometimes ship from the factory with Data Protection enabled. Use the UNLOCK command to disable this. See the 28C256 Notes for more information. https://tomnisbet.github.io/TommyPROM/docs/28C256-notes
+- verificare l'ordine dei paragrafi ed eventualmene correggere i link a inizio pagina
+
