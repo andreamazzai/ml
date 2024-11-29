@@ -53,7 +53,7 @@ Altro aspetto da tenere in considerazione era il pin /OE delle EEPROM: gli Shift
 
 Il programmatore di EEPROM del BEAM, basato su quello dell'NQSAP di Tom, non è interattivo, a differenza del ben più completo TommyProm. Una volta fatto partire, esegue in sequenza i seguenti passaggi ed alla fine è pronto per un reset e la programmazione di una nuova EEPROM:
 
-1. Calcolo di un checksum dei dati da scrivere sulla EEPROM
+1. Calcolo del checksum dei dati da scrivere sulla EEPROM
 2. Sblocco della EEPROM
 3. Cancellazione della EEPROM
 4. Programmazione della EEPROM
@@ -63,13 +63,22 @@ Il programmatore di EEPROM del BEAM, basato su quello dell'NQSAP di Tom, non è 
 
 ### Le EEPROM e il loro contenuto
 
-Per governare i 29 segnali di controllo di ALU, RAM, SP, registri ecc. sono necessarie quattro EEPROM, cioè un totale di 32 bit.
+Per governare i 29 segnali di controllo di ALU, RAM, SP, registri ecc. sono necessarie quattro EEPROM, con una word da 8 bit cadauna per un totale di 32 bit (3 pin inutilizzati).
 
 - Ogni EEPROM mette a disposizione 8 bit in output, cioè un byte.
 - Poiché ogni istruzione del BEAM è composta da 16 step, sono necessarie EEPROM di dimensione 256 * 16 = 4096 byte dedicati a decodifica delle istruzioni e impostazione degli opportuni segnali in uscita.
-- Per indirizzare 4096 byte sono necessari 12 pin di indirizzamento (2^8 = 256 istruzioni e 2^4 = 16 step), cioè da A0 a A11; quattro EEPROM da 4KB, ognuna delle quali programmata con il proprio microcode, possono svolgere il compito richiesto.
+- Per indirizzare 4096 byte sono necessari 12 pin di indirizzamento ((2^8 = 256 istruzioni) * (2^4 = 16 step) = 2^12 = 4096), cioè da A0 a A11; quattro EEPROM da 4KB, ognuna delle quali programmata con il proprio microcode, possono svolgere il compito richiesto.
 
-Vediamo però in dettaglio il microcode di alcune istruzioni di esempio, in particolar modo HLT (blocca l'esecuzione del codice), JMP (salta a un nuovo indirizzo definito nella locazione di memoria indicata dall'operando) e CPX (confronta il registro X con l'operando). L'istruzione più lunga tra quelle rappresentate è CPX, la cui durata è di 7 step (da 0 a 6); alcune istruzioni del BEAM raggiungono una lunghezza di 10 step.
+Vediamo di seguito un dettaglio del microcode di alcune istruzioni di esempio, in particolar modo HLT (blocca l'esecuzione del codice), JMP (salta a un nuovo indirizzo definito nella locazione di memoria indicata dall'operando) e CPX (confronta il registro X con l'operando). L'istruzione più lunga tra quelle rappresentate è CPX, la cui durata è di 7 step (da 0 a 6); alcune istruzioni del BEAM raggiungono una lunghezza di 10 step.
+
+<small>
+~~~text
+ <0>     <1>         <2>     <3>    <4>        <5>            <6>           <7><8><9>
+{ RPC|WM, RR|WIR|PCI, HLT,    NI,    0,         0,             0,            0, 0, 0 }, // istruzione 00 HLT
+{ RPC|WM, RR|WIR|PCI, RPC|WM, RR|WM, RR|WPC|NI, 0,             0,            0, 0, 0 }, // istruzione 01 JMP
+{ RPC|WM, RR|WIR|PCI, RPC|WM, RR|WB, RX|WH,     CS|C0|FNZC|RL, RA|WH|PCI|NI, 0, 0, 0 }, // istruzione 06 CPX
+~~~
+</small>
 
 [![Microcode di esempio](../../assets/eeprom/microcode-esempio.png "Microcode di esempio"){:width="100%"}](../../assets/eeprom/microcode-esempio.png)
 
