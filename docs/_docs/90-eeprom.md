@@ -74,9 +74,9 @@ Vediamo di seguito un dettaglio del microcode di alcune istruzioni di esempio, i
 <small>
 ~~~text
  <0>     <1>         <2>     <3>    <4>        <5>            <6>           <7><8><9>
-{ RPC|WM, RR|WIR|PCI, HLT,    NI,    0,         0,             0,            0, 0, 0 }, // istruzione 00 HLT
-{ RPC|WM, RR|WIR|PCI, RPC|WM, RR|WM, RR|WPC|NI, 0,             0,            0, 0, 0 }, // istruzione 01 JMP
-{ RPC|WM, RR|WIR|PCI, RPC|WM, RR|WB, RX|WH,     CS|C0|FNZC|RL, RA|WH|PCI|NI, 0, 0, 0 }, // istruzione 06 CPX
+{ RPC|WM, RR|WIR|PCI, HLT,    NI,    0,         0,             0,            0, 0, 0 }, // 00 HLT
+{ RPC|WM, RR|WIR|PCI, RPC|WM, RR|WM, RR|WPC|NI, 0,             0,            0, 0, 0 }, // 01 JMP
+{ RPC|WM, RR|WIR|PCI, RPC|WM, RR|WB, RX|WH,     CS|C0|FNZC|RL, RA|WH|PCI|NI, 0, 0, 0 }, // 06 CPX
 ~~~
 </small>
 
