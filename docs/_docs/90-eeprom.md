@@ -143,11 +143,11 @@ La programmazione delle EEPROM col metodo originale "un byte alla volta" risulta
 Dunque, per capire se il programmatore stesse funzionando correttamente, avevo introdotto una verifica della corrispondenza tra il Cyclic Redundancy Check (CRC) calcolato *prima* della scrittura del microcode e quello calcolato dalla rilettura della EEPROM alla *fine* della sua programmazione.
 
 Per semplicità e per facilitare la scrittura del codice, avevo ipotizzato una lettura sequenziale simulata dei valori da calcolare, partendo dall'indirizzo 0x0000 fino all'indirizzo 0x3FFF.\
-Perché *simulata*? Perché in questo momento la EEPROM non è ancora stata programmata e ciò che si desidera ottenere in questa fase è proprio un checksum del dato *da scrivere*, checksum che sarà poi confrontato con quello calcolato rileggendo la EEPROM alla fine del ciclo di programmazione.
+Perché *simulata*? Perché in questo momento la EEPROM non è ancora stata programmata e ciò che si desidera ottenere in questa fase è proprio un checksum del dato *da scrivere*, checksum che sarà poi confrontato con quello calcolato rileggendo la EEPROM alla *fine* del ciclo di programmazione.
 
-Ci troviamo nella situazione in cui la routine del calcolo del CRC si aspetta una lettura simulata sequenziale del contenuto della EEPROM, mentre il frazionamento delle istruzioni esposto nella [sezione precedente](#le-eeprom-e-il-loro-contenuto) viene eseguito generando ciclicamente un opcode completo e suddividendo le scritture dei quattro 4 segmenti da 16 byte dell'opcode sulle corrispondenti porzioni di microcode, come evidenziato nella tabella *Consolidamento dei microcode in un'unica EEPROM.*
+Ci troviamo nella situazione in cui la routine del calcolo del CRC si aspetta una lettura simulata sequenziale del contenuto della EEPROM (cosa che facciamo andandolo a creare per il tempo strettamente necessario al calcolo del CRC), mentre il frazionamento delle istruzioni esposto nella [sezione precedente](#le-eeprom-e-il-loro-contenuto) viene eseguito generando ciclicamente un opcode completo e suddividendo le scritture dei quattro 4 segmenti da 16 byte dell'opcode sulle corrispondenti porzioni di microcode, come evidenziato nella tabella *Consolidamento dei microcode in un'unica EEPROM.*
 
-Il codice preposto alla scrittura sulle EEPROM prepara i 32 bit / 4 byte di microcode di ogni step dell'istruzione corrente (routine **buildInstruction**) e li memorizza in un array tipo uint32_t di lunghezza 16, cioè 4 byte * 16 step = 64 byte; successivamente, le scritture avvengono in questa sequenza (routine **writeOpcode**):
+Il codice preposto alla scrittura sulle EEPROM prepara infatti i 32 bit / 4 byte di microcode di ogni step dell'istruzione corrente (routine **buildInstruction**) e li memorizza in un array tipo uint32_t di lunghezza 16, cioè 4 byte * 16 step = 64 byte; successivamente, le scritture avvengono in questa sequenza (routine **writeOpcode**):
 
 - il microcode relativo ai primi 8 segnali\* viene scritto sui primi 16 byte della prima porzione della EEPROM (indirizzo 0x0000 a 0x000F)
 - il microcode relativo ai successivi 8 segnali\* viene scritto sui primi 16 byte della seconda porzione della EEPROM (indirizzo 0x1000 a 0x100F)
@@ -171,11 +171,9 @@ Riprendendo lo schema visto in precedenza, vengono dapprima eseguite le scrittur
 
 *Sequenza di scrittura delle istruzioni.*
 
-Veniamo ora al calcolo del CRC. La routine di calcolo del CRC pre-programmazione sfrutta la stessa routine **buildInstruction** già utilizzata per la preparazione del microcode di ogni istruzione, ma il risultato viene interpretato diversamente.
+Volendo riutilizzare la routine **buildInstruction**, dovevo trovare il modo di interpretarne il risultato per estrapolarne in tempo reale solo ciò che mi interessava al fine di realizzare quella lettura simulata sequenziale discussa all'inizio della sezione.
 
-Come indicato all'inizio della sezione, il calcolo del CRC non è effettuato secondo la logica di scrittura "frazionata" della EEPROM, ma secondo una semplice logica sequenziale.
-
-Per calcolare il valore di ogni step da passare alla routine CRC, viene eseguita una serie di cicli annidati: per ogni porzione di EEPROM e per ogni istruzione si genera la Control Word a 32 bit di tutti gli step, dalla quale si estrapola la word a 8 bit relativa alla porzione di EEPROM correntemente indirizzata dal ciclo
+Per ottenere il risultato desiderato, viene eseguita una serie di cicli annidati: per ogni istruzione si genera la Control Word a 32 bit di tutti gli step, dalla quale si estrapola solo la word a 8 bit relativa alla porzione di EEPROM correntemente indirizzata dal ciclo più esterno
 
 ~~~c++
 for (uint8_t rom = 0; rom < 4; rom++)
