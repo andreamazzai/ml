@@ -63,7 +63,7 @@ Il programmatore di EEPROM del BEAM, basato su quello dell'NQSAP di Tom, non è 
 
 ### Le EEPROM e il loro contenuto
 
-Per governare i 42 segnali di controllo (21 direttamente in uscita dalle EEPROM + 21 demultiplexati dai [74LS138](../control/#i-74ls138-per-la-gestione-dei-segnali)) di ALU, RAM, SP, registri ecc. sono necessarie quattro EEPROM, con una word da 8 bit cadauna per un totale di 32 bit (i segnali fisici reali sono 29, cioè i 21 diretti e 8 che governano i '138, dunque rimangono inutilizzati 3 pin).
+Per governare i 42 segnali di controllo di ALU, RAM, SP, registri ecc. (21 direttamente in uscita dalle EEPROM + 21 demultiplexati dai [74LS138](../control/#i-74ls138-per-la-gestione-dei-segnali)) sono necessarie quattro EEPROM, ognuna delle quali esporta una word da 8 bit per un totale di 32 bit (i segnali fisici realmente necessari sono 29, cioè 21 diretti e 8 per governare i '138, dunque rimangono 3 pin inutilizzati).
 
 - Ogni EEPROM mette a disposizione 8 bit in output, cioè un byte.
 - Poiché ogni istruzione del BEAM è composta da 16 step, sono necessarie EEPROM di dimensione 256 * 16 = 4096 byte dedicati a decodifica delle istruzioni e impostazione degli opportuni segnali in uscita.
@@ -91,6 +91,16 @@ Si può dedurre che ogni EEPROM contiene solamente *una parte* del microcode di 
 [![Rappresentazione di alcune istruzioni del microcode di ogni EEPROM](../../assets/eeprom/4-eeprom-rappresentazione.png "Rappresentazione di alcune istruzioni del microcode di ogni EEPROM"){:width="100%"}](../../assets/eeprom/4-eeprom-rappresentazione.png)
 
 *Rappresentazione di alcune istruzioni del microcode di ogni EEPROM.*
+
+Ogni step di ogni istruzione va dunque letto come la concatenazione logica di ogni ennesimo byte di ogni EEPROM. Ad esempio:
+
+ | Istruzione | step  | Concatenazione logica                                                                                        |
+ |------------|-------|--------------------------------------------------------------------------------------------------------------|
+ | 0          | 0     | (byte 0 della EEPROM 0) OR (byte 0 della EEPROM 1) OR (byte 0 della EEPROM 2) OR (byte 0 della EEPROM 3)     |
+ | 0          | 1     | (byte 1 della EEPROM 0) OR (byte 1 della EEPROM 1) OR (byte 1 della EEPROM 2) OR (byte 1 della EEPROM 3)     |
+ | 0          | ...   | ...                                                                                                          |
+ | 0          | 14    | (byte 14 della EEPROM 0) OR (byte 14 della EEPROM 1) OR (byte 14 della EEPROM 2) OR (byte 14 della EEPROM 3) |
+ | 0          | 15    | (byte 15 della EEPROM 0) OR (byte 15 della EEPROM 1) OR (byte 15 della EEPROM 2) OR (byte 15 della EEPROM 3) |
 
 In pratica, si devono tenere in considerazione i segnali associati ad ogni EEPROM e indicare quali di questi debbano essere attivi ad ogni combinazione di istruzione / step.
 
