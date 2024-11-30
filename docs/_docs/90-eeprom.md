@@ -94,17 +94,17 @@ Si può dedurre che ogni EEPROM contiene solamente *una parte* del microcode di 
 
 Ogni step di ogni istruzione va dunque letto come la concatenazione logica di ogni ennesimo byte di ogni EEPROM. Ad esempio:
 
- | Istruzione | step  | Concatenazione logica                                                                                        |
- |------------|-------|--------------------------------------------------------------------------------------------------------------|
- | 0          | 0     | (byte 0 della EEPROM 0) OR (byte 0 della EEPROM 1) OR (byte 0 della EEPROM 2) OR (byte 0 della EEPROM 3)     |
- | 0          | 1     | (byte 1 della EEPROM 0) OR (byte 1 della EEPROM 1) OR (byte 1 della EEPROM 2) OR (byte 1 della EEPROM 3)     |
- | 0          | ...   | ...                                                                                                          |
- | 0          | 14    | (byte 14 della EEPROM 0) OR (byte 14 della EEPROM 1) OR (byte 14 della EEPROM 2) OR (byte 14 della EEPROM 3) |
- | 0          | 15    | (byte 15 della EEPROM 0) OR (byte 15 della EEPROM 1) OR (byte 15 della EEPROM 2) OR (byte 15 della EEPROM 3) |
+ | Opcode | Step | Concatenazione logica                                                                |
+ |--------|------|--------------------------------------------------------------------------------------|
+ | 0      | 0    | (byte 0 EEPROM 0) OR (byte 0 EEPROM 1) OR (byte 0 EEPROM 2) OR (byte 0 EEPROM 3)     |
+ | 0      | 1    | (byte 1 EEPROM 0) OR (byte 1 EEPROM 1) OR (byte 1 EEPROM 2) OR (byte 1 EEPROM 3)     |
+ | 0      | ...  | ...                                                                                  |
+ | 0      | 14   | (byte 14 EEPROM 0) OR (byte 14 EEPROM 1) OR (byte 14 EEPROM 2) OR (byte 14 EEPROM 3) |
+ | 0      | 15   | (byte 15 EEPROM 0) OR (byte 15 EEPROM 1) OR (byte 15 EEPROM 2) OR (byte 15 EEPROM 3) |
 
-In pratica, si devono tenere in considerazione i segnali associati ad ogni EEPROM e indicare quali di questi debbano essere attivi ad ogni combinazione di istruzione / step.
+In pratica, si devono tenere in considerazione i segnali di output cablati su ogni EEPROM e indicare quali di questi debbano essere attivi ad ogni combinazione di istruzione / step. Questo spiega la necessità di programmare le quattro EEPROM ognuna con il proprio microcode.
 
-Questo spiega la necessità di programmare le quattro EEPROM ognuna con il proprio microcode. Ora, anziché effettuare quattro programmazioni distinte, risulta molto più comodo (anche se più dispendioso) utilizzare quattro EEPROM di dimensioni maggiori e scrivere su ognuna di esse, in sequenza, i quattro microcode specifici di ogni EEPROM iniziale. In questo modo, si effettuano quattro programmazioni identiche, ognuna contenente le quattro porzioni di microcode originariamente dedicate a ciascuna delle EEPROM iniziali.
+Ora, anziché effettuare quattro programmazioni distinte, risulta molto più comodo (anche se più dispendioso) utilizzare quattro EEPROM di dimensioni maggiori e scrivere su ognuna di esse, in sequenza, i quattro microcode specifici di ogni EEPROM iniziale. In questo modo, si effettuano quattro programmazioni identiche, ognuna contenente le quattro porzioni di microcode originariamente dedicate a ciascuna delle EEPROM iniziali.
 
  | Microcode | Indirizzo<br>iniziale<sub>base10</sub> | Indirizzo<br>finale<sub>base10</sub> | Indirizzo<br>iniziale<sub>hex</sub> | Indirizzo<br>finale<sub>hex</sub> | A12 | A13 |
  |------------|-------|-------------------|--------|--------|---|---|
