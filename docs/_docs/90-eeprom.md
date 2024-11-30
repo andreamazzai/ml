@@ -65,7 +65,7 @@ Il programmatore di EEPROM del BEAM, basato su quello dell'NQSAP di Tom, non è 
 
 Per governare i 42 segnali di controllo di ALU, RAM, SP, registri ecc. (21 direttamente in uscita dalle EEPROM + 21 demultiplexati dai [74LS138](../control/#i-74ls138-per-la-gestione-dei-segnali)) sono necessarie quattro EEPROM, ognuna delle quali esporta una word da 8 bit per un totale di 32 bit (i segnali fisici realmente necessari sono 29, cioè i 21 diretti e 8 per governare i '138, dunque rimangono 3 pin inutilizzati):
 
-- ogni EEPROM mette a disposizione 8 bit in output, cioè un byte;
+- ogni EEPROM mette a disposizione 8 bit in output, perciò ne servono 4 per pilotare simultaneamente 29 segnali;
 - poiché ogni istruzione del BEAM è composta da 16 step, sono necessarie EEPROM di dimensione 256 * 16 = 4096 byte dedicati a decodifica delle istruzioni e impostazione degli opportuni segnali in uscita;
 - per indirizzare 4096 byte sono necessari 12 pin di indirizzamento ((2^8 = 256 istruzioni) * (2^4 = 16 step) = 2^12 = 4096), cioè da A0 a A11;
 - quattro EEPROM da 4KB, ognuna delle quali programmata con il proprio microcode, possono svolgere il compito richiesto.
@@ -89,11 +89,11 @@ Come si può vedere nello [sketch Arduino](/code/Beam-Microcode.ino), ad ogni se
 
 *Definizione dei segnali di controllo gestiti da ogni EEPROM.*
 
-Si può dedurre che ogni EEPROM contiene solamente *una parte* del microcode di ogni istruzione, in particolar modo la porzione relativa ai segnali cablati sugli output di quella determinata EEPROM. Ma come è suddiviso il microcode nelle quattro EEPROM? La seguente tabella mostra, per le istruzioni di esempio indicate in precedenza, quali segnali siano attivati da ogni EEPROM nei diversi step dell'istruzione correntemente in esecuzione:
+Si può dedurre che ogni EEPROM contiene solamente *una parte* del microcode di ogni istruzione, in particolar modo la porzione relativa ai segnali cablati sugli output di quella determinata EEPROM. Ma come è suddiviso il microcode nelle quattro EEPROM? La seguente tabella mostra, per le istruzioni di esempio indicate in precedenza, quali segnali siano attivi su ogni EEPROM nei diversi step dell'istruzione correntemente in esecuzione:
 
-[![Rappresentazione di alcune istruzioni del microcode di ogni EEPROM](../../assets/eeprom/4-eeprom-rappresentazione.png "Rappresentazione di alcune istruzioni del microcode di ogni EEPROM"){:width="100%"}](../../assets/eeprom/4-eeprom-rappresentazione.png)
+[![Suddivisione sulle quattro EEPROM del microcode di alcune istruzioni](../../assets/eeprom/4-eeprom-rappresentazione.png "Suddivisione sulle quattro EEPROM del microcode di alcune istruzioni"){:width="100%"}](../../assets/eeprom/4-eeprom-rappresentazione.png)
 
-*Rappresentazione di alcune istruzioni del microcode di ogni EEPROM.*
+*Suddivisione sulle quattro EEPROM del microcode di alcune istruzioni.*
 
 Ogni step di ogni istruzione va dunque letto come la concatenazione logica di ogni ennesimo byte di ogni EEPROM. Ad esempio:
 
@@ -107,8 +107,8 @@ Ogni step di ogni istruzione va dunque letto come la concatenazione logica di og
 
 Il settimo step dell'istruzione CPX descritto poc'anzi risulta in effetti composto dalla concatenazione del byte 6 di ogni EEPROM:
 
-(byte 6 EEPROM 0) OR (byte 6 EEPROM 1) OR (byte 6 EEPROM 2) 6 (byte 14 EEPROM 3), cioè
-(RA) OR (WH) OR () OR (PCI|NI), cioè
+(byte 6 EEPROM 0) OR (byte 6 EEPROM 1) OR (byte 6 EEPROM 2) 6 (byte 14 EEPROM 3), cioè\
+(RA) OR (WH) OR () OR (PCI|NI), cioè\
 RA|WH|PCI|NI, così come indicato nel *Dettaglio microcode di alcune istruzioni di esempio*.
 
 In pratica, si devono tenere in considerazione i segnali di output cablati su ogni EEPROM e indicare quali di questi debbano essere attivi ad ogni combinazione di istruzione / step. Questo spiega la necessità di programmare le quattro EEPROM ognuna con il proprio microcode.
