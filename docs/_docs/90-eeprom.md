@@ -138,17 +138,16 @@ Fatta questa premessa, utile per capire la distribuzione del microcode nelle var
 
 ### Calcolo del CRC pre-programmazione
 
-La programmazione delle EEPROM col metodo originale "un byte alla volta" risultava, tutto sommato, abbastanza facile. Molto più difficile mi stava risultando l'implementazione della scrittura in modalità Page Write e, pur avendo a disposizione il codice di Tom, continuavo a riscontrare errori nel microcode memorizzato sulle EEPROM.
+La programmazione delle EEPROM col metodo originale "un byte alla volta" risultava, tutto sommato, abbastanza facile. Molto più difficile mi stava risultando l'implementazione della scrittura in modalità Page Write e, pur avendo a disposizione il codice di Tom dal quale attingere e trarre ispirazione, continuavo a riscontrare errori nel microcode memorizzato sulle EEPROM.
 
 Dunque, per capire se il programmatore stesse funzionando correttamente, avevo introdotto una verifica della corrispondenza tra il Cyclic Redundancy Check (CRC) calcolato *prima* della scrittura del microcode e quello calcolato dalla rilettura della EEPROM alla *fine* della sua programmazione.
 
-Per semplicità e per facilitare la scrittura del codice, avevo ipotizzato una lettura sequenziale simulata dei valori da calcolare, partendo dall'indirizzo 0x0000 fino all'indirizzo 0x3FFF. Questo approccio rendeva molto semplice la creazione di un ciclo in grado di leggere consecutivamente ogni byte di una EEPROM.
+Per semplicità e per facilitare la scrittura del codice, avevo ipotizzato una lettura sequenziale simulata dei valori da calcolare, partendo dall'indirizzo 0x0000 fino all'indirizzo 0x3FFF.\
+Perché *simulata*? Perché in questo momento la EEPROM non è ancora stata programmata e ciò che si desidera ottenere in questa fase è proprio un checksum del dato *da scrivere*, checksum che sarà poi confrontato con quello calcolato rileggendo la EEPROM alla fine del ciclo di programmazione.
 
-Perché *simulata*? Perché la EEPROM non è ancora stata programmata e ciò che si desidera ottenere in questa fase è un CRC del dato *da scrivere* che sarà poi confrontato con il CRC calcolato rileggendo la EEPROM alla fine del ciclo di programmazione.
+Ci troviamo nella situazione in cui la ruoitine del calcolo del CRC si aspetta una lettua simulata sequenziale del contenuto della EEPROM, mentre il frazionamento delle istruzioni esposto nella [sezione precedente](#le-eeprom-e-il-loro-contenuto) viene eseguito generando ciclicamente un opcode completo e suddividendo le scritture dei quattro 4 segmenti da 16 byte che lo compongono sulle corrispondenti porzioni di microcode, come evidenziato nella tabella *Consolidamento dei microcode in un'unica EEPROM.*
 
-Ora, noto il frazionamento delle istruzioni esposto nella [sezione precedente](#le-eeprom-e-il-loro-contenuto), sempre per semplicità e facilità di mia stessa comprensione, la routine di scrittura delle EEPROM eseguiva invece un ciclo generando un opcode completo e suddividendo le scritture dei quattro 4 segmenti da 16 byte sulla corrispondente porzione di microcode all'interno della stessa EEPROM, come evidenziato nella tabella *Consolidamento dei microcode in un'unica EEPROM.*
-
-Infatti, il codice atto alla scrittura sulle EEPROM preparava i 32 bit / 4 byte di microcode di ogni step dell'istruzione corrente (routine **buildInstruction**) e li memorizzava in un array tipo uint32_t di lunghezza 16, cioè 4 byte * 16 step = 64 byte; successivamente, le scritture avvenivano in questa sequenza (routine **writeOpcode**):
+Infatti, il codice preposto alla scrittura sulle EEPROM preparava i 32 bit / 4 byte di microcode di ogni step dell'istruzione corrente (routine **buildInstruction**) e li memorizzava in un array tipo uint32_t di lunghezza 16, cioè 4 byte * 16 step = 64 byte; successivamente, le scritture avvenivano in questa sequenza (routine **writeOpcode**):
 
 - il microcode relativo ai primi 8 segnali\* veniva scritto sui primi 16 byte della prima porzione della EEPROM (indirizzo 0x0000 a 0x000F)
 - il microcode relativo ai successivi 8 segnali\* veniva scritto sui primi 16 byte della seconda porzione della EEPROM (indirizzo 0x1000 a 0x100F)
