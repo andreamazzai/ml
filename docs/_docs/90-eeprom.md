@@ -170,14 +170,17 @@ Riprendendo lo schema visto in precedenza, venivano dapprima eseguite le scrittu
 
 *Sequenza di scrittura delle istruzioni.*
 
-Vediamo ora al calcolo del CRC. La stessa routine buildInstruction è utilizzata anche dalla routine di calcolo del CRC.
+Vediamo ora al calcolo del CRC. La stessa routine **buildInstruction** utilizzata per la preparazione del microcode di ogni istruzione è utilizzata anche dalla routine di calcolo del CRC, ma il suo risultato è utilizzato diversamente.
 
 Come indicato all'inizio della sezione, il calcolo del CRC non è effettuato secondo la logica di scrittura "frazionata" della EEPROM, ma secondo una più intuitiva logica sequenziale degli indirizzi da 0x0000 a 0x3FFF.
-Per calcolare in sequenza i valori degli step, viene eseguita una serie di cicli annidati: per ogni porzione di EEPROM e per ogni istruzione si generano le 4 word complete dei 16 step, utilizzando solo la word relativa alla porzione di EEPROM correntemente indirizzata dal ciclo
+
+Per calcolare in sequenza i valori degli step, viene eseguita una serie di cicli annidati: per ogni porzione di EEPROM e per ogni istruzione si generano le 4 word complete dei 16 step, utilizzandone però solo la word relativa alla porzione di EEPROM correntemente indirizzata dal ciclo
 
 ~~~c++
 for (uint8_t rom = 0; rom < 4; rom++)
 ~~~
+
+Dunque, la routine di calcolo del CRC utilizza solo 
 
 ~~~c++
 uint16_t calcCRC16_pre(void)
