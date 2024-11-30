@@ -124,9 +124,13 @@ La tabella riassume la collocazione dei microcode contenuti nelle 4 EEPROM origi
  | 3a         | 8192  | 12287             | 0x2000 | 0x2FFF | 0 | 1 |
  | 4a         | 12288 | 16383             | 0x2000 | 0x3FFF | 1 | 1 |
 
+ *Consolidamento dei microcode in un'unica EEPROM.*
+
 Impostando opportunamente le linee di indirizzamento A12 e A13 è possibile mettere in output su ogni EEPROM una porzione specifica di microcode; si vedano le connessioni fisse a Vcc o GND nello [schema](../control/#schema) della Control Logic.
 
-In altre parole, abbiamo 256 istruzioni che si sviluppano in 16 step, ognuno composto da una Control Word da 32 bit (4 byte) = 16.384 byte totali. Si dovrebbero programmare 4 EEPROM da 4K: una per i primi 8 bit della Control Word, una per gli 8 bit successivi e così via. Anziché programmare quattro diverse EEPROM da 4K con il microcode specifico, è possibile programmare quattro EEPROM identiche da 16K. Nei primi 4KB si posiziona il microcode per i primi 8 bit della Control Word, nei secondi 4K il microcode per i secondi 8 bit, e così via. Infine, si impostano opportunamente gli indirizzi A12 e A13 delle quattro EEPROM da 16K, in modo che ognuna esponga solo la porzione specifica di microcode relativa ai segnali di controllo cablati sui suoi output.
+In altre parole, abbiamo 256 istruzioni che si sviluppano in 16 step, ognuno composto da una Control Word da 32 bit (4 byte) = 16.384 byte totali. Si dovrebbero programmare 4 EEPROM da 4K: una per i primi 8 bit della Control Word, una per gli 8 bit successivi e così via. Anziché programmare quattro diverse EEPROM da 4K ognuna con una porzione specifica di microcode, è possibile programmare quattro EEPROM identiche da 16K. Nei primi 4KB si posiziona il microcode per i primi 8 bit della Control Word, nei secondi 4K il microcode per i secondi 8 bit, e così via. Infine, si impostano opportunamente gli indirizzi A12 e A13 delle quattro EEPROM da 16K, in modo che ognuna esponga solo la porzione specifica di microcode relativa ai segnali di controllo cablati sui suoi output.
+
+Una ulteriore spiegazione visiva di quanto appena descritto si può ottenere a partire dal minuto 17m:52s del video <a href="https://youtu.be/JUVt_KYAp-I?t=1072" target="_blank">Reprogramming CPU microcode with an Arduino</a> di Ben Eater.
 
 In relazione al conteggio della dimensione, si veda anche la sezione [Instruction Register e Istruzioni](../control/#instruction-register-e-istruzioni).
 
@@ -134,27 +138,27 @@ Fatta questa premessa, utile per capire la distribuzione del microcode nelle var
 
 ### Calcolo del CRC pre-programmazione
 
-La programmazione delle EEPROM col metodo originale "un byte alla volta" risultava, tutto sommato, abbastanza facile. Molto più difficile mi stava risultando l'implementazione della scrittura in modalità Page Write e, pur avendo a disposione il codice di Tom, continuavo a riscontrare errori nel microcode memorizzato sulle EEPROM.
+La programmazione delle EEPROM col metodo originale "un byte alla volta" risultava, tutto sommato, abbastanza facile. Molto più difficile mi stava risultando l'implementazione della scrittura in modalità Page Write e, pur avendo a disposizione il codice di Tom, continuavo a riscontrare errori nel microcode memorizzato sulle EEPROM.
 
 Dunque, per capire se il programmatore stesse funzionando correttamente, avevo introdotto una verifica della corrispondenza tra il Cyclic Redundancy Check (CRC) calcolato *prima* della scrittura del microcode e quello calcolato dalla rilettura della EEPROM alla *fine* della sua programmazione.
 
-Per semplicità e per facilitare la mia comprensione del codice, avevo impostato la routine di calcolo del CRC in modo che leggesse in sequenza i valori da calcolare, partendo dall'indirizzo 0x0000 fino all'indirizzo 0x3FFF. Questo approccio rendeva molto semplice la creazione di un ciclo in grado di leggere consecutivamente ogni byte di una EEPROM.
+Per semplicità e per facilitare la scrittura del codice, avevo impostato la routine di calcolo del CRC in modo che leggesse sequenzialmente i valori da calcolare, partendo dall'indirizzo 0x0000 fino all'indirizzo 0x3FFF. Questo approccio rendeva molto semplice la creazione di un ciclo in grado di leggere consecutivamente ogni byte di una EEPROM.
 
-Ora, noto il frazionamento delle istruzioni esposto nella [sezione precedente](#le-eeprom-e-il-loro-contenuto), sempre per semplicità e facilità di mia stessa comprensione, la routine di scrittura delle EEPROM eseguiva invece un ciclo generando un opcode completo e suddividendone le scritture dei quattro 4 segmenti da 16 byte sulla porzione di microcode corrispondente (1°, 2°, 3°, 4°).
+Ora, noto il frazionamento delle istruzioni esposto nella [sezione precedente](#le-eeprom-e-il-loro-contenuto), sempre per semplicità e facilità di mia stessa comprensione, la routine di scrittura delle EEPROM eseguiva invece un ciclo generando un opcode completo e suddividendo le scritture dei quattro 4 segmenti da 16 byte sulla corrispondente porzione di microcode all'interno della stessa EEPROM, come evidenziato nella tabella *Consolidamento dei microcode in un'unica EEPROM.*
 
 Infatti, il codice atto alla scrittura sulle EEPROM preparava i 32 bit / 4 byte di microcode di ogni step dell'istruzione corrente (routine **buildInstruction**) e li memorizzava in un array tipo uint32_t di lunghezza 16, cioè 4 byte * 16 step = 64 byte; successivamente, le scritture avvenivano in questa sequenza (routine **writeOpcode**):
 
-- il microcode relativo ai primi 8 segnali* veniva scritto sui primi 16 byte contigui della prima porzione della EEPROM (indirizzo 0x0000 a 0x000F)
-- il microcode relativo ai successivi 8 segnali* veniva scritto sui primi 16 byte contigui della seconda porzione della EEPROM (indirizzo 0x1000 a 0x100F)
-- il microcode relativo ai successivi 8 segnali* veniva scritto sui primi 16 byte contigui della terza porzione della EEPROM (indirizzo 0x2000 a 0x200F)
-- il microcode relativo agli ultimi 8 segnali* veniva scritto sui primi 16 byte contigui della quarta porzione della EEPROM (indirizzo 0x3000 a 0x300F)
+- il microcode relativo ai primi 8 segnali* veniva scritto sui primi 16 byte della prima porzione della EEPROM (indirizzo 0x0000 a 0x000F)
+- il microcode relativo ai successivi 8 segnali* veniva scritto sui primi 16 byte della seconda porzione della EEPROM (indirizzo 0x1000 a 0x100F)
+- il microcode relativo ai successivi 8 segnali* veniva scritto sui primi 16 byte della terza porzione della EEPROM (indirizzo 0x2000 a 0x200F)
+- il microcode relativo agli ultimi 8 segnali* veniva scritto sui primi 16 byte della quarta porzione della EEPROM (indirizzo 0x3000 a 0x300F)
 
-Il contatore dell'istruzione veniva poi incrementato e venivano preparati i 16 step dell'istruzione successiva, scritti considerando l'offset di 16 byte di lunghezza di ogni istruzione, dunque:
+Il contatore dell'istruzione veniva poi incrementato e venivano preparati i 16 step dell'istruzione successiva, poi scritti considerando l'offset di 16 byte di lunghezza di ogni istruzione:
 
-- il microcode relativo ai primi 8 segnali* veniva scritto sui primi 16 byte contigui successivi della prima porzione della EEPROM (indirizzo 0x0010 a 0x001F)
-- il microcode relativo ai successivi 8 segnali* veniva scritto sui primi 16 byte contigui successivi della seconda porzione della EEPROM (indirizzo 0x1010 a 0x101F)
-- il microcode relativo ai successivi 8 segnali* veniva scritto sui primi 16 byte contigui successivi della terza porzione della EEPROM (indirizzo 0x2010 a 0x201F)
-- il microcode relativo agli ultimi 8 segnali* veniva scritto sui primi 16 byte contigui successivi della quarta porzione della EEPROM (indirizzo 0x3010 a 0x301F)
+- il microcode relativo ai primi 8 segnali* veniva scritto sui 16 byte successivi della prima porzione della EEPROM (indirizzo 0x0010 a 0x001F)
+- il microcode relativo ai successivi 8 segnali* veniva scritto sui 16 byte successivi della seconda porzione della EEPROM (indirizzo 0x1010 a 0x101F)
+- il microcode relativo ai successivi 8 segnali* veniva scritto sui 16 byte successivi della terza porzione della EEPROM (indirizzo 0x2010 a 0x201F)
+- il microcode relativo agli ultimi 8 segnali* veniva scritto sui 16 byte successivi della quarta porzione della EEPROM (indirizzo 0x3010 a 0x301F)
 
 e così via fino alla fine delle istruzioni.
 
@@ -935,7 +939,7 @@ void loop()
 
 - Il video <a href="https://www.youtube.com/watch?v=BA12Z7gQ4P0" target="_blank">Using an EEPROM to replace combinational logic</a> di Ben Eater, che descrive la programmazione manuale di una EEPROM.
 - Il video <a href="https://www.youtube.com/watch?v=K88pgWhEb1M" target="_blank">Build an Arduino EEPROM programmer</a> e il repository GitHub <a href="https://github.com/beneater/eeprom-programmer" target="_blank">Arduino EEPROM programmer</a> di Ben Eater.
-- Il programmatore di EEPROM <a href="https://github.com/TomNisbet/TommyPROM" target="_blank">TommyProm</a> e lo <a href="https://tomnisbet.github.io/nqsap/docs/microcode/" target="_blank">sketch semplificato</a> necessario alla sola programmazione delle EEPROM dell'NQSAP di Tom Nisbet, che ho studiato e implementato nel programmatore di EEPROM del BEAM.
+- Il programmatore di EEPROM <a href="https://github.com/TomNisbet/TommyPROM" target="_blank">TommyProm</a> e lo <a href="https://tomnisbet.github.io/nqsap/docs/microcode/" target="_blank">sketch semplificato</a> necessario alla sola programmazione delle EEPROM dell'NQSAP di Tom Nisbet, che ho studiato per sviluppare il codice del programmatore di EEPROM del BEAM.
 
 ## TO DO
 
