@@ -170,17 +170,17 @@ Riprendendo lo schema visto in precedenza, venivano dapprima eseguite le scrittu
 
 *Sequenza di scrittura delle istruzioni.*
 
-Vediamo ora al calcolo del CRC. La stessa routine **buildInstruction** utilizzata per la preparazione del microcode di ogni istruzione è utilizzata anche dalla routine di calcolo del CRC, ma il suo risultato è utilizzato diversamente.
+Veniamo ora al calcolo del CRC. La stessa routine **buildInstruction** utilizzata per la preparazione del microcode di ogni istruzione è utilizzata anche dalla routine di calcolo del CRC pre-programmazione, ma il suo risultato è utilizzato diversamente.
 
-Come indicato all'inizio della sezione, il calcolo del CRC non è effettuato secondo la logica di scrittura "frazionata" della EEPROM, ma secondo una più intuitiva logica sequenziale degli indirizzi da 0x0000 a 0x3FFF.
+Come indicato all'inizio della sezione, il calcolo del CRC non è effettuato secondo la logica di scrittura "frazionata" della EEPROM, ma secondo una semplice logica sequenziale.
 
-Per calcolare in sequenza i valori degli step, viene eseguita una serie di cicli annidati: per ogni porzione di EEPROM e per ogni istruzione si generano le 4 word complete dei 16 step, utilizzandone però solo la word relativa alla porzione di EEPROM correntemente indirizzata dal ciclo
+Per calcolare il valore di ogni step, viene eseguita una serie di cicli annidati: per ogni porzione di EEPROM e per ogni istruzione si generano le 4 word complete dei 16 step, utilizzando però solo la word relativa alla porzione di EEPROM correntemente indirizzata dal ciclo
 
 ~~~c++
 for (uint8_t rom = 0; rom < 4; rom++)
 ~~~
 
-Così facendo, la route di calcolo del CRC pre-programmazione riceve sequenzialmente in input i 4096 byte di ognuna delle quattro porzioni di microcode consolidate in un'unica EEPROM.
+Così facendo, la routine di calcolo del CRC pre-programmazione riceve sequenzialmente in input i 4096 byte di ognuna delle quattro porzioni di microcode che, per comodità, abbiamo deciso di consolidare in un'unica EEPROM.
 
 ~~~c++
 uint16_t calcCRC16_pre(void)
@@ -203,15 +203,21 @@ uint16_t calcCRC16_pre(void)
 }
 ~~~
 
+Con **rom** = 0, **crc** sarà calcolato tenendo in considerazione gli 8 bit più significativi (shift a destra di 24 posizioni) della Control Word a 32 bit generata da **buildInstruction** e il ciclo sarà eseguito per tutti i 16 step di tutte le 256 istruzioni; quando **rom** = 1, **crc** sarà calcolato tenendo in considerazione i bit da 16 a 23 (shift a destra di 16 posizioni) della Control Word a 32 bit generata da **buildInstruction** e il ciclo sarà nuovamente eseguito per tutti i 16 step di tutte le 256 istruzioni. Il processo si ripete per **rom** = 2 e 3, prendendo dapprima in considerazione i bit da 8 a 15 (shift a destra di 8 posizioni) e poi i bit da 0 a 7 (nessuno shift a destra).
+
 ### Sblocco e blocco della EEPROM
 
-Le EEPROM <a href="https://ww1.microchip.com/downloads/en/DeviceDoc/doc0006.pdf" target="_blank">AT28C256</a> dispongono della funzione Software Data Protection, che permette di evitare scritture indesiderate: blocco e sblocco si eseguono inviando alla EEPROM una brve sequenza specifica di indirizzi / valori secondo le specifiche di pagina 10 del datasheet.
+Le EEPROM <a href="https://ww1.microchip.com/downloads/en/DeviceDoc/doc0006.pdf" target="_blank">AT28C256</a> dispongono della funzione Software Data Protection, che permette di evitare scritture indesiderate: blocco e sblocco si eseguono inviando alla EEPROM una breve sequenza specifica di indirizzi / valori secondo le specifiche di pagina 10 del datasheet.
 
-### Scrittura della EEPROM
+### Cancellazione della EEPROM
+
+Prima della programmazione, la EEPROM viene azzerata. Questa operazione comporta una maggior usura della EEPROM e una minor velocità rispetto alla funzionalità Software Chip Erase indicata nella <a href="https://ww1.microchip.com/downloads/en/Appnotes/doc0544.pdf" target="_blank">Application Note</a> e che non ho ancora testato.
+
+### Programmazione della EEPROM
 
 La sequenza di preparazione del microcode è già stata sostanzialmente esposta nella sezione [Calcolo del CRC pre-programmazione](#calcolo-del-crc-pre-programmazione), in quanto la importante routine di generazione del microcode **buildInstruction** è comune.
 
-La routine che materialmente programma la EEPROM, come indicato, scrive secondo la logica frazionata dettata dalla mia necessità di comprensione del codice esposta in precedenza (immagine *Sequenza di scrittura delle istruzioni* nella sezione [Calcolo del CRC pre-programmazione](#calcolo-del-crc-pre-programmazione)), cioè quella di scrivere un opcode per intero:
+La programmazione materiale della EEPROM, come indicato, scrive secondo la logica frazionata dettata dalla mia necessità di comprensione del codice esposta in precedenza (immagine *Sequenza di scrittura delle istruzioni* nella sezione [Calcolo del CRC pre-programmazione](#calcolo-del-crc-pre-programmazione)), cioè quella di scrivere un opcode per intero. La ruotine principale **eeprom_program** prepara l'opcode **buildInstruction**
 
 ~~~c++
 void eeprom_program()
@@ -226,94 +232,22 @@ void eeprom_program()
 }
 ~~~
 
-
-
+e richiama la routine **writeOpcode**, che a sua volta richiama **waitForWriteCycleEnd** per verificare che la EEPROM sia pronta per ricevere nuove scritture, secondo la modalità descritta nella sezione 4.4 DATA Polling del <a href="https://ww1.microchip.com/downloads/en/DeviceDoc/doc0006.pdf" target="_blank">datasheet</a>.
 
 ~~~c++
-
-// ************************************************************
-// **********************   MAIN CODE  ************************
-// ************************************************************
-void setup()
-{
-  Serial.begin(115200);
-  while (!Serial)
-  {
-    ; // wait for serial port to connect. Needed for native USB
-  }
-  pinMode(SHIFT_DATA, OUTPUT);  // Mette in output i pin di Arduino che controllano i '595
-  pinMode(SHIFT_CLK, OUTPUT);
-  pinMode(SHIFT_LATCH, OUTPUT);
-  digitalWrite(WE, HIGH);       // WE = HI e così facendo Arduino mette automaticamente un pull-up...
-  digitalWrite(OE, HIGH);
-  pinMode(WE, OUTPUT);          // ... così, quando attivo il pin, questo è già attivo HI
-  pinMode(OE, OUTPUT);
-  pinMode(CE, OUTPUT);
-  pinMode(LED_BUILTIN, OUTPUT); // D13, per poter lampeggiare alla fine della programmazione
-  Serial.println("\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-  Serial.println("+++++++                                            +++++++");
-  Serial.println("+++++          Microcode EEPROM programmer           +++++");
-  Serial.println("+++++            for BEAM 8-bit Computer             +++++");
-  Serial.println("+++++++                                            +++++++");
-  Serial.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-  Serial.println("\n+++++++++++++++++++++++++++++");
-  crc_pre = calcCRC16_pre();
-  Serial.print("EEPROM CRC-PRE:  $");
-  Serial.println(crc_pre, HEX);
-  unlock();
-  eeprom_erase(0x00);
-  eeprom_program();
-  lock();
-  // eepromSmallWrite(0x77);
-  crc_post = calcCRC16_post();
-  Serial.println("\n+++++++++++++++++++++++++++++");
-  if (crc_pre == crc_post)
-  {
-    Serial.println("Pre- and post-programming CRC values match. Good job!");
-  }
-  else
-  {
-    Serial.println("Careful! Pre- and post-programming CRC values *** do not *** match!");
-    Serial.print("EEPROM CRC-POST: $");
-    Serial.println(crc_post, HEX);
-  }
-  // printContents(0x0000, 64);
-  // printContents(0x1000, 64);
-  // printContents(0x2000, 64);
-  // printContents(0x3000, 64);
-  Serial.println("\n+++++++++++++++++++++++++++++");
-  Serial.println("Done!");
-  Serial.print("Elapsed time: ");
-  uint32_t elapsedTime;
-  elapsedTime = millis() / 1000;
-  Serial.print(elapsedTime);
-  Serial.println(" seconds.");
-}
-
-
-
-// ************************************************************
-// **************** PREPARA E SCRIVE OPCODE *******************
-// ************************************************************
 void writeOpcode(uint8_t opcode)
 {
-  // Sono 4 ROM, mappate $0-$0FFF, $1000-$1FFF, $2000-$2FFF, $3000-$3FFF
-  // Ogni opcode è lungo 16 step = 16 byte per ogni ROM, dunque 256 * 16 = 4096 byte = $1000
   for (uint8_t rom = 0; rom < 4; rom++)
   {
-    // Serial.print(" - ROM: ");
-    // Serial.print(rom);
-    // Serial.print(" - ");
-    for (uint8_t step = 0; step < NUM_STEPS; step++) // ciclo fra i 16 step di ogni opcode e dunque li scrivo consecutivamente su ogni EEPROM
+    for (uint8_t step = 0; step < NUM_STEPS; step++) // ciclo fra i 16 step di ogni opcode e dunque li scrivo consecutivamente su ogni porzione di EEPROM (modalità Page Write)
     {
       uint16_t address;
       address = 0x1000 * rom;
       address += opcode * NUM_STEPS;
       address += step;
-      // printStep(step, address, rom);
-      writeEEPROM(address, ((code[step]) >> (24 - 8 * rom)) & 0xFF); // code[step] prende tutti i 4 byte delle 4 ROM "affiancate" e poi con shift seleziono il byte relativo ad ogni ROM specifica, ad esempio 1a ROM bit 25-32, poi 17-24 etc
+      writeEEPROM(address, ((code[step]) >> (24 - 8 * rom)) & 0xFF); // code[step] prende tutti i 4 byte delle 4 ROM "affiancate" e poi con shift seleziono il byte relativo ad ogni ROM specifica, ad esempio 1a ROM bit 24-31, poi 16-23 etc
     }
-    byte b1Value;
+    byte b1Value; // attendo che la EEPROM confermi di aver ompletato le scritture prima di passare ai prossimi 16 byte
     bool status = waitForWriteCycleEnd(((code[15]) >> (24 - 8 * rom)) & 0xFF, &b1Value);
     if (status == false)
     {
@@ -327,628 +261,15 @@ void writeOpcode(uint8_t opcode)
     }
   }
 }
+~~~
 
-// ************************************************************
-// ******************** WRITE TO EEPROM ***********************
-// ************************************************************
-void writeEEPROM(uint16_t address, byte data)
-{
-  // Setto indirizzo e disabilito output EEPROM; solo in seguito abilito output di Arduino, così non causo cortocircuiti.
-  // La EEPROM non ha resistenze in uscita; se EEPROM ha output attivo e Arduino è in input, si genera un cortocircuito.
-  setAddress(address, /*outputEnable */ false /* cioè porto a uno /OE*, cosi posso scrivere sulla EEPROM*/);
-  setDataBusMode(OUTPUT);
-  enableChip();
-  // 5 LSB = D0-D4 data bus; shiftare dato a DX di 3 posizioni
-  // 6 MSB PORTD = D0-D5 bus; shiftare dato a SX di 5 posizioni
-  PORTB = (PORTB & 0xE0) | (data >> 3); // data = BBBB.Bxxx ==> shift DX 3 pos. degli MSB BBBBB, che carico in PORTB0-PORTB4 del Nano, cioè D3-D7 del data bus
-  PORTD = (PORTD & 0x1F) | (data << 5); // data = xxxx.xBBB ==> shift SX 5 pos. degli LSB BBB, che carico in PORTD5-PORTD7 del Nano, cioè D0-D2 del data bus
-  strobeWE();
-  disableChip();
-}
+### Verifica del CRC post-programmazione
 
-void writeEEPROM2(uint16_t address, byte data)
-{
-  // Setto indirizzo e disabilito output EEPROM; solo in seguito abilito output di Arduino, così non causo cortocircuiti.
-  // La EEPROM non ha resistenze in uscita; se EEPROM ha output attivo e Arduino è in input, si genera un cortocircuito.
-  setAddress(address, /*outputEnable */ false /* cioè porto a uno /OE*, cosi posso scrivere sulla EEPROM*/);
-  delayMicroseconds(2);
-  setDataBusMode(OUTPUT);
-  delayMicroseconds(2);
-  enableChip();
-  delayMicroseconds(2);
-  // 5 LSB = D0-D4 data bus; shiftare dato a DX di 3 posizioni
-  // 6 MSB PORTD = D0-D5 bus; shiftare dato a SX di 5 posizioni
-  PORTB = (PORTB & 0xE0) | (data >> 3); // data = BBBB.Bxxx ==> shift DX 3 pos. degli MSB BBBBB, che carico in PORTB0-PORTB4 del Nano, cioè D3-D7 del data bus
-  PORTD = (PORTD & 0x1F) | (data << 5); // data = xxxx.xBBB ==> shift SX 5 pos. degli LSB BBB, che carico in PORTD5-PORTD7 del Nano, cioè D0-D2 del data bus
-  strobeWE();
-  disableChip();
-}
+La verifica del CRC post-programmazione è molto più semplice rispetto a quella pre-programmazione, perché in questo caso non si deve sottostare alla routine **buildInstruction** e lavorare con cicli annidati per ottenere una vista sequenziale simulata dei dati da scrivere sulla EEPROM: giunti a questo punto, la EEPROM è stata realmente programmata ed è sufficiente passare alla routine di calcolo del CRC i valori letti consecutivamente da 0x0000 a 0x3FFF.
 
-const uint32_t mMaxWriteTime = 20;  // Max time (in ms) to wait for write cycle to complete
-
-bool waitForWriteCycleEnd(byte lastValue, byte *b1Ptr)
-{
-  // Codice tratto da Tom Nisbet e fatta qualche mia modifica
-  // Vedi DATA Polling e Toggle Bit pagina 3 https://ww1.microchip.com/downloads/en/DeviceDoc/doc0006.pdf
-  //
-  // Verify programming complete by reading the last value back until it matches the
-  // value written twice in a row.  The D7 bit will read the inverse of last written
-  // data and the D6 bit will toggle on each read while in programming mode.
-  //
-  // Note that the max readcount is set to the device's maxReadTime (in uSecs)
-  // divided by two because there are two 1 uSec delays in the loop (rimossi).  In reality,
-  // the loop could run for longer because this does not account for the time needed
-  // to run all of the loop code.  In actual practice, the loop will terminate much
-  // earlier because it will detect the end of the write well before the max time.
-
-  // * Nota che in https://github.com/TomNisbet/TommyPROM/issues/17 Tom dice che potrebbero verificarsi
-  // errori in rilettura gestendo solo OE, dunque ha aggiunto CE, che "rispecchia meglio le waveforms
-  // del datasheet", e in effetti "AC Read Waveforms" a pagina 6 del DS mostra che la Read completa è 
-  // 1) attivare /CE e poi /OE
-  // 2) disattivare /OE e /CE
-  // mentre io faccio un po' diverso:
-  // 1) attivare /OE e poi /CE
-  // 2) disattivare /OE e /CE
-  // e nel punto * non disabilito e riabilito CE come indicato da Tom... però mi funziona lo stesso.
-
-  setDataBusMode(INPUT);
-  uint32_t readCount;
-  for (readCount = mMaxWriteTime * 1000 / 2; readCount > 0; readCount--)
-  {
-    enableOutput();
-    enableChip();
-    byte b1 = readDataBus();
-    *b1Ptr = b1;
-    disableOutput(); // *
-    enableOutput();
-    byte b2 = readDataBus();
-    disableOutput();
-    disableChip();
-    if ((b1 == b2) && (b1 == lastValue))
-    {
-      return true;
-    }
-  }
-  return false;
-
-      /*
-      // Segue il CODICE ORIGINALE di Tom; si vede che lui prima attiva il chip e poi l'output,
-      // mentre io prima lo metto in output e poi lo attivo
-      bool waitForWriteCycleEnd(byte lastValue) {
-          setDataBusMode(INPUT);
-          delayMicroseconds(1);
-          for (int readCount = mMaxWriteTime * 1000 / 2; (readCount > 0); readCount--) {
-              enableChip();
-              enableOutput();
-              delayMicroseconds(1);
-              byte b1 = readDataBus();
-              disableOutput();
-              disableChip();
-              enableChip();
-              enableOutput();
-              delayMicroseconds(1);
-              byte b2 = readDataBus();
-              disableOutput();
-              disableChip();
-              if ((b1 == b2) && (b1 == lastValue)) {
-                  return true;
-              }
-          }
-
-          return false;
-      }
-      */
-}
-
-// ************************************************************
-// ******************** READ DATA FROM BUS ********************
-// ************************************************************
-// Read a byte from the data bus. The caller must set the bus to input_mode
-// before calling this or no useful data will be returned.
-byte readDataBus()
-{
-  return (PINB << 3) | (PIND >> 5);
-  // legge PINB; serve PB0-PB4, 5x LSB di PORTB, che sono però MSB del data bus, dunque li traslo 3 posizioni a SX
-  // legge PIND; serve PD5-PD7, 3x MSB di PORTD, che sono però LSB del data bus, dunque li traslo 5 posizioni a DX
-}
-
-// ************************************************************
-// *********************** SET ADDRESS ************************
-// ************************************************************
-// prima metto il dato in D2 (SHIFT_DATA) e poi pulso D3 (SHIFT_CLK) per mandarlo
-void setAddress(uint16_t address, bool outputEnable) // 2° parametro = outputEnable, se True setto /OE basso, se False /OE alto
-{
-  shiftOut(SHIFT_DATA, SHIFT_CLK, MSBFIRST, (uint8_t) (address >> 8));
-  // Qui vedrò sullo scope il SER e il SRCLK
-  // L'indirizzo arriva in due byte. Quanto sopra gestisce la parte alta dell'indirizzo (che
-  // sono i bit da A8 a A10, e poi aggiunge il bit 15, che controlla /OE
-  // se il pin /OE = 0, attivo l'output, dunque leggo dalla EEPROM
-  // se il pin /OE = 1, disattivo l'output, dunque scrivo sulla EEPROM
-  // poiché uso "(outputEnable ? 0x00L: 0x80)", sto dicendo che se nella routine passo un "outputEnable" true,
-  // setto a zero /OE e dunque attivo la lettura; se passo un "outputEnable" false, il MSb è HI e dunque attivo la scrittura
-  shiftOut(SHIFT_DATA, SHIFT_CLK, MSBFIRST, (uint8_t) address);
-  // Quanto sopra gestisce la parte bassa dell'indirizzo (da A0 ad A7)
-  // Quanto sotto sblocca il 595
-  // Qui vedrò sullo scope il RCLK
-  digitalWrite(OE, outputEnable ? LOW : HIGH);
-  digitalWrite(SHIFT_LATCH, LOW);
-  digitalWrite(SHIFT_LATCH, HIGH);
-  digitalWrite(SHIFT_LATCH, LOW);
-}
-
-// ************************************************************
-// ********************* EEPROM ERASE *************************
-// ************************************************************
-void eeprom_erase(byte value)
-{
-  // value = 0xff; // overwrite value that was set on call - used for debug purposes
-  Serial.println("\n+++++++++++++++++++++++++++++");
-  Serial.print("Erasing EEPROM with value 0x");
-  Serial.print(value, HEX);
-  Serial.println("...");
-  uint16_t salto = 64;
-
-  for (uint16_t address = 0; address < 0x8000; address += salto)
-  {
-    for (uint16_t step = 0; step < salto; step++)
-    {
-      // printStep(step, address, rom);
-      writeEEPROM(address + step, value);
-    }
-    byte b1Value;
-    bool status = waitForWriteCycleEnd(value, &b1Value);
-    if (status == false)
-    {
-      Serial.print("\n******** Error in address 0x");
-      Serial.print(address, HEX);
-      Serial.print(" - Value sent: 0x");
-      Serial.print(value, HEX);
-      Serial.print(" - Value read: 0x");
-      Serial.println(b1Value, HEX);
-      Serial.print("Opcode: 0x");
-    }
-
-    // ************************************************************
-    // ******************** FUNZIONA NON TOCCARE ******************
-    // ************************************************************
-
-    /*   for (uint16_t opcode = 0; opcode < 1024; opcode++)
-      {
-        for (uint8_t step = 0; step < 16; step++)
-        {
-          uint16_t address;
-          address = 0x0000;
-          address += opcode * 16;
-          address += step;
-          // printStep(step, address, rom);
-          writeEEPROM(address, value);
-        }
-        byte b1Value;
-        bool status = waitForWriteCycleEnd(value, &b1Value);
-        if (status == false)
-        {
-          Serial.print("\n******** Error in Opcode 0x");
-          Serial.print(opcode, HEX);
-          Serial.print(" - Value sent: 0x");
-          Serial.print(value, HEX);
-          Serial.print(" - Value read: 0x");
-          Serial.println(b1Value, HEX);
-          Serial.print("Opcode: 0x");
-        } */
-  }
-  // printContents(0x0000, 512);
-  Serial.println("Done!");
-}
-
-  // ************************************************************
-  // ******************** READ FROM EEPROM **********************
-  // ************************************************************
-  byte readEEPROM(uint16_t address)
-  {
-    setAddress(address, true);
-    setDataBusMode(INPUT);
-    enableChip();
-    delayMicroseconds(2);
-    byte value = readDataBus();
-    disableChip();
-    return value;
-  }
-
-  // STAMPA RIGA CON ROM, OPCODE, VALORI (PER DEBUG)
-  void printInstruction(uint8_t rom, uint16_t opcode, uint8_t step)
-  {
-    if (step == 0)
-    {
-      char buf[80];
-      sprintf(buf, "%04x:  ", rom * 1000 + opcode * 16);
-      Serial.print(buf);
-    }
-    if (step == 8)
-    {
-      char buf[2];
-      sprintf(buf, " ");
-      Serial.print(buf);
-    }
-    char buf[80];
-    sprintf(buf, "%02x ", ((code[step]) >> (24 - 8 * rom)) & 0xFF);
-    if (step == 15)
-    {
-      Serial.println(buf);
-    }
-    else
-    {
-      Serial.print(buf);
-    }
-  }
-
-  // ************************************************************
-  // *********************** PRINT STEP *************************
-  // ************************************************************
-  void printStep(uint8_t step, uint16_t address, uint8_t rom)
-  {
-    Serial.print("Step: ");
-    Serial.print(step, HEX);
-    Serial.print(" - Address: 0x");
-    Serial.print(address, HEX);
-    Serial.print(" - Value: ");
-    Serial.println(((code[step]) >> (24 - 8 * rom)) & 0xFF, HEX);
-  }
-
-  // ************************************************************
-  // ************* PRINT EEPROM CONTENTS (DEBUG) ****************
-  // ************************************************************
-  void printContents(uint16_t start, uint16_t lenght)
-  {
-    Serial.println("\n+++++++++++++++++++++++++++++");
-    Serial.print("EEPROM Content $");
-    Serial.print(start, HEX);
-    Serial.print(" - $");
-    Serial.println(start + lenght - 1, HEX);
-    for (uint16_t baseAddress = start, end = start + lenght; baseAddress < end; baseAddress += 16)
-    {
-      byte data[16];
-      for (uint16_t offset = 0; offset <= 15; offset += 1)
-      {
-        data[offset] = readEEPROM(baseAddress + offset);
-      }
-      char buf[80];
-      sprintf(buf, "%04X:  %02x %02x %02x %02x %02x %02x %02x %02x   %02x %02x %02x %02x %02x %02x %02x %02x",
-              baseAddress, data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7],
-              data[8], data[9], data[10], data[11], data[12], data[13], data[14], data[15]);
-      Serial.println(buf);
-    }
-  }
-
-  // ************************************************************
-  // ****************** PRINT OPCODES (DEBUG) *******************
-  // ************************************************************
-  void printOpcodeContents(uint8_t opcode)
-  {
-    // stampa il contenuto dell'array temporaneo creato in RAM per l'opcode
-    // sono 4 ROM e 16 step
-    Serial.println("_________");
-    for (int step = 0; step < NUM_STEPS; step += 4)
-    {
-      // Serial.print(code[step], HEX);
-      // Serial.print(":");
-      // for (int shift = 24; shift >= 0; shift -= 8)
-      // {
-      Serial.print("Opcode 0x");
-      Serial.print(opcode, HEX);
-      Serial.print(" - Step: ");
-      Serial.print(step, HEX);
-      Serial.print("/");
-      Serial.print(step + 3, HEX);
-      Serial.print(":  ");
-      Serial.print(((code[step]) >> 24) & 0xFF, HEX); // ROM 0
-      Serial.print(":");
-      Serial.print(((code[step]) >> 16) & 0xFF, HEX); // ROM 1
-      Serial.print(":");
-      Serial.print(((code[step]) >> 8) & 0xFF, HEX); // ROM 2
-      Serial.print(":");
-      Serial.print(((code[step]) >> 0) & 0xFF, HEX); // ROM 3
-      Serial.print(" : ");
-      //
-      Serial.print(((code[step + 1]) >> 24) & 0xFF, HEX);
-      Serial.print(":");
-      Serial.print(((code[step + 1]) >> 16) & 0xFF, HEX);
-      Serial.print(":");
-      Serial.print(((code[step + 1]) >> 8) & 0xFF, HEX);
-      Serial.print(":");
-      Serial.print(((code[step + 1]) >> 0) & 0xFF, HEX);
-      Serial.print(" : ");
-      //
-      Serial.print(((code[step + 2]) >> 24) & 0xFF, HEX);
-      Serial.print(":");
-      Serial.print(((code[step + 2]) >> 16) & 0xFF, HEX);
-      Serial.print(":");
-      Serial.print(((code[step + 2]) >> 8) & 0xFF, HEX);
-      Serial.print(":");
-      Serial.print(((code[step + 2]) >> 0) & 0xFF, HEX);
-      //
-      Serial.print(" : ");
-      Serial.print(((code[step + 3]) >> 24) & 0xFF, HEX);
-      Serial.print(":");
-      Serial.print(((code[step + 3]) >> 16) & 0xFF, HEX);
-      Serial.print(":");
-      Serial.print(((code[step + 3]) >> 8) & 0xFF, HEX);
-      Serial.print(":");
-      Serial.print(((code[step + 3]) >> 0) & 0xFF, HEX);
-      Serial.println("");
-      // uint32_t data[4];
-      // {
-      //   data[col + 0] = (code[col + 0]);
-      //   data[col + 1] = (code[col + 1]);
-      //   data[col + 2] = (code[col + 2]);
-      //   data[col + 3] = (code[col + 3]);
-      // }
-      // char buf[80];
-      // sprintf(buf, "Opcode %02x:  %04lx %04lx %04lx %04lx",
-      //         opcode, data[0], data[1], data[2], data[3]);
-      // Serial.println(buf);
-      // }
-    }
-  }
-
-
-
-  // ********************************************
-  // ********** TEST LETTURA DA ARRAY ***********
-  // ********************************************
-  // Questo non funziona, restituisce spazzatura
-  /*     uint32_t val[16];
-      for (int row = 0; row < 4; row += 1) {
-        for (int col = 0; col < 16; col += 4) {
-          val[col] = my_ram_microcode_template[row][col];
-        }
-        char buf[80];
-        sprintf(buf, "%03x:  %02lx %02x %02x %02x %02x %02x %02x %02x   %02x %02x %02x %02x %02x %02x %02x %02x",
-                row, val[0], val[1], val[2], val[3], val[4], val[5], val[6], val[7],
-                val[8], val[9], val[10], val[11], val[12], val[13], val[14], val[15]);
-        Serial.println(buf);
-      } */
-  /* void read_RAM()
-  {
-    // Qui voglio provare a leggere il contenuto della RAM copiata e stamparlo in sequenza, per vedere se quanto
-    // ho copiato dalla Flash con initMicroCodeBlock sia o meno corretto
-    uint32_t data;
-    // per 256 elementi ognuno lungo 4 byte
-    //
-    for (int row = 0 + 16 * block; row < 4 + 16 * block; row += 1)
-    {
-      Serial.print(row, HEX);
-      Serial.print(":  ");
-      for (int col = 0; col < 16; col += 4)
-      {
-        data = my_ram_microcode_template[row][col];
-        Serial.print(data, HEX);
-        Serial.print(" / ");
-        byte value1, value2, value3, value4;
-        char buf[60];
-        sprintf(buf, "%02lx:%02lx:%02lx:%02lx", (data & 0xFF000000) >> 24, (data & 0x00FF0000) >> 16, (data & 0x0000FF00) >> 8, (data & 0x000000FF));
-        Serial.print(buf);
-        value1 = data >> 24;
-        value2 = (data & 0x00FF0000) >> 16;
-        value3 = (data & 0x0000FF00) >> 8;
-        value4 = (data & 0x000000FF);
-        sprintf(buf, " - %02x:%02x:%02x:%02x", value1, value2, value3, value4);
-        Serial.print(buf);
-        Serial.print(" - Totale = ");
-        Serial.println(value1 + value2 + value3 + value4);
-        // sprintf(buf, "%03x:  %02x %02x %02x %02x", row, data >> 24, data & 0x00FF000 > 16, data & 0x0000FF000 > 8, data & 0x00000FF);
-        // Serial.print("    ");
-        //           for (int cnt = 0; cnt < 16; cnt += 1) {
-        //           data = current_microcode_block[i][j];
-        //           Serial.print(data >> 24, HEX);
-        //           Serial.print(F(":"));
-        //         }
-      }
-      Serial.println("");
-    }
-  } */
-
-  /*
-    // ********************************************
-    // ************ EEPROM PROGRAM ****************
-    // ********************************************
-    void eeprom_program() {
-    Serial.print("\nProgramming EEPROM ");
-    // ogni block = 16 righe * 16 colonne * elemento uint32_t = 1024 Byte
-    // ogni sezione sono 32 righe dunque due blocchi = 2K
-    // 8 sezioni = 16 KB divisi in 4 parti, 0-FFF / 1000-1FFF / 2000-2FFF / 3000-3FFF
-      for (int block = 0; block < 4; block += 1) {
-        Serial.print("\nBlock = ");
-        Serial.print(block);
-        Serial.print(" - Starting element = ");
-        Serial.print(block * 256);
-        Serial.print(" - Ending element = ");
-        Serial.print((block + 1) * 256);
-        initMicroCodeBlock(block);
-        for (int address = 256 * block; address < 256 * (block + 1); address += 1) {
-          int byte_sel    = (address & 0b11000000000000) >> 12; // selezione della ROM
-          int instruction = (address & 0b00111111110000) >> 4;
-          int step        = (address & 0b00000000001111);
-          if (address % 16 == 0) {
-            Serial.print("\naddress / instruction = ");
-            Serial.print(address, HEX);
-            Serial.print(" / ");
-            Serial.print(current_microcode_block[instruction][step] >> 24, HEX);
-            Serial.print("|");
-            Serial.print((current_microcode_block[instruction][step] & 0x00FF0000) >> 16, HEX);
-            Serial.print("|");
-            Serial.print((current_microcode_block[instruction][step] & 0x0000FF00) >>  8, HEX);
-            Serial.print("|");
-            Serial.print((current_microcode_block[instruction][step] & 0x000000FF),  HEX);
-          }
-          // switch (byte_sel) {
-            // case 0:
-              writeEEPROM(address, current_microcode_block[instruction][step] >> 24);
-              // if (address % 64 == 0) {
-              //   Serial.print(".");
-              //   break;
-              // }
-            // case 1:
-              writeEEPROM(address + 4096, current_microcode_block[instruction][step] >> 16);
-              // if (address % 64 == 0) {
-              //   Serial.print(":");
-              //   break;
-              // }
-            // case 2:
-              writeEEPROM(address + 4096 * 2, current_microcode_block[instruction][step] >> 8);
-              //   if (address % 64 == 0) {
-              //     Serial.print(",");
-              //     break;
-              // }
-            // case 3:
-              writeEEPROM(address + 4096 * 3, current_microcode_block[instruction][step]);
-              // if (address % 64 == 0) {
-              //   Serial.print(";");
-              //   break;
-              // }
-          // if (address % 64 == 0) {
-          //   Serial.print(".");
-          // }
-          // }
-        }
-      Serial.println("\nDone!");
-      }
-    }
-   */
-
-void unlock()
-{
-  delay(10);
-  setDataBusMode(OUTPUT);
-  enableChip();
-  setAddress(0x5555, false);
-  PORTB = (PORTB & 0xE0) | (0xAA >> 3); // data = BBBB.Bxxx ==> shift DX 3 pos. degli MSB BBBBB, che carico in PORTB0-PORTB4 del Nano, cioè D3-D7 del data bus
-  PORTD = (PORTD & 0x1F) | (0xAA << 5); // data = xxxx.xDDD ==> shift SX 5 pos. degli LSB   DDD, che carico in PORTD5-PORTD7 del Nano, cioè D0-D2 del data bus
-  strobeWE();
-  setAddress(0x2AAA, false);
-  PORTB = (PORTB & 0xE0) | (0x55 >> 3);
-  PORTD = (PORTD & 0x1F) | (0x55 << 5);
-  strobeWE();
-  setAddress(0x5555, false);
-  PORTB = (PORTB & 0xE0) | (0x80 >> 3);
-  PORTD = (PORTD & 0x1F) | (0x80 << 5);
-  strobeWE();
-  setAddress(0x5555, false);
-  PORTB = (PORTB & 0xE0) | (0xAA >> 3);
-  PORTD = (PORTD & 0x1F) | (0xAA << 5);
-  strobeWE();
-  setAddress(0x2AAAA, false);
-  PORTB = (PORTB & 0xE0) | (0x55 >> 3);
-  PORTD = (PORTD & 0x1F) | (0x55 << 5);
-  strobeWE();
-  setAddress(0x5555, false);
-  PORTB = (PORTB & 0xE0) | (0x20 >> 3);
-  PORTD = (PORTD & 0x1F) | (0x20 << 5);
-  strobeWE();
-  disableChip();
-  delay(10);
-}
-
-void lock()
-{
-  delay(10);
-  setDataBusMode(OUTPUT);
-  enableChip();
-  setAddress(0x5555, false);
-  PORTB = (PORTB & 0xE0) | (0xAA >> 3); // data = BBBB.Bxxx ==> shift DX 3 pos. degli MSB BBBBB, che carico in PORTB0-PORTB4 del Nano, cioè D3-D7 del data bus
-  PORTD = (PORTD & 0x1F) | (0xAA << 5); // data = xxxx.xDDD ==> shift SX 5 pos. degli LSB   DDD, che carico in PORTD5-PORTD7 del Nano, cioè D0-D2 del data bus
-  strobeWE();
-  setAddress(0x2AAA, false);
-  PORTB = (PORTB & 0xE0) | (0x55 >> 3);
-  PORTD = (PORTD & 0x1F) | (0x55 << 5);
-  strobeWE();
-  setAddress(0x5555, false);
-  PORTB = (PORTB & 0xE0) | (0xA0 >> 3);
-  PORTD = (PORTD & 0x1F) | (0xA0 << 5);
-  strobeWE();
-  disableChip();
-  delay(10);
-}
-
-// ************************************************************
-// **************** EEPROM SMALL WRITE (DEBUG) ****************
-// ************************************************************
-void eepromSmallWrite(byte value)
-{
-  Serial.println("\n+++++++++++++++++++++++++++++");
-  Serial.println("EEPROM Small Write");
-  for (int address = 0; address <= 256; address += 1)
-  {
-    writeEEPROM(address, value);
-    if (address % 16 == 0)
-    {
-      // Serial.print(".");
-      Serial.print("Address ");
-      Serial.println(address, HEX);
-    }
-  }
-  Serial.println("Done!");
-}
-
-void strobeWE() // Setto low e poi high il bit che corrisponde a A0/D14
-{
-  PORTC = (PORTC & 0x3E);
-  PORTC = (PORTC & 0x3E) | 0x01;
-}
-
-// Set the status of the device control pins
-void enableOutput()   { PORTC = (PORTC & 0x3D);         }  // set OE LO (pin 1 PORTC / A1/D15) 
-void disableOutput()  { PORTC = (PORTC & 0x3D) | 0x02;  }  // set OE HI (pin 1 PORTC / A1/D15)
-void enableChip()     { PORTC = (PORTC & 0x3B);         }  // set CE LO (pin 2 PORTC / A2/D16)
-void disableChip()    { PORTC = (PORTC & 0x3B) | 0x04;  }  // set CE HI (pin 2 PORTC / A2/D16)
-
-void setDataBusMode(byte mode)
-{
-  if (mode == OUTPUT)
-  { // Set data bus pins to OUTPUT (write to EEPROM)
-  DDRB |= 0x1F; // set Nano D8-D12 to HI (output); these are PORTB 5x LSB bits (0001.1111), aka D3-D7 of Nano <==> EEPROM data bus
-  DDRD |= 0xE0; // set Nano D5-D7  to HI (output); these are PORTD 3x MSB bits (1110.0000), aka D0-D2 of Nano <==> EEPROM data bus
-  }
-  else
-  { // Set data bus pins to INPUT (read from EEPROM)
-  DDRB &= 0xE0; // viceversa of above
-  DDRD &= 0x1F; // viceversa of above
-  }
-}
-
-// ************************************************************
-// *********************                 **********************
-// ******************   CRC16 CALCULATION   *******************
-// *********************                 **********************
-// ************************************************************
-
-// CALCOLO CRC16 PRE-PROGRAMMAZIONE
-/* Il calcolo del CRC prevede la ricezione dei dati in sequenza (da 0x0000 a 0x3FFF). Non posso calcolare il CRC
-durante la programmazione della EEPROM, perché in quel momento genero un opcode completo e ne scrivo i 4 segmenti
-da 16 byte "frazionandoli" sulla EEPROM corrispondente (1a, 2a, 3a, 4a).
-Faccio dunque un ciclo: per ogni ROM genero le 256 istruzioni in sequenza; ricavo solo i 16 byte che mi interessano
-in quel momento (1a EEPROM, 2a EEPROM etc) e li utilizzo per calcolare il checksum. */
-uint16_t calcCRC16_pre(void)
-{
-  crc = 0xFFFF;
-  uint16_t polynomial = 0x1021;
-  for (uint8_t rom = 0; rom < 4; rom++)
-  {
-    for (uint16_t opcode = 0; opcode < 256; opcode++)
-    {
-      buildInstruction(opcode);
-      for (uint8_t step = 0; step < NUM_STEPS; step++)
-      {
-        // printInstruction(rom, opcode, step); // solo per Debug
-        crc = calculate_crc(((code[step]) >> (24 - 8 * rom)) & 0xFF, crc, polynomial);
-      }
-    }
-  }
-  return crc;
-}
-
+~~~c++
 // CALCOLO CRC16 POST-PROGRAMMAZIONE
-/* Nella lettura di una EEPROM precedentemente programmata leggo tutti i byte in sequenza, dunque è sufficiente
-leggere il contenuto da 0x0000 a 0x3FFF per calcolare il checksum. */
+/* Nella lettura di una EEPROM precedentemente programmata leggo tutti i byte in sequenza, dunque è sufficiente leggere il contenuto da 0x0000 a 0x3FFF per calcolare il checksum. */
 uint16_t calcCRC16_post(void)
 {
   setDataBusMode(INPUT);
@@ -962,46 +283,9 @@ uint16_t calcCRC16_post(void)
   }
   return crc;
 }
-
-// CRC16 MATH
-uint16_t calculate_crc(uint8_t data, uint16_t crc, uint16_t polynomial)
-{
-  crc ^= data;
-  for (uint8_t i = 0; i < 8; i++)
-  {
-    if (crc & 0x0001)
-    {
-      crc >>= 1;
-      crc ^= polynomial;
-    }
-    else
-    {
-      crc >>= 1;
-    }
-  }
-  return crc;
-}
-
-void loop()
-{
-  digitalWrite(LED_BUILTIN, HIGH); // turn the LED on (HIGH is the voltage level)
-  delay(100);
-  digitalWrite(LED_BUILTIN, LOW); // turn the LED off by making the voltage LOW
-  delay(100);
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(100);
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(100);
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(100);
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(100);
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(100);
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(800);
-}
 ~~~
+
+Alla fine, i valori dei CRC calcolati pre-programmazione e post-programmazione vengono confrontati e viene stampato un messaggio positivo in caso di match.
 
 ## Link utili
 
