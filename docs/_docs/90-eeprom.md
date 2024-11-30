@@ -63,7 +63,7 @@ Il programmatore di EEPROM del BEAM, basato su quello dell'NQSAP di Tom, non è 
 
 ### Le EEPROM e il loro contenuto
 
-Per governare i 42 segnali di controllo di ALU, RAM, SP, registri ecc. (21 direttamente in uscita dalle EEPROM + 21 demultiplexati dai [74LS138](../control/#i-74ls138-per-la-gestione-dei-segnali)) sono necessarie quattro EEPROM, ognuna delle quali esporta una word da 8 bit per un totale di 32 bit (i segnali fisici realmente necessari sono 29, cioè i 21 diretti e 8 per governare i '138, lasciando 3 pin inutilizzati):
+Per governare i 42 [segnali di controllo](../control/#segnali-di-controllo) di ALU, RAM, SP, registri ecc. (21 direttamente in uscita dalle EEPROM + 21 demultiplexati dai [74LS138](../control/#i-74ls138-per-la-gestione-dei-segnali)) sono necessarie quattro EEPROM, ognuna delle quali esporta una word da 8 bit per un totale di 32 bit (i segnali fisici realmente necessari sono 29, cioè i 21 diretti e 8 per governare i '138, lasciando 3 pin inutilizzati):
 
 - ogni EEPROM mette a disposizione 8 bit in output, perciò ne servono 4 per pilotare simultaneamente 29 segnali;
 - poiché ogni istruzione del BEAM è composta da 16 step, sono necessarie EEPROM di dimensione 256 * 16 = 4096 byte dedicati a decodifica delle istruzioni e impostazione degli opportuni segnali in uscita;
@@ -142,7 +142,9 @@ La programmazione delle EEPROM col metodo originale "un byte alla volta" risulta
 
 Dunque, per capire se il programmatore stesse funzionando correttamente, avevo introdotto una verifica della corrispondenza tra il Cyclic Redundancy Check (CRC) calcolato *prima* della scrittura del microcode e quello calcolato dalla rilettura della EEPROM alla *fine* della sua programmazione.
 
-Per semplicità e per facilitare la scrittura del codice, avevo impostato la routine di calcolo del CRC in modo che leggesse sequenzialmente i valori da calcolare, partendo dall'indirizzo 0x0000 fino all'indirizzo 0x3FFF. Questo approccio rendeva molto semplice la creazione di un ciclo in grado di leggere consecutivamente ogni byte di una EEPROM.
+Per semplicità e per facilitare la scrittura del codice, avevo ipotizzato una lettura sequenziale simulata dei valori da calcolare, partendo dall'indirizzo 0x0000 fino all'indirizzo 0x3FFF. Questo approccio rendeva molto semplice la creazione di un ciclo in grado di leggere consecutivamente ogni byte di una EEPROM.
+
+Perché *simulata*? Perché la EEPROM non è ancora stata programmata e ciò che si desidera ottenere in questa fase è un CRC del dato *da scrivere* che sarà poi confrontato con il CRC calcolato rileggendo la EEPROM alla fine del ciclo di programmazione.
 
 Ora, noto il frazionamento delle istruzioni esposto nella [sezione precedente](#le-eeprom-e-il-loro-contenuto), sempre per semplicità e facilità di mia stessa comprensione, la routine di scrittura delle EEPROM eseguiva invece un ciclo generando un opcode completo e suddividendo le scritture dei quattro 4 segmenti da 16 byte sulla corrispondente porzione di microcode all'interno della stessa EEPROM, come evidenziato nella tabella *Consolidamento dei microcode in un'unica EEPROM.*
 
