@@ -180,7 +180,7 @@ Per calcolare in sequenza i valori degli step, viene eseguita una serie di cicli
 for (uint8_t rom = 0; rom < 4; rom++)
 ~~~
 
-Dunque, la routine di calcolo del CRC utilizza solo 
+Così facendo, la route di calcolo del CRC pre-programmazione riceve sequenzialmente in input i 4096 byte di ognuna delle quattro porzioni di microcode consolidate in un'unica EEPROM.
 
 ~~~c++
 uint16_t calcCRC16_pre(void)
@@ -203,48 +203,94 @@ uint16_t calcCRC16_pre(void)
 }
 ~~~
 
+### Sblocco e blocco della EEPROM
+
+Le EEPROM <a href="https://ww1.microchip.com/downloads/en/DeviceDoc/doc0006.pdf" target="_blank">AT28C256</a> dispongono della funzione Software Data Protection, che permette di evitare scritture indesiderate: blocco e sblocco si eseguono inviando alla EEPROM una brve sequenza specifica di indirizzi / valori secondo le specifiche di pagina 10 del datasheet.
+
+### Scrittura della EEPROM
+
+La sequenza di preparazione del microcode è già stata sostanzialmente esposta nella sezione [Calcolo del CRC pre-programmazione](#calcolo-del-crc-pre-programmazione), in quanto la importante routine di generazione del microcode **buildInstruction** è comune.
+
+La routine che materialmente programma la EEPROM, come indicato, scrive secondo la logica frazionata dettata dalla mia necessità di comprensione del codice esposta in precedenza (immagine *Sequenza di scrittura delle istruzioni* nella sezione [Calcolo del CRC pre-programmazione](#calcolo-del-crc-pre-programmazione)), cioè quella di scrivere un opcode per intero:
+
 ~~~c++
-// ********************   EEPROM PROGRAM   ********************
 void eeprom_program()
 {
-  Serial.println("\n+++++++++++++++++++++++++++++");
-  Serial.println("Programming EEPROM");
   for (uint16_t opcode = 0; opcode < 256; opcode++)
   {
     buildInstruction((uint8_t) opcode);
-    // printOpcodeContents(opcode);
-    char buf[80];
-    if ((opcode) % 16 == 0)
-    {
-       Serial.print("Opcode: 0x");
-    }
-    sprintf(buf, "%02X ", opcode);
-    Serial.print(buf);
-    if ((opcode + 1) % 16 == 0)
-    {
-      Serial.println("");
-    }
+    // ...
     writeOpcode((uint8_t) opcode);
   }
   Serial.println("Done!");
 }
+~~~
 
-//
+
+
+
+~~~c++
+
 // ************************************************************
-// ************** COPIA BLOCCO MICROCODE IN RAM ***************
+// **********************   MAIN CODE  ************************
 // ************************************************************
-void buildInstruction(uint8_t opcode)
+void setup()
 {
-  // Ogni istruzione = 16 step: i primi 2 uguali per tutti; 8 presi dal template; 6 che - per ora - non utilizzo, dunque a 0.
-  code[0] = F1; // Fetch instruction from memory (RPC, WM - Read Program Counter, Write Memory Address Register)
-  code[1] = F2; // Opcode into IR (sets ALU mode and S bits) (RR, WIR, PCI - Read RAM, Write Instruction Register, Program Counter Increment)
-  // Copia parte del template dalla memoria Flash alla memoria RAM
-  // Gli step presenti nel template sono 8 e ognuno di essi sono 4 byte, uno per ogni ROM
-  // Ogni step è composto da 4 byte che vanno allo stesso indirizzo su ognuna delle EEPROM; è una vista delle 4 ROM "affiancate"
-  // In ogni ROM 0x000-0x00F è 1° opcode, 0x010-0x01f è 2° opcode... 0xFF0-FFF è 256° opcode
-  memcpy_P(code + 2, template0[opcode], NUM_TEMPLATE_STEPS * 4);
-  code[10] = code[11] = code[12] = code[13] = code[14] = code[15] = 0;
+  Serial.begin(115200);
+  while (!Serial)
+  {
+    ; // wait for serial port to connect. Needed for native USB
+  }
+  pinMode(SHIFT_DATA, OUTPUT);  // Mette in output i pin di Arduino che controllano i '595
+  pinMode(SHIFT_CLK, OUTPUT);
+  pinMode(SHIFT_LATCH, OUTPUT);
+  digitalWrite(WE, HIGH);       // WE = HI e così facendo Arduino mette automaticamente un pull-up...
+  digitalWrite(OE, HIGH);
+  pinMode(WE, OUTPUT);          // ... così, quando attivo il pin, questo è già attivo HI
+  pinMode(OE, OUTPUT);
+  pinMode(CE, OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT); // D13, per poter lampeggiare alla fine della programmazione
+  Serial.println("\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+  Serial.println("+++++++                                            +++++++");
+  Serial.println("+++++          Microcode EEPROM programmer           +++++");
+  Serial.println("+++++            for BEAM 8-bit Computer             +++++");
+  Serial.println("+++++++                                            +++++++");
+  Serial.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+  Serial.println("\n+++++++++++++++++++++++++++++");
+  crc_pre = calcCRC16_pre();
+  Serial.print("EEPROM CRC-PRE:  $");
+  Serial.println(crc_pre, HEX);
+  unlock();
+  eeprom_erase(0x00);
+  eeprom_program();
+  lock();
+  // eepromSmallWrite(0x77);
+  crc_post = calcCRC16_post();
+  Serial.println("\n+++++++++++++++++++++++++++++");
+  if (crc_pre == crc_post)
+  {
+    Serial.println("Pre- and post-programming CRC values match. Good job!");
+  }
+  else
+  {
+    Serial.println("Careful! Pre- and post-programming CRC values *** do not *** match!");
+    Serial.print("EEPROM CRC-POST: $");
+    Serial.println(crc_post, HEX);
+  }
+  // printContents(0x0000, 64);
+  // printContents(0x1000, 64);
+  // printContents(0x2000, 64);
+  // printContents(0x3000, 64);
+  Serial.println("\n+++++++++++++++++++++++++++++");
+  Serial.println("Done!");
+  Serial.print("Elapsed time: ");
+  uint32_t elapsedTime;
+  elapsedTime = millis() / 1000;
+  Serial.print(elapsedTime);
+  Serial.println(" seconds.");
 }
+
+
 
 // ************************************************************
 // **************** PREPARA E SCRIVE OPCODE *******************
@@ -869,6 +915,36 @@ void setDataBusMode(byte mode)
   }
 }
 
+// ************************************************************
+// *********************                 **********************
+// ******************   CRC16 CALCULATION   *******************
+// *********************                 **********************
+// ************************************************************
+
+// CALCOLO CRC16 PRE-PROGRAMMAZIONE
+/* Il calcolo del CRC prevede la ricezione dei dati in sequenza (da 0x0000 a 0x3FFF). Non posso calcolare il CRC
+durante la programmazione della EEPROM, perché in quel momento genero un opcode completo e ne scrivo i 4 segmenti
+da 16 byte "frazionandoli" sulla EEPROM corrispondente (1a, 2a, 3a, 4a).
+Faccio dunque un ciclo: per ogni ROM genero le 256 istruzioni in sequenza; ricavo solo i 16 byte che mi interessano
+in quel momento (1a EEPROM, 2a EEPROM etc) e li utilizzo per calcolare il checksum. */
+uint16_t calcCRC16_pre(void)
+{
+  crc = 0xFFFF;
+  uint16_t polynomial = 0x1021;
+  for (uint8_t rom = 0; rom < 4; rom++)
+  {
+    for (uint16_t opcode = 0; opcode < 256; opcode++)
+    {
+      buildInstruction(opcode);
+      for (uint8_t step = 0; step < NUM_STEPS; step++)
+      {
+        // printInstruction(rom, opcode, step); // solo per Debug
+        crc = calculate_crc(((code[step]) >> (24 - 8 * rom)) & 0xFF, crc, polynomial);
+      }
+    }
+  }
+  return crc;
+}
 
 // CALCOLO CRC16 POST-PROGRAMMAZIONE
 /* Nella lettura di una EEPROM precedentemente programmata leggo tutti i byte in sequenza, dunque è sufficiente
@@ -926,7 +1002,6 @@ void loop()
   delay(800);
 }
 ~~~
-
 
 ## Link utili
 
