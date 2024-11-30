@@ -63,7 +63,7 @@ Il programmatore di EEPROM del BEAM, basato su quello dell'NQSAP di Tom, non è 
 
 ### Le EEPROM e il loro contenuto
 
-Per governare i 29 segnali di controllo di ALU, RAM, SP, registri ecc. sono necessarie quattro EEPROM, con una word da 8 bit cadauna per un totale di 32 bit (3 pin inutilizzati).
+Per governare i 42 segnali di controllo (21 direttamente in uscita dalle EEPROM + 21 demultiplexati dai [74LS138](../control/#i-74ls138-per-la-gestione-dei-segnali)) di ALU, RAM, SP, registri ecc. sono necessarie quattro EEPROM, con una word da 8 bit cadauna per un totale di 32 bit (i segnali fisici reali sono 29, cioè i 21 diretti e 8 che governano i '138, dunque rimangono inutilizzati 3 pin).
 
 - Ogni EEPROM mette a disposizione 8 bit in output, cioè un byte.
 - Poiché ogni istruzione del BEAM è composta da 16 step, sono necessarie EEPROM di dimensione 256 * 16 = 4096 byte dedicati a decodifica delle istruzioni e impostazione degli opportuni segnali in uscita.
