@@ -3,7 +3,7 @@ title: "EEPROM Programmer"
 permalink: /docs/eeprom-programmer/
 excerpt: "EEPROM Programmer"
 ---
-<small>[Il programmatore di EEPROM](#il-programmatore-di-eeprom) - [Schema](#schema) - [Spiegazione del codice](#spiegazione-del-codice) - [Le EEPROM e il loro contenuto](#le-eeprom-e-il-loro-contenuto) - [Link utili](#link-utili)</small>
+<small>[Il programmatore di EEPROM](#il-programmatore-di-eeprom) - [Schema](#schema) - [Spiegazione del codice](#spiegazione-del-codice) - [Le EEPROM e il loro contenuto](#le-eeprom-e-il-loro-contenuto) - [Calcolo del CRC pre-programmazione](#calcolo-del-crc-pre-programmazione) - [Link utili](#link-utili)</small>
 
 [![EEPROM programmer](../../assets/eeprom/eeprom-programmer.png "EEPROM programmer"){:width="100%"}](../../assets/eeprom/eeprom-programmer.png)
 
@@ -63,14 +63,14 @@ Il programmatore di EEPROM del BEAM, basato su quello dell'NQSAP di Tom, non è 
 
 ### Le EEPROM e il loro contenuto
 
-Per governare i 42 segnali di controllo di ALU, RAM, SP, registri ecc. (21 direttamente in uscita dalle EEPROM + 21 demultiplexati dai [74LS138](../control/#i-74ls138-per-la-gestione-dei-segnali)) sono necessarie quattro EEPROM, ognuna delle quali esporta una word da 8 bit per un totale di 32 bit (i segnali fisici realmente necessari sono 29, cioè i 21 diretti e 8 per governare i '138, dunque rimangono 3 pin inutilizzati):
+Per governare i 42 segnali di controllo di ALU, RAM, SP, registri ecc. (21 direttamente in uscita dalle EEPROM + 21 demultiplexati dai [74LS138](../control/#i-74ls138-per-la-gestione-dei-segnali)) sono necessarie quattro EEPROM, ognuna delle quali esporta una word da 8 bit per un totale di 32 bit (i segnali fisici realmente necessari sono 29, cioè i 21 diretti e 8 per governare i '138, lasciando 3 pin inutilizzati):
 
 - ogni EEPROM mette a disposizione 8 bit in output, perciò ne servono 4 per pilotare simultaneamente 29 segnali;
 - poiché ogni istruzione del BEAM è composta da 16 step, sono necessarie EEPROM di dimensione 256 * 16 = 4096 byte dedicati a decodifica delle istruzioni e impostazione degli opportuni segnali in uscita;
 - per indirizzare 4096 byte sono necessari 12 pin di indirizzamento ((2^8 = 256 istruzioni) * (2^4 = 16 step) = 2^12 = 4096), cioè da A0 a A11;
 - quattro EEPROM da 4KB, ognuna delle quali programmata con il proprio microcode, possono svolgere il compito richiesto.
 
-Vediamo di seguito un dettaglio del microcode di alcune istruzioni di esempio, in particolar modo HLT (blocca l'esecuzione del codice), JMP (salta a un nuovo indirizzo definito nella locazione di memoria indicata dall'operando) e CPX (confronta il registro X con l'operando). L'istruzione più lunga tra quelle rappresentate è CPX, la cui durata è di 7 step (da 0 a 6); alcune istruzioni del BEAM raggiungono una lunghezza di 10 step.
+Vediamo di seguito un dettaglio del microcode di alcune istruzioni di esempio, in particolar modo HLT (blocca l'esecuzione del codice), JMP (salta a un nuovo indirizzo definito nella locazione di memoria indicata dall'operando) e CPX (confronta il registro X con l'operando). L'istruzione più lunga tra quelle rappresentate è CPX, la cui durata è di 7 step (da 0 a 6); altre istruzioni del BEAM raggiungono una lunghezza di ben 10 step.
 
 ~~~text
  <0>     <1>         <2>     <3>    <4>        <5>            <6>           
@@ -83,7 +83,7 @@ Vediamo di seguito un dettaglio del microcode di alcune istruzioni di esempio, i
 
 Ogni step abilita uno o più segnali di controllo: ad esempio il settimo step dell'istruzione CPX attiva contemporaneamente RA, WH, PCI ed NI.
 
-Come si può vedere nello [sketch Arduino](/code/Beam-Microcode.ino), ad ogni segnale corrisponde un pin specifico in una delle quattro EEPROM:
+Come si può vedere nello [sketch Arduino](/code/Beam-Microcode.ino), ad ogni segnale di controllo corrisponde un pin specifico in una delle quattro EEPROM:
 
 [![Definizione dei segnali di controllo gestiti da ogni EEPROM](../../assets/eeprom/eeprom-pins.png "Definizione dei segnali di controllo gestiti da ogni EEPROM"){:width="100%"}](../../assets/eeprom/eeprom-pins.png)
 
@@ -107,24 +107,26 @@ Ogni step di ogni istruzione va dunque letto come la concatenazione logica di og
 
 Il settimo step dell'istruzione CPX descritto poc'anzi risulta in effetti composto dalla concatenazione del byte 6 di ogni EEPROM:
 
-(byte 6 EEPROM 0) OR (byte 6 EEPROM 1) OR (byte 6 EEPROM 2) 6 (byte 14 EEPROM 3), cioè\
-(RA) OR (WH) OR () OR (PCI|NI), cioè\
+(byte 6 EEPROM 0) + (byte 6 EEPROM 1) + (byte 6 EEPROM 2) + (byte 14 EEPROM 3), cioè\
+(RA) + (WH) + () + (PCI|NI), cioè\
 RA|WH|PCI|NI, così come indicato nel *Dettaglio microcode di alcune istruzioni di esempio*.
 
-In pratica, si devono tenere in considerazione i segnali di output cablati su ogni EEPROM e indicare quali di questi debbano essere attivi ad ogni combinazione di istruzione / step. Questo spiega la necessità di programmare le quattro EEPROM ognuna con il proprio microcode.
+In pratica, si devono tenere in considerazione i segnali di output cablati su ogni EEPROM e indicare quali di questi debbano essere attivi ad ogni combinazione di istruzione / step. Questo spiega la necessità di programmare le quattro EEPROM ognuna con la propria porzione di microcode.
 
-Ora, anziché effettuare quattro programmazioni distinte, risulta molto più comodo (anche se più dispendioso) utilizzare quattro EEPROM di dimensioni maggiori e scrivere su ognuna di esse, in sequenza, i quattro microcode specifici di ogni EEPROM iniziale. In questo modo, si effettuano quattro programmazioni identiche, ognuna contenente le quattro porzioni di microcode originariamente dedicate a ciascuna delle EEPROM iniziali.
+Ora, anziché effettuare quattro programmazioni distinte, risulta molto più comodo (anche se più dispendioso) utilizzare quattro EEPROM da 16K e scrivere su ognuna di esse, in sequenza, i quattro microcode specifici di ogni EEPROM iniziale. In questo modo, si effettuano quattro programmazioni identiche, ognuna contenente tutte le quattro porzioni di microcode inizialmente dedicate a ciascuna delle EEPROM da 4K.
 
- | Microcode | Indirizzo<br>iniziale<sub>base10</sub> | Indirizzo<br>finale<sub>base10</sub> | Indirizzo<br>iniziale<sub>hex</sub> | Indirizzo<br>finale<sub>hex</sub> | A12 | A13 |
+La tabella riassume la collocazione dei microcode contenuti nelle 4 EEPROM originarie consolidandoli all'interno di un'unica EEPROM di dimensioni maggiori:
+
+ | EEPROM<br>originaria | Indirizzo<br>iniziale<sub>base10</sub> | Indirizzo<br>finale<sub>base10</sub> | Indirizzo<br>iniziale<sub>hex</sub> | Indirizzo<br>finale<sub>hex</sub> | A12 | A13 |
  |------------|-------|-------------------|--------|--------|---|---|
- | 1°         | 0     | 4095              | 0x0000 | 0x0FFF | 0 | 0 |
- | 2°         | 4096  | 8191              | 0x1000 | 0x1FFF | 1 | 0 |
- | 3°         | 8192  | 12287             | 0x2000 | 0x2FFF | 0 | 1 |
- | 4°         | 12288 | 16383             | 0x2000 | 0x3FFF | 1 | 1 |
+ | 1a         | 0     | 4095              | 0x0000 | 0x0FFF | 0 | 0 |
+ | 2a         | 4096  | 8191              | 0x1000 | 0x1FFF | 1 | 0 |
+ | 3a         | 8192  | 12287             | 0x2000 | 0x2FFF | 0 | 1 |
+ | 4a         | 12288 | 16383             | 0x2000 | 0x3FFF | 1 | 1 |
 
 Impostando opportunamente le linee di indirizzamento A12 e A13 è possibile mettere in output su ogni EEPROM una porzione specifica di microcode; si vedano le connessioni fisse a Vcc o GND nello [schema](../control/#schema) della Control Logic.
 
-In altre parole, abbiamo 256 istruzioni che si sviluppano in 16 step, ognuno composto da una Control Word da 32 bit (4 byte) = 16.384 byte totali. Si dovrebbero programmare 4 EEPROM da 4K: una per i primi 8 bit della Control Word, una per gli 8 bit successivi e così via. Anziché programmare quattro diverse EEPROM da 4K con il microcode specifico, è possibile programmare quattro EEPROM da 16K. Nei primi 4KB si posiziona il microcode per i primi 8 bit della Control Word, nei secondi 4K il microcode per i secondi 8 bit, e così via. Infine, si impostano opportunamente gli indirizzi A12 e A13 delle varie EEPROM, in modo che ognuna esponga solo la porzione specifica di microcode relativa ai segnali di controllo cablati sui suoi output.
+In altre parole, abbiamo 256 istruzioni che si sviluppano in 16 step, ognuno composto da una Control Word da 32 bit (4 byte) = 16.384 byte totali. Si dovrebbero programmare 4 EEPROM da 4K: una per i primi 8 bit della Control Word, una per gli 8 bit successivi e così via. Anziché programmare quattro diverse EEPROM da 4K con il microcode specifico, è possibile programmare quattro EEPROM identiche da 16K. Nei primi 4KB si posiziona il microcode per i primi 8 bit della Control Word, nei secondi 4K il microcode per i secondi 8 bit, e così via. Infine, si impostano opportunamente gli indirizzi A12 e A13 delle quattro EEPROM da 16K, in modo che ognuna esponga solo la porzione specifica di microcode relativa ai segnali di controllo cablati sui suoi output.
 
 In relazione al conteggio della dimensione, si veda anche la sezione [Instruction Register e Istruzioni](../control/#instruction-register-e-istruzioni).
 
