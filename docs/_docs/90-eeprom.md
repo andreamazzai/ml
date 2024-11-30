@@ -145,9 +145,9 @@ Dunque, per capire se il programmatore stesse funzionando correttamente, avevo i
 Per semplicità e per facilitare la scrittura del codice, avevo ipotizzato una lettura sequenziale simulata dei valori da calcolare, partendo dall'indirizzo 0x0000 fino all'indirizzo 0x3FFF.\
 Perché *simulata*? Perché in questo momento la EEPROM non è ancora stata programmata e ciò che si desidera ottenere in questa fase è proprio un checksum del dato *da scrivere*, checksum che sarà poi confrontato con quello calcolato rileggendo la EEPROM alla *fine* del ciclo di programmazione.
 
-Ci troviamo nella situazione in cui la routine del calcolo del CRC si aspetta una lettura simulata sequenziale del contenuto della EEPROM (cosa che facciamo andandolo a creare per il tempo strettamente necessario al calcolo del CRC), mentre il frazionamento delle istruzioni esposto nella [sezione precedente](#le-eeprom-e-il-loro-contenuto) viene eseguito generando ciclicamente un opcode completo e suddividendo le scritture dei quattro 4 segmenti da 16 byte dell'opcode sulle corrispondenti porzioni di microcode, come evidenziato nella tabella *Consolidamento dei microcode in un'unica EEPROM.*
+Ci troviamo nella situazione in cui la routine del calcolo del CRC deve ricevere i dati sequenzialmente (dati che dobbiamo produrre utilizzando la routine **buildInstruction** preposta alla creazione di istruzioni e step); tuttavia, la buildInstruction esegue il frazionamento di ogni istruzione nei modi esposti nella [sezione precedente](#le-eeprom-e-il-loro-contenuto), generando cioè un opcode completo e suddividendo le scritture della Control Word da 32 bit di ogni step sulle corrispondenti porzioni di microcode, come evidenziato nella tabella *Consolidamento dei microcode in un'unica EEPROM.*
 
-Il codice preposto alla scrittura sulle EEPROM prepara infatti i 32 bit / 4 byte di microcode di ogni step dell'istruzione corrente (routine **buildInstruction**) e li memorizza in un array tipo uint32_t di lunghezza 16, cioè 4 byte * 16 step = 64 byte; successivamente, le scritture avvengono in questa sequenza (routine **writeOpcode**):
+La buildInstruction prepara infatti i 32 bit / 4 byte di microcode di ogni step dell'istruzione corrente e li memorizza in un array tipo uint32_t di lunghezza 16, cioè 4 byte * 16 step = 64 byte; successivamente, le scritture avvengono in questa sequenza (routine **writeOpcode**):
 
 - il microcode relativo ai primi 8 segnali\* viene scritto sui primi 16 byte della prima porzione della EEPROM (indirizzo 0x0000 a 0x000F)
 - il microcode relativo ai successivi 8 segnali\* viene scritto sui primi 16 byte della seconda porzione della EEPROM (indirizzo 0x1000 a 0x100F)
@@ -165,7 +165,7 @@ e così via fino alla fine delle istruzioni.
 
 \* Si faccia riferimento all'immagine *Definizione dei segnali di controllo gestiti da ogni EEPROM* nella [sezione precedente](#le-eeprom-e-il-loro-contenuto).
 
-Riprendendo lo schema visto in precedenza, vengono dapprima eseguite le scritture evidenziate dalle frecce rosse, successivamente quelle evidenziate dalle frecce blu e così via, fino all'ultima istruzione.
+Riprendendo lo schema visto in precedenza, la buildInstruction prepara istruzioni e relativi step dei quali vengono dapprima eseguite le scritture evidenziate dalle frecce rosse, successivamente quelle evidenziate dalle frecce blu e così via, fino all'ultima istruzione.
 
 [![Sequenza di scrittura delle istruzioni](../../assets/eeprom/4-eeprom-sequenza.png "Sequenza di scrittura delle istruzioni"){:width="100%"}](../../assets/eeprom/4-eeprom-sequenza.png)
 
