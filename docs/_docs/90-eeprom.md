@@ -143,7 +143,7 @@ In altre parole, abbiamo 256 istruzioni che si sviluppano in 16 step, ognuno dei
 
 Una ulteriore spiegazione visiva di quanto appena descritto si può ottenere a partire dal minuto 17m:52s del video <a href="https://youtu.be/JUVt_KYAp-I?t=1072" target="_blank">Reprogramming CPU microcode with an Arduino</a> di Ben Eater.
 
-In relazione al conteggio della dimensione, si veda anche la sezione [Instruction Register e Istruzioni](../control/#instruction-register-e-istruzioni). Un aspetto da rcordare è che nel mercato non sono presenti EEPROM parallele da 4KB e da 16KB, dunque al loro posto si utilizzano EEPROM da 8KB e 32KB impostando a 0 l'ultimo pin di indirizzamento e utilizzando dunque solo la prima metà dello spazio disponibile.
+In relazione al conteggio della dimensione, si veda anche la sezione [Instruction Register e Istruzioni](../control/#instruction-register-e-istruzioni). Un aspetto da rcordare è che nel mercato non sono presenti EEPROM parallele da 4KB e da 16KB, dunque al loro posto si utilizzano EEPROM da 8KB e 32KB impostando a 0 l'ultimo pin di indirizzamento, utilizzando dunque solo la prima metà dello spazio disponibile.
 
 Fatta questa premessa, utile per capire la distribuzione del microcode nelle varie EEPROM, possiamo analizzare alcuni aspetti importanti dello sketch Arduino.
 
@@ -157,6 +157,8 @@ Per semplicità e per facilitare la scrittura del codice, avevo ipotizzato una l
 Perché *simulata*? Perché in questo momento la EEPROM non è ancora stata programmata e ciò che si desidera ottenere in questa fase è proprio un checksum del dato *da scrivere*, checksum che sarà poi confrontato con quello calcolato rileggendo la EEPROM alla *fine* del ciclo di programmazione.
 
 Ci troviamo nella situazione in cui la routine del calcolo del CRC deve ricevere i dati sequenzialmente (dati che dobbiamo produrre utilizzando la routine **buildInstruction** preposta alla creazione di istruzioni e step); tuttavia, la buildInstruction esegue il frazionamento di ogni istruzione nei modi esposti nella [sezione precedente](#le-eeprom-e-il-loro-contenuto), generando cioè un opcode completo e suddividendo le scritture della Control Word da 32 bit di ogni step sulle corrispondenti porzioni di microcode, come evidenziato nella tabella *Consolidamento dei microcode in un'unica EEPROM* e nella grafica *Rappresentazione del microcode consolidati in un’unica EEPROM.*
+
+[![Rappresentazione dei quattro microcode consolidati in un'unica EEPROM](../../assets/eeprom/tabella-grafica.png){:width="100%"}]
 
 La buildInstruction prepara infatti i 32 bit / 4 byte di microcode di ogni step dell'istruzione corrente e li memorizza in un array tipo uint32_t di lunghezza 16, cioè 4 byte * 16 step = 64 byte; successivamente, le scritture avvengono in questa sequenza (routine **writeOpcode**):
 
