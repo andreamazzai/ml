@@ -3,11 +3,11 @@ title: "EEPROM Programmer"
 permalink: /docs/eeprom-programmer/
 excerpt: "EEPROM Programmer"
 ---
-<small>[Il programmatore di EEPROM](#il-programmatore-di-eeprom) - [Schema](#schema) - [Spiegazione del codice](#spiegazione-del-codice) - [Le EEPROM e il loro contenuto](#le-eeprom-e-il-loro-contenuto) - [Calcolo del CRC pre-programmazione](#calcolo-del-crc-pre-programmazione) - [Sblocco e blocco della EEPROM](#sblocco-e-blocco-della-eeprom) - [Cancellazione della EEPROM](#cancellazione-della-eeprom) - [Programmazione della EEPROM](#programmazione-della-eeprom) - [Verifica del CRC post-programmazione](#verifica-del-crc-post-programmazione) - [Link utili](#link-utili)</small>
+<small>[Il programmatore di EEPROM](#il-programmatore-di-eeprom) - [Schema](#schema) - [Spiegazione del codice](#spiegazione-del-codice) - [Le EEPROM e il loro contenuto](#le-eeprom-e-il-loro-contenuto) - [Calcolo del CRC pre-programmazione](#calcolo-del-crc-pre-programmazione) - [Sblocco e blocco della EEPROM](#sblocco-e-blocco-della-eeprom) - [Cancellazione della EEPROM](#cancellazione-della-eeprom) - [Programmazione della EEPROM](#programmazione-della-eeprom) - [Verifica del CRC post-programmazione](#verifica-del-crc-post-programmazione) - [Note](#note) - [Link utili](#link-utili)</small>
 
 [![EEPROM programmer](../../assets/eeprom/eeprom-programmer.png "EEPROM programmer"){:width="100%"}](../../assets/eeprom/eeprom-programmer.png)
 
-Tutti i progetti descritti in questa pagina sono basati su Arduino.
+Il programmatore di EEPROM serve a programmare le EEPROM della [Control Logic](../control) con il microcode necessario ad eseguire le istruzioni definite per il computer BEAM.
 
 ## Il programmatore di EEPROM
 
@@ -98,7 +98,7 @@ Perché *uno o più pin specifici*? Perché, ad esempio, il segnale WH è in rea
 
 La EEPROM 0 governa invece i quattro demultiplexer '138, dunque le combinazioni dei suoi 8 bit di output sono in grado di pilotare ben 32 segnali (ma quelli utilizzati sono solo 21).
 
-Si può dedurre che ogni EEPROM contiene solamente *una parte* del microcode di ogni istruzione, icioè (ovviamente) la porzione relativa ai segnali cablati sugli output di quella determinata EEPROM. Ma come è suddiviso il microcode nelle quattro EEPROM? La seguente tabella mostra, per le istruzioni di esempio indicate in precedenza, quali segnali siano attivi su ogni EEPROM nei diversi step dell'istruzione correntemente in esecuzione:
+Si può dedurre che ogni EEPROM contiene solamente *una parte* del microcode di ogni istruzione, cioè (ovviamente) la porzione relativa ai segnali cablati sugli output di quella determinata EEPROM. Ma come è suddiviso il microcode nelle quattro EEPROM? La seguente tabella mostra, per le istruzioni di esempio indicate in precedenza, quali segnali siano attivi su ogni EEPROM nei diversi step dell'istruzione correntemente in esecuzione:
 
 [![Suddivisione sulle quattro EEPROM del microcode di alcune istruzioni](../../assets/eeprom/4-eeprom-rappresentazione.png "Suddivisione sulle quattro EEPROM del microcode di alcune istruzioni"){:width="100%"}](../../assets/eeprom/4-eeprom-rappresentazione.png)
 
@@ -119,7 +119,7 @@ Ogni step di ogni istruzione va dunque letto come la concatenazione logica di og
  | 1          | 14   | EEPROM<sub>0</sub>byte<sub>30</sub> OR EEPROM<sub>1</sub>byte<sub>30</sub> OR EEPROM<sub>2</sub>byte<sub>30</sub> OR EEPROM<sub>3</sub>byte<sub>30</sub> |
  | 1          | 15   | EEPROM<sub>0</sub>byte<sub>31</sub> OR EEPROM<sub>1</sub>byte<sub>31</sub> OR EEPROM<sub>2</sub>byte<sub>31</sub> OR EEPROM<sub>3</sub>byte<sub>31</sub> |
 
-Il sestp step dell'istruzione CPX descritto poc'anzi risulta in effetti composto dalla concatenazione del byte 101 di ogni EEPROM (le istruzioni e gli step si contano a partire da zero, dunque (settima istruzione \* 16 step + sesto step() = (7-1) \* 16 + (6-1) = 96 + 5 = 101):
+Il sesto step dell'istruzione CPX descritto poc'anzi risulta in effetti composto dalla concatenazione del byte 101 di ogni EEPROM (le istruzioni e gli step si contano a partire da zero, dunque (settima istruzione \* 16 step + sesto step) = ((7-1) \* 16 + (6-1)) = 96 + 5 = 101):
 
 EEPROM<sub>0</sub>byte<sub>101</sub> + EEPROM<sub>1</sub>byte<sub>101</sub> + EEPROM<sub>2</sub>byte<sub>101</sub> + EEPROM <sub>3</sub>byte<sub>101</sub>, cioè
 
@@ -129,7 +129,7 @@ RL + FNZC + CS\|C0, così come indicato nel *Dettaglio microcode di alcune istru
 
 In pratica, si devono tenere in considerazione i segnali di output cablati su ogni EEPROM e indicare quali di questi debbano essere attivi ad ogni combinazione di istruzione / step. Questo spiega la necessità di programmare le quattro EEPROM ognuna con una propria porzione specifica di microcode.
 
-Ora, anziché effettuare quattro programmazioni distinte, risulta molto più comodo (anche se più dispendioso) utilizzare quattro EEPROM da 16KB e scrivere su ognuna di esse, in sequenza, tutti e quattro i microcode da 4KB inizialmente definiti. In questo modo, si possono programmare quattro EEPROM identiche da 16KB, ognuna delle quali conterrà tutte le quattro porzioni di microcode da 4KB.
+Ora, anziché effettuare quattro programmazioni distinte, risulta molto più comodo (anche se più dispendioso) utilizzare quattro EEPROM da 16KB e scrivere su ognuna di esse, in sequenza, tutti e quattro i microcode da 4KB inizialmente definiti. In questo modo, si possono programmare quattro EEPROM identiche da 16KB, ognuna delle quali conterrà tutte le porzioni di microcode da 4KB.
 
 La tabella riassume la collocazione dei microcode da 4KB consolidati in un'unica EEPROM di dimensioni maggiori:
 
@@ -164,8 +164,8 @@ La programmazione delle EEPROM col metodo originale "un byte alla volta" risulta
 
 Dunque, per capire se il programmatore stesse funzionando correttamente, avevo introdotto una verifica della corrispondenza tra il Cyclic Redundancy Check (CRC) calcolato *prima* della scrittura del microcode e quello calcolato dalla rilettura della EEPROM alla *fine* della sua programmazione.
 
-Per semplicità e per facilitare la scrittura del codice, avevo ipotizzato una lettura sequenziale simulata dei valori utilizzati per calcolare il CRC, partendo dall'indirizzo 0x0000 fino all'indirizzo 0x3FFF.\
-Perché *simulata*? Perché in questo momento la EEPROM non è ancora stata programmata e ciò che si desidera ottenere in questa fase è proprio un checksum del dato *da scrivere*, checksum che sarà poi confrontato con quello calcolato rileggendo la EEPROM alla *fine* del ciclo di programmazione.
+Per semplicità e per facilitare la scrittura del codice, immaginavo una lettura sequenziale simulata dei valori da utilizzare per calcolare il CRC, partendo dall'indirizzo 0x0000 fino all'indirizzo 0x3FFF.\
+Perché *simulata*? Perché in questa fase del programma la EEPROM non è ancora stata programmata e ciò che si desidera ottenere ora è proprio un checksum del dato *da scrivere*, checksum che sarà poi confrontato con quello calcolato rileggendo la EEPROM alla *fine* del ciclo di programmazione.
 
 Ci troviamo nella situazione in cui la routine del calcolo del CRC deve ricevere i dati sequenzialmente (dati che dobbiamo produrre utilizzando la routine **buildInstruction** preposta alla creazione di istruzioni e step); tuttavia, la buildInstruction esegue il frazionamento di ogni istruzione nei modi esposti nella [sezione precedente](#le-eeprom-e-il-loro-contenuto), generando cioè un opcode completo e suddividendo le scritture della Control Word da 32 bit di ogni step sulle corrispondenti porzioni di microcode, come evidenziato nella tabella *Consolidamento dei microcode in un'unica EEPROM* e nella grafica *Rappresentazione dei quattro microcode consolidati in un'unica EEPROM.*
 
@@ -189,13 +189,13 @@ e così via fino alla fine delle istruzioni.
 
 \* Si faccia riferimento all'immagine *Definizione dei segnali di controllo gestiti da ogni EEPROM* nella [sezione precedente](#le-eeprom-e-il-loro-contenuto).
 
-Riprendendo lo schema visto in precedenza, la buildInstruction prepara istruzioni e relativi step dei quali vengono dapprima eseguite le scritture evidenziate dalle frecce rosse, successivamente quelle evidenziate dalle frecce blu e così via, fino all'ultima istruzione.
+Riprendendo lo schema visto in precedenza, la buildInstruction prepara istruzioni e relativi step dei quali vengono dapprima eseguite le scritture evidenziate dalle frecce rosse (istruzione 0), successivamente quelle evidenziate dalle frecce blu (istruzione 1) e così via, fino all'ultima istruzione.
 
 [![Sequenza di scrittura delle istruzioni](../../assets/eeprom/eeprom-consolidata-sequenza.png "Sequenza di scrittura delle istruzioni"){:width="100%"}](../../assets/eeprom/eeprom-consolidata-sequenza.png)
 
 *Sequenza di scrittura delle istruzioni.*
 
-Volendo riutilizzare la routine **buildInstruction**, dovevo trovare il modo di interpretarne il risultato per estrapolarne in tempo reale solo ciò che mi interessava al fine di realizzare quella lettura simulata sequenziale discussa all'inizio della sezione.
+Volendo riutilizzare la routine **buildInstruction**, dovevo trovare il modo di interpretarne l'output ed estrapolarne in tempo reale solo ciò che mi interessava al fine di realizzare quella lettura simulata sequenziale discussa all'inizio di questa sezione.
 
 Per ottenere il risultato desiderato, viene eseguita una serie di cicli annidati: per ogni istruzione si genera la Control Word a 32 bit di tutti gli step, dalla quale si estrapola solo la word a 8 bit relativa alla porzione di EEPROM correntemente indirizzata dal ciclo più esterno
 
@@ -226,7 +226,7 @@ uint16_t calcCRC16_pre(void)
 }
 ~~~
 
-Con **rom** = 0, **crc** sarà calcolato tenendo in considerazione gli 8 bit più significativi (shift a destra di 24 posizioni) della Control Word a 32 bit generata da **buildInstruction** e il ciclo sarà eseguito per tutti i 16 step di tutte le 256 istruzioni; quando **rom** = 1, **crc** sarà calcolato tenendo in considerazione i bit da 16 a 23 (shift a destra di 16 posizioni) della Control Word a 32 bit generata da **buildInstruction** e il ciclo sarà nuovamente eseguito per tutti i 16 step di tutte le 256 istruzioni. Il processo si ripete per **rom** = 2 e 3, prendendo in considerazione i bit da 8 a 15 (shift a destra di 8 posizioni) e infine i bit da 0 a 7 (nessuno shift a destra).
+Con **rom** = 0, **crc** sarà calcolato tenendo in considerazione gli 8 bit più significativi (shift a destra di 24 - 8 \* 0 = 24 posizioni) della Control Word a 32 bit generata da **buildInstruction** e il ciclo sarà eseguito per tutti i 16 step di tutte le 256 istruzioni; quando **rom** = 1, **crc** sarà calcolato tenendo in considerazione i bit da 16 a 23 (shift a destra di 24 - 8 \* 1 = 16 posizioni) della Control Word a 32 bit generata da **buildInstruction** e il ciclo sarà nuovamente eseguito per tutti i 16 step di tutte le 256 istruzioni. Il processo si ripete per **rom** = 2 e 3, prendendo in considerazione i bit da 8 a 15 (shift a destra di 8 posizioni) e infine i bit da 0 a 7 (nessuno shift a destra).
 
 ### Sblocco e blocco della EEPROM
 
@@ -292,7 +292,7 @@ void writeOpcode(uint8_t opcode)
 
 ### Verifica del CRC post-programmazione
 
-La verifica del CRC post-programmazione è molto più semplice rispetto a quella pre-programmazione, perché in questo caso non si deve sottostare alla routine **buildInstruction** e lavorare con cicli annidati per ottenere una vista sequenziale simulata dei dati da scrivere sulla EEPROM: giunti a questo punto, la EEPROM è stata realmente programmata ed è sufficiente passare alla routine di calcolo del CRC i valori letti consecutivamente da 0x0000 a 0x3FFF.
+La verifica del CRC post-programmazione è molto più semplice rispetto a quella pre-programmazione, perché in questo caso non si deve sottostare alla routine **buildInstruction** e lavorare con cicli annidati per ottenere una vista sequenziale simulata dei dati: giunti a questo punto, la EEPROM è stata realmente programmata ed è sufficiente passare alla routine di calcolo del CRC i valori letti consecutivamente da 0x0000 a 0x3FFF.
 
 ~~~c++
 // CALCOLO CRC16 POST-PROGRAMMAZIONE
@@ -313,7 +313,37 @@ uint16_t calcCRC16_post(void)
 }
 ~~~
 
-Alla fine, i valori dei CRC calcolati pre-programmazione e post-programmazione vengono confrontati e viene stampato un messaggio positivo in caso di match.
+Alla fine, i valori dei CRC calcolati pre-programmazione e post-programmazione vengono confrontati e viene stampato un messaggio positivo in caso di match, nonché il tempo totale trascorso.
+
+## Note
+
+Nella prima sezione menzionavo che la corretta implementazione della modalità *Page Write* avrebbe richiesto uno sforzo maggiore di quanto non pensassi, ma la difficoltà maggiore è stata in realtà riscontrata nella verifica del CRC post-programmazione: anche il timing delle letture è critico e avevo speso diverso tempo cercando la sequenza corretta di comandi. Quella corretta è la seguente:
+
+~~~c++
+  byte readEEPROM(uint16_t address)
+  {
+    setAddress(address, true);
+    setDataBusMode(INPUT);
+    enableChip();
+    delayMicroseconds(2);
+    byte value = readDataBus();
+    disableChip();
+    return value;
+  }
+~~~
+
+Negli appunti ritrovo che la sequenza
+
+~~~c++
+    setDataBusMode(INPUT);
+    enableChip();
+    byte value = readDataBus();
+~~~
+
+causava errori in lettura, mentre spostando **enableChip** prima di **setDataBusMode**, oppure aggiungendo 2uS di ritardo, riuscivo a leggere correttamente il contenuto della EEPROM. Alla fine avevo realizzato che fosse preferibile aggiungere i 2uS dopo aver abilitato il chip come ultimo step, anziché abilitare il chip e poi settare il data bus in input, perché nella seguente condizione si sarebbe potuto generare un cortocircuito:
+
+- la EEPROM (che non ha resistenze in uscita) presenta output LO
+- Arduino presenta output HI, che viene dunque cortocircuitato verso ground dall'output LO della EEPROM.
 
 ## Link utili
 
@@ -323,9 +353,4 @@ Alla fine, i valori dei CRC calcolati pre-programmazione e post-programmazione v
 
 ## TO DO
 
-- 28C series EEPROMS, like the X28C256, sometimes ship from the factory with Data Protection enabled. Use the UNLOCK command to disable this. See the 28C256 Notes for more information. https://tomnisbet.github.io/TommyPROM/docs/28C256-notes
-- verificare l'ordine dei paragrafi ed eventualmene correggere i link a inizio pagina
 - spiegare qualcosa sul template delle istruzioni
-- qualcosa sui problemi riscontrati sul codice
-
-Per approfondimenti sul microcode, si veda anche la pagina che descrive la [Control Logic](../control/) del BEAM.

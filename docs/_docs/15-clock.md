@@ -3,6 +3,8 @@ title: "Clock"
 permalink: /docs/clock/
 excerpt: "Modulo di clock del computer BEAM"
 ---
+<small>[Il Loader e il Clock](#il-loader-e-il-clock) - [Schema](#schema) - [L'istruzione HLT](#listruzione-hlt) - [Link utili](#link-utili)</small>
+
 [![Modulo di Clock del computer BEAM](../../assets/clock/15-beam-clock.png "Modulo di Clock del computer BEAM"){:width="100%"}](../../assets/clock/15-beam-clock.png)
 
 Il modulo di clock del computer BEAM riprende quello progettato da Ben Eater per il computer SAP-1, utilizzando però solo comodi pulsanti tattili anziché interruttori a scorrimento e aggiungendo qualche interazione con i segnali di controllo esterni provenienti dal Loader.
