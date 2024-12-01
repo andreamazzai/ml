@@ -314,7 +314,7 @@ Alla fine, i valori dei CRC calcolati pre-programmazione e post-programmazione v
 
 - 28C series EEPROMS, like the X28C256, sometimes ship from the factory with Data Protection enabled. Use the UNLOCK command to disable this. See the 28C256 Notes for more information. https://tomnisbet.github.io/TommyPROM/docs/28C256-notes
 - verificare l'ordine dei paragrafi ed eventualmene correggere i link a inizio pagina
-- spiegare qualcosa sul template
+- spiegare qualcosa sul template delle istruzioni
 - qualcosa sui problemi riscontrati sul codice
 
 Per approfondimenti sul microcode, si veda anche la pagina che descrive la [Control Logic](../control/) del BEAM.
