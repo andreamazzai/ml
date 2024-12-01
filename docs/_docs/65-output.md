@@ -5,9 +5,7 @@ excerpt: "Output Register del computer BEAM"
 ---
 [![Registro di output del computer BEAM](../../assets/output/65-beam-output.png "Registro di output del computer BEAM"){:width="100%"}](../../assets/output/65-beam-output.png)
 
-**PLACEHOLDER**
-
-Lorem ipsum dolor sit amet, consectetur adipisci elit, sed do eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullamco laboriosam, nisi ut aliquid ex ea commodi consequatur. Duis aute irure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Il modulo di output del BEAM è sostanzialmente identico a quello del SAP di Ben Eater. Le uniche due differenze stanno nell'utilizzo di un display a 4 cifre anziché di 4 display a singola cifra e nella modalità di output solo decimale, senza la possibilità di scegliere quella esadecimale.
 
 ## Schema
 
@@ -18,7 +16,3 @@ Lorem ipsum dolor sit amet, consectetur adipisci elit, sed do eiusmod tempor inc
 ## Link utili
 
 - I video di Ben Eater che descrivono la realizzazione del <a href="https://eater.net/8bit/output" target="_blank">modulo di Output</a>.
-
-## TO DO
-
-- TBD

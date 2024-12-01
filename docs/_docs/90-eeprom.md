@@ -353,4 +353,4 @@ causava errori in lettura, mentre spostando **enableChip** prima di **setDataBus
 
 ## TO DO
 
-- spiegare qualcosa sul template delle istruzioni
+- Aggiungere informazioni sulla creazione delle istruzioni con buildInstruction
