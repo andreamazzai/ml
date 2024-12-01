@@ -100,18 +100,24 @@ Si può dedurre che ogni EEPROM contiene solamente *una parte* del microcode di 
 
 Ogni step di ogni istruzione va dunque letto come la concatenazione logica di ogni ennesimo byte di ogni EEPROM. Ad esempio:
 
- | Opcode | Step | Concatenazione logica                                                                |
- |--------|------|--------------------------------------------------------------------------------------|
- | 0      | 0    | (byte 0 EEPROM 0) OR (byte 0 EEPROM 1) OR (byte 0 EEPROM 2) OR (byte 0 EEPROM 3)     |
- | 0      | 1    | (byte 1 EEPROM 0) OR (byte 1 EEPROM 1) OR (byte 1 EEPROM 2) OR (byte 1 EEPROM 3)     |
- | 0      | ...  | ...                                                                                  |
- | 0      | 14   | (byte 14 EEPROM 0) OR (byte 14 EEPROM 1) OR (byte 14 EEPROM 2) OR (byte 14 EEPROM 3) |
- | 0      | 15   | (byte 15 EEPROM 0) OR (byte 15 EEPROM 1) OR (byte 15 EEPROM 2) OR (byte 15 EEPROM 3) |
+ | Opcode | Step | Concatenazione logica                                                                                                                                    |
+ |--------|------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+ | 0      | 0    | EEPROM<sub>0</sub>byte<sub>0</sub> OR EEPROM<sub>1</sub>byte<sub>0</sub> OR EEPROM<sub>2</sub>byte<sub>0</sub> OR EEPROM<sub>3</sub>byte<sub>0</sub>     |
+ | 0      | 1    | EEPROM<sub>0</sub>byte<sub>1</sub> OR EEPROM<sub>1</sub>byte<sub>1</sub> OR EEPROM<sub>3</sub>byte<sub>1</sub> OR EEPROM<sub>3</sub>byte<sub>1</sub>     |
+ | 0      | ...  | ...                                                                                                                                                      |
+ | 0      | 14   | EEPROM<sub>0</sub>byte<sub>14</sub> OR EEPROM<sub>1</sub>byte<sub>14</sub> OR EEPROM<sub>2</sub>byte<sub>14</sub> OR EEPROM<sub>3</sub>byte<sub>14</sub> |
+ | 0      | 15   | EEPROM<sub>0</sub>byte<sub>15</sub> OR EEPROM<sub>1</sub>byte<sub>15</sub> OR EEPROM<sub>2</sub>byte<sub>15</sub> OR EEPROM<sub>3</sub>byte<sub>15</sub> |
 
 Il settimo step dell'istruzione CPX descritto poc'anzi risulta in effetti composto dalla concatenazione del byte 6 di ogni EEPROM:
 
-(byte 6 EEPROM 0) + (byte 6 EEPROM 1) + (byte 6 EEPROM 2) + (byte 14 EEPROM 3), cioè\
-(RA) + (WH) + () + (PCI|NI), cioè\
+EEPROM<sub>0</sub>byte<sub>6</sub> + EEPROM<sub>1</sub>byte<sub>6</sub> + EEPROM <sub>2</sub>byte<sub>6</sub> + EEPROM <sub>3</sub>byte<sub>6</sub>,
+
+cioè
+
+(RA) + (WH) + () + (PCI|NI),
+
+cioè
+
 RA|WH|PCI|NI, così come indicato nel *Dettaglio microcode di alcune istruzioni di esempio*.
 
 In pratica, si devono tenere in considerazione i segnali di output cablati su ogni EEPROM e indicare quali di questi debbano essere attivi ad ogni combinazione di istruzione / step. Questo spiega la necessità di programmare le quattro EEPROM ognuna con la propria porzione di microcode.
