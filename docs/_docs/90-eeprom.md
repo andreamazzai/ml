@@ -82,9 +82,9 @@ Step:
 
 *Dettaglio microcode di alcune istruzioni di esempio.*
 
-Ogni step abilita uno o più segnali di controllo: ad esempio il settimo step dell'istruzione CPX attiva contemporaneamente RA, WH, PCI ed NI.
+Ogni step abilita uno o più segnali: ad esempio il settimo step dell'istruzione CPX attiva contemporaneamente RA, WH (che a sua volta è composto da HL ed HR), PCI ed NI.
 
-Come si può vedere nello [sketch Arduino](/code/Beam-Microcode.ino), ad ogni segnale di controllo corrisponde un pin specifico in una delle tre EEPROM numerate 1, 2 e 3:
+Come si può vedere nello [sketch Arduino](https://github.com/andreamazzai/beam), ad ogni segnale di controllo corrisponde un pin specifico in una delle tre EEPROM numerate 1, 2 e 3:
 
 [![Definizione dei segnali di controllo gestiti dalle EEPROM 1, 2 e 3](../../assets/eeprom/eeprom-pins.png "Definizione dei segnali di controllo gestiti dalle EEPROM 1, 2 e 3"){:width="100%"}](../../assets/eeprom/eeprom-pins.png)
 
@@ -103,20 +103,16 @@ Ogni step di ogni istruzione va dunque letto come la concatenazione logica di og
  | Opcode | Step | Concatenazione logica                                                                                                                                    |
  |--------|------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
  | 0      | 0    | EEPROM<sub>0</sub>byte<sub>0</sub> OR EEPROM<sub>1</sub>byte<sub>0</sub> OR EEPROM<sub>2</sub>byte<sub>0</sub> OR EEPROM<sub>3</sub>byte<sub>0</sub>     |
- | 0      | 1    | EEPROM<sub>0</sub>byte<sub>1</sub> OR EEPROM<sub>1</sub>byte<sub>1</sub> OR EEPROM<sub>3</sub>byte<sub>1</sub> OR EEPROM<sub>3</sub>byte<sub>1</sub>     |
+ | 0      | 1    | EEPROM<sub>0</sub>byte<sub>1</sub> OR EEPROM<sub>1</sub>byte<sub>1</sub> OR EEPROM<sub>2</sub>byte<sub>1</sub> OR EEPROM<sub>3</sub>byte<sub>1</sub>     |
  | 0      | ...  | ...                                                                                                                                                      |
  | 0      | 14   | EEPROM<sub>0</sub>byte<sub>14</sub> OR EEPROM<sub>1</sub>byte<sub>14</sub> OR EEPROM<sub>2</sub>byte<sub>14</sub> OR EEPROM<sub>3</sub>byte<sub>14</sub> |
  | 0      | 15   | EEPROM<sub>0</sub>byte<sub>15</sub> OR EEPROM<sub>1</sub>byte<sub>15</sub> OR EEPROM<sub>2</sub>byte<sub>15</sub> OR EEPROM<sub>3</sub>byte<sub>15</sub> |
 
 Il settimo step dell'istruzione CPX descritto poc'anzi risulta in effetti composto dalla concatenazione del byte 6 di ogni EEPROM:
 
-EEPROM<sub>0</sub>byte<sub>6</sub> + EEPROM<sub>1</sub>byte<sub>6</sub> + EEPROM <sub>2</sub>byte<sub>6</sub> + EEPROM <sub>3</sub>byte<sub>6</sub>,
+EEPROM<sub>0</sub>byte<sub>6</sub> + EEPROM<sub>1</sub>byte<sub>6</sub> + EEPROM <sub>2</sub>byte<sub>6</sub> + EEPROM <sub>3</sub>byte<sub>6</sub>, cioè
 
-cioè
-
-(RA) + (WH) + () + (PCI|NI),
-
-cioè
+(RA) + (WH) + () + (PCI|NI), cioè
 
 RA|WH|PCI|NI, così come indicato nel *Dettaglio microcode di alcune istruzioni di esempio*.
 
