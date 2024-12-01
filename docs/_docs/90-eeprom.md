@@ -116,7 +116,7 @@ EEPROM<sub>0</sub>byte<sub>6</sub> + EEPROM<sub>1</sub>byte<sub>6</sub> + EEPROM
 
 RA|WH|PCI|NI, così come indicato nel *Dettaglio microcode di alcune istruzioni di esempio*.
 
-In pratica, si devono tenere in considerazione i segnali di output cablati su ogni EEPROM e indicare quali di questi debbano essere attivi ad ogni combinazione di istruzione / step. Questo spiega la necessità di programmare le quattro EEPROM ognuna con la propria porzione di microcode.
+In pratica, si devono tenere in considerazione i segnali di output cablati su ogni EEPROM e indicare quali di questi debbano essere attivi ad ogni combinazione di istruzione / step. Questo spiega la necessità di programmare le quattro EEPROM ognuna con una propria porzione specifica di microcode.
 
 Ora, anziché effettuare quattro programmazioni distinte, risulta molto più comodo (anche se più dispendioso) utilizzare quattro EEPROM da 16K e scrivere su ognuna di esse, in sequenza, tutti e quattro i microcode da 4K inizialmente definiti. In questo modo, si possono programmare quattro EEPROM identiche da 16K, ognuna delle quali conterrà tutte le quattro porzioni di microcode da 4K.
 
@@ -133,19 +133,19 @@ La tabella riassume la collocazione dei microcode da 4K consolidati in un'unica 
 
 Le colonne degli indirizzi indicano in quali locazioni della EEPROM da 16K trovino posto le singole istanze da 4K del microcode originariamente definito utilizzando quattro EEPROM da 4K.
 
-[![Rappresentazione del microcode consolidati in un'unica EEPROM](../../assets/eeprom/eeprom-consolidata.png "Rappresentazione del microcode consolidati in un'unica EEPROM"){:width="100%"}](../../assets/eeprom/eeprom-consolidata.png)
+[![Rappresentazione dei quattro microcode consolidati in un'unica EEPROM](../../assets/eeprom/eeprom-consolidata.png "Rappresentazione dei quattro microcode consolidati in un'unica EEPROM"){:width="100%"}](../../assets/eeprom/eeprom-consolidata.png)
 
-*Rappresentazione del microcode consolidati in un'unica EEPROM.*
+*Rappresentazione dei quattro microcode consolidati in un'unica EEPROM.*
 
-Impostando opportunamente le linee di indirizzamento A12 e A13, è possibile mettere in output su ogni EEPROM una porzione specifica di microcode; si vedano le connessioni fisse a Vcc o GND nello [schema](../control/#schema) della Control Logic. Ad esempio, l'impostazione di A12 a 1 e A13 a 0 farà in modo che la EEPROM da 16K esponga sui suoi output i 4K di microcode originariamente definito per la seconda EEPROM da 4K.
+Impostando opportunamente le linee di indirizzamento A12 e A13, è possibile mettere in output su ogni EEPROM una porzione specifica di microcode; si vedano le connessioni fisse a Vcc o GND nello [schema](../control/#schema) della Control Logic. Ad esempio, l'impostazione di A12 a 1 e A13 a 0 farà in modo che una EEPROM da 16K esponga sui suoi output i 4K di microcode originariamente definito per la seconda EEPROM da 4K.
 
 In altre parole, abbiamo 256 istruzioni che si sviluppano in 16 step, ognuno dei quali è composto da una Control Word da 32 bit (4 byte) = 16.384 byte totali. Si dovrebbero programmare 4 EEPROM da 4K: una per i primi 8 bit della Control Word, una per gli 8 bit successivi e così via. Anziché programmare quattro diverse EEPROM da 4K ognuna con una porzione specifica di microcode, è possibile programmare quattro EEPROM identiche da 16K. Nei primi 4KB si posiziona il microcode per i primi 8 bit della Control Word, nei secondi 4K il microcode per i secondi 8 bit, e così via. Infine, si impostano opportunamente gli indirizzi A12 e A13 delle quattro EEPROM da 16K, in modo che ognuna esponga solo la porzione specifica di microcode relativa ai segnali di controllo cablati sui suoi output.
 
 Una ulteriore spiegazione visiva di quanto appena descritto si può ottenere a partire dal minuto 17m:52s del video <a href="https://youtu.be/JUVt_KYAp-I?t=1072" target="_blank">Reprogramming CPU microcode with an Arduino</a> di Ben Eater.
 
-In relazione al conteggio della dimensione, si veda anche la sezione [Instruction Register e Istruzioni](../control/#instruction-register-e-istruzioni).
+In relazione al conteggio della dimensione, si veda anche la sezione [Instruction Register e Istruzioni](../control/#instruction-register-e-istruzioni). Un aspetto da rcordare è che nel mercato non sono presenti EEPROM parallele da 4KB e da 16KB, dunque al loro posto si utilizzano EEPROM da 8KB e 32KB impostando a 0 l'ultimo pin di indirizzamento e utilizzando dunque solo la prima metà dello spazio disponibile.
 
-Fatta questa premessa, utile per capire la distribuzione del microcode nelle varie EEPROM, possiamo analizzare alcuni aspetti importanti dello sketch Arduino del programmatore.
+Fatta questa premessa, utile per capire la distribuzione del microcode nelle varie EEPROM, possiamo analizzare alcuni aspetti importanti dello sketch Arduino.
 
 ### Calcolo del CRC pre-programmazione
 
@@ -153,10 +153,10 @@ La programmazione delle EEPROM col metodo originale "un byte alla volta" risulta
 
 Dunque, per capire se il programmatore stesse funzionando correttamente, avevo introdotto una verifica della corrispondenza tra il Cyclic Redundancy Check (CRC) calcolato *prima* della scrittura del microcode e quello calcolato dalla rilettura della EEPROM alla *fine* della sua programmazione.
 
-Per semplicità e per facilitare la scrittura del codice, avevo ipotizzato una lettura sequenziale simulata dei valori da calcolare, partendo dall'indirizzo 0x0000 fino all'indirizzo 0x3FFF.\
+Per semplicità e per facilitare la scrittura del codice, avevo ipotizzato una lettura sequenziale simulata dei valori utilizzati per calcolare il CRC, partendo dall'indirizzo 0x0000 fino all'indirizzo 0x3FFF.\
 Perché *simulata*? Perché in questo momento la EEPROM non è ancora stata programmata e ciò che si desidera ottenere in questa fase è proprio un checksum del dato *da scrivere*, checksum che sarà poi confrontato con quello calcolato rileggendo la EEPROM alla *fine* del ciclo di programmazione.
 
-Ci troviamo nella situazione in cui la routine del calcolo del CRC deve ricevere i dati sequenzialmente (dati che dobbiamo produrre utilizzando la routine **buildInstruction** preposta alla creazione di istruzioni e step); tuttavia, la buildInstruction esegue il frazionamento di ogni istruzione nei modi esposti nella [sezione precedente](#le-eeprom-e-il-loro-contenuto), generando cioè un opcode completo e suddividendo le scritture della Control Word da 32 bit di ogni step sulle corrispondenti porzioni di microcode, come evidenziato nella tabella *Consolidamento dei microcode in un'unica EEPROM.*
+Ci troviamo nella situazione in cui la routine del calcolo del CRC deve ricevere i dati sequenzialmente (dati che dobbiamo produrre utilizzando la routine **buildInstruction** preposta alla creazione di istruzioni e step); tuttavia, la buildInstruction esegue il frazionamento di ogni istruzione nei modi esposti nella [sezione precedente](#le-eeprom-e-il-loro-contenuto), generando cioè un opcode completo e suddividendo le scritture della Control Word da 32 bit di ogni step sulle corrispondenti porzioni di microcode, come evidenziato nella tabella *Consolidamento dei microcode in un'unica EEPROM* e nella grafica *Rappresentazione del microcode consolidati in un’unica EEPROM.*
 
 La buildInstruction prepara infatti i 32 bit / 4 byte di microcode di ogni step dell'istruzione corrente e li memorizza in un array tipo uint32_t di lunghezza 16, cioè 4 byte * 16 step = 64 byte; successivamente, le scritture avvengono in questa sequenza (routine **writeOpcode**):
 
@@ -178,7 +178,7 @@ e così via fino alla fine delle istruzioni.
 
 Riprendendo lo schema visto in precedenza, la buildInstruction prepara istruzioni e relativi step dei quali vengono dapprima eseguite le scritture evidenziate dalle frecce rosse, successivamente quelle evidenziate dalle frecce blu e così via, fino all'ultima istruzione.
 
-[![Sequenza di scrittura delle istruzioni](../../assets/eeprom/4-eeprom-sequenza.png "Sequenza di scrittura delle istruzioni"){:width="100%"}](../../assets/eeprom/4-eeprom-sequenza.png)
+[![Sequenza di scrittura delle istruzioni](../../assets/eeprom/eeprom-consolidata-sequenza.png "Sequenza di scrittura delle istruzioni"){:width="100%"}](../../assets/eeprom/eeprom-consolidata-sequenza.png)
 
 *Sequenza di scrittura delle istruzioni.*
 
