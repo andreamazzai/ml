@@ -65,14 +65,15 @@ Il programmatore di EEPROM del BEAM, basato su quello dell'NQSAP di Tom, non è 
 
 Per governare i 42 [segnali di controllo](../control/#segnali-di-controllo) di ALU, RAM, SP, registri ecc. (21 direttamente in uscita dalle EEPROM + 21 demultiplexati dai [74LS138](../control/#i-74ls138-per-la-gestione-dei-segnali)) sono necessarie quattro EEPROM, ognuna delle quali esporta una word da 8 bit per un totale di 32 bit (i segnali fisici realmente necessari sono 29, cioè i 21 diretti e 8 per governare i '138, lasciando 3 pin inutilizzati):
 
-- ogni EEPROM mette a disposizione 8 bit in output, perciò ne servono 4 per pilotare simultaneamente 29 segnali;
-- poiché ogni istruzione del BEAM è composta da 16 step, sono necessarie EEPROM di dimensione 256 * 16 = 4096 byte dedicati a decodifica delle istruzioni e impostazione degli opportuni segnali in uscita;
+- una EEPROM mette a disposizione 8 bit in output, perciò ne servono 4 per pilotare simultaneamente 29 segnali;
+- poiché ognuna delle 256 istruzioni del BEAM può essere composta da un massimo di 16 step, sono necessarie EEPROM di dimensione 256 * 16 = 4096 byte dedicati a decodifica delle istruzioni e impostazione degli opportuni segnali in uscita;
 - per indirizzare 4096 byte sono necessari 12 pin di indirizzamento ((2^8 = 256 istruzioni) * (2^4 = 16 step) = 2^12 = 4096), cioè da A0 a A11;
 - quattro EEPROM da 4KB, ognuna delle quali programmata con il proprio microcode, possono svolgere il compito richiesto.
 
 Vediamo di seguito un dettaglio del microcode di alcune istruzioni di esempio, in particolar modo HLT (blocca l'esecuzione del codice), JMP (salta a un nuovo indirizzo definito nella locazione di memoria indicata dall'operando) e CPX (confronta il registro X con l'operando). L'istruzione più lunga tra quelle rappresentate è CPX, la cui durata è di 7 step (da 0 a 6); altre istruzioni del BEAM raggiungono una lunghezza di ben 10 step.
 
 ~~~text
+Step:
  <0>     <1>         <2>     <3>    <4>        <5>            <6>           
 { RPC|WM, RR|WIR|PCI, HLT,    NI,    0,         0,             0,           }, // 00 HLT
 { RPC|WM, RR|WIR|PCI, RPC|WM, RR|WM, RR|WPC|NI, 0,             0,           }, // 01 JMP
@@ -83,11 +84,13 @@ Vediamo di seguito un dettaglio del microcode di alcune istruzioni di esempio, i
 
 Ogni step abilita uno o più segnali di controllo: ad esempio il settimo step dell'istruzione CPX attiva contemporaneamente RA, WH, PCI ed NI.
 
-Come si può vedere nello [sketch Arduino](/code/Beam-Microcode.ino), ad ogni segnale di controllo corrisponde un pin specifico in una delle quattro EEPROM:
+Come si può vedere nello [sketch Arduino](/code/Beam-Microcode.ino), ad ogni segnale di controllo corrisponde un pin specifico in una delle tre EEPROM numerate 1, 2 e 3:
 
-[![Definizione dei segnali di controllo gestiti da ogni EEPROM](../../assets/eeprom/eeprom-pins.png "Definizione dei segnali di controllo gestiti da ogni EEPROM"){:width="100%"}](../../assets/eeprom/eeprom-pins.png)
+[![Definizione dei segnali di controllo gestiti dalle EEPROM 1, 2 e 3](../../assets/eeprom/eeprom-pins.png "Definizione dei segnali di controllo gestiti dalle EEPROM 1, 2 e 3"){:width="100%"}](../../assets/eeprom/eeprom-pins.png)
 
-*Definizione dei segnali di controllo gestiti da ogni EEPROM.*
+*Definizione dei segnali di controllo gestiti dalle EEPROM 1, 2 e 3.*
+
+La EEPROM 0 governa invece i quattro demultiplexer '138, dunque le combinazioni dei suoi 8 bit di output sono in grado di pilotare ben 32 segnali (ma quelli utilizzati sono solo 21).
 
 Si può dedurre che ogni EEPROM contiene solamente *una parte* del microcode di ogni istruzione, in particolar modo la porzione relativa ai segnali cablati sugli output di quella determinata EEPROM. Ma come è suddiviso il microcode nelle quattro EEPROM? La seguente tabella mostra, per le istruzioni di esempio indicate in precedenza, quali segnali siano attivi su ogni EEPROM nei diversi step dell'istruzione correntemente in esecuzione:
 
