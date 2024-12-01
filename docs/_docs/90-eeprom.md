@@ -98,7 +98,7 @@ Perché *uno o più pin specifici*? Perché, ad esempio, il segnale WH è in rea
 
 La EEPROM 0 governa invece i quattro demultiplexer '138, dunque le combinazioni dei suoi 8 bit di output sono in grado di pilotare ben 32 segnali (ma quelli utilizzati sono solo 21).
 
-Si può dedurre che ogni EEPROM contiene solamente *una parte* del microcode di ogni istruzione, in particolar modo la porzione relativa ai segnali cablati sugli output di quella determinata EEPROM. Ma come è suddiviso il microcode nelle quattro EEPROM? La seguente tabella mostra, per le istruzioni di esempio indicate in precedenza, quali segnali siano attivi su ogni EEPROM nei diversi step dell'istruzione correntemente in esecuzione:
+Si può dedurre che ogni EEPROM contiene solamente *una parte* del microcode di ogni istruzione, icioè (ovviamente) la porzione relativa ai segnali cablati sugli output di quella determinata EEPROM. Ma come è suddiviso il microcode nelle quattro EEPROM? La seguente tabella mostra, per le istruzioni di esempio indicate in precedenza, quali segnali siano attivi su ogni EEPROM nei diversi step dell'istruzione correntemente in esecuzione:
 
 [![Suddivisione sulle quattro EEPROM del microcode di alcune istruzioni](../../assets/eeprom/4-eeprom-rappresentazione.png "Suddivisione sulle quattro EEPROM del microcode di alcune istruzioni"){:width="100%"}](../../assets/eeprom/4-eeprom-rappresentazione.png)
 
@@ -106,21 +106,26 @@ Si può dedurre che ogni EEPROM contiene solamente *una parte* del microcode di 
 
 Ogni step di ogni istruzione va dunque letto come la concatenazione logica di ogni ennesimo byte di ogni EEPROM. Ad esempio:
 
- | Opcode | Step | Concatenazione logica                                                                                                                                    |
- |--------|------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
- | 0      | 0    | EEPROM<sub>0</sub>byte<sub>0</sub> OR EEPROM<sub>1</sub>byte<sub>0</sub> OR EEPROM<sub>2</sub>byte<sub>0</sub> OR EEPROM<sub>3</sub>byte<sub>0</sub>     |
- | 0      | 1    | EEPROM<sub>0</sub>byte<sub>1</sub> OR EEPROM<sub>1</sub>byte<sub>1</sub> OR EEPROM<sub>2</sub>byte<sub>1</sub> OR EEPROM<sub>3</sub>byte<sub>1</sub>     |
- | 0      | ...  | ...                                                                                                                                                      |
- | 0      | 14   | EEPROM<sub>0</sub>byte<sub>14</sub> OR EEPROM<sub>1</sub>byte<sub>14</sub> OR EEPROM<sub>2</sub>byte<sub>14</sub> OR EEPROM<sub>3</sub>byte<sub>14</sub> |
- | 0      | 15   | EEPROM<sub>0</sub>byte<sub>15</sub> OR EEPROM<sub>1</sub>byte<sub>15</sub> OR EEPROM<sub>2</sub>byte<sub>15</sub> OR EEPROM<sub>3</sub>byte<sub>15</sub> |
+ | Istruzione | Step | Concatenazione logica                                                                                                                                    |
+ |------------|------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+ | 0          | 0    | EEPROM<sub>0</sub>byte<sub>0</sub> OR EEPROM<sub>1</sub>byte<sub>0</sub> OR EEPROM<sub>2</sub>byte<sub>0</sub> OR EEPROM<sub>3</sub>byte<sub>0</sub>     |
+ | 0          | 1    | EEPROM<sub>0</sub>byte<sub>1</sub> OR EEPROM<sub>1</sub>byte<sub>1</sub> OR EEPROM<sub>2</sub>byte<sub>1</sub> OR EEPROM<sub>3</sub>byte<sub>1</sub>     |
+ | 0          | ...  | ...                                                                                                                                                      |
+ | 0          | 14   | EEPROM<sub>0</sub>byte<sub>14</sub> OR EEPROM<sub>1</sub>byte<sub>14</sub> OR EEPROM<sub>2</sub>byte<sub>14</sub> OR EEPROM<sub>3</sub>byte<sub>14</sub> |
+ | 0          | 15   | EEPROM<sub>0</sub>byte<sub>15</sub> OR EEPROM<sub>1</sub>byte<sub>15</sub> OR EEPROM<sub>2</sub>byte<sub>15</sub> OR EEPROM<sub>3</sub>byte<sub>15</sub> |
+ | 1          | 0    | EEPROM<sub>0</sub>byte<sub>16</sub> OR EEPROM<sub>1</sub>byte<sub>16</sub> OR EEPROM<sub>2</sub>byte<sub>16</sub> OR EEPROM<sub>3</sub>byte<sub>16</sub> |
+ | 1          | 1    | EEPROM<sub>0</sub>byte<sub>17</sub> OR EEPROM<sub>1</sub>byte<sub>17</sub> OR EEPROM<sub>2</sub>byte<sub>17</sub> OR EEPROM<sub>3</sub>byte<sub>17</sub> |
+ | 1          | ...  | ...                                                                                                                                                      |
+ | 1          | 14   | EEPROM<sub>0</sub>byte<sub>30</sub> OR EEPROM<sub>1</sub>byte<sub>30</sub> OR EEPROM<sub>2</sub>byte<sub>30</sub> OR EEPROM<sub>3</sub>byte<sub>30</sub> |
+ | 1          | 15   | EEPROM<sub>0</sub>byte<sub>31</sub> OR EEPROM<sub>1</sub>byte<sub>31</sub> OR EEPROM<sub>2</sub>byte<sub>31</sub> OR EEPROM<sub>3</sub>byte<sub>31</sub> |
 
-Il settimo step dell'istruzione CPX descritto poc'anzi risulta in effetti composto dalla concatenazione del byte 6 di ogni EEPROM:
+Il sestp step dell'istruzione CPX descritto poc'anzi risulta in effetti composto dalla concatenazione del byte 101 di ogni EEPROM (le istruzioni e gli step si contano a partire da zero, dunque (settima istruzione \* 16 step + sesto step() = (7-1) \* 16 + (6-1) = 96 + 5 = 101):
 
-EEPROM<sub>0</sub>byte<sub>6</sub> + EEPROM<sub>1</sub>byte<sub>6</sub> + EEPROM <sub>2</sub>byte<sub>6</sub> + EEPROM <sub>3</sub>byte<sub>6</sub>, cioè
+EEPROM<sub>0</sub>byte<sub>101</sub> + EEPROM<sub>1</sub>byte<sub>101</sub> + EEPROM<sub>2</sub>byte<sub>101</sub> + EEPROM <sub>3</sub>byte<sub>101</sub>, cioè
 
-(RA) + (WH) + () + (PCI\|NI), cioè
+(RL) + (FNZC) + (CS\|C0) + (), cioè
 
-RA\|WH\|PCI\|NI, così come indicato nel *Dettaglio microcode di alcune istruzioni di esempio*.
+RL + FNZC + CS\|C0, così come indicato nel *Dettaglio microcode di alcune istruzioni di esempio*.
 
 In pratica, si devono tenere in considerazione i segnali di output cablati su ogni EEPROM e indicare quali di questi debbano essere attivi ad ogni combinazione di istruzione / step. Questo spiega la necessità di programmare le quattro EEPROM ognuna con una propria porzione specifica di microcode.
 
