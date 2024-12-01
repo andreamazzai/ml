@@ -116,22 +116,28 @@ RA|WH|PCI|NI, così come indicato nel *Dettaglio microcode di alcune istruzioni 
 
 In pratica, si devono tenere in considerazione i segnali di output cablati su ogni EEPROM e indicare quali di questi debbano essere attivi ad ogni combinazione di istruzione / step. Questo spiega la necessità di programmare le quattro EEPROM ognuna con la propria porzione di microcode.
 
-Ora, anziché effettuare quattro programmazioni distinte, risulta molto più comodo (anche se più dispendioso) utilizzare quattro EEPROM da 16K e scrivere su ognuna di esse, in sequenza, i quattro microcode specifici di ogni EEPROM iniziale. In questo modo, si effettuano quattro programmazioni identiche, ognuna contenente tutte le quattro porzioni di microcode inizialmente dedicate a ciascuna delle EEPROM da 4K.
+Ora, anziché effettuare quattro programmazioni distinte, risulta molto più comodo (anche se più dispendioso) utilizzare quattro EEPROM da 16K e scrivere su ognuna di esse, in sequenza, tutti e quattro i microcode da 4K inizialmente definiti. In questo modo, si possono programmare quattro EEPROM identiche da 16K, ognuna delle quali conterrà tutte le quattro porzioni di microcode da 4K.
 
-La tabella riassume la collocazione dei microcode contenuti nelle 4 EEPROM originarie consolidandoli all'interno di un'unica EEPROM di dimensioni maggiori:
+La tabella riassume la collocazione dei microcode da 4K consolidati in un'unica EEPROM di dimensioni maggiori:
 
- | EEPROM<br>originaria | Indirizzo<br>iniziale<sub>base10</sub> | Indirizzo<br>finale<sub>base10</sub> | Indirizzo<br>iniziale<sub>hex</sub> | Indirizzo<br>finale<sub>hex</sub> | A12 | A13 |
+ | Microcode<br>originario | Indirizzo<br>iniziale<sub>base10</sub> | Indirizzo<br>finale<sub>base10</sub> | Indirizzo<br>iniziale<sub>hex</sub> | Indirizzo<br>finale<sub>hex</sub> | A12 | A13 |
  |------------|-------|-------------------|--------|--------|---|---|
- | 1a         | 0     | 4095              | 0x0000 | 0x0FFF | 0 | 0 |
- | 2a         | 4096  | 8191              | 0x1000 | 0x1FFF | 1 | 0 |
- | 3a         | 8192  | 12287             | 0x2000 | 0x2FFF | 0 | 1 |
- | 4a         | 12288 | 16383             | 0x2000 | 0x3FFF | 1 | 1 |
+ | 1°         | 0     | 4095              | 0x0000 | 0x0FFF | 0 | 0 |
+ | 2°         | 4096  | 8191              | 0x1000 | 0x1FFF | 1 | 0 |
+ | 3°         | 8192  | 12287             | 0x2000 | 0x2FFF | 0 | 1 |
+ | 4°         | 12288 | 16383             | 0x2000 | 0x3FFF | 1 | 1 |
 
  *Consolidamento dei microcode in un'unica EEPROM.*
 
-Impostando opportunamente le linee di indirizzamento A12 e A13 è possibile mettere in output su ogni EEPROM una porzione specifica di microcode; si vedano le connessioni fisse a Vcc o GND nello [schema](../control/#schema) della Control Logic.
+Le colonne degli indirizzi indicano in quali locazioni della EEPROM da 16K trovino posto le singole istanze da 4K del microcode originariamente definito utilizzando quattro EEPROM da 4K.
 
-In altre parole, abbiamo 256 istruzioni che si sviluppano in 16 step, ognuno composto da una Control Word da 32 bit (4 byte) = 16.384 byte totali. Si dovrebbero programmare 4 EEPROM da 4K: una per i primi 8 bit della Control Word, una per gli 8 bit successivi e così via. Anziché programmare quattro diverse EEPROM da 4K ognuna con una porzione specifica di microcode, è possibile programmare quattro EEPROM identiche da 16K. Nei primi 4KB si posiziona il microcode per i primi 8 bit della Control Word, nei secondi 4K il microcode per i secondi 8 bit, e così via. Infine, si impostano opportunamente gli indirizzi A12 e A13 delle quattro EEPROM da 16K, in modo che ognuna esponga solo la porzione specifica di microcode relativa ai segnali di controllo cablati sui suoi output.
+[![Rappresentazione del microcode consolidati in un'unica EEPROM](../../assets/eeprom/eeprom-consolidata.png "Rappresentazione del microcode consolidati in un'unica EEPROM"){:width="100%"}](../../assets/eeprom/eeprom-consolidata.png)
+
+*Rappresentazione del microcode consolidati in un'unica EEPROM.*
+
+Impostando opportunamente le linee di indirizzamento A12 e A13, è possibile mettere in output su ogni EEPROM una porzione specifica di microcode; si vedano le connessioni fisse a Vcc o GND nello [schema](../control/#schema) della Control Logic. Ad esempio, l'impostazione di A12 a 1 e A13 a 0 farà in modo che la EEPROM da 16K esponga sui suoi output i 4K di microcode originariamente definito per la seconda EEPROM da 4K.
+
+In altre parole, abbiamo 256 istruzioni che si sviluppano in 16 step, ognuno dei quali è composto da una Control Word da 32 bit (4 byte) = 16.384 byte totali. Si dovrebbero programmare 4 EEPROM da 4K: una per i primi 8 bit della Control Word, una per gli 8 bit successivi e così via. Anziché programmare quattro diverse EEPROM da 4K ognuna con una porzione specifica di microcode, è possibile programmare quattro EEPROM identiche da 16K. Nei primi 4KB si posiziona il microcode per i primi 8 bit della Control Word, nei secondi 4K il microcode per i secondi 8 bit, e così via. Infine, si impostano opportunamente gli indirizzi A12 e A13 delle quattro EEPROM da 16K, in modo che ognuna esponga solo la porzione specifica di microcode relativa ai segnali di controllo cablati sui suoi output.
 
 Una ulteriore spiegazione visiva di quanto appena descritto si può ottenere a partire dal minuto 17m:52s del video <a href="https://youtu.be/JUVt_KYAp-I?t=1072" target="_blank">Reprogramming CPU microcode with an Arduino</a> di Ben Eater.
 
