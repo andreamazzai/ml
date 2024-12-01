@@ -156,9 +156,9 @@ Dunque, per capire se il programmatore stesse funzionando correttamente, avevo i
 Per semplicità e per facilitare la scrittura del codice, avevo ipotizzato una lettura sequenziale simulata dei valori utilizzati per calcolare il CRC, partendo dall'indirizzo 0x0000 fino all'indirizzo 0x3FFF.\
 Perché *simulata*? Perché in questo momento la EEPROM non è ancora stata programmata e ciò che si desidera ottenere in questa fase è proprio un checksum del dato *da scrivere*, checksum che sarà poi confrontato con quello calcolato rileggendo la EEPROM alla *fine* del ciclo di programmazione.
 
-Ci troviamo nella situazione in cui la routine del calcolo del CRC deve ricevere i dati sequenzialmente (dati che dobbiamo produrre utilizzando la routine **buildInstruction** preposta alla creazione di istruzioni e step); tuttavia, la buildInstruction esegue il frazionamento di ogni istruzione nei modi esposti nella [sezione precedente](#le-eeprom-e-il-loro-contenuto), generando cioè un opcode completo e suddividendo le scritture della Control Word da 32 bit di ogni step sulle corrispondenti porzioni di microcode, come evidenziato nella tabella *Consolidamento dei microcode in un'unica EEPROM* e nella grafica *Rappresentazione del microcode consolidati in un’unica EEPROM.*
+Ci troviamo nella situazione in cui la routine del calcolo del CRC deve ricevere i dati sequenzialmente (dati che dobbiamo produrre utilizzando la routine **buildInstruction** preposta alla creazione di istruzioni e step); tuttavia, la buildInstruction esegue il frazionamento di ogni istruzione nei modi esposti nella [sezione precedente](#le-eeprom-e-il-loro-contenuto), generando cioè un opcode completo e suddividendo le scritture della Control Word da 32 bit di ogni step sulle corrispondenti porzioni di microcode, come evidenziato nella tabella *Consolidamento dei microcode in un'unica EEPROM* e nella grafica *Rappresentazione dei quattro microcode consolidati in un'unica EEPROM.*
 
-[![Rappresentazione dei quattro microcode consolidati in un'unica EEPROM](../../assets/eeprom/tabella-grafica.png){:width="100%"}]
+[Microcode](../../assets/eeprom/tabella-grafica.png){:width="100%"}
 
 La buildInstruction prepara infatti i 32 bit / 4 byte di microcode di ogni step dell'istruzione corrente e li memorizza in un array tipo uint32_t di lunghezza 16, cioè 4 byte * 16 step = 64 byte; successivamente, le scritture avvengono in questa sequenza (routine **writeOpcode**):
 
@@ -192,7 +192,7 @@ Per ottenere il risultato desiderato, viene eseguita una serie di cicli annidati
 for (uint8_t rom = 0; rom < 4; rom++)
 ~~~
 
-Così facendo, la routine di calcolo del CRC pre-programmazione riceve sequenzialmente in input i 4096 byte di ognuna delle quattro porzioni di microcode consolidate in un'unica EEPROM:
+Così facendo, la routine di calcolo del CRC pre-programmazione riceve sequenzialmente in input i 4096 byte di ognuna delle quattro porzioni di microcode:
 
 ~~~c++
 uint16_t calcCRC16_pre(void)
@@ -215,7 +215,7 @@ uint16_t calcCRC16_pre(void)
 }
 ~~~
 
-Con **rom** = 0, **crc** sarà calcolato tenendo in considerazione gli 8 bit più significativi (shift a destra di 24 posizioni) della Control Word a 32 bit generata da **buildInstruction** e il ciclo sarà eseguito per tutti i 16 step di tutte le 256 istruzioni; quando **rom** = 1, **crc** sarà calcolato tenendo in considerazione i bit da 16 a 23 (shift a destra di 16 posizioni) della Control Word a 32 bit generata da **buildInstruction** e il ciclo sarà nuovamente eseguito per tutti i 16 step di tutte le 256 istruzioni. Il processo si ripete per **rom** = 2 e 3, prendendo dapprima in considerazione i bit da 8 a 15 (shift a destra di 8 posizioni) e poi i bit da 0 a 7 (nessuno shift a destra).
+Con **rom** = 0, **crc** sarà calcolato tenendo in considerazione gli 8 bit più significativi (shift a destra di 24 posizioni) della Control Word a 32 bit generata da **buildInstruction** e il ciclo sarà eseguito per tutti i 16 step di tutte le 256 istruzioni; quando **rom** = 1, **crc** sarà calcolato tenendo in considerazione i bit da 16 a 23 (shift a destra di 16 posizioni) della Control Word a 32 bit generata da **buildInstruction** e il ciclo sarà nuovamente eseguito per tutti i 16 step di tutte le 256 istruzioni. Il processo si ripete per **rom** = 2 e 3, prendendo in considerazione i bit da 8 a 15 (shift a destra di 8 posizioni) e infine i bit da 0 a 7 (nessuno shift a destra).
 
 ### Sblocco e blocco della EEPROM
 
@@ -223,13 +223,13 @@ Le EEPROM <a href="https://ww1.microchip.com/downloads/en/DeviceDoc/doc0006.pdf"
 
 ### Cancellazione della EEPROM
 
-Prima della programmazione, la EEPROM viene azzerata. Questa operazione comporta una maggior usura della EEPROM e una minor velocità rispetto alla funzionalità Software Chip Erase indicata nella <a href="https://ww1.microchip.com/downloads/en/Appnotes/doc0544.pdf" target="_blank">Application Note</a> e che non ho ancora testato.
+Prima della programmazione, la EEPROM viene azzerata. Questa operazione comporta una maggior usura della EEPROM e una minor velocità rispetto alla funzionalità Software Chip Erase indicata nella <a href="https://ww1.microchip.com/downloads/en/Appnotes/doc0544.pdf" target="_blank">Application Note</a>, al momento non ancora implementata.
 
 ### Programmazione della EEPROM
 
 La sequenza di preparazione del microcode è già stata sostanzialmente esposta nella sezione [Calcolo del CRC pre-programmazione](#calcolo-del-crc-pre-programmazione), in quanto la importante routine di generazione del microcode **buildInstruction** è comune.
 
-La programmazione materiale della EEPROM, come indicato, scrive secondo la logica frazionata dettata dalla mia necessità di comprensione del codice esposta in precedenza (immagine *Sequenza di scrittura delle istruzioni* nella sezione [Calcolo del CRC pre-programmazione](#calcolo-del-crc-pre-programmazione)), cioè quella di scrivere un opcode per intero. La ruotine principale **eeprom_program** prepara l'opcode **buildInstruction**
+La programmazione materiale della EEPROM, come indicato, avviene secondo la logica frazionata dettata dalla mia necessità di comprensione del codice esposta in precedenza (immagine *Sequenza di scrittura delle istruzioni* nella sezione [Calcolo del CRC pre-programmazione](#calcolo-del-crc-pre-programmazione)), cioè quella di scrivere un opcode per intero. La ruotine principale **eeprom_program** prepara l'opcode **buildInstruction**
 
 ~~~c++
 void eeprom_program()
@@ -244,22 +244,26 @@ void eeprom_program()
 }
 ~~~
 
-e richiama la routine **writeOpcode**, che a sua volta richiama **waitForWriteCycleEnd** per verificare che la EEPROM sia pronta per ricevere nuove scritture, secondo la modalità descritta nella sezione 4.4 DATA Polling del <a href="https://ww1.microchip.com/downloads/en/DeviceDoc/doc0006.pdf" target="_blank">datasheet</a>.
+e richiama la routine **writeOpcode**, che, dopo ogni 16 byte scritti, richiama a sua volta **waitForWriteCycleEnd** per verificare che la EEPROM sia pronta per ricevere nuove scritture, secondo la modalità descritta nella sezione 4.4 DATA Polling del <a href="https://ww1.microchip.com/downloads/en/DeviceDoc/doc0006.pdf" target="_blank">datasheet</a>.
 
 ~~~c++
 void writeOpcode(uint8_t opcode)
 {
   for (uint8_t rom = 0; rom < 4; rom++)
   {
-    for (uint8_t step = 0; step < NUM_STEPS; step++) // ciclo fra i 16 step di ogni opcode e dunque li scrivo consecutivamente su ogni porzione di EEPROM (modalità Page Write)
+    for (uint8_t step = 0; step < NUM_STEPS; step++) // ciclo fra i 16 step di ogni opcode
+    // e li scrivo consecutivamente su ogni porzione di EEPROM (modalità Page Write)
     {
       uint16_t address;
       address = 0x1000 * rom;
       address += opcode * NUM_STEPS;
       address += step;
-      writeEEPROM(address, ((code[step]) >> (24 - 8 * rom)) & 0xFF); // code[step] prende tutti i 4 byte delle 4 ROM "affiancate" e poi con shift seleziono il byte relativo ad ogni ROM specifica, ad esempio 1a ROM bit 24-31, poi 16-23 etc
+      writeEEPROM(address, ((code[step]) >> (24 - 8 * rom)) & 0xFF); // code[step] prende tutti
+      // i 4 byte delle 4 ROM "consolidate" e poi con lo shift si seleziona il byte relativo ad
+      // ogni ROM specifica, ad esempio per la prima ROM bit 24-31, poi 16-23 etc
     }
-    byte b1Value; // attendo che la EEPROM confermi di aver ompletato le scritture prima di passare ai prossimi 16 byte
+    byte b1Value; // attende che la EEPROM confermi di aver completato le scritture prima di
+                  // passare ai prossimi 16 byte
     bool status = waitForWriteCycleEnd(((code[15]) >> (24 - 8 * rom)) & 0xFF, &b1Value);
     if (status == false)
     {
@@ -281,7 +285,8 @@ La verifica del CRC post-programmazione è molto più semplice rispetto a quella
 
 ~~~c++
 // CALCOLO CRC16 POST-PROGRAMMAZIONE
-/* Nella lettura di una EEPROM precedentemente programmata leggo tutti i byte in sequenza, dunque è sufficiente leggere il contenuto da 0x0000 a 0x3FFF per calcolare il checksum. */
+// Nella lettura di una EEPROM precedentemente programmata leggo tutti i byte in sequenza,
+// dunque è sufficiente leggere il contenuto da 0x0000 a 0x3FFF per calcolare il checksum.
 uint16_t calcCRC16_post(void)
 {
   setDataBusMode(INPUT);
