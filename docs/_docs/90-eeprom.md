@@ -112,9 +112,9 @@ Il settimo step dell'istruzione CPX descritto poc'anzi risulta in effetti compos
 
 EEPROM<sub>0</sub>byte<sub>6</sub> + EEPROM<sub>1</sub>byte<sub>6</sub> + EEPROM <sub>2</sub>byte<sub>6</sub> + EEPROM <sub>3</sub>byte<sub>6</sub>, cioè
 
-(RA) + (WH) + () + (PCI|NI), cioè
+(RA) + (WH) + () + (PCI\|NI), cioè
 
-RA|WH|PCI|NI, così come indicato nel *Dettaglio microcode di alcune istruzioni di esempio*.
+RA\|WH\|PCI\|NI, così come indicato nel *Dettaglio microcode di alcune istruzioni di esempio*.
 
 In pratica, si devono tenere in considerazione i segnali di output cablati su ogni EEPROM e indicare quali di questi debbano essere attivi ad ogni combinazione di istruzione / step. Questo spiega la necessità di programmare le quattro EEPROM ognuna con una propria porzione specifica di microcode.
 
