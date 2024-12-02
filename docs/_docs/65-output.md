@@ -5,7 +5,10 @@ excerpt: "Output Register del computer BEAM"
 ---
 [![Registro di output del computer BEAM](../../assets/output/65-beam-output.png "Registro di output del computer BEAM"){:width="100%"}](../../assets/output/65-beam-output.png)
 
-Il modulo di output del BEAM è sostanzialmente identico a quello del SAP di Ben Eater. Le uniche due differenze stanno nell'utilizzo di un display a 4 cifre anziché di 4 display a singola cifra e nella modalità di output solo decimale, senza la possibilità di scegliere quella esadecimale.
+Il modulo di output del BEAM è sostanzialmente identico a quello del SAP-1 di Ben Eater. Le due differenze sono:
+
+- utilizzo di un display a 4 cifre anziché di 4 display a singola cifra;
+- modalità di output solo decimale, senza la possibilità di scegliere quella esadecimale.
 
 ## Schema
 
