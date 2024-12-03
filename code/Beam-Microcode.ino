@@ -177,7 +177,7 @@ void setup()
 #define F1  RPC|WM            // Fetch / 1st step
 #define F2  RR|WIR|PCI        // Fetch / 2nd step
 #define WH  HR|HL             // Write H
-#define WAH WA|WH             // WRite A & H
+#define WAH WA|WH             // Write A & H
 #define RDX RD|DXY            // Read D + X
 #define RDY RD                // Read D + Y
 #define RDZ RD|DZ             // Read D + 0
