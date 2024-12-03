@@ -345,7 +345,7 @@ Negli appunti ritrovo che la sequenza
 causava errori in lettura, mentre spostando **enableChip** prima di **setDataBusMode**, oppure aggiungendo 2uS di ritardo, riuscivo a leggere correttamente il contenuto della EEPROM. Alla fine avevo realizzato che fosse preferibile aggiungere i 2uS dopo aver abilitato il chip come ultimo step, anziché abilitare il chip e poi settare il data bus in input, perché nella seguente condizione si sarebbe potuto generare un cortocircuito:
 
 - **enableChip()**: la EEPROM (che non ha resistenze in uscita) presenta uno o più output LO
-**- setDataBusMode(INPUT)**: Arduino presenta uno o più output HI, che vengono dunque cortocircuitati verso ground dagli output LO della EEPROM.
+- **setDataBusMode(INPUT)**: Arduino presenta uno o più output HI, che vengono dunque cortocircuitati verso ground dagli output LO della EEPROM.
 
 ## Link utili
 
