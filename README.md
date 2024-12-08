@@ -17,7 +17,7 @@ Alcuni aspetti interessanti del progetto:
 Questo repository contiene:
 
 * [Documentazione completa del computer BEAM](https://andreamazzai.github.io/beam/)
-* Schemi KiCad
+* Schemi [KiCad](schematics/KiCad_BEAM_schematics.zip)
 * Sketch Arduino per il [programmatore di EEPROM](code/Beam-Microcode.ino)
 * Sketch Arduino per il [bootloader](code/Beam-Bootloader.ino)
 
