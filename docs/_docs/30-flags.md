@@ -183,7 +183,7 @@ Avevo trovato la spiegazione molto criptica, o forse non propriamente adatta ai 
 
 Tom evidenziava che gli MSB degli operandi dell'ALU H e B, insieme all'MSB risultante dall'operazione dell'ALU, erano utilizzati come input per verificare la condizione di Overflow: iniziavo a realizzare che quello dell'Overflow era in realtà un calcolo molto semplice e preciso di bit.
 
-In seguito avevo capito che il calcolo dell'Overflow è strettamente legato all'utilizzo di numeri Signed: questi numeri vengono rappresentati con il **Complemento di 2** (Two's Complement, o anche 2C), nel quale un MSB = LO indica un numero positivo, mentre un MSB = HI indica un numero negativo.
+In seguito avevo capito che il calcolo dell'Overflow è strettamente legato all'utilizzo di numeri [Signed](../math/#numeri-unsigned-e-numeri-signed): questi numeri vengono rappresentati con il **Complemento di 2** (Two's Complement, o anche 2C), nel quale un MSB = LO indica un numero positivo, mentre un MSB = HI indica un numero negativo.
 
 In una delle innumerevoli sessioni di approfondimento e studio, ero finalmente arrivato a comprendere che se nella somma di due numeri con segno si nota un imprevisto cambiamento di segno del risultato, si ha una situazione di Overflow: il cambiamento di segno è rappresentato da una variazione dell'MSB del risultato, cosa che un '151 opportunamente connesso permette di identificare.
 
@@ -198,7 +198,7 @@ Per identificare l'esecuzione di un'operazione di addizione o di sottrazione e d
 | HI    | LO    | Sottrazione |
 | LO    | HI    | Addizione   |
 
-Anticipo brevemente un aspetto esposto in maggior dettaglio nella apposita sezione dedicata all'[Aritmetica binaria](../math/#numeri-unsigned-e-numeri-signed): in un byte sono possibili 256 combinazioni; in caso di numeri senza segno (Unsigned) è possibile contare da 0 a 255. Nel caso di numeri Signed, i numeri positivi da 0 a 127 hanno un riferimento paritetico con i numeri senza segno da 0 a 127, mentre i numeri con segno da -128 a -1 fanno il paio con i numeri senza segno da 128 a 255.
+Anticipo brevemente un altro aspetto esposto in maggior dettaglio nella sezione dedicata ai [numeri senza segno e con segno](../math/#numeri-unsigned-e-numeri-signed): in un byte sono possibili 256 combinazioni; in caso di numeri senza segno (Unsigned) è possibile contare da 0 a 255. Nel caso di numeri Signed, i numeri positivi da 0 a 127 hanno un riferimento paritetico con i numeri senza segno da 0 a 127, mentre i numeri con segno da -128 a -1 fanno il paio con i numeri senza segno da 128 a 255.
 
 Nella pagina dedicata all'Aritmetica Binaria è presente anche una approfondita analisi dell'[Overflow](../math/#approfondimento-overflow) e dell'utilizzo di un 74LS151 per la gestione dei salti condizionali.
 
