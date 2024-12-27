@@ -736,14 +736,14 @@ Si deve trovare risposta alla domanda chiave "in quali situazioni un Adder<sub>(
 
 Riducendo questo concetto a espressioni logiche, due sono i casi da analizzare:
 
-1. In quali situazioni un Full Adder<sub>(i-1)</sub>, il cui Carry In è a 0, ***genera*** un Carry Out che viene passato al prossimo Full Adder<sub>(i)</sub>?
-2. In quali situazioni un Full Adder<sub>(i-1)</sub>, il cui Carry In è a 1, ***propaga*** il proprio Carry In al prossimo Full Adder<sub>(i)</sub>?
+1. In quali situazioni un Full Adder<sub>(i-1)</sub>, pur in assenza di Carry In, ***genera*** sicuramente un Carry Out che viene passato al prossimo Full Adder<sub>(i)</sub>?
+2. In quali situazioni un Full Adder<sub>(i-1)</sub>, il cui Carry In è a 1, ***propaga*** l'eventuale suo Carry In al prossimo Full Adder<sub>(i)</sub>?
 
 Le due situazioni appena descritte vengono tradotte in espressioni denominate **Generate** e **Propagate**.
 
-1. In quali casi un Full Adder **genera** un Carry Out senza che al suo ingresso Carry In sia presente un Carry? Analizzando la truth table di un Full Adder, troviamo che se C<sub>IN</sub> è a 0, il C<sub>OUT</sub> è a 1 solo se entrambi A **e** B sono a 1: dunque, per realizzare questo circuito possiamo utilizzare una porta AND. Questo caso viene descritto con l'espressione **g = A\*B** e si può leggere come "la logica Generate di ogni Full Adder corrisponde ad A AND B".
+1. In quali casi un Full Adder **genera** un Carry Out anche senza che al suo ingresso Carry In sia presente un Carry? Analizzando la truth table di un Full Adder, troviamo che pur in assenza di C<sub>IN</sub>, il C<sub>OUT</sub> è a 1 se entrambi A **e** B sono a 1: dunque, per realizzare questo circuito possiamo utilizzare una porta AND. Questo caso viene descritto con l'espressione **g = A\*B** e si può leggere come "la logica Generate di ogni Full Adder corrisponde ad A AND B".
 
-2. Quando, invece, un Full Adder **propaga** un Carry presente sul suo ingresso Carry In? Se il C<sub>IN</sub> di quell'Adder è a 1, il C<sub>OUT</sub> è a 1 quando A **o** B sono a 1: dunque, questo circuito può essere realizzato utilizzando una porta OR. Questo caso viene descritto con l'espressione **p = A+B** e si può leggere come "la logica Propagate di ogni Full Adder corrisponde ad A OR B".
+2. Quando, invece, un Full Adder **propaga** un eventuale Carry presente sul suo ingresso Carry In? Se il C<sub>IN</sub> di quell'Adder è a 1, il C<sub>OUT</sub> è a 1 quando A **o** B sono a 1: dunque, questo circuito può essere realizzato utilizzando una porta OR. Questo caso viene descritto con l'espressione **p = A+B** e si può leggere come "la logica Propagate di ogni Full Adder corrisponde ad A OR B".
 
 | C<sub>IN</sub> | A     | B     | Q | C<sub>OUT</sub> | Generate / Propagate    |
 | -              | -     | -     | - | -               | -                       |
@@ -784,14 +784,15 @@ Possiamo ora scrivere le espressioni per i Carry In di tutti gli stadi. L'espres
 C<sub>1</sub> = g<sub>0</sub> + p<sub>0</sub>\*C<sub>0</sub>, cioè,\
 C<sub>1</sub> = A<sub>0</sub>\*B<sub>0</sub> + (A<sub>0</sub>+B<sub>0</sub>)\*C<sub>0</sub>
 
-Si noti che questa espressione dipende dai soli input A, B e C<sub>0</sub>, che corrisponde esattamente a quanto si desidera fare: non dipendere dal Carry Out dell'Adder precedente.\
+Si noti che questa espressione dipende dai soli input A, B e C<sub>0</sub>, che corrisponde esattamente a quanto si desidera fare: non dipende dal Carry Out dell'Adder precedente.\
 Andiamo ora a scrivere l'espressione per il Carry In del terzo Adder:
 
-C<sub>2</sub> = g<sub>1</sub> + p<sub>1</sub>\*C<sub>1</sub>\
+C<sub>2</sub> = g<sub>1</sub> + p<sub>1</sub>\*C<sub>1</sub>
 
 Dobbiamo sbarazzarci di C1, perché stiamo cercando di rendere ogni Adder indipendente dal Carry Out dell'Adder precedente, dunque, sostituendo C<sub>1</sub>:
 
 C<sub>2</sub> = g<sub>1</sub> + p<sub>1</sub>\*(g<sub>0</sub> + p<sub>0</sub>\*C<sub>0</sub>), che significa che C<sub>2</sub> non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B degli Adder precedenti e da C<sub>0</sub>. Applicando la proprietà distributiva, si ottiene:\
+
 C<sub>2</sub> = g<sub>1</sub> + p<sub>1</sub>\*g<sub>0</sub> + p<sub>1</sub>\*p<sub>0</sub>*C<sub>0</sub>, cioè:\
 C<sub>2</sub> = A<sub>1</sub>\*B<sub>1</sub> + (A<sub>1</sub>+B<sub>1</sub>)\*A<sub>0</sub>\*B<sub>0</sub> + (A<sub>1</sub>+B<sub>1</sub>)\*(A<sub>0</sub>+B<sub>0</sub>)\*C<sub>0</sub>
 
@@ -800,6 +801,7 @@ Procediamo scrivendo l'espressione per il Carry In del quarto Adder:
 
 C<sub>3</sub> = g<sub>2</sub> + p<sub>2</sub>\*C<sub>2</sub>, cioè, sostituendo C<sub>2</sub>:\
 C<sub>3</sub> = g<sub>2</sub> + p<sub>2</sub>\*(g<sub>1</sub> + p<sub>1</sub>\*g<sub>0</sub> + p<sub>1</sub>\*p<sub>0</sub>\*C<sub>0</sub>), che significa che C<sub>3</sub> non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B degli Adder precedenti e da C<sub>0</sub>. Applicando la proprietà distributiva, si ottiene:\
+
 C<sub>3</sub> = g<sub>2</sub> + p<sub>2</sub>\*g<sub>1</sub> + p<sub>2</sub>\*p<sub>1</sub>\*g<sub>0</sub> + p<sub>2</sub>\*p<sub>1</sub>\*p<sub>0</sub>\*C<sub>0</sub>, cioé:\
 C<sub>3</sub> = A<sub>2</sub>\*B<sub>2</sub> + (A<sub>2</sub>+B<sub>2</sub>)\*A<sub>1</sub>\*B<sub>1</sub> + (A<sub>2</sub>+B<sub>2</sub>)\*(A<sub>1</sub>+B<sub>1</sub>)\*A<sub>0</sub>\*B<sub>0</sub> + (A<sub>2</sub>+B<sub>2</sub>)\*(A<sub>1</sub>+B<sub>1</sub>)\*(A<sub>0</sub>+B<sub>0</sub>)\*C<sub>0</sub>
 
@@ -808,6 +810,7 @@ Andiamo infine a scrivere l'espressione per C<sub>4</sub>, che è il Carry Out d
 
 C<sub>4</sub> = g<sub>3</sub> + p<sub>3</sub>\*C<sub>3</sub>, cioè, sostituendo C<sub>3</sub>:\
 C<sub>4</sub> = g<sub>3</sub> + p<sub>3</sub>\*(g<sub>2</sub> + p<sub>2</sub>\*g<sub>1</sub> + p<sub>2</sub>\*p<sub>1</sub>\*g<sub>0</sub> + p<sub>2</sub>\*p<sub>1</sub>\*p<sub>0</sub>\*C<sub>0</sub>), che significa che C<sub>4</sub> non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B degli Adder precedenti e da C<sub>0</sub>. Applicando la proprietà distributiva, si ottiene:\
+
 C<sub>4</sub> = g<sub>3</sub> + p<sub>3</sub>\*g<sub>2</sub> + p<sub>3</sub>\*p<sub>2</sub>\*g<sub>1</sub> + p<sub>3</sub>\*p<sub>2</sub>\*p<sub>1</sub>\*g<sub>0</sub> + p<sub>3</sub>\*p<sub>2</sub>\*p<sub>1</sub>\*p<sub>0</sub>\*C<sub>0</sub>, cioé:\
 C<sub>4</sub> = A<sub>3</sub>\*B<sub>3</sub> + (A<sub>3</sub>+B<sub>3</sub>)\*A<sub>2</sub>\*B<sub>2</sub> + (A<sub>3</sub>+B<sub>3</sub>)\*(A<sub>2</sub>+B<sub>2</sub>)\*A<sub>1</sub>\*B<sub>1</sub> + (A<sub>3</sub>+B<sub>3</sub>)\*(A<sub>2</sub>+B<sub>2</sub>)\*(A<sub>1</sub>+B<sub>1</sub>)\*A<sub>0</sub>\*B<sub>0</sub> + (A<sub>3</sub>+B<sub>3</sub>)\*(A<sub>2</sub>+B<sub>2</sub>)\*(A<sub>1</sub>+B<sub>1</sub>)\*(A<sub>0</sub>+B<sub>0</sub>)*C<sub>0</sub>
 
