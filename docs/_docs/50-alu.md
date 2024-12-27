@@ -187,15 +187,15 @@ Provando a sintetizzare quando disegnato nell'NQSAP, avevo costruito questa tabe
 | 0  | 0  | 0  | 0  | 0  | 1  | A Plus 1    |  0x00 + C*      |
 | 0  | 0  | 0  | 0  | 1  | 1  | Tutti 0     |  0x03 + C*      |
 | 0  | 0  | 0  | 1  | 1  | 0  | A Minus B   |  0x06 + C*      |
-| 0  | 0  | 0  | 1  | 1  | 1  | CMP         |  0x07**         |
+| 0  | 0  | 0  | 1  | 1  | 1  | CMP         |  0x07\*\*       |
 | 1  | 0  | 0  | 0  | 1  | 1  | Tutti 1     |  0x03           |
 | 1  | 0  | 1  | 0  | 0  | 1  | A Plus B    |  0x09           |
-| 1  | 0  | 1  | 1  | 0  | 0  | A Plus A    |  0x0C***        |
+| 1  | 0  | 1  | 1  | 0  | 0  | A Plus A    |  0x0C\*\*\*     |
 | 1  | 0  | 1  | 1  | 1  | 1  | A Minus 1   |  0x0F           |
-| x  | 1  | 0  | 0  | 0  | 0  | Not A       |  0x10****       |
-| x  | 1  | 0  | 1  | 1  | 0  | A XOR B     |  0x16****       |
-| x  | 1  | 1  | 0  | 1  | 1  | A AND B     |  0x1B****       |
-| x  | 1  | 1  | 1  | 1  | 0  | A OR B      |  0x1E****       |
+| x  | 1  | 0  | 0  | 0  | 0  | Not A       |  0x10\*\*\*\*   |
+| x  | 1  | 0  | 1  | 1  | 0  | A XOR B     |  0x16\*\*\*\*   |
+| x  | 1  | 1  | 0  | 1  | 1  | A AND B     |  0x1B\*\*\*\*   |
+| x  | 1  | 1  | 1  | 1  | 0  | A OR B      |  0x1E\*\*\*\*   |
 
 *Sintesi operazioni dell'ALU dell'NQSAP.*
 
@@ -453,5 +453,6 @@ Ecco una lista delle differenze:
 
 - <a href="https://www.righto.com/2017/03/inside-vintage-74181-alu-chip-how-it.html" target="_blank">Inside the vintage 74181 ALU chip: how it works and why it's so strange</a> di Ken Shirriff. Fondamentale per capire il perché dell'implementazione apparentemente così strana del chip.
 - La pagina delle <a href="https://tomnisbet.github.io/nqsap/docs/74181-alu-notes" target="_blank">note sul 74181</a> di Tom Nisbet.
+- <a href="https://web.archive.org/web/20160326004629/http://www.ti.com/product/sn74ls181" target="_blank">Home page</a> del 74181 su ti.com preservata da Internet Archive.
 - <a href="https://www.youtube.com/watch?v=Fq0MIJjlGsw" target="_blank">Demo of 74LS181 (74HCT181) ALU</a> e <a href="https://www.youtube.com/watch?v=jmROTNtoUGI" target="_blank">Comparator Functions of 74LS181 (74HCT181) ALU</a>: due ottimi video di David Courtney.
 - Il <a href="https://www.atarimania.com/documents/6502%20(65xx)%20Microprocessor%20Instant%20Reference%20Card.pdf" target="_blank">compendio della Micro Logic</a>, dal quale è tratta l'immagine sulle modalità di [scorrimento e rotazione](#il-registro-h) del 6502.
