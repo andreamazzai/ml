@@ -736,7 +736,7 @@ Si deve trovare risposta alla domanda chiave "in quali situazioni un Adder<sub>(
 
 Riducendo questo concetto a espressioni logiche, due sono i casi da analizzare:
 
-1. In quali situazioni un Full Adder<sub>(i-1)</sub>, pur in assenza di Carry In, ***genera*** sicuramente un Carry Out che viene passato al prossimo Full Adder<sub>(i)</sub>?
+1. In quali situazioni un Full Adder<sub>(i-1)</sub>, il cui Carry In è a 0, ***genera*** sicuramente un Carry Out che viene passato al prossimo Full Adder<sub>(i)</sub>?
 2. In quali situazioni un Full Adder<sub>(i-1)</sub>, il cui Carry In è a 1, ***propaga*** l'eventuale suo Carry In al prossimo Full Adder<sub>(i)</sub>?
 
 Le due situazioni appena descritte vengono tradotte in espressioni denominate **Generate** e **Propagate**.
