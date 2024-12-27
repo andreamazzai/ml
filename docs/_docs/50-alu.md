@@ -209,7 +209,13 @@ Legenda tabella *Sintesi operazioni dell'ALU dell'NQSAP*:
   - nelle comparazioni il valore risultante dalla sottrazione viene calcolato e *scartato*;
   - per entrambe le istruzioni i flag sono mantenuti.
 
-  Per eseguire le comparazioni si eseguono dunque delle sottrazioni scartando il risultato, tuttavia le operazioni di sottrazione del '181 sono già utilizzate per eseguire le sottrazioni vere e proprie (SBC) e sono codificate nella terza riga della tabella con M/S3-S0 = **00110**: come è possibile eseguire altre operazioni di sottrazione utilizzando un opcode diverso da **00110** pur sapendo che i '181 eseguono le sottrazioni solo con questa codifica in ingresso? Lo vedremo tra poco nella sezione [Istruzioni di comparazione](#istruzioni-di-comparazione).
+  Per eseguire le comparazioni si eseguono dunque delle sottrazioni scartando il risultato, tuttavia le operazioni di sottrazione del '181 sono già utilizzate per eseguire le sottrazioni vere e proprie (SBC) e sono codificate nella terza riga della tabella con M/S3-S0 = **00110**:
+  
+  | Cn | M     | S3    | S2    | S1    | S0    | Operazione | S3/S0 Hex |
+  |  - | -     |  -    |  -    |  -    |  -    |          - |   -       |
+  | 1  | **0** | **0** | **1** | **1** | **0** | A Minus B  | 0x06 + C* |
+
+  come è possibile eseguire altre operazioni di sottrazione utilizzando un opcode diverso da **00110** pur sapendo che i '181 eseguono le sottrazioni solo con questa codifica in ingresso? Lo vedremo tra poco nella sezione [Istruzioni di comparazione](#istruzioni-di-comparazione).
 
 - \*\*\* L'operazione A + A veniva usata nell'NQSAP per fare lo shift verso sinistra dei bit; vista la presenza dello Shift Register H, ho preferito riversare su di esso tutte le operazioni di rotazione (a destra e a sinistra, sia con Carry sia senza Carry).
 
@@ -225,9 +231,9 @@ Si stava sostanzialmente dicendo che per eseguire una somma ("**A Plus B**", ved
 
 cioè:
 
-| Cn | M     | S3      S2    | S1    | S0    | Operazione | S3/S0 Hex |
-|  - | -     |  -       -    |  -    |  -    |          - |   -       |
-| 1  | **0** | **1**   **0** | **0** | **1** | A Plus B   |  0x09     |
+| Cn | M     | S3    | S2    | S1    | S0    | Operazione | S3/S0 Hex |
+|  - | -     |  -    |  -    |  -    |  -    |          - |   -       |
+| 1  | **0** | **1** | **0** | **0** | **1** | A Plus B   |  0x09     |
 
 In pratica, poiché gli ingressi M ed S3-S0 dei '181 sono direttamente connessi all'[Instruction Register](../control), l'istruzione di somma dovrà forzatamente essere codificata nel microcode presentando **01001** sui 5 bit comuni tra Instruction Register e ALU.
 
