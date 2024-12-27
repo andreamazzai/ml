@@ -791,7 +791,7 @@ C<sub>2</sub> = g<sub>1</sub> + p<sub>1</sub>\*C<sub>1</sub>
 
 Dobbiamo sbarazzarci di C1, perché stiamo cercando di rendere ogni Adder indipendente dal Carry Out dell'Adder precedente, dunque, sostituendo C<sub>1</sub>:
 
-C<sub>2</sub> = g<sub>1</sub> + p<sub>1</sub>\*(g<sub>0</sub> + p<sub>0</sub>\*C<sub>0</sub>), che significa che C<sub>2</sub> non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B degli Adder precedenti e da C<sub>0</sub>. Applicando la proprietà distributiva, si ottiene:\
+C<sub>2</sub> = g<sub>1</sub> + p<sub>1</sub>\*(g<sub>0</sub> + p<sub>0</sub>\*C<sub>0</sub>), che significa che C<sub>2</sub> non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B degli Adder precedenti e da C<sub>0</sub>. Applicando la proprietà distributiva, si ottiene:
 
 C<sub>2</sub> = g<sub>1</sub> + p<sub>1</sub>\*g<sub>0</sub> + p<sub>1</sub>\*p<sub>0</sub>*C<sub>0</sub>, cioè:\
 C<sub>2</sub> = A<sub>1</sub>\*B<sub>1</sub> + (A<sub>1</sub>+B<sub>1</sub>)\*A<sub>0</sub>\*B<sub>0</sub> + (A<sub>1</sub>+B<sub>1</sub>)\*(A<sub>0</sub>+B<sub>0</sub>)\*C<sub>0</sub>
@@ -800,7 +800,7 @@ Anche questa espressione dipende, dunque, dai soli input A, B e C<sub>0</sub>.\
 Procediamo scrivendo l'espressione per il Carry In del quarto Adder:
 
 C<sub>3</sub> = g<sub>2</sub> + p<sub>2</sub>\*C<sub>2</sub>, cioè, sostituendo C<sub>2</sub>:\
-C<sub>3</sub> = g<sub>2</sub> + p<sub>2</sub>\*(g<sub>1</sub> + p<sub>1</sub>\*g<sub>0</sub> + p<sub>1</sub>\*p<sub>0</sub>\*C<sub>0</sub>), che significa che C<sub>3</sub> non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B degli Adder precedenti e da C<sub>0</sub>. Applicando la proprietà distributiva, si ottiene:\
+C<sub>3</sub> = g<sub>2</sub> + p<sub>2</sub>\*(g<sub>1</sub> + p<sub>1</sub>\*g<sub>0</sub> + p<sub>1</sub>\*p<sub>0</sub>\*C<sub>0</sub>), che significa che C<sub>3</sub> non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B degli Adder precedenti e da C<sub>0</sub>. Applicando la proprietà distributiva, si ottiene:
 
 C<sub>3</sub> = g<sub>2</sub> + p<sub>2</sub>\*g<sub>1</sub> + p<sub>2</sub>\*p<sub>1</sub>\*g<sub>0</sub> + p<sub>2</sub>\*p<sub>1</sub>\*p<sub>0</sub>\*C<sub>0</sub>, cioé:\
 C<sub>3</sub> = A<sub>2</sub>\*B<sub>2</sub> + (A<sub>2</sub>+B<sub>2</sub>)\*A<sub>1</sub>\*B<sub>1</sub> + (A<sub>2</sub>+B<sub>2</sub>)\*(A<sub>1</sub>+B<sub>1</sub>)\*A<sub>0</sub>\*B<sub>0</sub> + (A<sub>2</sub>+B<sub>2</sub>)\*(A<sub>1</sub>+B<sub>1</sub>)\*(A<sub>0</sub>+B<sub>0</sub>)\*C<sub>0</sub>
@@ -809,7 +809,7 @@ Come nei casi precedenti, anche questa espressione dipende dai soli input A, B e
 Andiamo infine a scrivere l'espressione per C<sub>4</sub>, che è il Carry Out del quarto Adder:
 
 C<sub>4</sub> = g<sub>3</sub> + p<sub>3</sub>\*C<sub>3</sub>, cioè, sostituendo C<sub>3</sub>:\
-C<sub>4</sub> = g<sub>3</sub> + p<sub>3</sub>\*(g<sub>2</sub> + p<sub>2</sub>\*g<sub>1</sub> + p<sub>2</sub>\*p<sub>1</sub>\*g<sub>0</sub> + p<sub>2</sub>\*p<sub>1</sub>\*p<sub>0</sub>\*C<sub>0</sub>), che significa che C<sub>4</sub> non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B degli Adder precedenti e da C<sub>0</sub>. Applicando la proprietà distributiva, si ottiene:\
+C<sub>4</sub> = g<sub>3</sub> + p<sub>3</sub>\*(g<sub>2</sub> + p<sub>2</sub>\*g<sub>1</sub> + p<sub>2</sub>\*p<sub>1</sub>\*g<sub>0</sub> + p<sub>2</sub>\*p<sub>1</sub>\*p<sub>0</sub>\*C<sub>0</sub>), che significa che C<sub>4</sub> non dipende dal risultato dell'Adder precedente, ma solo dagli input A e B degli Adder precedenti e da C<sub>0</sub>. Applicando la proprietà distributiva, si ottiene:
 
 C<sub>4</sub> = g<sub>3</sub> + p<sub>3</sub>\*g<sub>2</sub> + p<sub>3</sub>\*p<sub>2</sub>\*g<sub>1</sub> + p<sub>3</sub>\*p<sub>2</sub>\*p<sub>1</sub>\*g<sub>0</sub> + p<sub>3</sub>\*p<sub>2</sub>\*p<sub>1</sub>\*p<sub>0</sub>\*C<sub>0</sub>, cioé:\
 C<sub>4</sub> = A<sub>3</sub>\*B<sub>3</sub> + (A<sub>3</sub>+B<sub>3</sub>)\*A<sub>2</sub>\*B<sub>2</sub> + (A<sub>3</sub>+B<sub>3</sub>)\*(A<sub>2</sub>+B<sub>2</sub>)\*A<sub>1</sub>\*B<sub>1</sub> + (A<sub>3</sub>+B<sub>3</sub>)\*(A<sub>2</sub>+B<sub>2</sub>)\*(A<sub>1</sub>+B<sub>1</sub>)\*A<sub>0</sub>\*B<sub>0</sub> + (A<sub>3</sub>+B<sub>3</sub>)\*(A<sub>2</sub>+B<sub>2</sub>)\*(A<sub>1</sub>+B<sub>1</sub>)\*(A<sub>0</sub>+B<sub>0</sub>)*C<sub>0</sub>
@@ -818,13 +818,13 @@ Osservando le espressioni di ogni Adder, si deduce che tutte dipendono dai soli 
 
 Andiamo ora a realizzare un Carry Look Ahead Adder, ma prima, considerando quanto visto sopra, modifichiamo i Full Adder creando dei *Modified* Full Adder.
 
+La somma **Q**, come sempre, corrisponde ad A<sub>0</sub>⊕B<sub>0</sub>⊕C<sub>0</sub>. Aggiungiamo al Full Adder una porta OR e una porta AND con il solo scopo di ottenere i termini **p** (cioè A<sub>0</sub>+B<sub>0</sub> per il primo Adder) e **g** (cioé A<sub>0</sub>*B<sub>0</sub> per il primo Adder).
+
 ![Logica della somma del Modified Full Adder](../../assets/math/modified-full-adder-1.png){:width="20%"}
 
 *Logica della somma del Modified Full Adder.*
 
-La somma **Q**, come sempre, corrisponde ad A<sub>0</sub>⊕B<sub>0</sub>⊕C<sub>0</sub>. Aggiungiamo al Full Adder una porta OR e una porta AND con il solo scopo di ottenere i termini **p** (cioè A<sub>0</sub>+B<sub>0</sub> per il primo Adder) e **g** (cioé A<sub>0</sub>*B<sub>0</sub> per il primo Adder).
-
-Aggiungiamo la logica del Carry C<sub>1</sub> = g<sub>0</sub> + p<sub>0</sub>\*C<sub>0</sub>:
+Aggiungiamo ora la logica del Carry C<sub>1</sub> = g<sub>0</sub> + p<sub>0</sub>\*C<sub>0</sub>:
 
 ![Logica del Carry del Modified Full Adder](../../assets/math/modified-full-adder-2.png){:width="23%"}
 
