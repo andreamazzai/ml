@@ -737,13 +737,15 @@ Si deve trovare risposta alla domanda chiave "in quali situazioni un Adder<sub>(
 Riducendo questo concetto a espressioni logiche, due sono i casi da analizzare:
 
 1. In quali situazioni un Full Adder<sub>(i-1)</sub>, il cui Carry In è a 0, ***genera*** sicuramente un Carry Out che viene passato al prossimo Full Adder<sub>(i)</sub>?
-2. In quali situazioni un Full Adder<sub>(i-1)</sub>, il cui Carry In è a 1, ***propaga*** l'eventuale suo Carry In al prossimo Full Adder<sub>(i)</sub>?
+2. In quali situazioni un Full Adder<sub>(i-1)</sub>, il cui Carry In è a 1, ***propaga*** tale Carry In al prossimo Full Adder<sub>(i)</sub>?
 
 Le due situazioni appena descritte vengono tradotte in espressioni denominate **Generate** e **Propagate**.
 
-1. In quali casi un Full Adder **genera** un Carry Out anche senza che al suo ingresso Carry In sia presente un Carry? Analizzando la truth table di un Full Adder, troviamo che pur in assenza di C<sub>IN</sub>, il C<sub>OUT</sub> è a 1 se entrambi A **e** B sono a 1: dunque, per realizzare questo circuito possiamo utilizzare una porta AND. Questo caso viene descritto con l'espressione **g = A\*B** e si può leggere come "la logica Generate di ogni Full Adder corrisponde ad A AND B".
+1. In quali casi un Full Adder **genera** un Carry Out senza che al suo ingresso Carry In sia presente un Carry? Analizzandone la truth table, troviamo che se C<sub>IN</sub> è a 0, il C<sub>OUT</sub> è a 1 solo se entrambi A **e** B sono a 1: dunque, per realizzare questo circuito possiamo utilizzare una porta AND. Questo caso viene descritto con l'espressione **g = A\*B** e si può leggere come "la logica Generate di ogni Full Adder corrisponde ad A AND B".
 
-2. Quando, invece, un Full Adder **propaga** un eventuale Carry presente sul suo ingresso Carry In? Se il C<sub>IN</sub> di quell'Adder è a 1, il C<sub>OUT</sub> è a 1 quando A **o** B sono a 1: dunque, questo circuito può essere realizzato utilizzando una porta OR. Questo caso viene descritto con l'espressione **p = A+B** e si può leggere come "la logica Propagate di ogni Full Adder corrisponde ad A OR B".
+2. Quando, invece, un Full Adder **propaga** un Carry presente sul suo ingresso Carry In? Se il C<sub>IN</sub> di quell'Adder è a 1, il C<sub>OUT</sub> è a 1 quando A **o** B sono a 1: dunque, questo circuito può essere realizzato utilizzando una porta OR. Questo caso viene descritto con l'espressione **p = A+B** e si può leggere come "la logica Propagate di ogni Full Adder corrisponde ad A OR B".
+
+Unendo i puntini, per ogni posizione si crea un segnale **G**enerate se entrambi i bit A e B sono a 1 e un segnale **P**ropagate se almeno uno dei due bit è a 1:
 
 | C<sub>IN</sub> | A     | B     | Q | C<sub>OUT</sub> | Generate / Propagate    |
 | -              | -     | -     | - | -               | -                       |
