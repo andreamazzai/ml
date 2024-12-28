@@ -3,7 +3,7 @@ title: "Aritmetica binaria"
 permalink: /docs/math/
 excerpt: "Aritmetica binaria"
 ---
-<small>[Concetti importanti](#concetti-importanti) - [Fonti](#fonti) - [Numeri Unsigned e numeri Signed](#numeri-unsigned-e-numeri-signed) - [Approfondimento Overflow](#approfondimento-overflow) - [L'Overflow e l'hardware](#loverflow-e-lhardware) - [Metodi di identificazione dell'Overflow](#metodi-di-identificazione-delloverflow) - [Semplificazione con 74LS151](#semplificazione-con-74ls151) - [Verifica addizioni e sottrazioni con 74LS151](#verifica-addizioni-e-sottrazioni-con-74ls151) - [Gli Adder](#gli-adder) - [Le somme con gli Adder](#le-somme-con-gli-adder) - [Multiple Bit Adder](#multiple-bit-adder) - [Ripple Carry Adder](#ripple-carry-adder) - [Carry Look Ahead Adder](#carry-look-ahead-adder) - [Le sottrazioni con gli Adder](#le-sottrazioni-con-gli-adder) - [Link utili](#link-utili)</small>
+<small>[Concetti importanti](#concetti-importanti) - [Fonti](#fonti) - [Numeri Unsigned e numeri Signed](#numeri-unsigned-e-numeri-signed) - [Approfondimento Overflow](#approfondimento-overflow) - [L'Overflow e l'hardware](#loverflow-e-lhardware) - [Metodi di identificazione dell'Overflow](#metodi-di-identificazione-delloverflow) - [Semplificazione con 74LS151](#semplificazione-con-74ls151) - [Verifica addizioni e sottrazioni con 74LS151](#verifica-addizioni-e-sottrazioni-con-74ls151) - [Gli Adder](#gli-adder) - [Le somme con gli Adder](#le-somme-con-gli-adder) - [Multiple Bit Adder](#multiple-bit-adder) - [Ripple Carry Adder](#ripple-carry-adder) - [Carry Look Ahead Adder](#carry-look-ahead-adder) - [Implementazione nel 74LS181](#implementazione-nel-74ls181) - [Le sottrazioni con gli Adder](#le-sottrazioni-con-gli-adder) - [Link utili](#link-utili)</small>
 
 ## Concetti importanti
 
@@ -690,7 +690,7 @@ Il **Full Adder** appena creato è in grado di effettuare la somma di due termin
 
 ## Multiple Bit Adder
 
-Per effettuare somme di più bit si utilizzano i Multiple Bit Adder. Il ruolo del Carry negli Adder è fondamentale e vi sono almeno due modalità di gestione del Carry. Nelle prossime sezioni si descrivono le modalità Ripple Carry Adder e Carry Look Ahead, implementate anche nei 74LS181 utilizzati nell'[ALU](../alu/#carry-addizioni-e-sottrazioni).
+Per effettuare somme di più bit si utilizzano i Multiple Bit Adder. Il ruolo del Carry negli Adder è fondamentale e vi sono almeno due modalità di gestione del Carry. Nelle prossime sezioni si descrivono le modalità Ripple Carry Adder e Carry Look Ahead, implementate anche nei <a href="https://www.ti.com/lit/ds/symlink/sn54ls181.pdf" target="_blank">74LS181</a> utilizzati nell'[ALU](../alu/#carry-addizioni-e-sottrazioni).
 
 ### Ripple Carry Adder
 
@@ -851,6 +851,14 @@ Come si può notare dagli screenshot, utilizzati per gentile concessione del [pr
 In definitiva, il lavoro svolto per creare il Carry in un CLA Adder è molto elevato, ma si hanno in cambio le massime prestazioni.
 
 Un aspetto da tenere in considerazione potrebbe essere il fattore fan-in, che limita il numero di ingressi che una porta logica può avere. La porta OR finale, che genera il Carry Out, avrà un numero di input sempre maggiore all'aumentare del numero di bit dell'Adder, così come le AND connesse a questa OR. A un certo punto sarà necessario suddividere le OR e le AND in due livelli, causando così un incremento di 2 livelli nel computo totale dei livelli dell'Adder. Pertanto, il numero di livelli aumenta anche all'aumentare del numero dei bit del CLA Adder, ma con una velocità decisamente inferiore rispetto a quella del Ripple Carry Adder, nel quale ogni singolo bit aggiunge ben due livelli da attraversare.
+
+### Implementazione nel 74LS181
+
+Il 74LS181 implementa internamente un meccanismo di Carry Look Ahead leggermente diverso da quello descritto nella sezione precedente, ma i concetti di base sono simili (Propagate e Generate utilizzati per calcolare il Carry di ogni posizione). Implementa inoltre le modalità RCA e CLA per l'interconnessione di più ALU quando la word è più lunga dei 4 bit gestiti da un singolo chip.
+
+La modalità RCA è la più semplice da implementare e consiste nel mettere in cascata più ALU, connettendo il Carry Out di ognuna al Carry In della successiva, come mostrato nell'apposita sezione [Carry, addizioni e sottrazioni](../alu/#carry-addizioni-e-sottrazioni) della pagina ALU.
+
+La modalità CLA richiede l'utilizzo di un Look-Ahead Carry Generator <a href="https://www.ti.com/lit/ds/symlink/sn54s182.pdf" target="_blank">74S182</a> esterno, che individua la presenza del Carry tra più 74LS181 interconnessi secondo lo schema visibile a pagina 5.
 
 ## Le sottrazioni con gli Adder
 
