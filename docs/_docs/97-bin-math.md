@@ -736,8 +736,8 @@ Si deve trovare risposta alla domanda chiave "in quali situazioni un Adder<sub>(
 
 Riducendo questo concetto a espressioni logiche, due sono i casi da analizzare:
 
-1. In quali situazioni un Full Adder<sub>(i-1)</sub>, il cui Carry In è a 0, ***genera*** sicuramente un Carry Out che viene passato al prossimo Full Adder<sub>(i)</sub>?
-2. In quali situazioni un Full Adder<sub>(i-1)</sub>, il cui Carry In è a 1, ***propaga*** tale Carry In al prossimo Full Adder<sub>(i)</sub>?
+1. In quali situazioni un Full Adder<sub>(i-1)</sub>, il cui Carry In è a 0, ***genera*** certamente un Carry Out che viene passato al prossimo Full Adder<sub>(i)</sub>?
+2. In quali situazioni un Full Adder<sub>(i-1)</sub> ***propaga*** un potenziale Carry In al prossimo Full Adder<sub>(i)</sub>?
 
 Le due situazioni appena descritte vengono tradotte in espressioni denominate **Generate** e **Propagate**.
 
@@ -854,11 +854,11 @@ Un aspetto da tenere in considerazione potrebbe essere il fattore fan-in, che li
 
 ### Implementazione nel 74LS181
 
-Il 74LS181 implementa internamente un meccanismo di Carry Look Ahead leggermente diverso da quello descritto nella sezione precedente, ma i concetti di base sono simili (Propagate e Generate utilizzati per calcolare il Carry di ogni posizione). Implementa inoltre le modalità RCA e CLA per l'interconnessione di più ALU quando la word è più lunga dei 4 bit gestiti da un singolo chip.
+Il 74LS181 implementa internamente un meccanismo di Carry Look Ahead leggermente diverso da quello descritto nella sezione precedente, ma i concetti di base sono simili (Propagate e Generate utilizzati per calcolare il Carry di ogni posizione). Implementa inoltre le modalità RCA e CLA per l'interconnessione di più ALU quando la word è più lunga dei 4 bit gestiti da un singolo chip:
 
-La modalità RCA è la più semplice da implementare e consiste nel mettere in cascata più ALU, connettendo il Carry Out di ognuna al Carry In della successiva, come mostrato nell'apposita sezione [Carry, addizioni e sottrazioni](../alu/#carry-addizioni-e-sottrazioni) della pagina ALU.
+- La modalità RCA è la più semplice da implementare e consiste nel mettere in cascata più ALU, connettendo il Carry Out di ognuna al Carry In della successiva, come mostrato nell'apposita sezione [Carry, addizioni e sottrazioni](../alu/#carry-addizioni-e-sottrazioni) della pagina ALU.
 
-La modalità CLA richiede l'utilizzo di un Look-Ahead Carry Generator <a href="https://www.ti.com/lit/ds/symlink/sn54s182.pdf" target="_blank">74S182</a> esterno, che individua la presenza del Carry tra più 74LS181 interconnessi secondo lo schema visibile a pagina 5.
+- La modalità CLA richiede l'utilizzo di un Look-Ahead Carry Generator <a href="https://www.ti.com/lit/ds/symlink/sn54s182.pdf" target="_blank">74S182</a> esterno, che individua la presenza del Carry tra più 74LS181 interconnessi secondo lo schema visibile a pagina 5.
 
 ## Le sottrazioni con gli Adder
 

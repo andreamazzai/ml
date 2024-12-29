@@ -456,7 +456,7 @@ Ecco una lista delle differenze:
 
 ## Link utili
 
-- <a href="https://www.righto.com/2017/03/inside-vintage-74181-alu-chip-how-it.html" target="_blank">Inside the vintage 74181 ALU chip: how it works and why it's so strange</a> di Ken Shirriff. Fondamentale per capire il perché dell'implementazione apparentemente così strana del chip; eccellente anche lo **schema interattivo**, che permette di visualizzare l'attivazione dei segnali interni come conseguenza degli input applicati.
+- <a href="https://www.righto.com/2017/03/inside-vintage-74181-alu-chip-how-it.html" target="_blank">Inside the vintage 74181 ALU chip: how it works and why it's so strange</a> di Ken Shirriff. Fondamentale per capire il perché dell'implementazione apparentemente così strana del chip; eccellente anche lo **schema interattivo**, che permette di visualizzare l'attivazione dei segnali interni e degli output come conseguenza degli input applicati.
 - La pagina delle <a href="https://tomnisbet.github.io/nqsap/docs/74181-alu-notes" target="_blank">note sul 74181</a> di Tom Nisbet.
 - <a href="https://web.archive.org/web/20160326004629/http://www.ti.com/product/sn74ls181" target="_blank">Home page</a> del 74181 su ti.com preservata da Internet Archive.
 - <a href="https://www.youtube.com/watch?v=Fq0MIJjlGsw" target="_blank">Demo of 74LS181 (74HCT181) ALU</a> e <a href="https://www.youtube.com/watch?v=jmROTNtoUGI" target="_blank">Comparator Functions of 74LS181 (74HCT181) ALU</a>: due ottimi video di David Courtney.
