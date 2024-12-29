@@ -854,7 +854,11 @@ Un aspetto da tenere in considerazione potrebbe essere il fattore fan-in, che li
 
 ### Implementazione nel 74LS181
 
-Il 74LS181 implementa internamente un meccanismo di Carry Look Ahead leggermente diverso da quello descritto nella sezione precedente, ma i concetti di base sono simili (Propagate e Generate utilizzati per calcolare il Carry di ogni posizione). Implementa inoltre le modalità RCA e CLA per l'interconnessione di più ALU quando la word è più lunga dei 4 bit gestiti da un singolo chip:
+Il <a href="https://www.ti.com/lit/ds/symlink/sn54ls181.pdf" target="_blank">74LS181</a> implementa internamente un meccanismo di Carry Look Ahead leggermente diverso da quello descritto nella sezione precedente, ma i concetti di base sono simili (Propagate e Generate utilizzati per calcolare il Carry di ogni posizione).
+
+Poiché il '181 offre 32 tra funzioni logiche e operazioni aritmetiche, il meccanismo CLA non risulta di immediata comprensione, in quanto strettamente collegato ai segnali Select S3/S0. Una rappresentazione più facile da analizzare è rappresentata nel 4-Bit Binary Full Adders With Fast Carry <a href="https://www.ti.com/lit/ds/symlink/sn74ls283.pdf" target="_blank">74LS283</a>, che esegue solamente somme e la cui logica CLA è dunque molto semplificata. Per ogni posizione (A3/A0 - B3/B0) Si possono vedere una porta NAND, che implementa il Generate, e una porta NOR, che implementa il Propagate.
+
+Quando la word è più lunga dei 4 bit gestiti da un singolo chip,  si possono utilizzare le modalità RCA e CLA per l'interconnessione di più ALU:
 
 - La modalità RCA è la più semplice da implementare e consiste nel mettere in cascata più ALU, connettendo il Carry Out di ognuna al Carry In della successiva, come mostrato nell'apposita sezione [Carry, addizioni e sottrazioni](../alu/#carry-addizioni-e-sottrazioni) della pagina ALU.
 
