@@ -319,7 +319,7 @@ Mettendo a fattor comune quanto abbiamo visto fino ad ora, possiamo identificare
 2. C7 e C8 sono invertiti tra loro, cioè **C7 <> C8** (anche in questo caso si esegue una comparazione relativa);
 3. **(A7 = B7' = 1 AND Q7 = 0) OR (A7 = B7' = 0 AND Q7 = 1)** è simile al punto 1, ma, anziché porre i bit in una comparazione relativa, ne stiamo specificando il valore assoluto.
 
-La truth table **(A7 == B7') AND (A7 <> Q7)** del primo caso si tradurrebbe nella logica in figura; purtroppo, il computer basato su 74LS181 non offre visibilità del valore di B7', che è computato internamente all'ALU e non esposto, pertanto questo metodo non è utilizzabile:
+La truth table **(A7 == B7') AND (A7 <> Q7)** del primo caso si tradurrebbe nella logica in figura; purtroppo, il computer basato su [74LS181](../alu/#il-74ls181) non offre visibilità del valore di B7', che è computato internamente all'ALU e non esposto, pertanto questo metodo non è utilizzabile:
 
 ![Primo metodo](../../assets/math/overflow-detector-xor-not-and.png)
 
