@@ -894,4 +894,5 @@ Nello schema abbiamo due RCA <a href="https://www.ti.com/lit/ds/symlink/sn54s283
 ## Link utili
 
 - <a href="https://www.youtube.com/watch?v=Fu5LfmjhEBA" target="_blank">Ripple Carry Adders (RCA)</a>, <a href="https://www.youtube.com/watch?v=TNoQ_djJW0I" target="_blank">Ripple Carry Adders Timing</a> e <a href="https://www.youtube.com/watch?v=6kTdgkbYZqA" target="_blank">Carry Look Ahead (CLA) Adders</a> di Brock LaMeres. Questi video illustrano la logica degli Half Adder e dei Full Adder, dei Ripple Carry Adder e dei Carry Look Ahead Adders. Non si può non menzionare lo stile espositivo del professor LaMeres, la cui grande carica di energia incolla lo spettatore al video.
+- Le criptiche, ma interessantissime e <a href="http://www.6502.org/users/dieter/index.htm" target="_blank">dettagliatissime analisi</a> di Dieter Müller su Adder, Multiplexer e molto, molto altro ancora.
 - La playlist completa <a href="https://www.youtube.com/playlist?list=PL643xA3Ie_Et2uM4xu1yFk-A5ZQQ8gQ5e" target="_blank">Intro to Logic Circuits</a> di Lameres, già suggerita anche nella [pagina iniziale](/beam/) della documentazione del BEAM.
