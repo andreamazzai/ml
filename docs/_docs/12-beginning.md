@@ -37,7 +37,6 @@ Includere appunti su acquisto dei materiali, cavi utilizzati
 
 Inserire lista di tutti i chip utilizzati e link ai Datasheet
 
-
 ## Alimentazione - WIP
 
 Leggendo le esperienze degli altri utenti su reddito , sembra che quello dell'alimentazione sia un problema abbastanza diffuso .le FAQ altri documenti scritti da altri utenti danno dei suggerimenti e aiutano indirizzare le questioni di distribuzione dell'elettricità . per quanto mi riguarda , dopo essere partito con la distribuzione laterale come avevo fatto nel SAP-1 , ho aggiunto una ulteriore discesa dell'alimentazione al centro del computer aggiungendo una ulteriore fila di sezioni laterali ritagliate dalle breadboard.
