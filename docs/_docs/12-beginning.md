@@ -12,6 +12,7 @@ excerpt: "Per iniziare"
 - a
 - b
 - c
+- d
 
 ## Componenti
 
