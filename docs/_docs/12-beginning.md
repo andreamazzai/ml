@@ -5,7 +5,7 @@ excerpt: "Per iniziare"
 ---
 [![Per iniziare](../../assets/ram/20-ram-beam.png "Per iniziare"){:width="100%"}](../../assets/ram/20-ram-beam.png)
 
-**WORK IN PROGRESS - WORK IN PROGRESS - WORK IN PROGRESS**
+## WORK IN PROGRESS
 
 **Cosa devo includere in questa pagina?**
 
