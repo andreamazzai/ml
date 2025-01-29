@@ -16,7 +16,7 @@
     children:
       - title: "> Il computer BEAM"
         url: /
-      - title: "> Per iniziare"
+      - title: "> Note costruttive"
         url: /docs/beginning/
       # - title: "Why?"
       #   url: /docs/why/

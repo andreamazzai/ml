@@ -1,18 +1,11 @@
 ---
-title: "Per iniziare"
+title: "Note costruttive"
 permalink: /docs/beginning/
-excerpt: "Per iniziare"
+excerpt: "Note costruttive"
 ---
-[![Per iniziare](../../assets/ram/20-ram-beam.png "Per iniziare"){:width="100%"}](../../assets/ram/20-ram-beam.png)
+[![Note costruttive](../../assets/ram/20-ram-beam.png "costruttive"){:width="100%"}](../../assets/ram/20-ram-beam.png)
 
 ## WORK IN PROGRESS
-
-**Cosa devo includere in questa pagina?**
-
-- a
-- b
-- c
-- d
 
 ## Componenti
 
@@ -22,29 +15,35 @@ excerpt: "Per iniziare"
 
 ### LED
 
-- i LED utilizzati includono la resistenza - giallo verde rosso; altri no.
-- Le LED BAR Sono incluse negli schemi, mentre i singoli LED no. Nota: per motivi di spazio una LED BAR nello schema della CL non è stata inserita.
-- fare LED BAR da 8 led per Control Logic
+Per comodità, i LED di colore rosso, giallo e verde utilizzati nel computer BEAM includono una resistenza interna che permette la connessione diretta a 5V e, dunque, alle uscite logiche TTL. Sono <a href="https://www.mouser.it/account/orders/detail?qs=Sn2QTPuoay%252BUEfD1VQ4ZfFqPRAJ%252BB%252BuI1H0wdGsHOds%3d" target="_blank">disponibili presso Mouser</a> a circa 20/25 centesimi l'uno.
+
+Le LED BAR sono state incluse negli schemi Kicad, mentre i singoli LED no. Nota: per motivi di spazio, lo schema della Control Logic non include la LED BAR................... ma vedi next bullet
+fare LED BAR da 8 led per Control Logic
 
 ### Varie
 
-- I comodissimi [Rocker Switch](../ram/#note) utilizzati nei moduli MAR e RAM.
+Invece dei più comuni dip-switch, ho utilizzato dei comodissimi Rocker Switch ("a bilanciere") come quelli in figura; si trovano facilmente presso i distributori di <a href="https://us.rs-online.com/product/te-connectivity/5435640-5/70156004/" target="_blank">materiale elettronico</a>. Notare che i pin originali sono piuttosto corti e non fissano correttamente lo switch alla breadboard, pertanto ho aggiunto uno zoccolo per circuiti integrati.
 
-## Approvvigionamento dei materiali
+[![Rocker Switch](../../assets/ram/20-ram-rocker.png "Rocker Switch"){:width="33%"}](../../assets/ram/20-ram-rocker.png)
 
-Le breadboard utilizzate sono le BB830 incluse anche nei kit di Ben Eater. La qualità dei contatti è decisamente superiore a quella delle breadboard economiche che si trovano online per pochi Euro e il costo ripaga ampiamente il non doversi preoccupare di falsi contatti e problematiche che avvengono casualmente.
+*Rocker Switch.*
 
-Includere appunti su acquisto dei materiali, cavi utilizzati
+I comodissimi [Rocker Switch](../ram/#note) utilizzati nei moduli MAR e RAM.
 
-Inserire lista di tutti i chip utilizzati e link ai Datasheet
+## Breadboard e cavi
 
-## Alimentazione - WIP
+Le breadboard utilizzate sono le BB830 incluse anche nei kit di Ben Eater. La qualità dei contatti è decisamente superiore a quella delle breadboard economiche che si trovano online per pochi Euro e il costo aggiuntivo ripaga ampiamente il non doversi preoccupare dei falsi contatti e delle conseguenti problematiche così difficili da individuare.
 
-Leggendo le esperienze degli altri utenti su reddito , sembra che quello dell'alimentazione sia un problema abbastanza diffuso .le FAQ altri documenti scritti da altri utenti danno dei suggerimenti e aiutano indirizzare le questioni di distribuzione dell'elettricità . per quanto mi riguarda , dopo essere partito con la distribuzione laterale come avevo fatto nel SAP-1 , ho aggiunto una ulteriore discesa dell'alimentazione al centro del computer aggiungendo una ulteriore fila di sezioni laterali ritagliate dalle breadboard.
+Anche per i cavi mi sono affidati agli ottimi cavi <a href="https://www.jameco.com/z/JMS9313-01G-22-AWG-6-Color-Solid-Tinned-Copper-Hook-Up-Wire-Assortment-25-Feet_2153705.html" target="_blank">AWG22</a> che ho scoperto con i kit di Ben Eater del <a href="https://eater.net/8bit" target="_blank">computer SAP a 8 bit</a> e del <a href="https://eater.net/6502" target="_blank"></a> computer 6502.
+Il vantaggio di questi cavi rispetto agli altri AWG22 che ho trovato (e provato) è la dimensione dell'isolamento, più sottile, che permette una maggiore densità nel cablaggio. Purtroppo, non li ho trovati in Europa e, pertanto, li ho ordinati forzatamente presso Jameco, sobbarcandomi anche il costo aggiuntivo del trasporto e della dogana. Notare invece che i cavi venduti da Amazon, pur citati nelle Parts list di Ben Eater, presentano un isolamento più spesso che, secondo le mie preferenze, è meno adatto.
 
-Come si potrà notare nelle foto non ho utilizzato condensatoriCosì come non li avevo utilizzati nemmeno nella realizzazione del sapi, confidando nella bassa frequenza di utilizzo del computer.
+## Alimentazione
 
-Devo infine dire che nelle mie due realizzazioni ho notato che i chip TTL sembrano essere un po più malleabili , flessibili , meno rigidi rispetto ai requisiti indicati nel data sht, tanto che in alcuni casi , prima di migliorare la distribuzione dell'elettricità  alcuni chip funzionavano bene anche a 4,3 volt.
+Leggendo le esperienze degli altri utenti su <a href="https://www.reddit.com/r/beneater/" target="_blank">reddit</a>, sembra che quello dell'alimentazione sia un problema abbastanza diffuso. Le FAQ ed altri documenti <a href="https://www.reddit.com/r/beneater/wiki/tips/" target="_blank">scritti da altri utenti</a> offrono ottimi suggerimenti e aiutano indirizzare le questioni di distribuzione dell'elettricità. Per quanto mi riguarda, dopo essere partito con una semplice distribuzione laterale come avevo fatto nel SAP-1, ho aggiunto una ulteriore linea di alimentazione al centro del computer inserendo una ulteriore fila di sezioni laterali ritagliate dalle breadboard.
+
+Come si potrà notare nelle foto, non ho utilizzato condensatori nel BEAM, così come non li avevo utilizzati nemmeno nel SAP-1: confidavo nella frequenza estremamente bassa di utilizzo del computer e, fortunatamente, devo dire che entrambi i sistemi sono stabili.
+
+Devo infine dire che nelle mie due realizzazioni ho notato che i chip TTL sembrano tollerare tensioni abbastanza inferiori rispetto ai requisiti indicati nei datasheet, tanto che in alcuni casi, prima di migliorare la distribuzione dell'elettricità con la linea centrale descritta poc'anzi, alcuni chip funzionavano bene anche a 4,3 volt.
 
 ## Circuito di test
 
@@ -68,11 +67,3 @@ Lorem ipsum dolor sit amet, consectetur adipisci elit, sed do eiusmod tempor inc
 
 - I <a href="https://eater.net/8bit/clock" target="_blank">video</a> di Ben Eater che descrivono il funzionamento dei timer 555 e la costruzione del modulo di clock.
 - <a href="https://todbot.com/blog/2010/01/02/momentary-button-as-onoff-toggle-using-555/" target="_blank">Un blog</a> che spiega come creare un circuito bistabile, qui utilizzato per creare la funzione "Start/Stop" con pulsante anziché con interruttore.
-
-## Note
-
-Invece dei più comuni dip-switch, ho utilizzato dei comodissimi Rocker Switch ("a bilanciere") come quelli in figura; si trovano facilmente presso i distributori di [materiale elettronico](https://us.rs-online.com/product/te-connectivity/5435640-5/70156004/). Notare che i pin originali sono piuttosto corti e non fissano correttamente lo switch alla breadboard, pertanto ho aggiunto uno zoccolo per circuiti integrati.
-
-[![Rocker Switch](../../assets/ram/20-ram-rocker.png "Rocker Switch"){:width="33%"}](../../assets/ram/20-ram-rocker.png)
-
-*Rocker Switch.*
