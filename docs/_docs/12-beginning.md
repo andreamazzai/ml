@@ -9,16 +9,21 @@ excerpt: "Note costruttive"
 
 ## Componenti
 
+Quasi tutti i componenti utilizzati in questo progetto sono stati acquistati su <a href="https://us.rs-online.com/product/te-connectivity/5435640-5/70156004/" target="_blank">Mouser.com</a>. I costi sono in linea con quelli degli altri portali, ma le spese di trasporto e sdoganamento sono assorbite da Mouser per ordini superiori a €100. La spedizione dagli Stati Uniti è molto veloce;ho ricevuto tutti gli ordini in due giorni lavorativi.
+
 ### TTL o CMOS?
 
 - Descrivere la scelta di non usare HC
 
 ### LED
 
-Per comodità, i LED di colore rosso, giallo e verde utilizzati nel computer BEAM includono una resistenza interna che permette la connessione diretta a 5V e, dunque, alle uscite logiche TTL. Sono <a href="https://www.mouser.it/account/orders/detail?qs=Sn2QTPuoay%252BUEfD1VQ4ZfFqPRAJ%252BB%252BuI1H0wdGsHOds%3d" target="_blank">disponibili presso Mouser</a> a circa 20/25 centesimi l'uno.
+Per comodità, i LED di colore rosso, giallo e verde utilizzati nel computer BEAM includono una resistenza interna che permette la connessione diretta a 5V e, dunque, alle uscite logiche TTL. Sono <a href="https://www.mouser.it/c/optoelectronics/led-lighting/leds-light-emitting-diodes/single-color-leds/?m=Kingbright&mounting%20style=Through%20Hole&package%20%2F%20case=T-1%203%2F4%20%285%20mm%29&vf%20-%20forward%20voltage=5%20V" target="_blank">disponibili presso Mouser</a> a circa 20/25 centesimi l'uno per quantità 10 o superiori.
 
-Le LED BAR sono state incluse negli schemi Kicad, mentre i singoli LED no. Nota: per motivi di spazio, lo schema della Control Logic non include la LED BAR................... ma vedi next bullet
-fare LED BAR da 8 led per Control Logic
+Per motivi di spazio, le LED BAR sono state incluse negli schemi Kicad, mentre i singoli LED non lo sono.
+
+ Nota: per motivi di spazio, lo schema della Control Logic non include la LED BAR...................
+
+Inoltre, i simboli Kicad includono solo LED BAR a 10 LED, pertanto, nelle situazioni dove non sono necessari 1 LED, alcuni di questi appaiono disconnessi.
 
 ### Varie
 
@@ -30,9 +35,9 @@ Invece dei più comuni dip-switch, ho utilizzato dei comodissimi Rocker Switch (
 
 I comodissimi [Rocker Switch](../ram/#note) utilizzati nei moduli MAR e RAM.
 
-## Breadboard e cavi
+### Breadboard e cavi
 
-Le breadboard utilizzate sono le BB830 incluse anche nei kit di Ben Eater. La qualità dei contatti è decisamente superiore a quella delle breadboard economiche che si trovano online per pochi Euro e il costo aggiuntivo ripaga ampiamente il non doversi preoccupare dei falsi contatti e delle conseguenti problematiche così difficili da individuare.
+Le breadboard utilizzate sono le <a href="https://eu.mouser.com/ProductDetail/BusBoard-Prototype-Systems/BB830?qs=VEfmQw3KOauhPeTwYxNCaA%3D%3D" target="_blank">BB830</a> incluse anche nei kit di Ben Eater. La qualità dei contatti è decisamente superiore a quella delle breadboard economiche che si trovano online per pochi Euro e il costo aggiuntivo ripaga ampiamente il non doversi preoccupare dei falsi contatti e delle conseguenti problematiche così difficili da individuare.
 
 Anche per i cavi mi sono affidati agli ottimi cavi <a href="https://www.jameco.com/z/JMS9313-01G-22-AWG-6-Color-Solid-Tinned-Copper-Hook-Up-Wire-Assortment-25-Feet_2153705.html" target="_blank">AWG22</a> che ho scoperto con i kit di Ben Eater del <a href="https://eater.net/8bit" target="_blank">computer SAP a 8 bit</a> e del <a href="https://eater.net/6502" target="_blank"></a> computer 6502.
 Il vantaggio di questi cavi rispetto agli altri AWG22 che ho trovato (e provato) è la dimensione dell'isolamento, più sottile, che permette una maggiore densità nel cablaggio. Purtroppo, non li ho trovati in Europa e, pertanto, li ho ordinati forzatamente presso Jameco, sobbarcandomi anche il costo aggiuntivo del trasporto e della dogana. Notare invece che i cavi venduti da Amazon, pur citati nelle Parts list di Ben Eater, presentano un isolamento più spesso che, secondo le mie preferenze, è meno adatto.
@@ -58,10 +63,6 @@ Con il pulsante premuto, viene emesso un output corrispondente ai bit impostati 
 [![Schema del modulo di test](../../assets/varie/test-schema.png "Schema del modulo di test"){:width="100%"}](../../assets/varie/test-schema.png)
 
 *Schema del modulo di test.*
-
-### Altro argomento
-
-Lorem ipsum dolor sit amet, consectetur adipisci elit, sed do eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullamco laboriosam, nisi ut aliquid ex ea commodi consequatur. Duis aute irure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 ## Link utili
 
