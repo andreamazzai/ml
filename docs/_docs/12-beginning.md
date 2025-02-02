@@ -9,31 +9,23 @@ excerpt: "Note costruttive"
 
 ## Componenti
 
-Quasi tutti i componenti utilizzati in questo progetto sono stati acquistati su <a href="https://us.rs-online.com/product/te-connectivity/5435640-5/70156004/" target="_blank">Mouser.com</a>. I costi sono in linea con quelli degli altri portali, ma le spese di trasporto e sdoganamento sono assorbite da Mouser per ordini superiori a €100. La spedizione dagli Stati Uniti è molto veloce;ho ricevuto tutti gli ordini in due giorni lavorativi.
-
-### TTL o CMOS?
-
-- Descrivere la scelta di non usare HC
+Quasi tutti i componenti utilizzati in questo progetto sono stati acquistati su <a href="https://www.mouser.com/" target="_blank">Mouser.com</a>. I costi sono in linea con quelli degli altri portali, ma le spese di trasporto e sdoganamento sono assorbite da Mouser per ordini superiori a €100. La spedizione dagli Stati Uniti è molto veloce; ho ricevuto tutti gli ordini in due giorni lavorativi.
 
 ### LED
 
-Per comodità, i LED di colore rosso, giallo e verde utilizzati nel computer BEAM includono una resistenza interna che permette la connessione diretta a 5V e, dunque, alle uscite logiche TTL. Sono <a href="https://www.mouser.it/c/optoelectronics/led-lighting/leds-light-emitting-diodes/single-color-leds/?m=Kingbright&mounting%20style=Through%20Hole&package%20%2F%20case=T-1%203%2F4%20%285%20mm%29&vf%20-%20forward%20voltage=5%20V" target="_blank">disponibili presso Mouser</a> a circa 20/25 centesimi l'uno per quantità 10 o superiori.
+Per comodità, i LED singoli di colore rosso, giallo e verde utilizzati nel computer BEAM includono una resistenza interna che permette la connessione diretta a 5V e, dunque, anche direttamente alle uscite logiche TTL. Sono <a href="https://www.mouser.it/c/optoelectronics/led-lighting/leds-light-emitting-diodes/single-color-leds/?m=Kingbright&mounting%20style=Through%20Hole&package%20%2F%20case=T-1%203%2F4%20%285%20mm%29&vf%20-%20forward%20voltage=5%20V" target="_blank">disponibili presso Mouser</a> a circa 20/25 centesimi l'uno per quantità 10 o superiori.
 
-Per motivi di spazio, le LED BAR sono state incluse negli schemi Kicad, mentre i singoli LED non lo sono.
+Per motivi di spazio, i LED singoli non sono stati inclusi negli schemi Kicad. Inoltre, come unica eccezione, la LED BAR fisicamente presente sui pin IR0-IR7 dell'Instruction Register non appare nello schema Kicad; tutte le altre LED BAR sono invece presenti negli schemi.
 
- Nota: per motivi di spazio, lo schema della Control Logic non include la LED BAR...................
-
-Inoltre, i simboli Kicad includono solo LED BAR a 10 LED, pertanto, nelle situazioni dove non sono necessari 1 LED, alcuni di questi appaiono disconnessi.
+Infine, poiché i simboli Kicad includono solo LED BAR a 10 LED, nelle situazioni dove non sono necessari tutti i 10 LED, alcuni di questi appaiono disconnessi.
 
 ### Varie
 
-Invece dei più comuni dip-switch, ho utilizzato dei comodissimi Rocker Switch ("a bilanciere") come quelli in figura; si trovano facilmente presso i distributori di <a href="https://us.rs-online.com/product/te-connectivity/5435640-5/70156004/" target="_blank">materiale elettronico</a>. Notare che i pin originali sono piuttosto corti e non fissano correttamente lo switch alla breadboard, pertanto ho aggiunto uno zoccolo per circuiti integrati.
+Invece dei più comuni dip-switch, nei moduli MAR e RAM ho utilizzato dei comodissimi Rocker Switch ("a bilanciere") come quelli in figura; si trovano facilmente presso i distributori di <a href="https://us.rs-online.com/product/te-connectivity/5435640-5/70156004/" target="_blank">materiale elettronico</a>. Notare che i pin originali sono piuttosto corti e non fissano correttamente lo switch alla breadboard, pertanto ho aggiunto uno zoccolo per circuiti integrati.
 
 [![Rocker Switch](../../assets/ram/20-ram-rocker.png "Rocker Switch"){:width="33%"}](../../assets/ram/20-ram-rocker.png)
 
 *Rocker Switch.*
-
-I comodissimi [Rocker Switch](../ram/#note) utilizzati nei moduli MAR e RAM.
 
 ### Breadboard e cavi
 
@@ -48,7 +40,7 @@ Leggendo le esperienze degli altri utenti su <a href="https://www.reddit.com/r/b
 
 Come si potrà notare nelle foto, non ho utilizzato condensatori nel BEAM, così come non li avevo utilizzati nemmeno nel SAP-1: confidavo nella frequenza estremamente bassa di utilizzo del computer e, fortunatamente, devo dire che entrambi i sistemi sono stabili.
 
-Devo infine dire che nelle mie due realizzazioni ho notato che i chip TTL sembrano tollerare tensioni abbastanza inferiori rispetto ai requisiti indicati nei datasheet, tanto che in alcuni casi, prima di migliorare la distribuzione dell'elettricità con la linea centrale descritta poc'anzi, alcuni chip funzionavano bene anche a 4,3 volt.
+Devo infine dire che nelle mie realizzazioni ho notato che i chip TTL sembrano tollerare tensioni inferiori rispetto a quelle indicate nei datasheet, tanto che in alcuni casi, prima di migliorare la distribuzione dell'elettricità con la linea centrale descritta poc'anzi, alcuni chip funzionavano bene anche a 4,3 volt.
 
 ## Circuito di test
 
