@@ -3,7 +3,11 @@ title: "Note costruttive"
 permalink: /docs/beginning/
 excerpt: "Note costruttive"
 ---
+<small>[Componenti](#componenti) - [LED](#led) - [Varie](#varie) - [Breadboard e cavi](#breadboard-e-cavi) - [Alimentazione](#alimentazione) - [Circuito di test](#circuito-di-test)</small>
+
 [![Note costruttive](../../assets/varie/cassetti.png "Note costruttive"){:width="100%"}](../../assets/varie/cassetti.png)
+
+Alcune note generali sulla costruzione del computer BEAM.
 
 ## Componenti
 
