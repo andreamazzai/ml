@@ -17,9 +17,9 @@ Per motivi di spazio, i LED singoli non sono stati inclusi negli schemi Kicad.
 
 Infine, poiché i simboli Kicad includono solo LED BAR a 10 LED, nelle situazioni dove non sono necessari tutti i 10 LED, alcuni di questi appaiono disconnessi.
 
-![Alt text](../../assets/varie/ledbar.png)
+![LED BAR con 2 LED non connessi](../../assets/varie/ledbar.png "LED BAR con 2 LED non connessi"){:width="50%"}
 
-*LED BAR.*
+*LED BAR con 2 LED non connessi.*
 
 ### Varie
 
