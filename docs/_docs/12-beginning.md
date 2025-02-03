@@ -3,7 +3,7 @@ title: "Note costruttive"
 permalink: /docs/beginning/
 excerpt: "Note costruttive"
 ---
-[![Note costruttive](../../assets/varie/varie.png "Note costruttive"){:width="100%"}](../../assets/varie/varie.png)
+[![Note costruttive](../../assets/varie/cassetti.png "Note costruttive"){:width="100%"}](../../assets/varie/cassetti.png)
 
 ## Componenti
 
