@@ -5,8 +5,6 @@ excerpt: "Note costruttive"
 ---
 [![Note costruttive](../../assets/ram/20-ram-beam.png "costruttive"){:width="100%"}](../../assets/ram/20-ram-beam.png)
 
-## WORK IN PROGRESS
-
 ## Componenti
 
 Quasi tutti i componenti utilizzati in questo progetto sono stati acquistati su <a href="https://www.mouser.com/" target="_blank">Mouser.com</a>. I costi sono in linea con quelli degli altri portali, ma le spese di trasporto e sdoganamento sono assorbite da Mouser per ordini superiori a €100. La spedizione dagli Stati Uniti è molto veloce; ho ricevuto tutti gli ordini in due giorni lavorativi.
@@ -15,7 +13,7 @@ Quasi tutti i componenti utilizzati in questo progetto sono stati acquistati su 
 
 Per comodità, i LED singoli di colore rosso, giallo e verde utilizzati nel computer BEAM includono una resistenza interna che permette la connessione diretta a 5V e, dunque, anche direttamente alle uscite logiche TTL. Sono <a href="https://www.mouser.it/c/optoelectronics/led-lighting/leds-light-emitting-diodes/single-color-leds/?m=Kingbright&mounting%20style=Through%20Hole&package%20%2F%20case=T-1%203%2F4%20%285%20mm%29&vf%20-%20forward%20voltage=5%20V" target="_blank">disponibili presso Mouser</a> a circa 20/25 centesimi l'uno per quantità 10 o superiori.
 
-Per motivi di spazio, i LED singoli non sono stati inclusi negli schemi Kicad. Inoltre, come unica eccezione, la LED BAR fisicamente presente sui pin IR0-IR7 dell'Instruction Register non appare nello schema Kicad; tutte le altre LED BAR sono invece presenti negli schemi.
+Per motivi di spazio, i LED singoli non sono stati inclusi negli schemi Kicad.
 
 Infine, poiché i simboli Kicad includono solo LED BAR a 10 LED, nelle situazioni dove non sono necessari tutti i 10 LED, alcuni di questi appaiono disconnessi.
 
@@ -55,8 +53,3 @@ Con il pulsante premuto, viene emesso un output corrispondente ai bit impostati 
 [![Schema del modulo di test](../../assets/varie/test-schema.png "Schema del modulo di test"){:width="100%"}](../../assets/varie/test-schema.png)
 
 *Schema del modulo di test.*
-
-## Link utili
-
-- I <a href="https://eater.net/8bit/clock" target="_blank">video</a> di Ben Eater che descrivono il funzionamento dei timer 555 e la costruzione del modulo di clock.
-- <a href="https://todbot.com/blog/2010/01/02/momentary-button-as-onoff-toggle-using-555/" target="_blank">Un blog</a> che spiega come creare un circuito bistabile, qui utilizzato per creare la funzione "Start/Stop" con pulsante anziché con interruttore.
