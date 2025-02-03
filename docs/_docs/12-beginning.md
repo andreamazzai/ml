@@ -3,7 +3,7 @@ title: "Note costruttive"
 permalink: /docs/beginning/
 excerpt: "Note costruttive"
 ---
-[![Note costruttive](../../assets/ram/20-ram-beam.png "costruttive"){:width="100%"}](../../assets/ram/20-ram-beam.png)
+[![Note costruttive](../../assets/varie/varie.png "Note costruttive"){:width="100%"}](../../assets/varie/varie.png)
 
 ## Componenti
 
@@ -39,6 +39,8 @@ Il vantaggio di questi cavi rispetto agli altri AWG22 che ho trovato (e provato)
 ## Alimentazione
 
 Leggendo le esperienze degli altri utenti su <a href="https://www.reddit.com/r/beneater/" target="_blank">reddit</a>, sembra che quello dell'alimentazione sia un problema abbastanza diffuso. Le FAQ ed altri documenti <a href="https://www.reddit.com/r/beneater/wiki/tips/" target="_blank">scritti da altri utenti</a> offrono ottimi suggerimenti e aiutano indirizzare le questioni di distribuzione dell'elettricità. Per quanto mi riguarda, dopo essere partito con una semplice distribuzione laterale come avevo fatto nel SAP-1, ho aggiunto una ulteriore linea di alimentazione al centro del computer inserendo una ulteriore fila di sezioni laterali ritagliate dalle breadboard.
+
+[![Bus alimentazione](../../assets/varie/power-bus.png "Bus alimentazione"){:width="40%"}](../../assets/varie/power-bus.png)
 
 Come si potrà notare nelle foto, non ho utilizzato condensatori nel BEAM, così come non li avevo utilizzati nemmeno nel SAP-1: confidavo nella frequenza estremamente bassa di utilizzo del computer e, fortunatamente, devo dire che entrambi i sistemi sono stabili.
 
