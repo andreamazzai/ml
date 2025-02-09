@@ -3,7 +3,7 @@ title: "Building notes"
 permalink: en/docs/beginning/
 excerpt: "Building notes"
 ---
-<small>[Componenti](#componenti) - [LED](#led) - [Varie](#varie) - [Breadboard e cavi](#breadboard-e-cavi) - [Alimentazione](#alimentazione) - [Circuito di test](#circuito-di-test)</small>
+<small>[Components](#components) - [LED](#led) - [Miscellaneous](#miscellaneous) - [Breadboard and Wires](#breadboard-and-wires) - [Power Supply](#power-supply) - [Test Circuit](#test-circuit)</small>
 
 [![Note costruttive](../../../assets/varie/cassetti.png "Note costruttive"){:width="100%"}](../../../assets/varie/cassetti.png)
 
