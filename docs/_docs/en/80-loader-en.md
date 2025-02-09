@@ -5,7 +5,7 @@ excerpt: "Loader del computer BEAM"
 ---
 <small>[Caricamento di un programma](#caricamento-di-un-programma) - [Schema](#schema) - [Link utili](#link-utili)</small>
 
-[![BEAM Computer Loader](../../assets/loader/80-beam-loader.png "BEAM Computer Loader"){:width="100%"}](../../assets/loader/80-beam-loader.png)
+[![BEAM Computer Loader](../../../assets/loader/80-beam-loader.png "BEAM Computer Loader"){:width="100%"}](../../assets/loader/80-beam-loader.png)
 
 After completing the [8-bit SAP-1 computer](../../#computer-a-8-bit-in-logica-ttl-sap), I was looking for a way to automate loading programs into memory, as doing so manually every time the system was powered on using the dip-switches was quite tedious. I also intended to frame it and hang it as a piece of artwork to show visitors. Gaining confidence with Arduino, I realized I could connect its outputs to MAR, RAM, and the Write button to automatically manage the computer’s programming, simulating the manual sequences precisely.
 
