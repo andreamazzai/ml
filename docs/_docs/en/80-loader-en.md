@@ -3,7 +3,7 @@ title: "Arduino Loader"
 permalink: en/docs/loader/
 excerpt: "Loader del computer BEAM"
 ---
-<small>[Caricamento di un programma](#caricamento-di-un-programma) - [Schema](#schema) - [Link utili](#link-utili)</small>
+<small>[Program Loading](#program-loading) - [Schematic](#schematic) - [Differences Between the Loader of the NQSAP/NQSAP-PCB and the BEAM](#differences-between-the-loader-of-the-nqsapnqsap-pcb-and-the-beam)- [Useful Links](#useful-links)</small>
 
 [![BEAM Computer Loader](../../../assets/loader/80-beam-loader.png "BEAM Computer Loader"){:width="100%"}](../../assets/loader/80-beam-loader.png)
 
@@ -19,7 +19,7 @@ I had carefully studied Tom’s two implementations, which differed between NQSA
 
 My implementation includes two 8-bit shift registers, the <a href="https://www.ti.com/lit/ds/symlink/sn74hc595.pdf" target="_blank">74HC595</a>, and a parallel-load 8-bit shift register, the <a href="https://www.ti.com/lit/ds/symlink/sn54ls165a-sp.pdf" target="_blank">74LS165</a>. The former are used to write to the BEAM, while the latter is used to read from the bus.
 
-## ### Program Loading
+## Program Loading
 
 The Loader activates three control signals and one clock signal:
 
@@ -74,8 +74,6 @@ void writeRAM(byte data)
   digitalWrite(LDR_CLK, LOW);
 }
 ~~~
-
-Here is the translation:
 
 At the end of the writing process, the '165 is used to read the content of the computer's last memory location and temporarily store it on the Loader, allowing the execution of a light game on the LEDs that display the contents of the RAM. The game consists of scrolling the LEDs to simulate the effect of the iconic scanner from the car <a href="https://www.youtube.com/watch?v=bMVbaCiy_XE" target="_blank">KITT</a> from the TV series Knight Rider. To execute this effect, the scrolling pattern is loaded into the mentioned location, and for this, it must be restored at the end of the routine.
 
