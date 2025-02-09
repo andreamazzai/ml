@@ -1,13 +1,13 @@
 ---
 title: "Arduino Loader"
 permalink: en/docs/loader/
-excerpt: "Loader del computer BEAM"
+excerpt: "Loader of the BEAM computer"
 ---
-<small>[Program Loading](#program-loading) - [Schematic](#schematic) - [Differences Between the Loader of the NQSAP/NQSAP-PCB and the BEAM](#differences-between-the-loader-of-the-nqsapnqsap-pcb-and-the-beam)- [Useful Links](#useful-links)</small>
+<small>[Program Loading](#program-loading) - [Schematic](#schematic) - [Differences Between the Loader of the NQSAP/NQSAP-PCB and the BEAM](#differences-between-the-loader-of-the-nqsapnqsap-pcb-and-the-beam) - [Useful Links](#useful-links)</small>
 
-[![BEAM Computer Loader](../../../assets/loader/80-beam-loader.png "BEAM Computer Loader"){:width="100%"}](../../assets/loader/80-beam-loader.png)
+[![BEAM Computer Loader](../../../assets/loader/80-beam-loader.png "BEAM Computer Loader"){:width="100%"}](../../../assets/loader/80-beam-loader.png)
 
-After completing the [8-bit SAP-1 computer](../../#computer-a-8-bit-in-logica-ttl-sap), I was looking for a way to automate loading programs into memory, as doing so manually every time the system was powered on using the dip-switches was quite tedious. I also intended to frame it and hang it as a piece of artwork to show visitors. Gaining confidence with Arduino, I realized I could connect its outputs to MAR, RAM, and the Write button to automatically manage the computer’s programming, simulating the manual sequences precisely.
+After completing the [8-bit SAP-1 computer](../../#8-bit-ttl-logic-computer-sap), I was looking for a way to automate loading programs into memory, as doing so manually every time the system was powered on using the dip-switches was quite tedious. I also intended to frame it and hang it as a piece of artwork to show visitors. Gaining confidence with Arduino, I realized I could connect its outputs to MAR, RAM, and the Write button to automatically manage the computer’s programming, simulating the manual sequences precisely.
 
 I started from a project by <a href="https://github.com/dmytrostriletskyi/8-bit-computer-memory-init" target="_blank">Dmytro Striletskyi</a>, modifying it to automatically load and execute two programs, 'Fibonacci' and 'Counter,' each with a specific execution duration. At the end of each execution cycle, the Arduino stops the clock, loads the next program into memory, reactivates the clock, and resets the computer.
 
@@ -77,7 +77,7 @@ void writeRAM(byte data)
 
 At the end of the writing process, the '165 is used to read the content of the computer's last memory location and temporarily store it on the Loader, allowing the execution of a light game on the LEDs that display the contents of the RAM. The game consists of scrolling the LEDs to simulate the effect of the iconic scanner from the car <a href="https://www.youtube.com/watch?v=bMVbaCiy_XE" target="_blank">KITT</a> from the TV series Knight Rider. To execute this effect, the scrolling pattern is loaded into the mentioned location, and for this, it must be restored at the end of the routine.
 
-<video src="../../assets/loader/KITT.mp4" controls title="Title" width="45%"></video>
+<video src="../../../assets/loader/KITT.mp4" controls title="Title" width="45%"></video>
 
 After the light game, the content of the last memory location is restored, and control is passed to the loaded program: the '595 are disabled, the ROMs are reactivated, the Reset is deactivated, and the clock is re-enabled.
 
@@ -85,7 +85,7 @@ The Loader also includes a manual Reset button.
 
 ## Schematic
 
-[![Schematic of the BEAM computer Loader](../../assets/loader/80-loader-schema.png "Schematic of the BEAM computer Loader")](../../assets/loader/80-loader-schema.png)
+[![Schematic of the BEAM computer Loader](../../../assets/loader/80-loader-schema.png "Schematic of the BEAM computer Loader")](../../../assets/loader/80-loader-schema.png)
 
 *Schematic of the BEAM computer Loader.*
 
