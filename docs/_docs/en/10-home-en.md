@@ -52,7 +52,7 @@ The documentation for the NQSAP was incomplete, and I had also found a few error
 
 Among the aspects to mention, on which I spent a lot, **a **lot**, ***really a lot of time***:
 
-- understanding the operation of the 74181 ALU, for which I created a test bench based on what I learned from David Courtney. [David Courtney](docs/en/alu/#link-utili);
+- understanding the operation of the 74181 ALU, for which I created a test bench based on what I learned from [David Courtney](docs/en/alu/#useful-links);
 - understanding binary arithmetic in two's complement;
 - understanding overflow, closely related to the previous point;
 - integration of the 74181 ALU and Instruction Register (IR) in "[hardwired](docs/en/alu/#relazione-diretta-hardwired-tra-instruction-register-e-alu)" mode to automatically generate the ALU input signals based on the instruction present in the IR;
@@ -111,7 +111,7 @@ Among the things I learned:
 - Ken Shirrif for some <a href="https://www.righto.com/" target="_blank">very interesting articles</a>  on Overflow, the 6502, 74181, and much more!
 - The enthusiastic and inspiring Dr. Brock LaMeres from the University of Montana for the excellent <a href="https://www.youtube.com/playlist?list=PL643xA3Ie_Et2uM4xu1yFk-A5ZQQ8gQ5e" target="_blank">Intro to Logic Circuits</a> playlist on YouTube; a <a href="https://www.montana.edu/blameres/book_content_vhdl.html" target="_blank">more readable index</a> of the same material is available on the official University of Montana website;
 - The <a href="http://6502.org" target="_blank">6502.org</a> website and its forum: detailed, no-frills documentation and truly experienced members;
-- Dieter Müller, whose pages on the <a href="http://6502.org/users/dieter/v_flag/v_0.htmmi " target="_blank">74LS151</a> inspired me to delve into the topic of Overflow in detail, with whom I developed a very friendly online acquaintance;
+- Dieter Müller, whose pages on the <a href="http://6502.org/users/dieter/v_flag/v_0.htm" target="_blank">74LS151</a> inspired me to delve into the topic of Overflow in detail, with whom I developed a very friendly online acquaintance;
 - Norbert Landsteiner for the <a href="https://www.masswerk.at/6502/6502_instruction_set.html" target="_blank">6502 Instruction Set</a>, the <a href="https://www.masswerk.at/6502/assembler.html" target="_blank">6502 Assembler</a>, and the <a href="https://www.masswerk.at/6502" target="_blank">Virtual 6502</a> - exceptional tools I used extensively for the creation and debugging of the microcode. Norbert was also extremely responsive in fixing a bug I reported to him.
 
 Special thanks to Tom Nisbet and Dieter Müller, who, even during the documentation writing phase, did not hesitate to provide me with some clarifications.

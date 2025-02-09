@@ -3,41 +3,41 @@ title: "Clock"
 permalink: /docs/en/clock/
 excerpt: "Modulo di clock del computer BEAM"
 ---
-<small>[Il Loader e il Clock](#il-loader-e-il-clock) - [Schema](#schema) - [L'istruzione HLT](#listruzione-hlt) - [Link utili](#link-utili)</small>
+<small>[Loader and Clock](#il-loader-e-il-clock) - [Schema](#schema) - [L'istruzione HLT](#listruzione-hlt) - [Useful Links](#link-utili)</small>
 
-[![Modulo di Clock del computer BEAM](../../assets/clock/15-beam-clock.png "Modulo di Clock del computer BEAM"){:width="100%"}](../../assets/clock/15-beam-clock.png)
+[![BEAM Computer Clock Module](../../assets/clock/15-beam-clock.png "BEAM Computer Clock Module"){:width="100%"}](../../assets/clock/15-beam-clock.png)
 
-Il modulo di clock del computer BEAM riprende quello progettato da Ben Eater per il computer SAP-1, utilizzando però solo comodi pulsanti tattili anziché interruttori a scorrimento e aggiungendo qualche interazione con i segnali di controllo esterni provenienti dal Loader.
+The BEAM computer clock module follows the design created by Ben Eater for the SAP-1 computer, but it uses tactile push buttons instead of slide switches and adds some interaction with external control signals coming from the Loader.
 
-- Il primo 555 è utilizzato come generatore astabile con possibilità di selezionare la frequenza di funzionamento attraverso un potenziometro; un pulsante "Turbo" permette di bypassare temporaneamente la resistenza del potenziometro portando la frequenza di lavoro al valore massimo. Se si esegue qualche programma a bassa velocità di clock allo scopo di effettuare una analisi visiva degli output, questo pulsante si comporta come un "Fast Forward".
-- Il secondo 555 in modalità monostabile permette di eseguire singole microistruzioni ("Step").
-- Il terzo 555 in modalità bistabile permette di avviare e fermare il clock del primo 555 utilizzando un comodo pulsante "Start/Stop", anziché un interruttore come avveniva sul circuito del SAP-1.
+- The first 555 is used as an astable oscillator, with the frequency of operation selectable via a potentiometer. A "Turbo" button temporarily bypasses the potentiometer's resistance, bringing the clock frequency to its maximum value. When running low-speed clock programs for visual analysis of outputs, this button acts like a "Fast Forward."
+- The second 555 in monostable mode executes individual micro-operations ("Step").
+- The third 555 in bistable mode starts and stops the first 555's clock using a convenient "Start/Stop" button, instead of a switch as in the SAP-1 circuit.
 
-Una pressione del pulsante Step durante il normale funzionamento (astabile) ferma il computer alla microistruzione attuale e permette di proseguire in modalità "Step by Step" premendo ripetutamente lo stesso pulsante; premendo il pulsante Start/Stop, il computer riprende a lavorare col clock astabile.
+Pressing the Step button during normal operation (astable mode) halts the computer at the current microinstruction and allows proceeding in "Step by Step" mode by repeatedly pressing the same button. Pressing the Start/Stop button resumes normal operation with the astable clock.
 
-I pulsanti Start/Stop e Step sono stati duplicati anche in una zona più facilmente raggiungible del computer, cioè sotto alla Control Logic; in tale sede è stato incluso anche un pulsante di Reset.
+The Start/Stop and Step buttons have also been duplicated in a more easily accessible area of the computer, specifically under the Control Logic. In this location, a Reset button has also been included.
 
-[![Pulsanti Start/Stop, Step, Reset](../../assets/clock/15-run-step-reset.png "Pulsanti Start/Stop, Step, Reset")]
+[![Start/Stop, Step, Reset buttons](../../assets/clock/15-run-step-reset.png "Start/Stop, Step, Reset buttons")]
 
-### Il Loader e il Clock
+### Loader and Clock
 
-Sul modulo di clock sono presenti tre segnali provenienti dal [Loader](../loader/) basato su Arduino: LDR-Active, LDR-CLK e CLK-Start.
+On the clock module, there are three signals coming from the [Loader](../en/loader/) based on Arduino: LDR-Active, LDR-CLK, and CLK-Start.
 
-Il segnale **LDR-Active** allo stato HI permette al Loader di  prendere il controllo del circuito di clock, disattivandone completamente l'output e fermando l'esecuzione del programma. In questa circostanza, il Loader può iniettare nel computer il suo segnale di clock **LDR-CLK**.
+The **LDR-Active** signal, when set to HI, allows the Loader to take control of the clock circuit, completely disabling its output and halting the program execution. In this case, the Loader can inject its clock signal **LDR-CLK** into the computer.
 
-Il segnale **CLK-Start** viene utilizzato dal Loader alla fine della programmazione per riattivare il modulo di clock e far partire il programma appena caricato.
+The **CLK-Start** signal is used by the Loader at the end of the programming process to reactivate the clock module and start the freshly loaded program.
 
-## Schema
+## Schematics
 
-[![Schema del modulo di Clock](../../assets/clock/15-clock-schema.png "Schema del modulo di Clock")](../../assets/clock/15-clock-schema.png)
+[![Clock Module Schematic](../../assets/clock/15-clock-schema.png "Clock Module Schematic")](../../assets/clock/15-clock-schema.png)
 
-*Schema del modulo di Clock.*
+*Clock Module Schematic.*
 
-## L'istruzione HLT
+## The HLT Instruction
 
-Il microcode dell'istruzione HLT attiva l'omonimo segnale sul modulo di clock, interrompendo il funzionamento del programma. Per riprendere il funzionamento nella modalità a clock continuo, è necessario superare la microistruzione corrente premendo il pulsante Step: a questo punto è possibile riavviare l'esecuzione del programma col pulsante Start/Stop.
+The microcode for the HLT instruction activates the corresponding signal on the clock module, halting the execution of the program. To resume operation in continuous clock mode, the current microinstruction must be bypassed by pressing the Step button. At this point, the program execution can be restarted using the Start/Stop button.
 
-## Link utili
+## "Useful Links"
 
-- I <a href="https://eater.net/8bit/clock" target="_blank">video</a> di Ben Eater che descrivono il funzionamento dei timer 555 e la costruzione del modulo di clock.
-- <a href="https://todbot.com/blog/2010/01/02/momentary-button-as-onoff-toggle-using-555/" target="_blank">Un blog</a> che spiega come creare un circuito bistabile, qui utilizzato per creare la funzione "Start/Stop" con pulsante anziché con interruttore.
+- Ben Eater's <a href="https://eater.net/8bit/clock" target="_blank">videos</a> describing the operation of the 555 timers and the construction of the clock module.
+- <a href="https://todbot.com/blog/2010/01/02/momentary-button-as-onoff-toggle-using-555/" target="_blank">A blog</a> explaining how to create a bistable circuit, used here to create the "Start/Stop" function with a button instead of a switch.
