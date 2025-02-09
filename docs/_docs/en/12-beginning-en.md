@@ -1,6 +1,6 @@
 ---
 title: "Note costruttive"
-permalink: /docs/en/beginning/
+permalink: en/docs/beginning/
 excerpt: "Note costruttive"
 ---
 <small>[Componenti](#componenti) - [LED](#led) - [Varie](#varie) - [Breadboard e cavi](#breadboard-e-cavi) - [Alimentazione](#alimentazione) - [Circuito di test](#circuito-di-test)</small>

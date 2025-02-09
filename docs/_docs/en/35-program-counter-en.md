@@ -1,6 +1,6 @@
 ---
 title: "Program Counter"
-permalink: /docs/en/programcounter/
+permalink: en/docs/programcounter/
 excerpt: "Program Counter del computer BEAM"
 ---
 <small>[Note sui segnali](#note-sui-segnali) - [Link utili](#link-utili)</small>

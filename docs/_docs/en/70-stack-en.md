@@ -1,6 +1,6 @@
 ---
 title: "Stack Pointer"
-permalink: /docs/en/stack/
+permalink: en/docs/stack/
 excerpt: "Stack Pointer del computer BEAM"
 ---
 <small>[Implementazione del microcode dello Stack Pointer](#implementazione-del-microcode-dello-stack-pointer) - [Lo Stack Pointer dell’NQSAP / NQSAP-PCB](#lo-stack-pointer-dellnqsap--nqsap-pcb) - [Schema](#schema) - [Link utili](#link-utili)</small>
