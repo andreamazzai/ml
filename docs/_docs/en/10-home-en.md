@@ -9,7 +9,7 @@ header:
 ---
 ## BEAM 8-bit computer
 
-<small>[Il primo progetto: 6502](#il-primo-progetto-6502) - [Computer a 8 bit in logica TTL: SAP-1](#computer-a-8-bit-in-logica-ttl-sap) - [Evoluzione del computer a 8 bit: BEAM](#evoluzione-del-computer-a-8-bit-beam) - [BEAM?](#beam) - [Studio e progettazione](#studio-e-progettazione) - [Realizzazione](#realizzazione) - [Note](#note) - [Crediti e ringraziamenti](#crediti-e-ringraziamenti) - [Letteratura](#letteratura) - [Avviso sui Diritti di Proprietà Intellettuale](#avviso-sui-diritti-di-proprietà-intellettuale)</small>
+<small>[The First Project: 6502](#the-first-project-6502) - [8-Bit TTL Logic Computer: SAP](#8-bit-ttl-logic-computer-sap) - [Evolution of the 8-Bit Computer: BEAM](#evolution-of-the-8-bit-computer-beam) - [BEAM?](#beam) - [Study and Design](#study-and-design) - [Implementation](#implementation) - [Notes](#notes) - [Credits and Acknowledgments](#credits-and-acknowledgments) - [Literature](#literature) - [Intellectual Property Notice](#intellectual-property-notice)</small>
 
 <!-- TLDR: vai subito alla [documentazione del BEAM 8-bit computer](https://andreamazzai.github.io/beam/) su GitHub Pages -->
 
@@ -19,7 +19,7 @@ After several decades since completing my studies (a high school diploma in elec
 
 ### The First Project: 6502
 
-Toward the end of the year, I accidentally came across <a href="https://eater.net/" target="_blank">Ben Eater's blogs </a> and <a href="https://www.youtube.com/@BenEater/playlists" target="_blank">videos</a>. Remembering my first computer (a Commodore 64 from 1984) and the fact that I had done some assembly programming back then, I built Ben’s breadboard computer based on the 6502. I also started reading numerous blogs and forums on the subject, reviving some of my old knowledge.
+Toward the end of the year, I accidentally came across <a href="https://eater.net/" target="_blank">Ben Eater's blogs</a> and <a href="https://www.youtube.com/@BenEater/playlists" target="_blank">videos</a>. Remembering my first computer (a Commodore 64 from 1984) and the fact that I had done some assembly programming back then, I built Ben’s breadboard computer based on the 6502. I also started reading numerous blogs and forums on the subject, reviving some of my old knowledge.
 
 ### 8-Bit TTL Logic Computer: SAP
 
@@ -38,7 +38,7 @@ I completed the SAP-1 computer in September, but even earlier, I had started stu
 
 3. In Ben Eater’s original design, the computer had only 16 bytes of RAM. This amount was enough to program a minimal Fibonacci sequence, but it was absolutely inadequate for creating more complex programs. Expanding the RAM, therefore, became essential.  
 
-4. The need to learn at least the basics of C, which was used to create the [EEPROM programmer](docs/eeprom-programmer) and the Arduino-based [Loader](docs/loader).
+4. The need to learn at least the basics of C, which was used to create the [EEPROM programmer](docs/en/eeprom-programmer) and the Arduino-based [Loader](docs/en/loader).
 
 ### BEAM?
 
@@ -52,14 +52,14 @@ The documentation for the NQSAP was incomplete, and I had also found a few error
 
 Among the aspects to mention, on which I spent a lot, **a **lot**, ***really a lot of time***:
 
-- understanding the operation of the 74181 ALU, for which I created a test bench based on what I learned from David Courtney. [David Courtney](docs/alu/#link-utili);
+- understanding the operation of the 74181 ALU, for which I created a test bench based on what I learned from David Courtney. [David Courtney](docs/en/alu/#link-utili);
 - understanding binary arithmetic in two's complement;
 - understanding overflow, closely related to the previous point;
-- integration of the 74181 ALU and Instruction Register (IR) in "[hardwired](docs/alu/#relazione-diretta-hardwired-tra-instruction-register-e-alu)" mode to automatically generate the ALU input signals based on the instruction present in the IR;
+- integration of the 74181 ALU and Instruction Register (IR) in "[hardwired](docs/en/alu/#relazione-diretta-hardwired-tra-instruction-register-e-alu)" mode to automatically generate the ALU input signals based on the instruction present in the IR;
 - new memory module based on SRAM with common IO pins, unlike the 74189 used in the SAP-1 with dedicated input and output ports;
 - the flag register—certainly the most complex part of the computer:
   - using the 74151 to decode the overflow state and manage the flag itself—an issue closely tied to the perfect understanding of binary arithmetic;
-  - Using the 74151 to handle [conditional jump instructions in "hardwired" mode](docs/flags/#i-salti-condizionali-e-incondizionati), similar to how it was done for the ALU;
+  - Using the 74151 to handle [conditional jump instructions in "hardwired" mode](docs/en/flags/#i-salti-condizionali-e-incondizionati), similar to how it was done for the ALU;
 
 - understanding the Stack Pointer and writing microcode for the instructions that use it;
 - development of the EEPROM programmer / microcode software based on Arduino: I studied Tom's code in depth, which I mostly understood:
@@ -68,7 +68,7 @@ Among the aspects to mention, on which I spent a lot, **a **lot**, ***really a l
 - understanding the "glitch" problem;
 - development of the bootloader software.
 
-[![Logical Diagram of the BEAM Computer, July 2023.](assets/home/hand-drawn-logic.jpg "Logical Diagram of the BEAM Computer, July 2023."){:width="66%"}](assets/home/hand-drawn-logic.jpg)
+[![Logical Diagram of the BEAM Computer, July 2023.](../assets/home/hand-drawn-logic.jpg "Logical Diagram of the BEAM Computer, July 2023."){:width="66%"}](../assets/home/hand-drawn-logic.jpg)
 
 *Logical Diagram of the BEAM Computer, July 2023..*
 
@@ -78,7 +78,7 @@ In July 2023, I tried to put together everything I had learned and attempted to 
 
 *Paper representation of a possible layout of the BEAM computer modules.*
 
-## Realizzazione
+## Implementation
 
 The construction phase started in October 2023 and was completed in the first days of May 2024. The result is what can be seen in the photo.
 
