@@ -68,63 +68,63 @@ Among the aspects to mention, on which I spent a lot, **a **lot**, ***really a l
 - understanding the "glitch" problem;
 - development of the bootloader software.
 
-[![Schema logico del computer BEAM, luglio 2023](assets/home/hand-drawn-logic.jpg "Schema logico del computer BEAM, luglio 2023"){:width="66%"}](assets/home/hand-drawn-logic.jpg)
+[![Logical Diagram of the BEAM Computer, July 2023.](assets/home/hand-drawn-logic.jpg "Logical Diagram of the BEAM Computer, July 2023."){:width="66%"}](assets/home/hand-drawn-logic.jpg)
 
-*Schema logico del computer BEAM, luglio 2023.*
+*Logical Diagram of the BEAM Computer, July 2023..*
 
-A luglio 2023 ho cercato di ricomporre tutto ciò che avevo appreso e ho provato trascriverlo su carta: avevo compreso molto bene il funzionamento di alcuni moduli, mentre su altri avevo ancora molti dubbi. Inoltre, non mi erano ancora chiare diverse interazioni tra i moduli, soprattutto nei segnali di controllo dei flag; rileggendo il materiale che avevo studiato e gli appunti che avevo trascritto su OneNote nei mesi precedenti, ho unito i puntini e realizzato lo schema logico del computer, iniziando a intravedere non più una serie di moduli a se' stanti, bensì un costrutto logico sensato:
+In July 2023, I tried to put together everything I had learned and attempted to transcribe it on paper: I had a good understanding of how some modules worked, while I still had many doubts about others. Additionally, several interactions between modules, especially in the control signals for the flags, were still unclear. By re-reading the material I had studied and the notes I had transcribed on OneNote in the previous months, I connected the dots and created the logical diagram of the computer, beginning to see not just a series of standalone modules, but a coherent logical construct.
 
-[![Rappresentazione su carta di una possibile disposizione dei moduli del computer BEAM](assets/home/beam-paper-breadboards.png "Rappresentazione su carta di una possibile disposizione dei moduli del computer BEAM"){:width="66%"}](assets/home/beam-paper-breadboards.png)
+[![Paper representation of a possible layout of the BEAM computer modules](../assets/home/beam-paper-breadboards.png "Paper representation of a possible layout of the BEAM computer modules"){:width="66%"}](../assets/home/beam-paper-breadboards.png)
 
-*Rappresentazione su carta di una possibile disposizione dei moduli del computer BEAM.*
+*Paper representation of a possible layout of the BEAM computer modules.*
 
 ## Realizzazione
 
-La fase costruttiva è iniziata a ottobre 2023 e si è conclusa nei primi giorni di maggio 2024. Il risultato è quello visibile in foto.
+The construction phase started in October 2023 and was completed in the first days of May 2024. The result is what can be seen in the photo.
 
-In queste pagine si trovano note, appunti e insegnamenti appresi ed applicati nella realizzazione del BEAM, analisi dei moduli dell'NQSAP e dell'NQSAP-PCB, differenze tra i sistemi, qualche confronto con il SAP-1 ed altro ancora.
+These pages contain notes, observations, and lessons learned and applied in the creation of BEAM, analysis of the NQSAP and NQSAP-PCB modules, differences between the systems, some comparisons with the SAP-1, and much more.
 
-[![BEAM Breadboard Computer](assets/home/beam.png "BEAM breadboard computer"){:width="66%"}](assets/home/beam.png)
+[![BEAM Breadboard Computer](../assets/home/beam.png "BEAM breadboard computer"){:width="66%"}](../assets/home/beam.png)
 
-Tra le cose apprese:
+Among the things I learned:
 
-1. i flag (del 6502), il loro ruolo e le interazioni all'interno di un computer
-2. il ruolo di una ALU e la rappresentazione dei numeri Signed
-3. realizzazione di un programmatore di EEPROM molto veloce
-4. basi del linguaggio C
-5. basi di Arduino
-6. utilizzo di Visual Studio Code
-7. il linguaggio Markdown
-8. utilizzo di GitHub e GitHub Pages
-9. disegno degli schemi con KiCad
+1. The flags (of the 6502), their role, and their interactions within a computer  
+2. The role of an ALU and the representation of Signed numbers  
+3 Creation of a very fast EEPROM programmer  
+4. Basics of the C language  
+5. Basics of Arduino  
+6. Use of Visual Studio Code  
+7. The Markdown language  
+8. Use of GitHub and GitHub Pages  
+9. Schematic design with KiCad
 
-### Note
+### Notes
 
-- Il range di frequenza del computer BEAM varia da circa un Hertz a circa 2 KHz. Non sono state testate frequenze superiori, poiché l'obiettivo principale non era tanto quello di ottenere prestazioni elevate, quanto piuttosto di acquisire conoscenze.
-- Gli schemi KiCad non includono la gran parte dei LED singoli: sono indicati solamente i LED del modulo Clock e i LED che segnalano le modalità Program Mode / Run Mode nel modulo RAM / MAR. Sono invece rappresentate quasi tutte le LED Bar.
+- The frequency range of the BEAM computer varies from about one Hertz to about 2 KHz. Higher frequencies were not tested, as the main goal was not to achieve high performance but rather to acquire knowledge.
+- The KiCad schematics do not include most of the individual LEDs: only the LEDs in the Clock module and those indicating the Program Mode / Run Mode in the RAM / MAR module are shown. Almost all of the LED Bars, however, are represented.
 
-## Crediti e ringraziamenti
+## Credits and Acknowledgments
 
-- Ben Eater per la sua grande capacità di creazione di <a href="https://www.youtube.com/@BenEater/playlists/" target="_blank">contenuti così interessanti</a> e in particolar modo per la playlist <a href="https://www.youtube.com/playlist?list=PLowKtXNTBypGqImE405J2565dvjafglHU" target="_blank">Building an 8-bit breadboard computer!</a>;
-- Tom Nisbet per l'<a href="https://tomnisbet.github.io/nqsap/" target="_blank">NQSAP</a> e l'<a href="https://tomnisbet.github.io/nqsap-pcb/" target="_blank">NQSAP-PCB</a> espandendo e migliorando in maniera sostanziale il progetto di Ben Eater;
-- il subreddit <a href="https://www.reddit.com/r/beneater/" target="_blank">r/beneater</a> - in particolar modo The8BitEnthusiast - grazie!
-- Ken Shirrif per alcuni <a href="https://www.righto.com/" target="_blank">interessantissimi articoli</a> su Overflow, 6502 e 74181 (e molto altro!);
-- l'esplosivo Dr. Brock LaMeres dell'università del Montana per l'eccellente playlist <a href="https://www.youtube.com/playlist?list=PL643xA3Ie_Et2uM4xu1yFk-A5ZQQ8gQ5e" target="_blank">Intro to Logic Circuits</a> su YouTube; un <a href="https://www.montana.edu/blameres/book_content_vhdl.html" target="_blank">indice più leggibile</a> dello stesso materiale è disponibile presso il sito ufficiale dell'Università del Montana;
-- il sito <a href="http://6502.org" target="_blank">6502.org</a> e il suo forum: documentazione dettagliata senza fronzoli e utenti davvero esperti;
-- Dieter Müller, le cui pagine sul <a href="http://6502.org/users/dieter/v_flag/v_0.htmmi " target="_blank">74LS151</a> mi hanno spinto ad approfondire in dettaglio l'argomento Overflow e col quale ho sviluppato una amichevole conoscenza telematica;
-- Norbert Landsteiner per il <a href="https://www.masswerk.at/6502/6502_instruction_set.html" target="_blank">6502 Instruction Set</a>, il <a href="https://www.masswerk.at/6502/assembler.html" target="_blank">6502 Assembler</a> e il <a href="https://www.masswerk.at/6502" target="_blank">Virtual 6502</a>, strumenti eccezionali che ho utilizzato ampiamente per la creazione e il debug del microcode. Norbert è stato anche estremamente reattivo nel correggere un bug che gli avevo segnalato.
+- Ben Eater for his incredible ability to create <a href="https://www.youtube.com/@BenEater/playlists/" target="_blank">such interesting content</a>, especially for the <a href="https://www.youtube.com/playlist?list=PLowKtXNTBypGqImE405J2565dvjafglHU" target="_blank">Building an 8-bit breadboard computer</a> playlist;
+- Tom Nisbet for the <a href="https://tomnisbet.github.io/nqsap/" target="_blank">NQSAP</a> and <a href="https://tomnisbet.github.io/nqsap-pcb/" target="_blank">NQSAP-PCB</a>, significantly expanding and improving Ben Eater's project;
+- the <a href="https://www.reddit.com/r/beneater/" target="_blank">r/beneater</a> subreddit - especially The8BitEnthusiast — thank you!
+- Ken Shirrif for some <a href="https://www.righto.com/" target="_blank">very interesting articles</a>  on Overflow, the 6502, 74181, and much more!
+- The enthusiastic and inspiring Dr. Brock LaMeres from the University of Montana for the excellent <a href="https://www.youtube.com/playlist?list=PL643xA3Ie_Et2uM4xu1yFk-A5ZQQ8gQ5e" target="_blank">Intro to Logic Circuits</a> playlist on YouTube; a <a href="https://www.montana.edu/blameres/book_content_vhdl.html" target="_blank">more readable index</a> of the same material is available on the official University of Montana website;
+- The <a href="http://6502.org" target="_blank">6502.org</a> website and its forum: detailed, no-frills documentation and truly experienced members;
+- Dieter Müller, whose pages on the <a href="http://6502.org/users/dieter/v_flag/v_0.htmmi " target="_blank">74LS151</a> inspired me to delve into the topic of Overflow in detail, with whom I developed a very friendly online acquaintance;
+- Norbert Landsteiner for the <a href="https://www.masswerk.at/6502/6502_instruction_set.html" target="_blank">6502 Instruction Set</a>, the <a href="https://www.masswerk.at/6502/assembler.html" target="_blank">6502 Assembler</a>, and the <a href="https://www.masswerk.at/6502" target="_blank">Virtual 6502</a> - exceptional tools I used extensively for the creation and debugging of the microcode. Norbert was also extremely responsive in fixing a bug I reported to him.
 
-Ringraziamenti speciali: Tom Nisbet e Dieter Müller, che anche in fase di redazione della documentazione non hanno esitato a darmi qualche chiarimento.
+Special thanks to Tom Nisbet and Dieter Müller, who, even during the documentation writing phase, did not hesitate to provide me with some clarifications.
 
-## Letteratura
+## Literature
 
-- <a href="https://archive.org/details/Programming_the_6502_OCR" target="_blank">Programming the 6502</a> di Rodnay Zaks.
-- <a href="https://archive.org/details/367026792DigitalComputerElectronicsAlbertPaulMalvinoAndJeraldABrownPdf1/" target="_blank">Digital Computer Electronics</a> di Albert Paul Malvino e Jerald A. Brown.
+- <a href="https://archive.org/details/Programming_the_6502_OCR" target="_blank">Programming the 6502</a> by  Rodnay Zaks.
+- <a href="https://archive.org/details/367026792DigitalComputerElectronicsAlbertPaulMalvinoAndJeraldABrownPdf1/" target="_blank">Digital Computer Electronics</a> by Albert Paul Malvino and Jerald A. Brown.
 
-## Avviso sui Diritti di Proprietà Intellettuale
+## Intellectual Property Notice
 
-Questo progetto potrebbe includere link, documenti, o immagini di proprietà di terzi. Mi impegno a rispettare pienamente i diritti di proprietà intellettuale di tutti i proprietari e non intendo violare alcun diritto d'autore.
+This project may include links, documents, or images owned by third parties. I am committed to fully respecting the intellectual property rights of all owners and do not intend to infringe any copyrights.
 
-Se si ritiene che uno o più dei materiali presenti in questa documentazione violi i propri diritti di copyright, prego di segnalarmelo. Provvederò prontamente alla verifica e, in caso di violazione, alla rimozione immediata del materiale in questione.
+If it is believed that any materials in this documentation violate your copyright, please notify me. I will promptly verify the claim and, if a violation is confirmed, will immediately remove the material in question.
 
-D'altro canto, tutto il materiale originale prodotto in questo progetto è rilasciato sotto la licenza MIT. Questo significa che è liberamente utilizzabile, modificabile e distribuibile da altri, a condizione che venga mantenuta l'indicazione di copyright originale e questa stessa licenza sia inclusa in eventuali copie o versioni modificate del progetto.
+On the other hand, all original material produced in this project is released under the MIT License. This means that it is freely usable, modifiable, and distributable by others, provided that the original copyright notice is maintained, and this same license is included in any copies or modified versions of the project.
