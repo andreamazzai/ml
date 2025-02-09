@@ -38,7 +38,7 @@ I completed the SAP-1 computer in September, but even earlier, I had started stu
 
 3. In Ben Eater’s original design, the computer had only 16 bytes of RAM. This amount was enough to program a minimal Fibonacci sequence, but it was absolutely inadequate for creating more complex programs. Expanding the RAM, therefore, became essential.  
 
-4. The need to learn at least the basics of C, which was used to create the [EEPROM programmer](docs/en/eeprom-programmer/) and the Arduino-based [Loader](docs/en/loader/).
+4. The need to learn at least the basics of C, which was used to create the [EEPROM programmer](/docs/en/eeprom-programmer/) and the Arduino-based [Loader](/docs/en/loader/).
 
 ### BEAM?
 
