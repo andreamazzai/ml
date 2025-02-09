@@ -5,13 +5,13 @@ excerpt: "Building notes"
 ---
 <small>[Componenti](#componenti) - [LED](#led) - [Varie](#varie) - [Breadboard e cavi](#breadboard-e-cavi) - [Alimentazione](#alimentazione) - [Circuito di test](#circuito-di-test)</small>
 
-[![Note costruttive](../../assets/varie/cassetti.png "Note costruttive"){:width="100%"}](../../assets/varie/cassetti.png)
+[![Note costruttive](../../../assets/varie/cassetti.png "Note costruttive"){:width="100%"}](../../../assets/varie/cassetti.png)
 
 Some general notes on the construction of the BEAM computer.
 
 ## Components
 
-Almost all the components used in this project were purchased from [Mouser.com](https://www.mouser.com/). The costs are in line with other platforms, but shipping and customs duties are covered by Mouser for orders over €100. Shipping from the United States is very fast; I received all orders within two business days.
+Almost all the components used in this project were purchased from <a href="https://www.mouser.com" target="_blank">Mouser.com</a>. The costs are in line with other platforms, but shipping and customs duties are covered by Mouser for orders over €100. Shipping from the United States to Italy is very fast; I received all orders within two business days.
 
 ### LED
 
@@ -21,7 +21,7 @@ For space reasons, the single LEDs were not included in the Kicad schematics.
 
 Lastly, since Kicad symbols only include 10-LED BARs, in cases where not all 10 LEDs are needed, some of them appear disconnected.
 
-![LED BAR with 2 disconnected LEDs](../../assets/varie/ledbar.png "LED BAR with 2 disconnected LEDs"){:width="50%"}
+![LED BAR with 2 disconnected LEDs](../../../assets/varie/ledbar.png "LED BAR with 2 disconnected LEDs"){:width="50%"}
 
 *LED BAR with 2 disconnected LEDs.*
 
