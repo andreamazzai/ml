@@ -7,7 +7,7 @@ excerpt: "Unità Aritmetica e Logica del computer BEAM"
 
 [![Unità Aritmetica e Logica del computer BEAM](../../assets/alu/50-alu-beam.png "Unità Aritmetica e Logica del computer BEAM"){:width="100%"}](../../assets/alu/50-alu-beam.png)
 
-L'Unità Aritmetica e Logica (ALU) del SAP-1 computer di Ben Eater era limitata a addizioni e sottrazioni. L'NQSAP di Tom Nisbet aggiungeva operazioni logiche e di scorrimento (shift) e avevo iniziato a studiarla in dettaglio.
+The Arithmetic and Logic Unit (ALU) of Ben Eater's SAP-1 computer was limited to addition and subtraction. Tom Nisbet's NQSAP added logical and shift operations, and I had started studying it in detail.
 
 ### Il 74LS181
 

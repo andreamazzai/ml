@@ -1,6 +1,6 @@
 ---
 title: "Arduino Loader"
-permalink: /en/loader/
+permalink: /docs/en/loader/
 excerpt: "Loader del computer BEAM"
 ---
 <small>[Caricamento di un programma](#caricamento-di-un-programma) - [Schema](#schema) - [Link utili](#link-utili)</small>
