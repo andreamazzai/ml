@@ -15,9 +15,9 @@
   - title: "OVERVIEW"
     children:
       - title: "> Il computer BEAM"
-        url: /
+        url: "/en/"
       - title: "> Note costruttive"
-        url: /docs/beginning/
+        url: /docs/en/beginning/
       # - title: "Why?"
       #   url: /docs/why/
   - title: "MODULI IN INGLESE"
