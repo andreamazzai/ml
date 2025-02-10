@@ -267,7 +267,7 @@ defaults:
       share: false
       comments: false
       sidebar:
-        nav: "dynamic"
+        nav: "docs"
 
 # Sass/SCSS
 sass:
