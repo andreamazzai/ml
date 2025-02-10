@@ -1,0 +1,13 @@
+---
+layout: minimal-mistakes
+---
+
+{% if page.url contains '/en/' %}
+  {% assign nav = site.data.navigation_en %}
+{% else %}
+  {% assign nav = site.data.navigation %}
+{% endif %}
+
+{% assign sidebar_nav = nav %}
+
+{{ content }}
